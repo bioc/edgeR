@@ -43,7 +43,8 @@ DGEList <- function(data=matrix(0), lib.size=integer(0), group=factor(), ...)
     group<-as.factor(group)
   if (length(levels(group)) != 2)
     warning("Implementation is only for 2 groups at this stage")
-  new("DGEList",list(data=as.matrix(data), lib.size=lib.size, group=group, ...))
+  o <- order(group)
+  new("DGEList",list(data=as.matrix(data[,o]), lib.size=lib.size[o], group=group[o], ...))
 }
 
 
