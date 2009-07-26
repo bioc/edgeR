@@ -4,10 +4,10 @@
 
 \title{MA-like plot for deDGEList objects}
 
-\description{Plots M (log-abundance ratio) against A (log-average abundance) for two groups}
+\description{Plots M (log-abundance ratio) against A (log-average abundance) for two groups.  A smear of points is shown on the left side for those genes with 0 counts in 1 of the 2 classes.}
 
 \usage{ 
-plotMA(object,pair=c(1,2),xlab="A",ylab="M",ylim=NULL,pch=19,...)
+plotMA(object,pair=c(1,2),xlab="A",ylab="M",ylim=NULL,pch=19,eps=0,smearOffset=0,...)
 }
 \arguments{ 
 
@@ -22,6 +22,10 @@ plotMA(object,pair=c(1,2),xlab="A",ylab="M",ylim=NULL,pch=19,...)
 \item{ylim}{limits on y-axis, if left at \code{NULL}, scaled to be symmetric about 0}
 
 \item{pch}{plot character}
+
+\item{eps}{offset to plot in the log-ratios (i.e. log( [p1+eps]/[p2+eps] )}
+
+\item{smearOffset}{offest (to the left of the minimum A value) to plot the smear of 0-in-1-group values}
 
 \item{...}{further arguments to the \code{plot} command}
 
