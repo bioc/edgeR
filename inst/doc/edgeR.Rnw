@@ -2240,7 +2240,6 @@ Here, we list some improvements/extensions that are planned for the \edgeR~packa
 \item As the packages for the processing of raw high-throughput sequencing data become more mature, \edgeR~may need to adapt and operate on different objects.  As shown above, \edgeR~operates on a simple object containing simple data summaries which will  presumably be readily available from pre-processing steps.
 \item Significant speed improvements have been made since the earlier
   versions of \edgeR, but as the datasets become larger, some further optimizations may be necessary.  We are exploring various ways to do this.
-\item The current quantile-based normalization assumes the library sizes are fixed.  Depending on the circumstances of the samples in question, it may be necessary to explore something like an {\em effective} library size.
 \item We are exploring more general testing procedures.
 \end{enumerate}
 
