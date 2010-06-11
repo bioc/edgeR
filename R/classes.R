@@ -65,7 +65,7 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=NULL, group=factor(), genes=N
                 rownames(genes) <- rownames(counts)
 		x$genes <- genes
 	}
-	if(remove.zeros)
+	if(remove.zeros) {
    	allZeros <- rowSums(counts,na.rm=TRUE)==0
    	if(any(allZeros)) {
 			x <- x[!allZeros,]
