@@ -32,7 +32,9 @@ calcNormFactors <- function(dataMatrix, refColumn=1, logratioTrim=.3, sumTrim=0.
   loS <- floor(n * sumTrim) + 1
   hiS <- n + 1 - loS
   
-  keep <- (rank(logR) %in% loL:hiL) & (rank(absE) %in% loS:hiS)
+  #keep <- (rank(logR) %in% loL:hiL) & (rank(absE) %in% loS:hiS)
+  keep <- (rank(logR)>=loL & rank(logR)<=hiL) & (rank(absE)>=loS & rank(absE)<=hiS)
+
   if (doWeighting) 
     2^( sum(logR[keep]/v[keep], na.rm=TRUE) / sum(1/v[keep], na.rm=TRUE) )
   else
