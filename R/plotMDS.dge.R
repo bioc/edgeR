@@ -4,6 +4,7 @@ plotMDS.dge <- function (x, top=500, col=NULL, cex=1, dim.plot=c(1, 2), ndim=max
         x <- DGEList(counts = x, group = c(rep("1", ncol(x))))
         colnames(x$counts) <- 1:dim(x$counts)[2]
     }
+    x$samples$group = c(rep("1", ncol(x$counts)))
     if (!is(x, "DGEList"))
         stop("Currently supports DGEList object and matrix")
     mx <- as.matrix(x$counts)
