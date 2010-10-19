@@ -3,7 +3,7 @@ plotSmear <- function (object, pair=NULL, de.tags=NULL, xlab="logConc", ylab="lo
     ## Created by Mark Robinson. Last modified by Davis McCarthy, 12 July 2010.
   if ( !(class(object) %in% c("DGEList", "de4DGEList")) ) 
     stop("Currently only supports DGEList/de4DGEList objects as the object argument.")
-  levs.group <- levels(object$samples$group)
+  levs.group <- levels(as.factor(object$samples$group))
   if(length(levs.group)==1)
       stop("Cannot produce an MA-plot with only one group. The one group defined is: ",levs.group)
     if (is.null(pair))
