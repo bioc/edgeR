@@ -1,7 +1,7 @@
 topTags <- function(object,n=10,adjust.method="BH",sort.by="p.value") 
 #	Summary table of the n most differentially expressed tags
 #	Mark Robinson, Davis McCarthy, Gordon Smyth
-#	Created September 2008.  Last modified 19 July 2010.
+#	Created September 2008.  Last modified March 2011.
 {
 	sort.by <- match.arg(sort.by,c("p.value","logFC"))
     tabnames <- names(object$table)
@@ -23,7 +23,6 @@ topTags <- function(object,n=10,adjust.method="BH",sort.by="p.value")
 		tab <- cbind(object$genes[chosen,,drop=FALSE], tab) # Assumes that object$genes is a data.frame
 	}
 	rownames(tab) <- rownames(object$table[chosen,])
-#	This conflicts with show method for TopTags!
     if( is(object, "DGELRT") ) {
         lfc.cols <- grep("logFC",tabnames)
         colnames(tab) <- c(colnames(object$genes),"logConc",sub("logFC.","",tabnames[lfc.cols]), "LR","P.Value","adj.P.Val")
