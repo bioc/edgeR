@@ -115,7 +115,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, weights
 glmLRT <- function(y,glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth and Davis McCarthy.
-#	Created 1 July 2010. Last modified 24 November 2010.
+#	Created 1 July 2010. Last modified 9 November 2011.
 {
 	if(is(y,"DGEList"))
 		y.mat <- y$counts 
@@ -152,8 +152,7 @@ glmLRT <- function(y,glmfit,coef=ncol(glmfit$design),contrast=NULL)
 		coef.name <- paste(paste(contrast[i],coef.names[i],sep="*"),collapse=" ")
 		qr <- qr(contrast)
 		Q <- qr.Q(qr,complete=TRUE)
-		sign1 <- sign(qr$qr[1,1])
-		Q <- cbind(Q[,-1],Q[,1])
+		Q <- cbind(Q[,-1],Q[,1]*qr$qr[1,1])
 		design <- design %*% Q
 		coef <- nbeta
 	}
@@ -165,26 +164,28 @@ glmLRT <- function(y,glmfit,coef=ncol(glmfit$design),contrast=NULL)
 	fit.null <- glmFit(y,design=design0,offset=glmfit$offset,weights=glmfit$weights,dispersion=glmfit$dispersion)
 
 	LR <- fit.null$deviance - glmfit$deviance
-	LRT.pvalue <- pchisq(LR, df=( fit.null$df.residual - glmfit$df.residual ), lower.tail = FALSE, log.p = FALSE)
+	df <- fit.null$df.residual - glmfit$df.residual
+	LRT.pvalue <- pchisq(LR, df=df, lower.tail = FALSE, log.p = FALSE)
 	tab <- data.frame(
-		logConc=glmfit$abundance,
 		logFC=logFC,
-		LR.statistic=LR,
-		p.value=LRT.pvalue
+		logCPM=(glmfit$abundance+log(1e6))/log(2),
+		LR=LR,
+		PValue=LRT.pvalue
 	)
 	rownames(tab) <- rownames(y.mat)
 	if(is(y,"DGEList")) {
 		y$counts <- NULL
 		y$pseudo.alt <- NULL
-		y$table <- tab 
-		y$coefficients.full <- glmfit$coefficients
-		y$coefficients.null <- fit.null$coefficients
-		y$design.full <- glmfit$design
-		y$design.null <- design0
-		y$dispersion.used <- glmfit$dispersion
 	} else {
-		y <- list(table=tab, coefficients.full=glmfit$coefficients, coefficients.null=fit.null$coefficients, design.full=glmfit$design, dispersion.used=glmfit$dispersion)
+		y <- list()
 	}
+	y$table <- tab 
+	y$coefficients.full <- glmfit$coefficients
+	y$coefficients.null <- fit.null$coefficients
+	y$design.full <- glmfit$design
+	y$design.null <- design0
+	y$dispersion.used <- glmfit$dispersion
+	y$df <- df
 	y$comparison <- coef.name
 	new("DGELRT",unclass(y))
 }
