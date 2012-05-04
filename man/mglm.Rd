@@ -53,7 +53,7 @@ Number of rows should agree with \code{y} and number of columns should agree wit
 The functions \code{mglmLS}, \code{mglmOneGroup} and \code{mglmSimple} all fit negative binomial generalized linear models, with the same design matrix but possibly different dispersions, offsets and weights, to a series of response vectors.
 \code{mglmLS} and \code{mglmOneGroup} are vectorized in R for fast execution, while \code{mglmSimple} simply makes tagwise calls to \code{glm.fit} in the stats package.
 The functions are all low-level functions in that they operate on atomic objects such as matrices.
-They are used as work-horses by higher-level functions in the edgeR package.
+They are used as work-horses by higher-level functions in the edgeR package, especially by \code{glmFit}.
 
 \code{mglmOneGroup} fits the null model, with intercept term only, to each response vector.
 In other words, it treats the libraries as belonging to one group.
@@ -78,8 +78,7 @@ All these functions treat the dispersion parameter of the negative binomial dist
 
 }
 
-\value{ 
-
+\value{
 \code{mglmOneGroup} produces a vector of length equal to the number of tags/genes (number of rows of \code{y}) providing the single coefficent from the GLM fit for each tag/gene. This can be interpreted as a measure of the 'average expression' level of the tag/gene.
 
 \code{mglmLS} produces a list with the following components: 
@@ -105,7 +104,15 @@ All these functions treat the dispersion parameter of the negative binomial dist
 \code{designAsFactor} returns a factor of length equal to \code{nrow(design)}.
 }
 
+\references{
+McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+\emph{Nucleic Acids Research}.
+\url{http://nar.oxfordjournals.org/content/early/2012/02/06/nar.gks042}
+(Published online 28 January 2012)
+}
+
 \author{Davis McCarthy, Yunshun Chen, Gordon Smyth}
+
 \examples{
 y<-matrix(rnbinom(1000,mu=10,size=2),ncol=4)
 dispersion <- 0.1
@@ -125,5 +132,3 @@ head(ave.expression$coef)
 }
 
 \keyword{algebra}
-
-
