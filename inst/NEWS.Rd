@@ -3,6 +3,12 @@
 \encoding{UTF-8}
 
 
+\section{Version 2.6.5}{\itemize{
+\item
+gof() now optionally produceds a qq-plot of the genewise goodness of fit statistics.
+}}
+
+
 \section{Version 2.6.4}{\itemize{
 \item
 New function edgeRUsersGuide().
