@@ -3,6 +3,12 @@
 \encoding{UTF-8}
 
 
+\section{Version 2.6.4}{\itemize{
+\item
+New function edgeRUsersGuide().
+}}
+
+
 \section{Version 2.6.2}{\itemize{
 \item
 glmFit now shrinks the estimated fold-changes.
