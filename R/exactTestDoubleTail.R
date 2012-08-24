@@ -8,7 +8,7 @@ exactTestDoubleTail <- function(y1,y2,dispersion=0,big.count=900)
 #	instead of trying to find smaller of tail probabilities?
 
 #	Gordon Smyth
-#	28 Sep 2019.  Last modified 10 Jan 2012.
+#	28 Sep 2019.  Last modified 24 Aug 2012.
 {
 #	Convert matrices to vectors
 	ntags <- NROW(y1)
@@ -30,7 +30,7 @@ exactTestDoubleTail <- function(y1,y2,dispersion=0,big.count=900)
 #	Poisson case
 	pois <- dispersion<=0
 #	BINOMTEST DOESN'T USE EQUAL TAILED REJECTION REGION
-	if(any(pois)) pvals[pois] <- binomTest(s1[pois],s2[pois],p=n1/(n1+n2))
+	if(any(pois)) pvals[pois] <- binomTest(pmax(s1[pois],0),pmax(s2[pois],0),p=n1/(n1+n2))
 
 #	Use beta approximation for large counts
 	big <- s1>big.count & s2>big.count
