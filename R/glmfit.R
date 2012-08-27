@@ -118,7 +118,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, weights
 glmLRT <- function(y,glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth and Davis McCarthy.
-#	Created 1 July 2010. Last modified 25 March 2012.
+#	Created 1 July 2010. Last modified 27 Aug 2012.
 {
 	if(is(y,"DGEList"))
 		y.mat <- y$counts 
@@ -151,6 +151,11 @@ glmLRT <- function(y,glmfit,coef=ncol(glmfit$design),contrast=NULL)
         logFC <- glmfit$coefficients[,coef,drop=FALSE]/log(2)
         if(length(coef)==1) logFC <- as.vector(logFC)
 	} else {
+		contrast <- drop(contrast)
+		if(length(dim(contrast)>1)) {
+			contrast <- contrast[,1]
+			warning("contrast is a matrix, using first column only")
+		}
 		logFC <- (glmfit$coefficients %*% contrast)/log(2)
 		i <- contrast!=0
 		coef.name <- paste(paste(contrast[i],coef.names[i],sep="*"),collapse=" ")

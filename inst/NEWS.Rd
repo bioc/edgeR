@@ -3,23 +3,57 @@
 \encoding{UTF-8}
 
 
+\section{Version 2.6.12}{\itemize{
+\item
+There was a column name issue when the contrast argument to glmLRT() was a matrix with one column that caused topTags() to give an error.
+The contrast argument is now dropped to a matrix to avoid this issue.
+}}
+
+\section{Version 2.6.11}{\itemize{
+\item
+exactTest() with dispersion=0 could potentially give an error from binomTest() because one of the pseudo counts from equalizeLibSizes() was negative.
+Negative pseudo counts are now avoided.
+}}
+
+\section{Version 2.6.10}{\itemize{
+\item
+Removing link to shell.exec in edgeRUsersGuide.Rd, because it's Windows-specific.  Not user visible.
+}}
+
+\section{Version 2.6.9}{\itemize{
+\item
+Bug fix to glmLRT when there is only one gene but multiple coefs.
+}}
+
+\section{Version 2.6.8}{\itemize{
+\item
+Fix to glmFit, which was missing the ... argument in the generic.
+}}
+
 \section{Version 2.6.7}{\itemize{
 \item
 bug fix to calcNormFactors() when object was a matrix, method was "TMM" and refColumn was NULL.
 }}
 
+\section{Version 2.6.6}{\itemize{
+\item
+New edgeR.Rnw, pointing to edgeRUsersGuide().
+}}
 
 \section{Version 2.6.5}{\itemize{
 \item
 gof() now optionally produceds a qq-plot of the genewise goodness of fit statistics.
 }}
 
-
 \section{Version 2.6.4}{\itemize{
 \item
 New function edgeRUsersGuide().
 }}
 
+\section{Version 2.6.3}{\itemize{
+\item
+Bug fix: glmFit generic was not passing on prior.count.total argument to default function.
+}}
 
 \section{Version 2.6.2}{\itemize{
 \item
