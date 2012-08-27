@@ -17,7 +17,7 @@ Negative pseudo counts are now avoided.
 
 \section{Version 2.6.10}{\itemize{
 \item
-Removing link to shell.exec in edgeRUsersGuide.Rd, because it's Windows-specific.  Not user visible.
+Removing link to shell.exec in edgeRUsersGuide.Rd, because it's Windows-specific.  Change is not user visible.
 }}
 
 \section{Version 2.6.9}{\itemize{
@@ -42,7 +42,7 @@ New edgeR.Rnw, pointing to edgeRUsersGuide().
 
 \section{Version 2.6.5}{\itemize{
 \item
-gof() now optionally produceds a qq-plot of the genewise goodness of fit statistics.
+gof() now optionally produces a qq-plot of the genewise goodness of fit statistics.
 }}
 
 \section{Version 2.6.4}{\itemize{
