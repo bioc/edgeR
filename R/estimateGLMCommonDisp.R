@@ -1,4 +1,4 @@
-#  Last modified 1 Oct 2012
+#  Last modified 27 Oct 2012
 
 estimateGLMCommonDisp <- function(y, design=NULL, offset=NULL, method="CoxReid", verbose=FALSE, ...) 
 UseMethod("estimateGLMCommonDisp")
@@ -28,6 +28,7 @@ estimateGLMCommonDisp.default <- function(y, design=NULL, offset=NULL, method="C
 		warning("No residual df: setting dispersion to NA")
 		return(NA)
 	}
+	if(is.null(offset)) offset <- log(colSums(y))
 	method <- match.arg(method, c("CoxReid","Pearson","deviance"))
 	disp <- switch(method,
 		CoxReid=dispCoxReid(y, design=design, offset=offset, ...),

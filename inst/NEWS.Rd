@@ -3,6 +3,16 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.0.1}{\itemize{
+\item
+New section on between and with subject designs in User's Guide.
+Correct a number of typos in Section 3.4 of the User's Guide.
+
+\item
+Bug fix to plotBCV() when logCPM is not found in data object.
+}}
+
+
 \section{Version 3.0.0}{\itemize{
 
 \item
