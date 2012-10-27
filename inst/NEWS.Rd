@@ -3,6 +3,12 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.0.2}{\itemize{
+\item
+Include a code example for pre-specifying the dispersion in the User's Guide.
+}}
+
+
 \section{Version 3.0.1}{\itemize{
 \item
 New section on between and with subject designs in User's Guide.
