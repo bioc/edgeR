@@ -5,7 +5,7 @@
 
 \section{Version 3.0.2}{\itemize{
 \item
-Include a code example for pre-specifying the dispersion in the User's Guide.
+Include a code example in Section 2.9 (item 2) of the User's Guide about how to pre-specify the dispersion value.
 }}
 
 
