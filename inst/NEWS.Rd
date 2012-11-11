@@ -3,11 +3,15 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.0.3}{\itemize{
+\item
+Bug fix to plotMDS.DGEList to make consistent use of norm.factors.
+}}
+
 \section{Version 3.0.2}{\itemize{
 \item
 Include a code example in Section 2.9 (item 2) of the User's Guide about how to pre-specify the dispersion value.
 }}
-
 
 \section{Version 3.0.1}{\itemize{
 \item
