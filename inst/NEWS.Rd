@@ -5,8 +5,8 @@
 
 \section{Version 3.0.4}{\itemize{
 \item
-adjustedProfLik() is more efficient (avoiding an unnecessary call to predFC), thus making dispersion estimation
-for glm models faster.
+Adding prior.count.total=0 to the calls to glmFit() in several functions, to avoid unnecessary calculations of predicted fold-changes.
+(The change saves nearly half of computation time for glm dispersion estimation.)
 
 \item
 In glmFit(), the maximum number of iterations in the call to mglmLevenberg() is reduced to 250.

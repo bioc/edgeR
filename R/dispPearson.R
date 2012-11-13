@@ -1,7 +1,7 @@
 dispPearson <- function(y, design=NULL, offset=NULL, interval=c(0,4), tol=1e-5, min.row.sum=5, subset=10000, robust=FALSE, trace = FALSE)
 #	Pearson estimator of the common dispersion
 #	Gordon Smyth, Davis McCarthy, Yunshun Chen
-#	1 Feb 2011. Last modified 15 May 2011.
+#	1 Feb 2011. Last modified 13 Nov 2012.
 {
 	y <- as.matrix(y)
 	if(is.null(design)) {
@@ -35,7 +35,7 @@ dispPearson <- function(y, design=NULL, offset=NULL, interval=c(0,4), tol=1e-5, 
 		bias <- function(x) mean(x)-Df
 	}
 	fun <- function(par,y,design,offset) {
-		fit <- glmFit(y=y,design=design,dispersion=par^4,offset=offset)
+		fit <- glmFit(y=y,design=design,dispersion=par^4,offset=offset,prior.count.total=0)
 		mu <- fit$fitted.values
 		X2 <- rowSums( (y-mu)^2/(mu*(1+(par^4)*mu)) )
 		if(trace) cat(par^4,bias(X2),"\n")

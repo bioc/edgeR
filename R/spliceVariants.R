@@ -94,7 +94,7 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
                 X.null <- model.matrix(~ exon.this + group.this )
                 coef <- (ncol(X.null)+1):ncol(X.full)
                 ## Fit NB GLMs to these genes
-                fit.this <- glmFit(gene.counts.mat, X.full, dispersion[this.genes], offset=0)
+                fit.this <- glmFit(gene.counts.mat, X.full, dispersion[this.genes], offset=0, prior.count.total=0)
                 abundance[this.genes] <- fit.this$abundance
                 results.this <- glmLRT(fit.this, coef=coef)
                 if(sum(this.genes)==1) {

@@ -1,7 +1,7 @@
 dispDeviance <- function(y, design=NULL, offset=NULL, interval=c(0,4), tol=1e-5, min.row.sum=5, subset=10000, robust=FALSE, trace=FALSE)
 #	Deviance estimator of common dispersion
 #	Gordon Smyth, Davis McCarthy
-#	26 Jan 2011.  Last modified 15 May 2011.
+#	26 Jan 2011.  Last modified 13 Nov 2012.
 {
 	y <- as.matrix(y)
 	if(is.null(design)) {
@@ -36,7 +36,7 @@ dispDeviance <- function(y, design=NULL, offset=NULL, interval=c(0,4), tol=1e-5,
 	}
 
 	fun <- function(par,y,design,offset) {
-		fit <- glmFit(y,design,dispersion=par^4,offset=offset)
+		fit <- glmFit(y,design,dispersion=par^4,offset=offset,prior.count.total=0)
 		if(trace) cat(par^4,bias(fit$deviance),"\n")
 		bias(fit$deviance)
 	}

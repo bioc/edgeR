@@ -173,7 +173,7 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 	design0 <- design[,-coef,drop=FALSE]
 
 #	Null fit
-	fit.null <- glmFit(glmfit$counts,design=design0,offset=glmfit$offset,weights=glmfit$weights,dispersion=glmfit$dispersion)
+	fit.null <- glmFit(glmfit$counts,design=design0,offset=glmfit$offset,weights=glmfit$weights,dispersion=glmfit$dispersion,prior.count.total=0)
 
 	LR <- fit.null$deviance - glmfit$deviance
 	df.test <- fit.null$df.residual - glmfit$df.residual
