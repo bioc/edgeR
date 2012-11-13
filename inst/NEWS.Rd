@@ -3,6 +3,17 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.0.4}{\itemize{
+\item
+adjustedProfLik() is more efficient (avoiding an unnecessary call to predFC), thus making dispersion estimation
+for glm models faster.
+
+\item
+In glmFit(), the maximum number of iterations in the call to mglmLevenberg() is reduced to 250.
+Previously the number of iterations was so large that the Levenberg damping parameter could become exactly zero due to floating point underflow,
+making an infinite loop possible in rare pathological cases.
+}}
+
 \section{Version 3.0.3}{\itemize{
 \item
 Bug fix to plotMDS.DGEList to make consistent use of norm.factors.

@@ -4,7 +4,7 @@ adjustedProfileLik <- function(dispersion, y, design, offset, adjust=TRUE)
 # y is matrix: rows are genes/tags/transcripts, columns are samples/libraries
 # offset is matrix of the same dimensions as y
 # Yunshun Chen, Gordon Smyth, Aaron Lun
-# Created June 2010. Last modified 21 Aug 2012.
+# Created June 2010. Last modified 13 Nov 2012.
 {
 	if(any(dim(y)!=dim(offset))) offset <- expandAsMatrix(offset,dim(y))
 	ntags <- nrow(y)
@@ -13,7 +13,7 @@ adjustedProfileLik <- function(dispersion, y, design, offset, adjust=TRUE)
 
 #	Fit tagwise linear models. This is actually the most time-consuming
 #	operation that I can see for this function.
-	fit <- glmFit(y,design=design,dispersion=dispersion,offset=offset)
+	fit <- glmFit(y,design=design,dispersion=dispersion,offset=offset,prior.count.total=0)
 
 #	Compute log-likelihood.
 	mu <- fit$fitted

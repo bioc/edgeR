@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2012-08-14 r60264) -- "Unsuffered Consequences"
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: i386-w64-mingw32/i386 (32-bit)
@@ -550,4 +550,4 @@ $dispersion
 > 
 > proc.time()
    user  system elapsed 
-   5.92    0.04    6.02 
+   4.00    0.01    4.02 

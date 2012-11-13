@@ -31,7 +31,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, weights
 #	to a series of digital expression libraries
 #	Davis McCarthy and Gordon Smyth
 
-#	Created 17 August 2010. Last modified 12 July 2012.
+#	Created 17 August 2010. Last modified 13 Nov 2012.
 {
 #	Check input
 	y <- as.matrix(y)
@@ -89,7 +89,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, weights
 	fit <- switch(method,
 		linesearch=mglmLS(y,design=design,dispersion=dispersion,coef.start=start,offset=offset,...),
 		oneway=mglmOneWay(y,design=design,dispersion=dispersion,offset=offset),
-		levenberg=mglmLevenberg(y,design=design,dispersion=dispersion,offset=offset,coef.start=start,maxit=500,...),
+		levenberg=mglmLevenberg(y,design=design,dispersion=dispersion,offset=offset,coef.start=start,maxit=250,...),
 		simple=mglmSimple(y,design=design,dispersion=dispersion,offset=offset,weights=weights)
 	)
 
