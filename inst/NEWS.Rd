@@ -3,6 +3,12 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.0.5}{\itemize{
+\item
+Bug fix to subsetting for DGEGLM objects.
+}}
+
+
 \section{Version 3.0.4}{\itemize{
 \item
 Adding prior.count.total=0 to the calls to glmFit() in several functions, to avoid unnecessary calculations of predicted fold-changes.
