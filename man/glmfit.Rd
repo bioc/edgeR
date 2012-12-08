@@ -44,7 +44,7 @@ Defaults to a single column of ones, equivalent to treating the columns as repli
 
 \item{coef}{integer or character vector indicating which coefficients of the linear model are to be tested equal to zero.  Values must be columns or column names of \code{design}. Defaults to the last coefficient.  Ignored if \code{contrast} is specified.}
 
-\item{contrast}{numeric vector specifying a contrast of the linear model coefficients to be tested equal to zero. Must be of length equal to the number of columns of \code{design}. If specified, then takes precedence over \code{coef}.}
+\item{contrast}{numeric vector or matrix specifying one or more contrasts of the linear model coefficients to be tested equal to zero. Number of rows must equal to the number of columns of \code{design}. If specified, then takes precedence over \code{coef}.}
 
 \item{abundance.trend}{logical, whether to allow an abundance-dependent trend when estimating the prior values for the quasi-likelihood multiplicative dispersion parameter.}
 }

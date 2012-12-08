@@ -3,6 +3,13 @@
 \encoding{UTF-8}
 
 
+
+\section{Version 3.0.6}{\itemize{
+\item
+glmLRT now permits contrast to be a matrix with multiple columns, making the behavior analogous to the coef argument.
+}}
+
+
 \section{Version 3.0.5}{\itemize{
 \item
 Bug fix to subsetting for DGEGLM objects.

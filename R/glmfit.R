@@ -120,7 +120,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, weights
 glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth and Davis McCarthy.
-#	Created 1 July 2010. Last modified 29 July 2012.
+#	Created 1 July 2010. Last modified 8 Dec 2012.
 {
 	if(!is(glmfit,"DGEGLM")) {
 		if(is(glmfit,"DGEList") && is(coef,"DGEGLM")) {
@@ -128,6 +128,7 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 		}
 		stop("glmfit must be an DGEGLM object (usually produced by glmFit).")
 	}
+	nlibs <- ncol(glmfit)
 
 #	Full design matrix
 	design <- as.matrix(glmfit$design)
@@ -153,20 +154,24 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
         logFC <- glmfit$coefficients[,coef,drop=FALSE]/log(2)
         if(length(coef)==1) logFC <- as.vector(logFC)
 	} else {
-		contrast <- drop(contrast)
-#		Would be better if multiple contrasts were treated same as multiple coefs (Gordon 29 July 2012)
-		if(length(dim(contrast)>1)) {
-			contrast <- contrast[,1]
-			warning("contrast is a matrix, using first column only")
-		}
+		contrast <- as.matrix(contrast)
+		qrc <- qr(contrast)
+		ncontrasts <- qrc$rank
+		if(ncontrasts==0) stop("contrasts are all zero")
+		coef <- 1:ncontrasts
+		if(ncontrasts < ncol(contrast)) contrast <- contrast[,qrc$pivot[coef]]
 		logFC <- (glmfit$coefficients %*% contrast)/log(2)
-		i <- contrast!=0
-		coef.name <- paste(paste(contrast[i],coef.names[i],sep="*"),collapse=" ")
-		qr <- qr(contrast)
-		Q <- qr.Q(qr,complete=TRUE)
-		Q <- cbind(Q[,-1],Q[,1]*qr$qr[1,1])
+		if(ncontrasts>1) {
+			coef.name <- paste("LR test of",ncontrasts,"contrasts")
+		} else {
+			contrast <- drop(contrast)
+			i <- contrast!=0
+			coef.name <- paste(paste(contrast[i],coef.names[i],sep="*"),collapse=" ")
+		}
+		Dvec <- rep.int(1,nlibs)
+		Dvec[coef] <- diag(qrc$qr)[coef]
+		Q <- qr.Q(qrc,complete=TRUE,Dvec=Dvec)
 		design <- design %*% Q
-		coef <- nbeta
 	}
 
 #	Null design matrix
