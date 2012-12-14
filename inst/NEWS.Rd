@@ -3,6 +3,13 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.0.7}{\itemize{
+\item
+Fix typo in Section 4.3.6 of User's Guide.
+\item
+Bug fix to glmLRT when contrast was a matrix with one column.
+}}
+
 
 \section{Version 3.0.6}{\itemize{
 \item

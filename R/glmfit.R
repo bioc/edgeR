@@ -120,7 +120,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, weights
 glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth and Davis McCarthy.
-#	Created 1 July 2010. Last modified 8 Dec 2012.
+#	Created 1 July 2010. Last modified 14 Dec 2012.
 {
 	if(!is(glmfit,"DGEGLM")) {
 		if(is(glmfit,"DGEList") && is(coef,"DGEGLM")) {
@@ -140,19 +140,19 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Evaluate contrast
 #	Reform design matrix so that contrast of interest is last column
 	if(is.null(contrast)) {
-        if(length(coef) > 1)
-            coef <- unique(coef)
+		if(length(coef) > 1)
+			coef <- unique(coef)
 		if(is.character(coef)) {
-            check.coef <- coef %in% colnames(design)
-            if( any(!check.coef) )
-                stop("One or more named coef arguments do not match a column of the design matrix.\n")
+			check.coef <- coef %in% colnames(design)
+			if( any(!check.coef) )
+				stop("One or more named coef arguments do not match a column of the design matrix.\n")
 			coef.name <- coef
-            coef <- match(coef, colnames(design))
-        }
-        else
-            coef.name <- coef.names[coef]
-        logFC <- glmfit$coefficients[,coef,drop=FALSE]/log(2)
-        if(length(coef)==1) logFC <- as.vector(logFC)
+			coef <- match(coef, colnames(design))
+		}
+		else
+			coef.name <- coef.names[coef]
+		logFC <- glmfit$coefficients[,coef,drop=FALSE]/log(2)
+		if(length(coef)==1) logFC <- as.vector(logFC)
 	} else {
 		contrast <- as.matrix(contrast)
 		qrc <- qr(contrast)
@@ -160,7 +160,7 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 		if(ncontrasts==0) stop("contrasts are all zero")
 		coef <- 1:ncontrasts
 		if(ncontrasts < ncol(contrast)) contrast <- contrast[,qrc$pivot[coef]]
-		logFC <- (glmfit$coefficients %*% contrast)/log(2)
+		logFC <- drop((glmfit$coefficients %*% contrast)/log(2))
 		if(ncontrasts>1) {
 			coef.name <- paste("LR test of",ncontrasts,"contrasts")
 		} else {
