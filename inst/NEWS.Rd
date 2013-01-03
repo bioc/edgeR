@@ -3,6 +3,12 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.0.8}{\itemize{
+\item
+Bug fix to adjustedProfileLik when design matrix has just one column.
+}}
+
+
 \section{Version 3.0.7}{\itemize{
 \item
 Fix typo in Section 4.3.6 of User's Guide.

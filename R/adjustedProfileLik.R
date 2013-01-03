@@ -4,7 +4,7 @@ adjustedProfileLik <- function(dispersion, y, design, offset, adjust=TRUE)
 # y is matrix: rows are genes/tags/transcripts, columns are samples/libraries
 # offset is matrix of the same dimensions as y
 # Yunshun Chen, Gordon Smyth, Aaron Lun
-# Created June 2010. Last modified 13 Nov 2012.
+# Created June 2010. Last modified 3 Nov 2013.
 {
 	if(any(dim(y)!=dim(offset))) offset <- expandAsMatrix(offset,dim(y))
 	ntags <- nrow(y)
@@ -28,7 +28,7 @@ adjustedProfileLik <- function(dispersion, y, design, offset, adjust=TRUE)
 		
 #	Calculating the Cox-Reid adjustment.
 	if(ncol(design)==1) {
-		D <- sum(mu/(1+mu*dispersion))
+		D <- rowSums(mu/(1+mu*dispersion))
 		cr <- 0.5*log(abs(D))
 	} else {
 		W <- mu/(1+dispersion*mu)
