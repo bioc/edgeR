@@ -2,6 +2,11 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.2.2}{\itemize{
+\item
+Restore acceptance in DGEList() of NULL value of lib.size.
+}}
+
 \section{Version 3.2.1}{\itemize{
 \item
 Updates to DGEList() and DGEList-class documentation.
