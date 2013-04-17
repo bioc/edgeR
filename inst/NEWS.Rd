@@ -2,6 +2,11 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.2.3}{\itemize{
+\item
+Update to cutWithMinN() so that it does not fail even when there are many repeated x values.
+}}
+
 \section{Version 3.2.2}{\itemize{
 \item
 Restore acceptance in DGEList() of NULL value of lib.size.
