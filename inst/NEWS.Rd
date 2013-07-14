@@ -2,6 +2,32 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.2.4}{\itemize{
+\item
+Refinement to cutWithMinN() to make the bin numbers more equal in the worst case.
+
+\item
+estimateDisp() now creates the design matrix correctly when the design matrix is not given as an argument and there is only one group.  Previously this case gave an error.
+
+\item
+plotMDS.DGEList now gives a friendly error message when there are fewer than 3 data columns.
+
+\item
+Refinement to computation for nbins in dispBinTrend.  Now changes more smoothly with the number of genes.  trace argument is retired.
+
+\item
+Fixes to calcNormFactors with method="TMM" so that it takes account of lib.size and refCol if these are preset.
+
+\item
+Some fixes and cleaning up of subsetting code.
+
+\item
+Minor edit to glm.h code.
+
+\item
+Edits to camera.DGEList, cutWithMinN and plotMDS.DGEList help pages.  Edits to help pages for the data classes.
+}}
+
 \section{Version 3.2.3}{\itemize{
 \item
 Update to cutWithMinN() so that it does not fail even when there are many repeated x values.
@@ -28,6 +54,9 @@ New functions estimateDisp() and WLEB() to automate the estimation
 of common, trended and tagwise dispersions.
 The function estimateDisp() provides a simpler alternative pipeline and in principle replaces all the other dispersion estimation functions, for both glms and for classic edgeR.
 It can also incorporate automatic estimation of the prior degrees of freedom, and can do this in a robust fashion.
+
+\item
+Default prior.df for estimateTagwiseDisp() and estimateGLMTagwiseDisp() reduced from 20 to 10.
 
 \item
 glmLRT() now permits the contrast argument to be a matrix with multiple columns, making the treatment of this argument analogous to that of the coef argument.
