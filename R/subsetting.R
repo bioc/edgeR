@@ -33,6 +33,8 @@ function(object, i, j, ...) {
 			object$genes <- object$genes[i,,drop=FALSE]
 			object$all.zeros <- object$all.zeros[i,drop=FALSE]
 			object$offset <- object$offset[i,,drop=FALSE]
+                        !is.null(object$AveLogCPM)
+			  object$AveLogCPM <- object$AveLogCPM[i,drop=FALSE]
 		} else {
 			object$counts <- object$counts[i,j,drop=FALSE]
 			object$samples <- droplevels(object$samples[j,,drop=FALSE])
@@ -45,6 +47,8 @@ function(object, i, j, ...) {
 			object$genes <- object$genes[i,,drop=FALSE]
 			object$all.zeros <- object$all.zeros[i,drop=FALSE]
 			object$offset <- object$offset[i,,drop=FALSE]
+                        !is.null(object$AveLogCPM)
+			  object$AveLogCPM <- object$AveLogCPM[i,drop=FALSE]
 		}
 	}
 	object
