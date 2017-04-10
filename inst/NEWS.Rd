@@ -2,6 +2,30 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.18.0}{\itemize{
+\item
+roast.DGEList(), mroast.DGEList(), fry.DGEList() and camera.DGEList() now have explicit arguments instead of passing arguments with ... to the default method.
+
+\item
+New function scaleOffset() to ensure scale of offsets are consistent with library sizes.
+
+\item
+Added decideTests() S3 methods for DGEExact and DGELRT objects. It now works for F-tests with multiple contrasts.
+
+\item
+Report log-fold changes for redundant contrasts in F-tests with multiple contrasts.
+
+\item
+Modified plotMD() S3 method for DGELRT and DGEExact objects. It now automatically uses decideTests() and highlights the DE genes on the MD plot.
+
+\item 
+New argument 'plot' in plotMDS.DGEList().
+
+\item
+Removed S3 length methods for data objects.
+}}
+
+
 \section{Version 3.16.0}{\itemize{
 \item 
 estimateDisp() now respects weights in calculating the APLs.
