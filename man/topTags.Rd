@@ -27,7 +27,7 @@ topTags(object, n=10, adjust.method="BH", sort.by="PValue", p.value=1)
 
 an object of class \code{TopTags} containing the following elements for the top \code{n} most differentially expressed tags as determined by \code{sort.by}:
 
-\item{table}{a data frame containing the elements \code{logFC}, the log-abundance ratio, i.e. fold change, for each tag in the two groups being compared, \code{logCPM}, the log-average concentration/abundance for each tag in the two groups being compared, \code{PValue}, exact p-value for differential expression using the NB model, \code{FDR}, the p-value adjusted for multiple testing as found using \code{p.adjust} using the method specified.}
+\item{table}{a data frame containing the elements \code{logFC}, the log-abundance ratio, i.e. fold change, for each tag in the two groups being compared, \code{logCPM}, the log-average concentration/abundance for each tag in the two groups being compared, \code{PValue}, exact p-value for differential expression using the NB model. When \code{adjust.method} is not \code{"none"}, there is an extra column of \code{FDR} showing the adjusted p-value if \code{adjust.method} is one of the \code{"BH"}, \code{"BY"} and \code{"fdr"}, or an extra column of \code{FWER} if \code{adjust.method} is one of the \code{"holm"}, \code{"hochberg"}, \code{"hommel"}, and \code{"bonferroni"}.}
 \item{adjust.method}{character string stating the method used to adjust p-values for multiple testing.}
 \item{comparison}{a vector giving the names of the two groups being compared.}
 \item{test}{character string stating the name of the test.}

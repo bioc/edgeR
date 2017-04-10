@@ -21,9 +21,9 @@ normalizeChIPtoInput <- function(input,response,dispersion=0.01,niter=6,loss="p"
   	n <- length(response)
 
 #	Handle special cases
-  	if(n==0) return(p=numeric(0),scaling.factor=NA,prop.enriched=NA)
-	if(all(input==0)) return(p=rep(0,1),scaling.factor=0,prop.enriched=1)
-  	if(n==1) return(p=1,scaling.factor=input/response,prop.enriched=0)
+  	if(n==0) return(list(p=numeric(0),scaling.factor=NA,prop.enriched=NA))
+	if(all(input==0)) return(list(p=rep(0,1),scaling.factor=0,prop.enriched=1))
+  	if(n==1) return(list(p=1,scaling.factor=input/response,prop.enriched=0))
 
 #	Reset zero inputs to minimum positive value
 	input[input==0] <- min(input[input>0])

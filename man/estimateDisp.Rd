@@ -74,14 +74,14 @@ Somnath Datta and Daniel S. Nettleton (eds), Springer, New York, pages 51-74.
 Phipson, B, Lee, S, Majewski, IJ, Alexander, WS, and Smyth, GK (2016).
 Robust hyperparameter estimation protects against hypervariable genes and improves power to detect differential expression.
 \emph{Annals of Applied Statistics} 10, 946-963.
-\url{http://arxiv.org/abs/1602.08678}
+\url{http://projecteuclid.org/euclid.aoas/1469199900}
 }
 
 \author{Yunshun Chen, Gordon Smyth}
 \examples{
 # True dispersion is 1/5=0.2
 y <- matrix(rnbinom(1000, mu=10, size=5), ncol=4)
-group <- c(1,1,2,2)
+group <- factor(c(1,1,2,2))
 design <- model.matrix(~group)
 d <- DGEList(counts=y, group=group)
 d1 <- estimateDisp(d)

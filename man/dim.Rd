@@ -4,18 +4,12 @@
 \alias{dim.TopTags}
 \alias{dim.DGEGLM}
 \alias{dim.DGELRT}
-\alias{length.DGEList}
-\alias{length.DGEExact}
-\alias{length.TopTags}
-\alias{length.DGEGLM}
-\alias{length.DGELRT}
 \title{Retrieve the Dimensions of a DGEList, DGEExact, DGEGLM, DGELRT or TopTags Object}
 \description{
 Retrieve the number of rows (genes) and columns (libraries) for an DGEList, DGEExact or TopTags Object.
 }
 \usage{
 \method{dim}{DGEList}(x)
-\method{length}{DGEList}(x)
 }
 \arguments{
   \item{x}{an object of class \code{DGEList}, \code{DGEExact}, \code{TopTags}, \code{DGEGLM} or \code{DGELRT}}
@@ -44,6 +38,5 @@ MA <- new("MAList",list(M=M,A=A))
 dim(M)
 ncol(M)
 nrow(M)
-length(M)
 }
 \keyword{array}

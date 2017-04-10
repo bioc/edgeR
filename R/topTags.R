@@ -38,8 +38,8 @@ topTags <- function(object,n=10,adjust.method="BH",sort.by="PValue",p.value=1)
 	tab <- object$table[o,]
 
 #	Add adjusted p-values if appropriate
+	adj.p.val <- p.adjust(object$table$PValue,method=adjust.method)
 	if(adjust.method != "none") {
-		adj.p.val <- p.adjust(object$table$PValue,method=adjust.method)
 		if(adjust.method %in% FWER.methods) adjustment <- "FWER"
 		if(adjust.method %in% FDR.methods) adjustment <- "FDR"
 		tab[[adjustment]] <- adj.p.val[o]

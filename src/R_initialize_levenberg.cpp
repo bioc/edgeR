@@ -21,17 +21,19 @@ struct QRdecomposition {
 
         // Setting up the workspace for dgeqrf.
         double tmpwork;
-        lwork_geqrf=lwork_oqrmqr=-1;
+        lwork_geqrf=lwork_ormqr=-1;
         F77_CALL(dgeqrf)(&NR, &NC, Xcopy, &NR, tau, &tmpwork, &lwork_geqrf, &info);
 
         // Loading up the optimal WORK.
         lwork_geqrf=tmpwork+0.5;
+        if (lwork_geqrf < 1) { lwork_geqrf = 1; }
         work_geqrf=(double*)R_alloc(lwork_geqrf, sizeof(double));
 
         // Repeating for dormqr
-        F77_CALL(dormqr)(&side, &trans_ormqr, &NR, &unity, &NC, Xcopy, &NR, tau, effects, &NR, &tmpwork, &lwork_oqrmqr, &info);
-        lwork_oqrmqr=tmpwork+0.5;
-        work_oqrmqr=(double*)R_alloc(lwork_oqrmqr, sizeof(double));
+        F77_CALL(dormqr)(&side, &trans_ormqr, &NR, &unity, &NC, Xcopy, &NR, tau, effects, &NR, &tmpwork, &lwork_ormqr, &info);
+        lwork_ormqr=tmpwork+0.5;
+        if (lwork_ormqr < 1) { lwork_ormqr = 1; }
+        work_ormqr=(double*)R_alloc(lwork_ormqr, sizeof(double));
 
         return;
     }
@@ -69,7 +71,7 @@ struct QRdecomposition {
             effects[row]=y[row]*weights[row];
         }
 
-        F77_CALL(dormqr)(&side, &trans_ormqr, &NR, &unity, &NC, Xcopy, &NR, tau, effects, &NR, work_oqrmqr, &lwork_oqrmqr, &info);
+        F77_CALL(dormqr)(&side, &trans_ormqr, &NR, &unity, &NC, Xcopy, &NR, tau, effects, &NR, work_ormqr, &lwork_ormqr, &info);
         if (info) {
             throw std::runtime_error("Q**T multiplication failed");
         }
@@ -83,9 +85,9 @@ struct QRdecomposition {
     }
 
     const double* X;
-    double * Xcopy, * tau, * effects, *weights, *work_geqrf, *work_oqrmqr;
+    double * Xcopy, * tau, * effects, *weights, *work_geqrf, *work_ormqr;
     const int NR, NC;
-    int lwork_geqrf, lwork_oqrmqr, info;
+    int lwork_geqrf, lwork_ormqr, info;
     int row, coef, index;
 };
 
@@ -128,6 +130,7 @@ SEXP R_get_levenberg_start(SEXP y, SEXP offset, SEXP disp, SEXP weights, SEXP de
             QR.store_weights(NULL);
             QR.decompose();
             double sum_exprs=0, sum_weight=0, curN, curweight;
+
             for (int tag=0; tag<num_tags; ++tag) {
                 counts.fill_and_next(count_ptr);
                

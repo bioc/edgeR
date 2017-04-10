@@ -20,13 +20,16 @@
 
 /* Comment from A. Lun:
  * This is copied straight from 'splines.c' in the 'stats' package of 
- * R's core installation. I have removed all functions except for
- * fmm_spline. I have commented out the error call for the instance where
- * less than 2 points are supplied, as that is unnecessary for my code 
- * (and fails to compile without a definition of EDOM). I've also const'ifed
- * the 'x' and 'y' pointers to protect them from modification. Otherwise
- * the function and comments have not been modified.
- */
+ * R's core installation (current as of r72293), with a few modifications:
+ *
+ * - commented out all functions except for fmm_spline.
+ *
+ * - commented out the error call in fmm_spline when fewer than 2 points 
+ *   are supplied, as that is unnecessary for my code (and fails to compile 
+ *   without a definition of EDOM). 
+ *
+ * - const'ifed the 'x' and 'y' pointers to protect them from modification. 
+  */
 
 /*	Spline Interpolation
  *	--------------------

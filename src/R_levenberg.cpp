@@ -9,14 +9,26 @@ SEXP R_levenberg (SEXP design, SEXP y, SEXP disp, SEXP offset, SEXP weights,
     double* count_ptr=(double*)R_alloc(num_libs, sizeof(double));
 	
     // Getting and checking the dimensions of the arguments.    
-	if (!isReal(design)) { throw  std::runtime_error("design matrix should be double precision"); }
-    const int dlen=LENGTH(design);
-    if (dlen%num_libs!=0) { throw std::runtime_error("size of design matrix is incompatible with number of libraries"); }
-    const int num_coefs=dlen/num_libs;
+    if (!isReal(design)) { throw std::runtime_error("design matrix should be double precision"); }
+    SEXP des_dims=getAttrib(design, R_DimSymbol);
+    if (!isInteger(des_dims) || LENGTH(des_dims)!=2) {                         
+        throw std::runtime_error("design matrix dimensions should be an integer vector of length 2");                            
+    }                
+    if (INTEGER(des_dims)[0]!=num_libs) {
+        throw std::runtime_error("number of rows of design matrix should be equal to number of libraries");
+    }
+    const int num_coefs=INTEGER(des_dims)[1];
+
     if (!isReal(beta)) { throw std::runtime_error("starting coefficient values must be positive"); }
-    if (LENGTH(beta)!=num_tags*num_coefs) {
-        throw std::runtime_error("dimensions of the beta matrix do not match to the number of tags and coefficients");
-    } 
+    SEXP bdims=getAttrib(beta, R_DimSymbol);
+    if (!isInteger(bdims) || LENGTH(bdims)!=2) {                         
+        throw std::runtime_error("beta matrix dimensions should be an integer vector of length 2");                            
+    }                
+    if (INTEGER(bdims)[0]!=num_tags) {
+        throw std::runtime_error("number of rows of beta matrix should be equal to number of genes");
+    } else if (INTEGER(bdims)[1]!=num_coefs) {
+        throw std::runtime_error("number of columns of beta matrix should be equal to number of coefficients");
+    }
 
     // Initializing pointers to the assorted features.
     const double *design_ptr=REAL(design), *bptr=REAL(beta);

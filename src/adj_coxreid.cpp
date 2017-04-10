@@ -20,6 +20,7 @@ adj_coxreid::adj_coxreid (const int& nl, const int& nc, const double* d) : ncoef
 		throw std::runtime_error("failed to identify optimal size of workspace through ILAENV"); 
 	}
     lwork=int(temp_work+0.5);
+    if (lwork < 1) { lwork = 1; }
     work=new double [lwork];
 
 	// Saving a local copy of the design pointer.

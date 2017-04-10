@@ -38,9 +38,9 @@ Care is taken to ensure accurate computation for small dispersion values.
 }
 
 \references{
-Jorgensen, B. (2006).
-Generalized linear models. Encyclopedia of Environmetrics, Wiley.
-\url{http://onlinelibrary.wiley.com/doi/10.1002/9780470057339.vag010/full}.
+Jorgensen, B. (2013).
+Generalized linear models. Encyclopedia of Environmetrics 3, Wiley.
+\url{http://onlinelibrary.wiley.com/doi/10.1002/9780470057339.vag010.pub2/abstract}.
 
 McCarthy, DJ, Chen, Y, Smyth, GK (2012).
 Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.

@@ -39,6 +39,15 @@ However, it is also possible to use gene-specific values by supplying a vector o
 A list is returned containing \code{y}, a matrix of counts with the added priors; and \code{offset}, a compressedMatrix containing the (log-transformed) modified library sizes.
 }
 
+\examples{
+original <- matrix(rnbinom(1000, mu=20, size=10), nrow=200)
+head(original)
+
+out <- addPriorCount(original)
+head(out$y)
+head(out$offset)
+}
+
 \author{
 Aaron Lun
 }

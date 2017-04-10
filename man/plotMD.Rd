@@ -10,19 +10,19 @@ Creates a mean-difference plot (aka MA plot) with color coding for highlighted p
 }
 
 \usage{
-\method{plotMD}{DGEList}(object, column = 1, xlab = "Average log CPM (this sample and others)",
-       ylab = "log-ratio (this sample vs others)",
-       main = colnames(object)[column], status=object$genes$Status,
-       zero.weights = FALSE, prior.count = 3, \dots)
-\method{plotMD}{DGEGLM}(object, column = ncol(object), coef = NULL, xlab = "Average log CPM",
-       ylab = "log-fold-change", main = colnames(object)[column],
-       status=object$genes$Status, zero.weights = FALSE, \dots)
-\method{plotMD}{DGELRT}(object, xlab = "Average log CPM",
-       ylab = "log-fold-change", main = object$comparison,
-       status=object$genes$Status, \dots)
-\method{plotMD}{DGEExact}(object, xlab = "Average log CPM",
-       ylab = "log-fold-change", main = NULL,
-       status=object$genes$Status, \dots)
+\method{plotMD}{DGEList}(object, column=1, xlab="Average log CPM (this sample and others)",
+       ylab="log-ratio (this sample vs others)",
+       main=colnames(object)[column], status=object$genes$Status,
+       zero.weights=FALSE, prior.count=3, \dots)
+\method{plotMD}{DGEGLM}(object, column=ncol(object), coef=NULL, xlab="Average log CPM",
+       ylab="log-fold-change", main=colnames(object)[column],
+       status=object$genes$Status, zero.weights=FALSE, \dots)
+\method{plotMD}{DGELRT}(object, xlab="Average log CPM", ylab="log-fold-change", 
+       main=object$comparison, status=object$genes$Status, contrast=1, 
+       values=names(table(status)), col=NULL, adjust.method="BH", p.value=0.05, \dots)
+\method{plotMD}{DGEExact}(object, xlab="Average log CPM", ylab="log-fold-change", 
+       main=NULL, status=object$genes$Status, values=names(table(status)), 
+       col=NULL, adjust.method="BH", p.value=0.05, \dots)
 }
 
 \arguments{
@@ -33,9 +33,15 @@ Creates a mean-difference plot (aka MA plot) with color coding for highlighted p
   \item{ylab}{character string, label for y-axis}
   \item{main}{character string, title for plot}
   \item{status}{vector giving the control status of each spot on the array, of same length as the number of rows of \code{object}.
-  If \code{NULL}, then all points are plotted in the default color, symbol and size.}
+  If \code{NULL} under the \code{DGEList} or \code{DGEGLM} method, then all points are plotted in the default color, symbol and size.
+  If \code{NULL} under the \code{DGELRT} or \code{DGEExact} method, then \code{\link{decideTestDGE}} is run to determine the status of all the genes. The up-regulated  DE genes are highlighted in red and down-regulated in blue.}
   \item{zero.weights}{logical, should spots with zero or negative weights be plotted?}
   \item{prior.count}{the average prior count to be added to each observation. Larger values produce more shrinkage.}
+  \item{contrast}{integer specifying which log-fold-change to be plotted in the case of testing multiple contrasts. Only used for the \code{DGELRT} method with multiple contrasts.}
+  \item{values}{character vector giving values of \code{status} to be highlighted on the plot. Defaults to unique values of \code{status}.}
+  \item{col}{vector of colors for highlighted points, either of unit length or of same length as \code{values}.}
+  \item{adjust.method}{character string passed to \code{\link{decideTestDGE}} specifying p-value adjustment method. Only used when \code{status} is \code{NULL}. See \code{\link{decideTestsDGE}} for details.}
+  \item{p.value}{numeric value between 0 and 1 giving the desired size of the test. Only used and passed to \code{\link{decideTestDGE}} when \code{status} is \code{NULL}.}
   \item{\dots}{other arguments are passed to \code{\link{plotWithHighlights}}.}
 }
 

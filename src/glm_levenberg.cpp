@@ -80,11 +80,14 @@ int glm_levenberg::fit(const double* offset, const double* y, const double* w,
         return 0;
     }
     
-	// Otherwise, we compute 'mu' based on 'beta', and proceed to iterating using reweighted least squares.
+	// Otherwise, we compute 'mu' based on 'beta'. Returning if there are no coefficients!
 	autofill(offset, mu, beta);
 	dev=nb_deviance(y, mu, w, disp);
+    if (ncoefs==0) {
+        return 0;
+    }
 
-    // Assorted temporary objects.
+    // Iterating using reweighted least squares; setting up assorted temporary objects.
     double max_info=-1, lambda=0;
     double denom, weight, deriv;
     int row, col, index;
