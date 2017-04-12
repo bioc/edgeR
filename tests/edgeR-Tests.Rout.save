@@ -1,7 +1,7 @@
 
-R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
-Copyright (C) 2016 The R Foundation for Statistical Computing
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
+R version 3.3.3 (2017-03-06) -- "Another Canoe"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -298,7 +298,7 @@ Tag.8  -0.7918166 12.86353 0.7356185 0.391068049 0.8603497
 > dglm2 <- estimateDisp(dglm, design)
 > summary(dglm2$tagwise.dispersion)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.1766  0.1789  0.1814  0.1846  0.1870  0.2119 
+ 0.1423  0.1618  0.1788  0.1863  0.2015  0.2692 
 > dglm2 <- estimateDisp(dglm, design, prior.df=20)
 > summary(dglm2$tagwise.dispersion)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -306,7 +306,7 @@ Tag.8  -0.7918166 12.86353 0.7356185 0.391068049 0.8603497
 > dglm2 <- estimateDisp(dglm, design, robust=TRUE)
 > summary(dglm2$tagwise.dispersion)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.1766  0.1789  0.1814  0.1846  0.1870  0.2119 
+ 0.1423  0.1605  0.1783  0.1867  0.2031  0.2740 
 > 
 > # Continuous trend
 > nlibs <- 3
@@ -475,7 +475,7 @@ $AveLogCPM
 > 
 > lrt <- glmLRT(fit,contrast=cbind(c(0,1,0),c(0,0,1)))
 > topTags(lrt)
-Coefficient:  LR test of 2 contrasts 
+Coefficient:  LR test on 2 degrees of freedom 
      logFC.1    logFC.2   logCPM         LR      PValue        FDR
 1 -7.2381060 -0.0621100 17.19071 10.7712171 0.004582051 0.02291026
 5 -1.6684268 -0.9326507 17.33529  1.7309951 0.420842115 0.90967967
@@ -486,13 +486,13 @@ Coefficient:  LR test of 2 contrasts
 > fit <- glmFit(y,design,dispersion=2/3,prior.count=0.5/7)
 > lrt <- glmLRT(fit,contrast=cbind(c(-1,1,0),c(0,-1,1),c(-1,0,1)))
 > topTags(lrt)
-Coefficient:  LR test of 2 contrasts 
-     logFC.1    logFC.2   logCPM         LR      PValue        FDR
-1 -7.2381060  7.1759960 17.19071 10.7712171 0.004582051 0.02291026
-5 -1.6684268  0.7357761 17.33529  1.7309951 0.420842115 0.90967967
-2  1.2080938 -0.1660740 18.24544  1.0496688 0.591653347 0.90967967
-4  0.5416704 -0.6923084 17.57744  0.3958596 0.820427427 0.90967967
-3  0.2876249 -0.4884392 18.06216  0.1893255 0.909679672 0.90967967
+Coefficient:  LR test on 2 degrees of freedom 
+     logFC.1    logFC.2    logFC.3   logCPM         LR      PValue        FDR
+1 -7.2381060  7.1759960 -0.0621100 17.19071 10.7712171 0.004582051 0.02291026
+5 -1.6684268  0.7357761 -0.9326507 17.33529  1.7309951 0.420842115 0.90967967
+2  1.2080938 -0.1660740  1.0420198 18.24544  1.0496688 0.591653347 0.90967967
+4  0.5416704 -0.6923084 -0.1506381 17.57744  0.3958596 0.820427427 0.90967967
+3  0.2876249 -0.4884392 -0.2008143 18.06216  0.1893255 0.909679672 0.90967967
 > 
 > # simple Good-Turing algorithm runs.
 > test1<-1:9
@@ -537,4 +537,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-  3.259   0.065   3.693 
+   3.29    0.14    4.24 
