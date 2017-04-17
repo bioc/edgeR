@@ -8,7 +8,7 @@ Gini index for each column of a matrix.
 gini(x)
 }
 \arguments{
-  \item{x}{non-negative numeric matrix}
+  \item{x}{a non-negative numeric matrix, or an object that can be coerced to such a matrix by \code{as.matrix}.}
 }
 \details{
 The Gini coefficient or index is a measure of inequality or diversity.
