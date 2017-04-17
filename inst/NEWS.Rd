@@ -23,6 +23,9 @@ New argument 'plot' in plotMDS.DGEList().
 
 \item
 Removed S3 length methods for data objects.
+
+\item
+gini() now support NA values and avoids integer overflow.
 }}
 
 
