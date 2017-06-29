@@ -52,7 +52,7 @@ glmQLFTest(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.bound=TRUE)
 
 \details{
 \code{glmQLFit} and \code{glmQLFTest} implement the quasi-likelihood (QL) methods of Lund et al (2012), with some enhancements and with slightly different glm, trend and FDR methods.
-See Lun et al (2015) for a tutorial describing the use of \code{glmQLFit} and \code{glmQLFit} as part of a complete analysis pipeline.
+See Lun et al (2016) or Chen et al (2016) for tutorials describing the use of \code{glmQLFit} and \code{glmQLFit} as part of a complete analysis pipeline.
 Another case study using \code{glmQLFit} and \code{glmQLFTest} is given in Section 4.7 of the edgeR User's Guide.
 
 \code{glmQLFit} is similar to \code{glmFit} except that it also estimates QL dispersion values.
@@ -60,7 +60,7 @@ It calls the limma function \code{\link{squeezeVar}} to conduct empirical Bayes 
 If \code{robust=TRUE}, then the robust hyperparameter estimation features of \code{squeezeVar} are used (Phipson et al, 2013).
 If \code{abundance.trend=TRUE}, then a prior trend is estimated based on the average logCPMs.
 
-\code{glmQLFit} gives special attention to handling of zero counts, and in particular to situations when fitted values of zero provide no useful residual degrees of freedom for estimating the QL dispersion.
+\code{glmQLFit} gives special attention to handling of zero counts, and in particular to situations when fitted values of zero provide no useful residual degrees of freedom for estimating the QL dispersion (Lun and Smyth, 2017).
 The usual residual degrees of freedom are returned as \code{df.residual} while the adjusted residual degrees of freedom are returned as \code{df.residuals.zeros}.
 
 \code{glmQLFTest} is similar to \code{glmLRT} except that it replaces likelihood ratio tests with empirical Bayes quasi-likelihood F-tests.
@@ -100,6 +100,10 @@ Lund, SP, Nettleton, D, McCarthy, DJ, and Smyth, GK (2012).
 Detecting differential expression in RNA-sequence data using quasi-likelihood with shrunken dispersion estimates.
 \emph{Statistical Applications in Genetics and Molecular Biology} Volume 11, Issue 5, Article 8.
 \url{http://www.statsci.org/smyth/pubs/QuasiSeqPreprint.pdf}
+
+Lun, ATL, and Smyth, GK (2017).
+No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.
+\emph{Statistical Applications in Genetics and Molecular Biology}. (Accepted 26 April 2017)
 
 Phipson, B, Lee, S, Majewski, IJ, Alexander, WS, and Smyth, GK (2016).
 Robust hyperparameter estimation protects against hypervariable genes and improves power to detect differential expression.
