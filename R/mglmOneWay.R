@@ -15,7 +15,7 @@ mglmOneWay <- function(y,design=NULL,dispersion=0,offset=0,weights=NULL,maxit=50
 #	by Fisher scoring with
 #	only a single explanatory factor in the model
 #	Gordon Smyth
-#	11 March 2011.  Last modified 03 Oct 2016.
+#	11 March 2011.  Last modified 21 June 2017.
 {
 	y <- as.matrix(y)
 	ntags <- nrow(y)
@@ -32,8 +32,8 @@ mglmOneWay <- function(y,design=NULL,dispersion=0,offset=0,weights=NULL,maxit=50
 	groupbeta <- matrix(0,ntags,ngroups)
 
 	offset <- .compressOffsets(y, offset=offset)
-	dispersion <- .compressDispersions(dispersion)
-	weights <- .compressWeights(weights)
+	dispersion <- .compressDispersions(y, dispersion)
+	weights <- .compressWeights(y, weights)
 	
 	firstjofgroup <- rep(0,ngroups)
 	new.start <- NULL

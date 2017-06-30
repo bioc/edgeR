@@ -101,8 +101,8 @@ glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.
 .isBelowPoissonBound <- function(glmfit) 
 # A convenience function to avoid generating temporary matrices.
 {
-    disp <- makeCompressedMatrix(glmfit$dispersion, byrow=FALSE)
-    s2 <- makeCompressedMatrix(glmfit$var.post, byrow=FALSE)
+    disp <- makeCompressedMatrix(glmfit$dispersion, dim(glmfit$counts), byrow=FALSE)
+    s2 <- makeCompressedMatrix(glmfit$var.post, dim(glmfit$counts), byrow=FALSE)
     out <- .Call(.cR_check_poisson_bound, glmfit$fitted.values, disp, s2)
     if (is.character(out)) stop(out)
     return(out)

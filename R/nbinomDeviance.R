@@ -3,7 +3,7 @@ nbinomDeviance <- function(y,mean,dispersion=0,weights=NULL)
 #	y is a matrix and a deviance is computed for each row
 #	A vector y is taken to be a matrix with one row.
 #	Original version 23 November 2010.
-#	Last modified 03 Oct 2016.
+#	Last modified 21 June 2017.
 {
 #	Convert vector to row matrix
 	if(!is.matrix(y)) y <- array(y, c(1L,length(y)), if(!is.null(names(y))) list(NULL,names(y)))
@@ -23,10 +23,10 @@ nbinomDeviance <- function(y,mean,dispersion=0,weights=NULL)
 	if(length(mean)<nobs) stop("mean should have same dimensions as y")
 
 #	Check dispersion (can be tagwise (rowwise) or observation-wise).
-	dispersion <- .compressDispersions(dispersion)
+	dispersion <- .compressDispersions(y, dispersion)
 
 #	Check weights.
-	weights <- .compressWeights(weights)
+	weights <- .compressWeights(y, weights)
 
 #	Computing unit deviance or residual deviance per gene, depending on 'dosum'.
 	d <- .Call(.cR_compute_nbdev, y, mean, dispersion, weights, as.logical(dosum))

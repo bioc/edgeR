@@ -4,7 +4,7 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 
 #	R version by Gordon Smyth and Yunshun Chen
 #	C++ version by Aaron Lun
-#	Created 3 March 2011.  Last modified 03 Oct 2016
+#	Created 3 March 2011.  Last modified 21 June 2017
 {
 #	Check arguments
 	y <- as.matrix(y)
@@ -23,8 +23,8 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 
 #	Checking dispersions, offsets and weights
 	offset <- .compressOffsets(y, offset=offset)
-    dispersion <- .compressDispersions(dispersion)
-	weights <- .compressWeights(weights)
+    dispersion <- .compressDispersions(y, dispersion)
+	weights <- .compressWeights(y, weights)
 
 #	Initializing values for the coefficients at reasonable best guess with linear models.
 	if(is.null(coef.start)) {

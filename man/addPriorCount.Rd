@@ -36,7 +36,7 @@ However, it is also possible to use gene-specific values by supplying a vector o
 }
 
 \value{
-A list is returned containing \code{y}, a matrix of counts with the added priors; and \code{offset}, a compressedMatrix containing the (log-transformed) modified library sizes.
+A list is returned containing \code{y}, a matrix of counts with the added priors; and \code{offset}, a CompressedMatrix containing the (log-transformed) modified library sizes.
 }
 
 \examples{

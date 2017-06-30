@@ -27,7 +27,7 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL, trend.method="locfit", mixed.df=FALSE, tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
 #  Use GLM approach if a design matrix is given, and classic approach otherwise.
 #  It calculates a matrix of likelihoods for each gene at a set of dispersion grid points, and then calls WLEB() to do the shrinkage.
-#  Yunshun Chen, Aaron Lun, Gordon Smyth. Created July 2012. Last modified 03 Oct 2016.
+#  Yunshun Chen, Aaron Lun, Gordon Smyth. Created July 2012. Last modified 21 June 2017.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -51,7 +51,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	offset <- .compressOffsets(y, lib.size=lib.size, offset=offset)
 
 #	Check weights
-	weights <- .compressWeights(weights)
+	weights <- .compressWeights(y, weights)
 
 #	Check for genes with small counts
 	sel <- rowSums(y) >= min.row.sum
@@ -287,15 +287,8 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 #
 # written by Aaron Lun
 # created 29 September 2016
+# last modified 29 June 2017    
 {
-	if (is(x, "compressedMatrix")) {
-		# Subsetting is ignored if rows/columns are repeated.
-		if (attributes(x)$repeat.row) i <- TRUE
-		if (attributes(x)$repeat.col) j <- TRUE
-	} else if (!is.matrix(x)) {
-		stop("'x' must be a matrix for subsetting")
-	}
-
 	isokay <- TRUE
 	if (!missing(i)) {
 		# Most flexible way of handling different types of subset vectors;

@@ -4,24 +4,20 @@ adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adju
 # y is matrix: rows are genes/tags/transcripts, columns are samples/libraries
 # offset is matrix of the same dimensions as y
 # Yunshun Chen, Gordon Smyth, Aaron Lun
-# Created June 2010. Last modified 27 July 2015.
+# Created June 2010. Last modified 21 June 2017.
 {
 #   Checking counts
 	if (!is.numeric(y)) stop("counts must be numeric")
 	y <- as.matrix(y)
 
 #   Checking offsets
-	if (!is.double(offset)) storage.mode(offset) <- "double"
-	offset <- makeCompressedMatrix(offset, byrow=TRUE)
+	offset <- .compressOffsets(y, offset=offset)
 
 #   Checking dispersion
-	if (!is.double(dispersion)) storage.mode(dispersion) <- "double"
-	dispersion <- makeCompressedMatrix(dispersion, byrow=FALSE)
+	dispersion <- .compressDispersions(y, dispersion)
 
 #   Checking weights
-	if(is.null(weights)) weights <- 1
-	if (!is.double(weights)) storage.mode(weights) <- "double"
-	weights <- makeCompressedMatrix(weights, byrow=TRUE)
+	weights <- .compressWeights(y, weights)
 	  
 #	Fit tagwise linear models. This is actually the most time-consuming
 #	operation that I can see for this function.

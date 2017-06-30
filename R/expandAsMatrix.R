@@ -1,7 +1,8 @@
 expandAsMatrix <- function(x,dim=NULL,byrow=TRUE)
 #	Convert scalar, row or column vector, or matrix, to be a matrix
 #	Gordon Smyth, Yunshun Chen, Aaron Lun
-#	26 Jan 2011.  Last modified 03 Oct 2016.
+#	created 26 Jan 2011.  
+#   last modified 29 Jun 2016.
 {
 #	Check dim argument
 	if(is.null(dim)) return(as.matrix(x))
@@ -25,18 +26,10 @@ expandAsMatrix <- function(x,dim=NULL,byrow=TRUE)
 	if(length(dx)>2) stop("x has more than 2 dimensions")
 	if(all(dx==dim)) return(as.matrix(x))
 
-#	x is a compressedMatrix
-	if(is(x, "compressedMatrix")) {
-		if (attributes(x)$repeat.row && dim[2]==ncol(x)) {
-			if (!byrow) warning("'byrow=FALSE' is not compatible with compressedMatrix settings")
-			return(Recall(as.vector(x),dim=dim,byrow=TRUE))
-		} else if (attributes(x)$repeat.col && dim[1]==nrow(x)) {
-			if (byrow) warning("'byrow=TRUE' is not compatible with compressedMatrix settings")
-			return(Recall(as.vector(x),dim=dim,byrow=FALSE))
-		} else if (all(dx==1)) {
-			return(Recall(as.vector(x),dim=dim))
-		}
-	}
+#	x is a CompressedMatrix
+	if(is(x, "CompressedMatrix")) {
+        return(Recall(as.matrix(x), dim=dim, byrow=byrow))
+    }
 	stop("x is matrix of wrong size")
 }
 

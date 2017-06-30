@@ -37,7 +37,7 @@ aveLogCPM.DGEGLM <- function(y, prior.count=2, dispersion=NULL, ...)
 aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersion=NULL,weights=NULL, ...)
 #	log2(AveCPM)
 #	Gordon Smyth
-#	Created 25 Aug 2012. Last modified 25 Sep 2014.
+#	Created 25 Aug 2012. Last modified 21 Jun 2017.
 {
 #	Special case when all counts and library sizes are zero
 	y <- as.matrix(y)
@@ -54,16 +54,16 @@ aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersi
 	if(all(isna)) dispersion <- 0.05
 	if(any(isna)) dispersion[isna] <- mean(dispersion,na.rm=TRUE)
 
-	dispersion <- .compressDispersions(dispersion)
+	dispersion <- .compressDispersions(y, dispersion)
 
 #   Check weights
-	weights <- .compressWeights(weights)
+	weights <- .compressWeights(y, weights)
 
 #   Check offsets
 	offset <- .compressOffsets(y, lib.size=lib.size, offset=offset)
 
 #   Check prior counts
-	prior.count <- .compressPrior(prior.count)
+	prior.count <- .compressPrior(y, prior.count)
 
 #   Retrieve GLM fitting parameters
 	maxit <- formals(mglmOneGroup)$maxit

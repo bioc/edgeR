@@ -1,7 +1,7 @@
 glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=0, null="interval")
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
 #	Yunshun Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 16 Nov 2016
+#	Created on 05 May 2014. Last modified on 21 June 2017.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 
@@ -73,17 +73,17 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=0, nul
 	design0 <- design[, -coef, drop=FALSE]
 
 #	Offset adjustment
-	offset.old <- makeCompressedMatrix(glmfit$offset, byrow=TRUE)
-	offset.adj <- makeCompressedMatrix(lfc*log(2) * design[, coef], byrow=TRUE)
+	offset.old <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE)
+	offset.adj <- makeCompressedMatrix(lfc*log(2) * design[, coef], dim(glmfit$counts), byrow=TRUE)
 
 #	Test statistics at beta_0 = tau
-	offset.new <- .addCompressedMatrices(offset.old, offset.adj)
+	offset.new <- offset.old + offset.adj
 	fit0 <- Fit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=glmfit$dispersion, prior.count=0)
 	fit1 <- Fit(glmfit$counts, design=design, offset=offset.new, weights=glmfit$weights, dispersion=glmfit$dispersion, prior.count=0)
 	z.left <- sqrt( pmax(0, fit0$deviance - fit1$deviance) )
 
 #	Test statistics at beta_0 = -tau
-	offset.new <- .addCompressedMatrices(offset.old, -offset.adj)
+	offset.new <- offset.old - offset.adj
 	fit0 <- Fit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=glmfit$dispersion, prior.count=0)
 	fit1 <- Fit(glmfit$counts, design=design, offset=offset.new, weights=glmfit$weights, dispersion=glmfit$dispersion, prior.count=0)
 	z.right <- sqrt( pmax(0, fit0$deviance - fit1$deviance) )

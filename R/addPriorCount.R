@@ -5,13 +5,14 @@ addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1)
 #
 # written by Aaron Lun
 # created 26 September 2016
+# last modified 21 June 2017    
 {
 #	Check y
 	if (!is.numeric(y)) stop('count matrix must be numeric')
 	y <- as.matrix(y)
 
 #	Check prior.count
-	prior.count <- .compressPrior(prior.count)
+	prior.count <- .compressPrior(y, prior.count)
 
 #	Check lib.size and offset.
 #	If offsets are provided, they must have a similar average to log(lib.size)
@@ -23,7 +24,7 @@ addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1)
 	if (is.character(out)) stop(out)
     
 	names(out) <- c("y", "offset")
-	out$offset <- makeCompressedMatrix(out$offset, byrow=TRUE)
+	out$offset <- makeCompressedMatrix(out$offset, dim(y), byrow=TRUE)
 	return(out)
 }
 
