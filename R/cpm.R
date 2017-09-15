@@ -1,42 +1,49 @@
-cpm <- function(x, ...)
+cpm <- function(y, ...)
 UseMethod("cpm")
 
-cpm.DGEList <- function(x, normalized.lib.sizes=TRUE, log=FALSE, prior.count=0.25, ...)
+cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=0.25, ...)
 #	Counts per million for a DGEList
 #	Davis McCarthy and Gordon Smyth.
-#	Created 20 June 2011. Last modified 6 July 2015
+#	Created 20 June 2011. Last modified 10 July 2017
 {
-	lib.size <- x$samples$lib.size
-	if(normalized.lib.sizes) lib.size <- lib.size*x$samples$norm.factors
-	cpm.default(x$counts,lib.size=lib.size,log=log,prior.count=prior.count)
+	lib.size <- y$samples$lib.size
+	if(normalized.lib.sizes) lib.size <- lib.size*y$samples$norm.factors
+	cpm.default(y$counts,lib.size=lib.size,log=log,prior.count=prior.count)
 }
 
-cpm.default <- function(x, lib.size=NULL, log=FALSE, prior.count=0.25, ...)
+cpm.default <- function(y, lib.size=NULL, log=FALSE, prior.count=0.25, ...)
 #	Counts per million for a matrix
 #	Davis McCarthy and Gordon Smyth.
-#	Created 20 June 2011. Last modified 21 June 2017.
+#	Created 20 June 2011. Last modified 10 July 2017.
 {
-	x <- as.matrix(x)
-	if (any(dim(x)==0L)) {
-		return(x)
+#	Check y
+	y <- as.matrix(y)
+	if (any(dim(y)==0L)) {
+		return(y)
 	}
   
-	if(is.null(lib.size)) lib.size <- colSums(x)
-	if(!is.double(lib.size)) storage.mode(lib.size) <- "double"
-	lib.size <- makeCompressedMatrix(lib.size, dim(x), byrow=TRUE)
-	err <- .Call(.cR_check_nonnegative, lib.size, "library sizes")
-	if (is.character(err)) stop(err)
-
-	# Calculating in C++ for max efficiency
-	if(log) {
-		prior.count <- .compressPrior(x, prior.count)
-		out <- .Call(.cR_calculate_cpm_log, x, lib.size, prior.count)
-	} else {
-		out <- .Call(.cR_calculate_cpm_raw, x, lib.size)
+#	Check lib.size
+	if(is.null(lib.size)) lib.size <- colSums(y)
+	if(!is.double(lib.size)) {
+		if(!is.numeric(lib.size)) stop("lib.size must be numeric")
+		storage.mode(lib.size) <- "double"
 	}
-	if (is.character(out)) stop(out)
+	lib.size <- makeCompressedMatrix(lib.size, dim(y), byrow=TRUE)
 
-	# Cleaning up
-	dimnames(out) <- dimnames(x)
+    check.range <- suppressWarnings(range(lib.size))
+    if (any(is.na(check.range)) || check.range[1] <= 0) {
+        stop("library sizes should be finite and non-negative")
+    }
+
+#	Calculating in C++ for max efficiency
+	if(log) {
+		prior.count <- .compressPrior(y, prior.count)
+		out <- .Call(.cxx_calculate_cpm_log, y, lib.size, prior.count)
+	} else {
+		out <- .Call(.cxx_calculate_cpm_raw, y, lib.size)
+	}
+
+#	Cleaning up
+	dimnames(out) <- dimnames(y)
 	out
 }

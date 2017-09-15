@@ -4,15 +4,18 @@ glmFit <- function(y, ...)
 UseMethod("glmFit")
 
 glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
-#	Created 11 May 2011.  Last modified 14 Aug 2016.
+#	Created 11 May 2011.  Last modified 13 Jul 2017.
 {
-	if(is.null(design)) design <- model.matrix(~y$samples$group)
+	if(is.null(design)) {
+		design <- y$design
+		if(is.null(design)) design <- model.matrix(~y$samples$group)
+	}
 	if(is.null(dispersion)) dispersion <- getDispersion(y)
 	if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
-
+	offset <- getOffset(y)
 	if(is.null(y$AveLogCPM)) y$AveLogCPM <- aveLogCPM(y)
 
-	fit <- glmFit(y=y$counts,design=design,dispersion=dispersion,offset=getOffset(y),lib.size=NULL,weights=y$weights,prior.count=prior.count,start=start,...)
+	fit <- glmFit(y=y$counts,design=design,dispersion=dispersion,offset=offset,lib.size=NULL,weights=y$weights,prior.count=prior.count,start=start,...)
 	fit$samples <- y$samples
 	fit$genes <- y$genes
 	fit$prior.df <- y$prior.df
@@ -24,7 +27,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries
 #	Davis McCarthy and Gordon Smyth
-#	Created 17 August 2010. Last modified 21 June 2017.
+#	Created 17 August 2010. Last modified 10 July 2017.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -43,6 +46,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 	}
 
 #	Check dispersion
+	if(is.null(dispersion)) stop("No dispersion values provided.")    
 	dispersion.mat <- .compressDispersions(y, dispersion)
 
 #	Check offset and lib.size
@@ -54,7 +58,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 #	If the design is equivalent to a oneway layout, use a shortcut algorithm
 	group <- designAsFactor(design)
 	if(nlevels(group)==ncol(design)) {
-		fit <- mglmOneWay(y,design=design,dispersion=dispersion.mat,offset=offset,weights=weights,coef.start=start)
+		fit <- mglmOneWay(y,design=design,group=group,dispersion=dispersion.mat,offset=offset,weights=weights,coef.start=start)
 		fit$deviance <- nbinomDeviance(y=y,mean=fit$fitted.values,dispersion=dispersion.mat,weights=weights)
 		fit$method <- "oneway"
 	} else {
@@ -87,7 +91,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth, Davis McCarthy and Yunshun Chen.
-#	Created 1 July 2010.  Last modified 21 March 2017.
+#	Created 1 July 2010.  Last modified 3 Aug 2017.
 {
 #	Check glmfit
 	if(!is(glmfit,"DGEGLM")) {
@@ -121,6 +125,7 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 		logFC <- glmfit$coefficients[,coef,drop=FALSE]/log(2)
 	} else {
 		contrast <- as.matrix(contrast)
+		if(nrow(contrast) != ncol(glmfit$coefficients)) stop("contrast vector of wrong length, should be equal to number of coefficients in the linear model.")
 		qrc <- qr(contrast)
 		ncontrasts <- qrc$rank
 		if(ncontrasts==0) stop("contrasts are all zero")

@@ -1,61 +1,38 @@
 #include "glm.h"
-    
-const char uplo='L';
 
-adj_coxreid::adj_coxreid (const int& nl, const int& nc, const double* d) : ncoefs(nc), nlibs(nl), info(0), lwork(-1) {
-	const int total=ncoefs*ncoefs;
-    working_matrix=new double [total];
-    for (int k=0; k<total; ++k) { working_matrix[k]=0; }
-	pivots=new int [ncoefs];
+const char uplo='U';
+
+adj_coxreid::adj_coxreid (int nl, int nc, const double* d) : ncoefs(nc), nlibs(nl), 
+        design(d), xtwx(ncoefs*ncoefs), pivots(ncoefs),
+        info(0), lwork(-1) {
 
     /* We also want to identify the optimal size of the 'work' array 
      * using the ability of the dystrf function to call ILAENV. We then
      * reallocate the work pointer to this value.
      */
 	double temp_work;
-    F77_CALL(dsytrf)(&uplo, &ncoefs, working_matrix, &ncoefs, pivots, &temp_work, &lwork, &info);
+    F77_CALL(dsytrf)(&uplo, &ncoefs, xtwx.data(), &ncoefs, pivots.data(), &temp_work, &lwork, &info);
 	if (info) { 
-		delete [] pivots;
-		delete [] working_matrix;
 		throw std::runtime_error("failed to identify optimal size of workspace through ILAENV"); 
 	}
     lwork=int(temp_work+0.5);
     if (lwork < 1) { lwork = 1; }
-    work=new double [lwork];
-
-	// Saving a local copy of the design pointer.
-	const int len=nlibs*ncoefs;
-	design=new double [len];
-	for (int i=0; i<len; ++i) { design[i]=d[i]; }
+    work.resize(lwork);
 	return;
 }
 
-adj_coxreid::~adj_coxreid () {
-	delete [] working_matrix;
-	delete [] pivots;
-	delete [] work;
-	delete [] design;
-}
-
 std::pair<double, bool> adj_coxreid::compute(const double* wptr) {
-    // Setting working weight_matrix to 'A=Xt %*% diag(W) %*% X' with column-major storage.
-    for (int row=0; row<ncoefs; ++row) {
-        for (int col=0; col<=row; ++col) {
-            double& cur_entry=(working_matrix[col*ncoefs+row]=0);
-            for (int lib=0; lib<nlibs; ++lib) {
-                cur_entry+=design[row*nlibs+lib]*design[col*nlibs+lib]*wptr[lib];
-            }
-        }
-    }   
-
-    // LDL* decomposition.
-    F77_CALL(dsytrf)(&uplo, &ncoefs, working_matrix, &ncoefs, pivots, work, &lwork, &info);
+    // Setting working weight_matrix to 'A=Xt %*% diag(W) %*% X' with column-major storage for the lower-triangular.
+    // Then doing and LDL* decomposition, see details below.
+    compute_xtwx(nlibs, ncoefs, design, wptr, xtwx.data());
+    F77_CALL(dsytrf)(&uplo, &ncoefs, xtwx.data(), &ncoefs, pivots.data(), work.data(), &lwork, &info);
     if (info<0) { return std::make_pair(0, false); }
 
     // Log-determinant as sum of the log-diagonals, then halving (see below).
+    auto wmIt=xtwx.begin();
     double sum_log_diagonals=0;
-    for (int i=0; i<ncoefs; ++i) { 
-        const double& cur_val=working_matrix[i*ncoefs+i];
+    for (int i=0; i<ncoefs; ++i, wmIt+=ncoefs) {
+        const double& cur_val=*(wmIt+i);
 		if (cur_val < low_value || !std::isfinite(cur_val))  { 
 			sum_log_diagonals += log_low_value; 
 		} else {
@@ -76,14 +53,14 @@ std::pair<double, bool> adj_coxreid::compute(const double* wptr) {
    guarantees factorization for singular matrices when the actual Cholesky decomposition 
    would fail because it would start whining about non-positive eigenvectors. 
   
-   We then try to compute the determinant of the working_matrix. Here we use two facts:
+   We then try to compute the determinant of XtWX. Here we use two facts:
 
    - For triangular matrices, the determinant is the product of the diagonals.
    - det(LDL*)=det(L)*det(D)*det(L*)
    - All diagonal elements of 'L' are unity.
 
    Thus, all we need to do is to we sum over all log'd diagonal elements in 'D', which - 
-   happily enough - are stored as the diagonal elements of 'working_matrix'. (And then 
+   happily enough - are stored as the diagonal elements of 'xtwx'. (And then 
    divide by two, because that's just how the Cox-Reid adjustment works.)
 
    'info > 0' indicates that one of the diagonals is zero. We handle this by replacing the
@@ -99,3 +76,19 @@ std::pair<double, bool> adj_coxreid::compute(const double* wptr) {
    not occur for positive (semi)definite matrices, which is what XtWX should always be.
 */
 
+// Computes upper-triangular matrix.
+void compute_xtwx(int nlibs, int ncoefs, const double* X, const double* W, double* out) {
+    const double* xptr1=X;
+    for (int coef1=0; coef1<ncoefs; ++coef1, xptr1+=nlibs) {
+        const double* xptr2=X;
+        for (int coef2=0; coef2<=coef1; ++coef2, xptr2+=nlibs) {
+
+            double& cur_entry=(out[coef2]=0);
+            for (int lib=0; lib<nlibs; ++lib) {
+                cur_entry+=xptr1[lib]*xptr2[lib]*W[lib];
+            }
+        }
+        out+=ncoefs;
+    }
+    return;
+}

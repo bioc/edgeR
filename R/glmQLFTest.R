@@ -3,18 +3,20 @@
 glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
-glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, offset=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), ...)
+glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), ...)
 # 	Yunshun Chen and Aaron Lun
-#	Created 05 November 2014.  Last modified 03 Oct 2016.
+#	Created 05 November 2014.  Last modified 13 Jul 2017.
 {
-	if(is.null(design)) design <- model.matrix(~y$samples$group)
+	if(is.null(design)) {
+		design <- y$design
+		if(is.null(design)) design <- model.matrix(~y$samples$group)
+	}
 	if(is.null(dispersion)) {
 		dispersion <- y$trended.dispersion
 		if(is.null(dispersion)) dispersion <- y$common.dispersion
-		if(is.null(dispersion)) stop("dispersion value not supplied")
+		if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
 	}
-	if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
-	if(is.null(offset)) offset <- getOffset(y)
+	offset <- getOffset(y)
 	if(is.null(y$AveLogCPM)) y$AveLogCPM <- aveLogCPM(y)
 
 	fit <- glmQLFit(y=y$counts, design=design, dispersion=dispersion, offset=offset, lib.size=NULL, abundance.trend=abundance.trend, 
@@ -103,8 +105,7 @@ glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.
 {
     disp <- makeCompressedMatrix(glmfit$dispersion, dim(glmfit$counts), byrow=FALSE)
     s2 <- makeCompressedMatrix(glmfit$var.post, dim(glmfit$counts), byrow=FALSE)
-    out <- .Call(.cR_check_poisson_bound, glmfit$fitted.values, disp, s2)
-    if (is.character(out)) stop(out)
+    out <- .Call(.cxx_check_poisson_bound, glmfit$fitted.values, disp, s2)
     return(out)
 }
 

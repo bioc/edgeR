@@ -29,8 +29,7 @@ adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adju
 	if (!is.double(design)) storage.mode(design)<-"double"
 
 #   Compute adjusted log-likelihood
-	apl <- .Call(.cR_compute_apl, y, mu, dispersion, weights, adjust, design)
-	if (is.character(apl)) stop(apl)
+	apl <- .Call(.cxx_compute_apl, y, mu, dispersion, weights, adjust, design)
 
 #	Deciding what to return.
 	if (get.coef) { 

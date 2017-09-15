@@ -1,85 +1,62 @@
 #include "utils.h"
 #include "glm.h"
-#include "matvec_check.h"
+#include "objects.h"
 
-SEXP R_compute_nbdev (SEXP y, SEXP mu, SEXP phi, SEXP weights, SEXP dosum) try {
-    count_holder counts(y);
-    const int num_tags=counts.get_ntags();
-    const int num_libs=counts.get_nlibs();
-    double* count_ptr=(double*)R_alloc(num_libs, sizeof(double));
+SEXP compute_nbdev (SEXP y, SEXP mu, SEXP phi, SEXP weights, SEXP dosum) {
+    BEGIN_RCPP
+    any_numeric_matrix counts(y);
+    const int num_tags=counts.get_nrow();
+    const int num_libs=counts.get_ncol();
+    std::vector<double> current(num_libs);
 
     // Setting up means.
-	if (!isReal(mu)) { throw std::runtime_error("matrix of means should be double-precision"); }
-    if (LENGTH(mu)!=num_tags*num_libs) { throw std::runtime_error("length of means is not consistent with length of counts"); }
-    const double* mptr=REAL(mu);
+    Rcpp::NumericMatrix fitted(mu);
+    if (fitted.nrow()!=num_tags || fitted.ncol()!=num_libs) {
+        throw std::runtime_error("dimensions of count and fitted value matrices are not equal");
+    }
 
     // Setting up dispersions.
-    matvec_check alld(phi, num_tags, num_libs);
-    const double* const dptr2=alld.access();
+    compressed_matrix alld=check_CM_dims(phi, num_tags, num_libs, "dispersion", "count");
 
     // Seeing if we have to sum things together.
-    if (!isLogical(dosum) || LENGTH(dosum)!=1) {
-        throw std::runtime_error("summation specification should be a logical vector");
-    }
-    const bool sumtogether=asLogical(dosum);
-    int tag, lib, index;
+    bool sumtogether=check_logical_scalar(dosum, "summation specifier");
 
     if (sumtogether) {
         // Setting up weights.
-        matvec_check allw(weights, num_tags, num_libs);
-        const double* const wptr2=allw.access();
+        compressed_matrix allw(weights);
 
-        SEXP output=PROTECT(allocVector(REALSXP, num_tags));
-        try {
-            // Running through each row and computing the unit deviance, and then computing the weighted sum.
-            double* optr=REAL(output);
-            for (tag=0; tag<num_tags; ++tag) {
-                counts.fill_and_next(count_ptr);
+        Rcpp::NumericVector output(num_tags);
+        for (int tag=0; tag<num_tags; ++tag) {
+            counts.fill_row(tag, current.data());
+            const double* dptr=alld.get_row(tag);
+            const double* wptr=allw.get_row(tag);
 
-                double& current_sumdev=(optr[tag]=0);
-                index=0;
-                for (lib=0; lib<num_libs; ++lib) {
-                    current_sumdev += compute_unit_nb_deviance(count_ptr[lib], mptr[index], dptr2[lib]) * wptr2[lib];
-                    index+=num_tags;
-                }
-
-                ++mptr;
-                alld.advance();
-                allw.advance();
+            Rcpp::NumericMatrix::Row curmeans=fitted.row(tag);
+            double& current_sumdev=output[tag];
+            auto cmIt=curmeans.begin(); 
+            for (int lib=0; lib<num_libs; ++lib, ++cmIt) {
+                current_sumdev += compute_unit_nb_deviance(current[lib], *cmIt, dptr[lib]) * wptr[lib];
             }
-        } catch (std::exception& e) {
-            UNPROTECT(1);
-            throw;
         }
 
-        UNPROTECT(1);
         return output;
     } else {
-        SEXP output=PROTECT(allocMatrix(REALSXP, num_tags, num_libs));
-        try {
-            // Computing unit deviance for each observation.
-            double* optr=REAL(output);
-            for (tag=0; tag<num_tags; ++tag) {
-                counts.fill_and_next(count_ptr);
+        Rcpp::NumericMatrix output(num_tags, num_libs);
+        for (int tag=0; tag<num_tags; ++tag) {
+            counts.fill_row(tag, current.data());
+            const double* dptr=alld.get_row(tag);
 
-                index=0;
-                for (lib=0; lib<num_libs; ++lib) {
-                    optr[index] = compute_unit_nb_deviance(count_ptr[lib], mptr[index], dptr2[lib]);
-                    index += num_tags;
-                }
+            auto curmeans=fitted.row(tag);
+            auto cmIt=curmeans.begin();
+            auto outvals=output.row(tag);
+            auto ovIt=outvals.begin();
 
-                ++optr;
-                ++mptr;
-                alld.advance();
+            for (int lib=0; lib<num_libs; ++lib, ++ovIt, ++cmIt) {
+                (*ovIt) = compute_unit_nb_deviance(current[lib], *cmIt, dptr[lib]);
             }
-        } catch (std::exception& e) {
-            UNPROTECT(1);
-            throw;
-        }
+       }
 
-        UNPROTECT(1);
         return output;
     }
-} catch(std::exception& e) {
-	return mkString(e.what());
+    END_RCPP
 }

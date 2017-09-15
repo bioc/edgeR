@@ -29,9 +29,7 @@ nbinomDeviance <- function(y,mean,dispersion=0,weights=NULL)
 	weights <- .compressWeights(y, weights)
 
 #	Computing unit deviance or residual deviance per gene, depending on 'dosum'.
-	d <- .Call(.cR_compute_nbdev, y, mean, dispersion, weights, as.logical(dosum))
-	if(is.character(d)) stop(d) 
-
+	d <- .Call(.cxx_compute_nbdev, y, mean, dispersion, weights, as.logical(dosum))
 	return(d)
 }
 

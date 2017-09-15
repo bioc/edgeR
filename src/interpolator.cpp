@@ -29,17 +29,9 @@ solution quad_solver (const double& a, const double& b, const double& c) {
  * 
  ***********************************/
 
-interpolator::interpolator(const int& n) : npts(n) {
+interpolator::interpolator(const int& n) : npts(n), b(npts), c(npts), d(npts) {
 	if (npts<2) { throw std::runtime_error("must have at least two points for interpolation"); }
-	b=new double[npts];
-	c=new double[npts];
-	d=new double [npts];
-}
-
-interpolator::~interpolator () {
-	delete [] b;
-	delete [] c;
-	delete [] d;
+    return;
 }
 
 double interpolator::find_max (const double*x, const double* y) {
@@ -53,7 +45,7 @@ double interpolator::find_max (const double*x, const double* y) {
  	   	}
 	}
     double x_max=x[maxed_at];
-    fmm_spline(npts, x, y, b, c, d);
+    fmm_spline(npts, x, y, b.data(), c.data(), d.data());
 
 	// First we have a look at the segment on the left and see if it contains the maximum.
     if (maxed_at>0) {

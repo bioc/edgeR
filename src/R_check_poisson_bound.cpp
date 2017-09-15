@@ -1,50 +1,33 @@
-#include "matvec_check.h"
+#include "objects.h"
 
 /* Checks whether the variance is below the Poisson bound. */
 
-SEXP R_check_poisson_bound (SEXP fitted, SEXP disp, SEXP s2) try {
-    if (!isReal(fitted)) { throw std::runtime_error("matrix of fitted values should be double-precision"); }
-    const double* fptr=REAL(fitted);
+SEXP check_poisson_bound (SEXP fitted, SEXP disp, SEXP s2) {
+    BEGIN_RCPP
+    Rcpp::NumericMatrix Fitted(fitted);
+    const int num_tags=Fitted.nrow();
+    const int num_libs=Fitted.ncol();
 
-    SEXP dims=getAttrib(fitted, R_DimSymbol);
-    if (!isInteger(dims) || LENGTH(dims)!=2) { 
-        throw std::runtime_error("matrix dimensions should be an integer vector of length 2");
-    }
-    const int num_tags=INTEGER(dims)[0], num_libs=INTEGER(dims)[1];
-    if (LENGTH(fitted)!=num_libs*num_tags) {
-        throw std::runtime_error("recorded matrix dimensions are not consistent with its length"); 
-    }
+    compressed_matrix alld=check_CM_dims(disp, num_tags, num_libs, "NB dispersion", "fitted value");
+    compressed_matrix alls=check_CM_dims(s2, num_tags, num_libs, "QL dispersion", "fitted value");
 
-    matvec_check alld(disp, num_tags, num_libs);
-    const double* const dptr2=alld.access();
-    matvec_check alls(s2, num_tags, num_libs);
-    const double* const sptr2=alls.access();
+    Rcpp::LogicalVector output(num_tags);
+    for (int tag=0; tag<num_tags; ++tag) {
+        int& below_bound=output[tag];
+        const double* dptr=alld.get_row(tag);
+        const double* sptr=alls.get_row(tag);
 
-    SEXP output=PROTECT(allocVector(LGLSXP, num_tags));
-    try {
-        int* optr=LOGICAL(output);
-        std::fill(optr, optr+num_tags, 0);
-        
-        int lib;
-        for (int tag=0; tag<num_tags; ++tag) {
-            for (lib=0; lib<num_libs; ++lib) {
-                if ((fptr[lib*num_tags] * dptr2[lib] + 1) * sptr2[lib] < 1) {
-                    optr[tag]=1;
-                    break;
-                }
+        auto current=Fitted.row(tag);
+        for (const auto& val : current) { 
+            if ((val * (*dptr) + 1) * (*sptr) < 1) {
+                below_bound=1;
+                break;
             }
-
-            ++fptr;
-            alld.advance();
-            alls.advance();
+            ++dptr;
+            ++sptr;
         }
-    } catch (std::exception& e) {
-        UNPROTECT(1);
-        throw;
     }
-
-    UNPROTECT(1);
+    
     return output;
-} catch (std::exception& e){ 
-    return mkString(e.what());
+    END_RCPP
 }

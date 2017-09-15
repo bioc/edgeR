@@ -21,7 +21,7 @@ Maximizes the negative binomial likelihood to give the estimate of the common, t
 
 \arguments{
 \item{y}{matrix of counts or a \code{DGEList} object.}
-\item{design}{numeric design matrix}
+\item{design}{numeric design matrix. Defaults to \code{model.matrix(~group)} if \code{group} is specified and otherwise to a single column of ones.}
 \item{prior.df}{prior degrees of freedom. It is used in calculating \code{prior.n}.}
 \item{trend.method}{method for estimating dispersion trend. Possible values are \code{"none"}, \code{"movingave"}, \code{"loess"} and \code{"locfit"} (default).}
 \item{mixed.df}{logical, only used when \code{trend.method="locfit"}. If \code{FALSE}, \code{locfit} uses a polynomial of degree 0. If \code{TRUE}, \code{locfit} uses a polynomial of degree 1 for lowly expressed genes. Care is taken to smooth the curve.}
@@ -33,9 +33,9 @@ Maximizes the negative binomial likelihood to give the estimate of the common, t
 \item{robust}{logical, should the estimation of \code{prior.df} be robustified against outliers?}
 \item{winsor.tail.p}{numeric vector of length 1 or 2, giving left and right tail proportions of the deviances to Winsorize when estimating \code{prior.df}.}
 \item{tol}{the desired accuracy, passed to \code{\link{optimize}}}
-\item{group}{vector or factor giving the experimental group/condition for each library.}
+\item{group}{vector or factor giving the experimental group/condition for each library. Defaults to a vector of ones with length equal to the number of libraries.}
 \item{lib.size}{numeric vector giving the total count (sequence depth) for each library.}
-\item{offset}{offset matrix for the log-linear model, as for \code{\link{glmFit}}.  Defaults to the log-effective library sizes.}
+\item{offset}{offset matrix for the log-linear model, as for \code{\link{glmFit}}. Defaults to the log-effective library sizes.}
 \item{weights}{optional numeric matrix giving observation weights}
 \item{\dots}{other arguments that are not currently used.}
 }

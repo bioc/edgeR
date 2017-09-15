@@ -197,7 +197,7 @@ processAmplicons = function(readfile, readfile2=NULL, barcodefile, hairpinfile,
        barcode2End = 0;
     }
     
-    .C(.cprocessHairpinReads, as.integer(IsPairedReads), as.integer(IsDualIndexingOnForwardRead), 
+    .C(.cxx_processHairpinReads, as.integer(IsPairedReads), as.integer(IsDualIndexingOnForwardRead), 
 	   as.character(readfile), as.character(readfile2), as.integer(numfiles),
        as.character(tempbarcodefile), as.character(temphairpinfile),
        as.integer(barcodeStart), as.integer(barcodeEnd), as.integer(barcode2Start), as.integer(barcode2End), as.integer(barcodeStartRev), as.integer(barcodeEndRev),

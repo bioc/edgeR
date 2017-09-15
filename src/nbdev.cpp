@@ -11,7 +11,7 @@
 const double one_tenthousandth=std::pow(10, -4.0);
 const double mildly_low_value=std::pow(10, -8.0);
 
-double compute_unit_nb_deviance (double y, double mu, const double& phi) {
+double compute_unit_nb_deviance (double y, double mu, double phi) {
 	// We add a small value to protect against zero during division and logging.
     y+=mildly_low_value;
     mu+=mildly_low_value;

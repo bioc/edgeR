@@ -1,62 +1,44 @@
 #include "glm.h"
 #include "add_prior.h"
-#include "matvec_check.h"
+#include "objects.h"
 
-SEXP R_ave_log_cpm(SEXP y, SEXP offset, SEXP prior, SEXP disp, SEXP weights, SEXP max_iterations, SEXP tolerance) try {
-    count_holder counts(y);
-    const int num_tags=counts.get_ntags();
-    const int num_libs=counts.get_nlibs();
-    double* count_ptr=(double*)R_alloc(num_libs, sizeof(double));
+SEXP ave_log_cpm(SEXP y, SEXP offset, SEXP prior, SEXP disp, SEXP weights, SEXP max_iterations, SEXP tolerance) {
+    BEGIN_RCPP
 
-    add_prior AP(num_tags, num_libs, prior, offset, true, true);
-    const double* const out_prior=AP.get_priors();
-    const double* const out_off=AP.get_offsets();
-    const bool priors_are_the_same=AP.same_across_rows();
+    any_numeric_matrix counts(y);
+    const int num_tags=counts.get_nrow();
+    const int num_libs=counts.get_ncol();
+    std::vector<double> current(num_libs);
 
-    // Other CompressedMatrix stuff.
-    matvec_check alld(disp, num_tags, num_libs);
-    const double* const dptr2=alld.access();
-    matvec_check allw(weights, num_tags, num_libs);
-    const double* const wptr2=allw.access();
+    add_prior AP(prior, offset, true, true);
+    check_AP_dims(AP, num_tags, num_libs, "count");
+    compressed_matrix alld=check_CM_dims(disp, num_tags, num_libs, "dispersion", "count");
+    compressed_matrix allw=check_CM_dims(weights, num_tags, num_libs, "weight", "count");
     
     // GLM fitting specifications
-    const int maxit=asInteger(max_iterations);
-    const double tol=asReal(tolerance);
+    int maxit=check_integer_scalar(max_iterations, "maximum iterations");
+    double tol=check_numeric_scalar(tolerance, "tolerance");
 
-    SEXP output=PROTECT(allocVector(REALSXP, num_tags));
-    try {
-        double* optr=REAL(output);
-        if (priors_are_the_same) {
-            AP.fill_and_next();
-        }
-        
-        int lib;
-        for (int tag=0; tag<num_tags; ++tag) {
-            counts.fill_and_next(count_ptr);
-            if (!priors_are_the_same) {
-                AP.fill_and_next();
-            }
-
-            // Adding the current set of priors.
-            for (lib=0; lib<num_libs; ++lib) {
-                count_ptr[lib]+=out_prior[lib];
-            }
-
-            // Fitting a one-way layout.
-            std::pair<double,bool> fit=glm_one_group(num_libs, maxit, tol, out_off, wptr2, count_ptr, dptr2, NA_REAL);
-            optr[tag]=(fit.first + LNmillion)/LNtwo;
-
-            allw.advance();
-            alld.advance();
+    // Returning average log-cpm
+    Rcpp::NumericVector output(num_tags);
+    for (int tag=0; tag<num_tags; ++tag) {
+        counts.fill_row(tag, current.data());
+           
+        // Adding the current set of priors.
+        AP.compute(tag);
+        const double* offptr=AP.get_offsets();
+        const double* pptr=AP.get_priors();
+        for (int lib=0; lib<num_libs; ++lib) {
+            current[lib]+=pptr[lib];
         }
 
-    } catch (std::exception& e) {
-        UNPROTECT(1);
-        throw;
+        // Fitting a one-way layout.
+        const double* dptr=alld.get_row(tag);
+        const double* wptr=allw.get_row(tag);
+        auto fit=glm_one_group(num_libs, current.data(), offptr, dptr, wptr, maxit, tol, NA_REAL);
+        output[tag]=(fit.first + LNmillion)/LNtwo;
     }
-
-    UNPROTECT(1);
+    
     return output;
-} catch (std::exception& e) {
-    return mkString(e.what());
+    END_RCPP
 }

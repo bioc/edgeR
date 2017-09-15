@@ -26,8 +26,7 @@ loessByCol <- function(y, x=NULL, span=0.5)
 	# Passing to the compiled code. Note type checking, otherwise the code will complain.
 	if (!is.double(y)) storage.mode(y) <- "double"
 	if (!is.double(x)) x <- as.double(x)
-	fitted <- .Call(.cR_loess_by_col, x, y, ncol(y), nspan)
-	if (is.character(fitted)) { stop(fitted) }
+	fitted <- .Call(.cxx_loess_by_col, x, y, ncol(y), nspan)
    
 	# Recover the original order.	
 	fitted[[1]][x.order,] <- fitted[[1]]

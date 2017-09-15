@@ -4,7 +4,7 @@ UseMethod("aveLogCPM")
 aveLogCPM.DGEList <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispersion=NULL, ...)
 #	log2(AveCPM)
 #	Gordon Smyth
-#	Created 11 March 2013.  Last modified 24 November 2013.
+#	Created 11 March 2013.  Last modified 9 July 2017.
 {
 #	Library sizes should be stored in y but are sometimes missing
 	lib.size <- y$samples$lib.size
@@ -16,7 +16,7 @@ aveLogCPM.DGEList <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispe
 		if(!is.null(y$samples$norm.factors)) lib.size <- lib.size*nf
 	}
 
-#	Dispersion supplied as argument over-rules value in object
+#	Dispersion supplied as argument take precedence over value in object
 #	Should trended.dispersion or tagwise.dispersion be used instead of common.dispersion if available?
 	if(is.null(dispersion)) dispersion <- y$common.dispersion
 
@@ -70,9 +70,7 @@ aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersi
 	tol <- formals(mglmOneGroup)$tol
 
 #   Calling the C++ code
-	ab <- .Call(.cR_ave_log_cpm, y, offset, prior.count, dispersion, weights, maxit, tol)
-	if (is.character(ab)) stop(ab)
-
+	ab <- .Call(.cxx_ave_log_cpm, y, offset, prior.count, dispersion, weights, maxit, tol)
 	return(ab)
 }
 

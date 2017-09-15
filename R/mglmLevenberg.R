@@ -29,18 +29,14 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 #	Initializing values for the coefficients at reasonable best guess with linear models.
 	if(is.null(coef.start)) {
 		start.method <- match.arg(start.method, c("null","y"))
-		beta <- .Call(.cR_get_levenberg_start, y, offset, dispersion, weights, design, start.method=="null")
-		if (is.character(beta)) stop(beta) 
+		beta <- .Call(.cxx_get_levenberg_start, y, offset, dispersion, weights, design, start.method=="null")
 	} else {
 		beta <- as.matrix(coef.start)
 	}
 
 # 	Checking arguments and calling the C++ method.
 	if (!is.double(beta)) storage.mode(beta) <- "double"
-	output <- .Call(.cR_levenberg, design, y, dispersion, offset, weights, beta, tol, maxit)
-
-#	Check for error condition
-	if (is.character(output)) { stop(output) }
+	output <- .Call(.cxx_fit_levenberg, y, offset, dispersion, weights, design, beta, tol, maxit)
 
 #	Naming the output and returning it.  
 	names(output) <- c("coefficients", "fitted.values", "deviance", "iter", "failed")

@@ -23,11 +23,10 @@ void fmm_spline(int n, const double *x, const double *y, double *b, double *c, d
 class interpolator {
 public:
 	interpolator(const int&);
-	~interpolator();
 	double find_max(const double* x, const double* y);
 private:
 	const int npts;
-	double* b, *c, *d;
+    std::vector<double> b, c, d;
 };
 
 

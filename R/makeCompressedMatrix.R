@@ -5,11 +5,11 @@ makeCompressedMatrix <- function(x, dims, byrow=TRUE)
 #
 # written by Aaron Lun
 # created 24 September 2016
-# last modified 21 June 2017
+# last modified 9 July 2017
 {
     repeat.row <- repeat.col <- FALSE
 	if (is.matrix(x)) {
-		if (is(x, "CompressedMatrix")) {
+		if (inherits(x, "CompressedMatrix")) {
 			return(x)
 		}
         dims <- dim(x)
@@ -241,10 +241,10 @@ Ops.CompressedMatrix <- function(e1, e2)
 # created 26 September 2016
 # last modified 30 June 2017
 {
-	if (!is(e1, "CompressedMatrix")) {
-        e1 <- makeCompressedMatrix(e1, dim(e2), byrow=FALSE) # Promoted to column-major CompressedMatrix
-    } 
-    if (!is(e2, "CompressedMatrix")) {
+    if (!inherits(e1, "CompressedMatrix")) {
+        e1 <- makeCompressedMatrix(e1, dim(e2), byrow=FALSE) # Promoted to column-major CompressedMatrix 
+	}
+    if (!inherits(e2, "CompressedMatrix")) {
         e2 <- makeCompressedMatrix(e2, dim(e1), byrow=FALSE)       
 	}
     if (!identical(dim(e1), dim(e2))) {
@@ -255,7 +255,7 @@ Ops.CompressedMatrix <- function(e1, e2)
     col.rep <- attr(e1, "repeat.col") && attr(e2, "repeat.col")
 
     if (row.rep || col.rep) { 
-        new.dim <- pmax(dim(e1), dim(e2))
+        new.dim <- dim(e1)
         e1 <- as.vector(.strip_to_matrix(e1))
         e2 <- as.vector(.strip_to_matrix(e2))
         outcome <- NextMethod(.Generic)
@@ -279,7 +279,7 @@ Ops.CompressedMatrix <- function(e1, e2)
 # If 'offset' is already of the CompressedMatrix class, then 
 # we assume it's already gone through this once so we don't do it again.
 {
-	if (is(offset, "CompressedMatrix")) {
+	if (inherits(offset, "CompressedMatrix")) {
 		return(offset)
 	}
 
@@ -290,8 +290,10 @@ Ops.CompressedMatrix <- function(e1, e2)
 	if (!is.double(offset)) storage.mode(offset) <- "double"
 	offset <- makeCompressedMatrix(offset, dim(y), byrow=TRUE)
 
-	err <- .Call(.cR_check_finite, offset, "offsets")
-	if (is.character(err)) stop(err) 
+    check.range <- suppressWarnings(range(offset))
+    if (any(!is.finite(check.range))) { 
+        stop("offsets must be finite values")
+    }
 	return(offset)
 }
 
@@ -302,7 +304,7 @@ Ops.CompressedMatrix <- function(e1, e2)
 # If 'weights' is already a CompressedMatrix, then we assume it's 
 # already gone through this and don't do it again.
 {
-	if (is(weights, "CompressedMatrix")) {
+	if (inherits(weights, "CompressedMatrix")) {
 		return(weights)
 	}
 
@@ -310,8 +312,10 @@ Ops.CompressedMatrix <- function(e1, e2)
 	if (!is.double(weights)) storage.mode(weights) <- "double"
 	weights <- makeCompressedMatrix(weights, dim(y), byrow=TRUE)
 
-	err <- .Call(.cR_check_positive, weights, "weights")
-	if (is.character(err)) stop(err)
+	check.range <- suppressWarnings(range(weights))
+    if (any(is.na(check.range)) || check.range[1] <= 0) {
+        stop("weights must be finite positive values")
+    }
 	return(weights)
 }
 
@@ -319,14 +323,17 @@ Ops.CompressedMatrix <- function(e1, e2)
 # Again for the prior counts, checking for non-negative finite values.
 # Skipping the check if it's already a CompressedMatrix object.
 {
-	if (is(prior.count, "CompressedMatrix")) {
+	if (inherits(prior.count, "CompressedMatrix")) {
 		return(prior.count)
 	}
 			
 	if(!is.double(prior.count)) storage.mode(prior.count) <- "double"
 	prior.count <- makeCompressedMatrix(prior.count, dim(y), byrow=FALSE)
-	err <- .Call(.cR_check_nonnegative, prior.count, "prior counts")
-	if (is.character(err)) stop(err)
+
+    check.range <- suppressWarnings(range(prior.count))
+    if (any(is.na(check.range)) || check.range[1] < 0) { 
+        stop("prior counts must be finite non-negative values")
+    }
 	return(prior.count)
 }
 
@@ -334,14 +341,17 @@ Ops.CompressedMatrix <- function(e1, e2)
 # Again for the dispersions, checking for non-negative finite values.
 # Skipping the check if it's already a CompressedMatrix object.
 {
-	if (is(dispersion, "CompressedMatrix")) {
+	if (inherits(dispersion, "CompressedMatrix")) {
 		return(dispersion)
 	}
 			
 	if(!is.double(dispersion)) storage.mode(dispersion) <- "double"
 	dispersion <- makeCompressedMatrix(dispersion, dim(y), byrow=FALSE)
-	err <- .Call(.cR_check_nonnegative, dispersion, "dispersions")
-	if (is.character(err)) stop(err)
+
+    check.range <- suppressWarnings(range(dispersion))
+    if (any(is.na(check.range)) || check.range[1] < 0) { 
+        stop("dispersions must be finite non-negative values")
+    }
 	return(dispersion)
 }
 

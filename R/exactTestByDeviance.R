@@ -38,7 +38,6 @@ exactTestByDeviance <-  function(y1,y2,dispersion=0)
 
 #	Checking the dispersion type.
 	dispersion<-as.double(dispersion)
-	pvals<-.Call(.cR_exact_test_by_deviance, sum1, sum2, n1, n2, dispersion)
-	if (is.character(pvals)) { stop(pvals) }
+	pvals<-.Call(.cxx_exact_test_by_deviance, sum1, sum2, n1, n2, dispersion)
 	pmin(pvals, 1)
 }

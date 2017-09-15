@@ -5,33 +5,35 @@
  * vector containing sorted x-coordinates. 's' describes the span.
  */
 
-SEXP R_loess_by_col(SEXP x, SEXP y, SEXP n_cols, SEXP s) try {
+SEXP loess_by_col(SEXP x, SEXP y, SEXP n_cols, SEXP s) {
+    BEGIN_RCPP 
+
     // Setting up input data structures.
-    if (!isNumeric(x)) { throw std::runtime_error("vector of covariates must be double precision"); }
-	if (!isNumeric(y)) { throw std::runtime_error("vector of reponses must be double precision"); }
+    if (!Rf_isNumeric(x)) { throw std::runtime_error("vector of covariates must be double precision"); }
+	if (!Rf_isNumeric(y)) { throw std::runtime_error("vector of reponses must be double precision"); }
 
     const int total=LENGTH(x);
-    const int span=asInteger(s);
+    const int span=Rf_asInteger(s);
     if (span>total) {
         throw std::runtime_error("number of smoothing points should less than the total number of points");
     } else if (span<=0) {
         throw std::runtime_error("number of smoothing points should be positive");
     }
     const double* x_ptr=REAL(x);
-    const int ncols=asInteger(n_cols);
+    const int ncols=Rf_asInteger(n_cols);
     if (LENGTH(y)!=ncols*total) {
         throw std::runtime_error("supplied dimensions for matrix 'y' are not consistent");
     }
-	std::deque<const double*> y_ptrs;
-    for (int i=0; i<ncols; ++i) { y_ptrs.push_back(i==0 ? REAL(y) : y_ptrs[i-1]+total); }
+	std::vector<const double*> y_ptrs(ncols);
+    for (int i=0; i<ncols; ++i) { y_ptrs[i]=(i==0 ? REAL(y) : y_ptrs[i-1]+total); }
 
     // Setting up output vectors.
     SEXP output;
-    PROTECT(output=allocVector(VECSXP, 2));
-    SET_VECTOR_ELT(output, 0, allocMatrix(REALSXP, total, ncols));
-    SET_VECTOR_ELT(output, 1, allocVector(REALSXP, total));
-	std::deque<double*> f_ptrs;
-    for (int i=0; i<ncols; ++i) { f_ptrs.push_back(i==0 ? REAL(VECTOR_ELT(output, 0)) : f_ptrs[i-1]+total); }
+    PROTECT(output=Rf_allocVector(VECSXP, 2));
+    SET_VECTOR_ELT(output, 0, Rf_allocMatrix(REALSXP, total, ncols));
+    SET_VECTOR_ELT(output, 1, Rf_allocVector(REALSXP, total));
+	std::vector<double*> f_ptrs(ncols);
+    for (int i=0; i<ncols; ++i) { f_ptrs[i]=(i==0 ? REAL(VECTOR_ELT(output, 0)) : f_ptrs[i-1]+total); }
     double* w_ptr=REAL(VECTOR_ELT(output, 1));
 
     /* First we determine which of the x-axis values are closest together. This means
@@ -130,6 +132,5 @@ SEXP R_loess_by_col(SEXP x, SEXP y, SEXP n_cols, SEXP s) try {
 	
     UNPROTECT(1);
     return output;
-} catch (std::exception& e) {
-	return mkString(e.what());
+    END_RCPP
 }

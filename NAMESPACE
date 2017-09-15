@@ -1,5 +1,5 @@
 #  Calling the dynamic library.
-useDynLib(edgeR, .registration=TRUE, .fixes=".c")
+useDynLib(edgeR, .registration=TRUE, .fixes=".cxx_")
 
 #  All functions exported other than those starting with "."
 exportPattern("^[^\\.]")
@@ -25,8 +25,10 @@ importFrom("limma",camera,contrastAsCoef,decideTests,fry,goana,kegga,is.fullrank
      lmFit,loessFit,mroast,nonEstimable,plotMD,plotMDS,plotWithHighlights,removeExt,
      roast,romer,squeezeVar,subsetListOfArrays,zscoreGamma,zscoreT)
 importClassesFrom("limma","LargeDataObject","Roast","MDS","TestResults")
+importFrom("Rcpp", sourceCpp)
 
 S3method(Ops,CompressedMatrix)
+S3method("[",CompressedMatrix)
 S3method(as.data.frame,TopTags)
 S3method(as.matrix,CompressedMatrix)
 S3method(as.matrix,DGEList)
@@ -40,6 +42,8 @@ S3method(cbind,CompressedMatrix)
 S3method(cbind,DGEList)
 S3method(cpm,default)
 S3method(cpm,DGEList)
+S3method(cpmByGroup,default)
+S3method(cpmByGroup,DGEList)
 S3method(dim,DGEList)
 S3method(dim,CompressedMatrix)
 S3method(dim,DGEExact)
@@ -93,6 +97,8 @@ S3method(roast,DGEList)
 S3method(romer,DGEList)
 S3method(rpkm,default)
 S3method(rpkm,DGEList)
+S3method(rpkmByGroup,default)
+S3method(rpkmByGroup,DGEList)
 S3method(splitIntoGroups,default)
 S3method(splitIntoGroups,DGEList)
 S3method(sumTechReps,default)

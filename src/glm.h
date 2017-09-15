@@ -1,16 +1,16 @@
 #ifndef GLM_H
 #define GLM_H
-#define WEIGHTED 1
 
 #include "utils.h"
 
-std::pair<double,bool> glm_one_group(const int&, const int&, const double&, const double*, 
-		const double*, const double*, const double*, double);
+std::pair<double,bool> glm_one_group(int, const double*, const double*, 
+        const double*, const double*, int, double, double);
+
+void compute_xtwx(int, int, const double*, const double*, double*);
 
 class glm_levenberg {
 public:
-	glm_levenberg(const int&, const int&, const double*, const int&, const double&);
-	~glm_levenberg();
+	glm_levenberg(int, int, const double*, int, double);
 	int fit(const double*, const double*, const double*, const double*, double*, double*);
 
 	const bool& is_failure() const;
@@ -21,38 +21,31 @@ private:
 	const int ncoefs;
 	const int maxit;
 	const double tolerance;
-	
-	double* design;
-    double * wx;
-	double * xwx;
-	double * xwx_copy;
-	double * dl;
-	double * dbeta;
+
+    const double* design;
+    std::vector<double> working_weights, deriv, xtwx, xtwx_copy, dl, dbeta; 
     int info;
 
-	double* mu_new, *beta_new;
+    std::vector<double> mu_new, beta_new;
 	double dev;
 	int iter;
 	bool failed;
 
 	double nb_deviance(const double*, const double*, const double*, const double*) const;
-	void autofill(const double*, double*, const double*);
+	void autofill(const double*, const double*, double*);
 };
 
-double compute_unit_nb_deviance(double, double, const double&);
+double compute_unit_nb_deviance(double, double, double);
 
 class adj_coxreid {
 public:
-	adj_coxreid(const int&, const int&, const double*);
-	~adj_coxreid();
+	adj_coxreid(int, int, const double*);
 	std::pair<double, bool> compute(const double* wptr);
 private:
-	const int ncoefs;
-	const int nlibs;
-	double* design;
-	
-	double* working_matrix, *work;
-	int* pivots;
+	const int ncoefs, nlibs;
+    const double* design;
+    std::vector<double> xtwx, work;
+    std::vector<int> pivots;
     int info, lwork;
 };
 

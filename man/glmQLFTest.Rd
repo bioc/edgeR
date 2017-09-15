@@ -10,7 +10,7 @@
 Conduct genewise statistical tests for a given coefficient or contrast.}
 
 \usage{
-\method{glmQLFit}{DGEList}(y, design=NULL, dispersion=NULL, offset=NULL, abundance.trend=TRUE,
+\method{glmQLFit}{DGEList}(y, design=NULL, dispersion=NULL, abundance.trend=TRUE,
         robust=FALSE, winsor.tail.p=c(0.05, 0.1), \dots)
 \method{glmQLFit}{default}(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL,
         weights=NULL, abundance.trend=TRUE, AveLogCPM=NULL, robust=FALSE,

@@ -1,64 +1,72 @@
-#include "matvec_check.h"
 #include "utils.h"
 #include "add_prior.h"
 
 /**** Adding a prior count to each observation. *******/
 
-SEXP R_add_prior_count(SEXP y, SEXP offset, SEXP prior) try {
-    count_holder counts(y);
-    const int num_tags=counts.get_ntags();
-    const int num_libs=counts.get_nlibs();
-    double* count_ptr=(double*)R_alloc(num_libs, sizeof(double));
+SEXP add_prior_count(SEXP y, SEXP offset, SEXP prior) {
+    BEGIN_RCPP
 
-    add_prior AP(num_tags, num_libs, prior, offset, true, true);
-    const double* const out_prior=AP.get_priors();
-    const double* const out_off=AP.get_offsets();
-    const bool priors_are_the_same=AP.same_across_rows();
+    any_numeric_matrix input(y);
+    const int num_tags=input.get_nrow();
+    const int num_libs=input.get_ncol();
 
-    SEXP output=PROTECT(allocVector(VECSXP, 2));
-    try {
-        SET_VECTOR_ELT(output, 0, allocMatrix(REALSXP, num_tags, num_libs));
-        double* outptr=REAL(VECTOR_ELT(output, 0));
-
-        double* libptr;
-        if (priors_are_the_same) {
-            // Just doing this once to save time, if they are all the same.
-            AP.fill_and_next();
-            SET_VECTOR_ELT(output, 1, allocVector(REALSXP, num_libs));
-            libptr=REAL(VECTOR_ELT(output, 1));
-            std::copy(out_off, out_off+num_libs, libptr);
-        } else {
-            SET_VECTOR_ELT(output, 1, allocMatrix(REALSXP, num_tags, num_libs));
-            libptr=REAL(VECTOR_ELT(output, 1));
-        }
-
-        // Adding a library size-adjusted prior to each count.
-        int lib;
-        for (int tag=0; tag<num_tags; ++tag) { 
-            counts.fill_and_next(count_ptr);
-
-            if (!priors_are_the_same) {
-                // Repeating with the next set of priors/offsets, and storing the new offsets.
-                AP.fill_and_next();
-                for (lib=0; lib<num_libs; ++lib) {
-                    libptr[lib*num_tags]=out_off[lib];
-                }
-                ++libptr;
-            }
-
-            for (lib=0; lib<num_libs; ++lib) {
-                outptr[lib*num_tags]=count_ptr[lib] + out_prior[lib];
-            }
-            ++outptr;
-        }
-    } catch (std::exception& e) {
-        UNPROTECT(1);
-        throw;
+    Rcpp::NumericMatrix outmat(num_tags, num_libs);
+    if (input.is_data_integer()) {
+        auto tmp=input.get_raw_int();
+        std::copy(tmp.begin(), tmp.end(), outmat.begin());
+    } else {
+        auto tmp=input.get_raw_dbl();
+        std::copy(tmp.begin(), tmp.end(), outmat.begin());
     }
 
-    UNPROTECT(1);
+    add_prior AP(prior, offset, true, true);
+    check_AP_dims(AP, num_tags, num_libs, "count");
+
+    // Computing the adjusted library sizes, either as a vector or as a matrix.
+    const bool same_prior=AP.same_across_rows();
+    double* libptr=NULL;
+    Rcpp::List output(2);
+    if (num_tags) {
+        if (same_prior) {
+            AP.compute(0);
+            const double* optr=AP.get_offsets();
+            output[1]=Rcpp::NumericVector(optr, optr+num_libs);
+        } else {
+             Rcpp::NumericMatrix current(num_tags, num_libs);
+             libptr=&(*current.begin());
+             output[1]=current;
+        }
+    } else {
+        if (same_prior) {
+             output[1]=Rcpp::NumericVector(num_libs, R_NaReal);
+        } else {
+             output[1]=Rcpp::NumericMatrix(num_tags, num_libs);
+        }
+    }
+
+    // Adding the prior values to the existing counts.
+    for (int tag=0; tag<num_tags; ++tag) {
+        AP.compute(tag);
+        const double* pptr=AP.get_priors();
+
+        auto current=outmat.row(tag);
+        for (auto& curval : current) { 
+            curval += *pptr;
+            ++pptr;
+        }
+
+        if (!same_prior) {
+            const double* optr=AP.get_offsets();
+            double* curlibptr=libptr+tag;
+            
+            for (int lib=0; lib<num_libs; ++lib, curlibptr+=num_tags, ++optr) {
+                (*curlibptr)=(*optr);
+            }
+        }
+    }
+
+    output[0] = outmat;
     return output;
-} catch (std::exception& e) {
-    return mkString(e.what());
+    END_RCPP
 }
 

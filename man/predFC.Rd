@@ -8,8 +8,8 @@
 \description{Computes estimated coefficients for a NB glm in such a way that the log-fold-changes are shrunk towards zero.}
 
 \usage{
-\S3method{predFC}{DGEList}(y, design=NULL, prior.count=0.125, offset=NULL, dispersion=NULL, weights=NULL, \dots)
-\S3method{predFC}{default}(y, design=NULL, prior.count=0.125, offset=NULL, dispersion=0, weights=NULL, \dots)
+\S3method{predFC}{DGEList}(y, design, prior.count=0.125, offset=NULL, dispersion=NULL, weights=NULL, \dots)
+\S3method{predFC}{default}(y, design, prior.count=0.125, offset=NULL, dispersion=0, weights=NULL, \dots)
 }
 
 \arguments{
@@ -43,13 +43,10 @@ The output coefficients are called \emph{predictive} log fold-changes because, d
 Log-fold changes for genes with low counts are shrunk more than those for genes with high counts.
 In particular, infinite log-fold-changes arising from zero counts are avoided.
 The exact degree to which this is done depends on the negative binomail dispersion.
-
-If \code{design=NULL}, then the function returns a matrix of the same size as \code{y} containing log2 counts-per-million, with zero values for the counts avoided.
-This equivalent to choosing \code{design} to be the identity matrix with the same number of columns as \code{y}.
 }
 
 \value{
-Numeric matrix of linear model coefficients (if \code{design} is given) or logCPM (if \code{design=NULL}) on the log2 scale.
+Numeric matrix of (shrunk) linear model coefficients on the log2 scale.
 }
 
 \author{Belinda Phipson and Gordon Smyth}
@@ -60,25 +57,25 @@ Phipson, B. (2013).
 PhD Thesis. University of Melbourne, Australia.
 \url{http://repository.unimelb.edu.au/10187/17614}
 }
-\examples{
-# generate counts for a two group experiment with n=2 in each group and 100 genes
-dispersion <- 0.1
-y <- matrix(rnbinom(400,size=1/dispersion,mu=4),nrow=100)
-y <- DGEList(y,group=c(1,1,2,2))
-design <- model.matrix(~group, data=y$samples)
-
-#estimate the predictive log fold changes
-predlfc<-predFC(y,design,dispersion=dispersion,prior.count=1)
-logfc <- predFC(y,design,dispersion=dispersion,prior.count=0)
-logfc.truncated <- pmax(pmin(logfc,100),-100)
-
-#plot predFC's vs logFC's
-plot(predlfc[,2],logfc.truncated[,2],xlab="Predictive log fold changes",ylab="Raw log fold changes")
-abline(a=0,b=1)
-}
 
 \seealso{
 \code{\link{glmFit}}, \code{\link{exactTest}},
 \code{\link{addPriorCount}}
 }
 
+\examples{
+# generate counts for a two group experiment with n=2 in each group and 100 genes
+disp <- 0.1
+y <- matrix(rnbinom(400,size=1/disp,mu=4), nrow=100, ncol=4)
+y <- DGEList(y, group=c(1,1,2,2))
+design <- model.matrix(~group, data=y$samples)
+
+#estimate the predictive log fold changes
+predlfc <- predFC(y, design, dispersion=disp, prior.count=1)
+logfc <- predFC(y,design,dispersion=disp, prior.count=0)
+logfc.truncated <- pmax(pmin(logfc,100),-100)
+
+#plot predFC's vs logFC's
+plot(predlfc[,2], logfc.truncated[,2], xlab="Predictive log fold changes", ylab="Raw log fold changes")
+abline(a=0,b=1)
+}

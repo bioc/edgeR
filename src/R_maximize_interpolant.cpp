@@ -1,30 +1,28 @@
 #include "utils.h"
 #include "interpolator.h"
 
-SEXP R_maximize_interpolant(SEXP spline_pts, SEXP likelihoods) try {
-	if (!isNumeric(spline_pts)) { std::runtime_error("spline points should be a double precision vector"); }
-	if (!isNumeric(likelihoods)) { std::runtime_error("likelihoods should be a double precision matrix"); }
+SEXP maximize_interpolant(SEXP spline_pts, SEXP likelihoods) {
+    BEGIN_RCPP
 
-    // Loading in the spline x-axis values.
-    const int num_pts=LENGTH(spline_pts);
-    double* sptr=REAL(spline_pts);
-	double* lptr=REAL(likelihoods);
-    const int nrows=LENGTH(likelihoods)/num_pts;
+    Rcpp::NumericVector spts(spline_pts);
+    Rcpp::NumericMatrix ll(likelihoods);
+    const int num_pts=spts.size();
+    if (num_pts!=ll.ncol()) { 
+        throw std::runtime_error("number of columns in likelihood matrix should be equal to number of spline points");
+    }
+    const int num_tags=ll.nrow();
+
     interpolator maxinterpol(num_pts);
+    std::vector<double> current_ll(num_pts);
+    std::vector<double> all_spts(spts.begin(), spts.end()); // making a copy to guarantee contiguousness.
 
-   	// Setting up the output object and running through it.
-    SEXP output=PROTECT(allocVector(REALSXP, nrows));
-    double* out_ptr=REAL(output);
-	try { 
-		for (int count=0; count<nrows; ++count) {
-        	*out_ptr=maxinterpol.find_max(sptr, lptr);
- 	   		lptr+=num_pts;	
-			++out_ptr;
-    	}
-	} catch (std::exception &e) {
-		UNPROTECT(1);
-		throw;
-	}
-   	UNPROTECT(1);
+    Rcpp::NumericVector output(num_tags);
+    for (int tag=0; tag<num_tags; ++tag) {
+        Rcpp::NumericMatrix::Row curll=ll.row(tag);
+        std::copy(curll.begin(), curll.end(), current_ll.begin());
+        output[tag]=maxinterpol.find_max(all_spts.data(), current_ll.data());
+    }
+
     return(output);    
-} catch (std::exception& e) { return mkString(e.what()); }
+    END_RCPP
+}

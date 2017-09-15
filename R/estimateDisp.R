@@ -102,7 +102,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 
 		# Identify which observations have means of zero (weights aren't needed here).
 		glmfit <- glmFit(sely, design, offset=seloffset, dispersion=0.05, prior.count=0)
-		zerofit <- .areFittedValuesZero(y=glmfit$counts, mu=glmfit$fitted.values)
+        zerofit <- (glmfit$counts < 1e-4 & glmfit$fitted.values < 1e-4)
 		by.group <- .comboGroups(zerofit)
 
 		for (subg in by.group) { 
@@ -154,7 +154,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 		df.residual <- glmfit$df.residual
 
 		# Adjust df.residual for fitted values at zero
-        zerofit <- .areFittedValuesZero(y=glmfit$counts, mu=glmfit$fitted.values)
+        zerofit <- (glmfit$counts < 1e-4 & glmfit$fitted.values < 1e-4)
 		df.residual <- .residDF(zerofit, design)
 
 		# Empirical Bayes squeezing of the quasi-likelihood variance factors
@@ -311,12 +311,3 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 	}
 }
 
-.areFittedValuesZero <- function(y, mu, tol=1e-4) 
-# A slightly more efficient way to check if the fitted values are zero,
-# based on both the count and fitted value being zero for an observation.
-{
-    if (!is.double(mu)) storage.mode(mu) <- "double"
-    out <- .Call(.cR_check_zero_fitted, y, mu, as.double(tol))
-    if (is.character(out)) stop(out)
-    return(out)
-}
