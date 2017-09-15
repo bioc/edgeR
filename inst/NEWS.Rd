@@ -2,6 +2,57 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.20.0}{\itemize{
+\item
+New arg 'group' for mglmOneWay(). Results in slight speed improvement for glmFit().
+
+\item
+'design' arg for predFC() is now compulsory.
+
+\item
+Switched 'coef.start' back to a vector in mglmOneGroup().
+
+\item
+New functions cpmByGroup() and rpkmByGroup().
+
+\item
+Renamed arg 'x' to 'y' in cpm() and rpkm().
+
+\item
+Restored null dispersion check in glmFit().
+
+\item
+Removed 'offset' arg from glmQLFit() to be consistent with glmFit().
+
+\item
+Exported CompressedMatrix subset operator.
+
+\item
+Refactored C++ code with greater C++11 support to use Rcpp.
+
+\item
+Streamlined input dimension checks in C++ code.
+
+\item
+Supported zero-row input to addPriorCounts() C++ code.
+
+\item
+Added cbind and rbind S3 methods for DGEList objects.
+
+\item
+Added 'Dims' as part of the compressedMatrix class.
+
+\item
+Added common methods for the compressedMatrix class.
+
+\item
+Register S3 methods for compressedMatrix.
+
+\item
+Added a case study of differential methylation analysis to the user's guide.
+}}
+
+
 \section{Version 3.18.0}{\itemize{
 \item
 roast.DGEList(), mroast.DGEList(), fry.DGEList() and camera.DGEList() now have explicit arguments instead of passing arguments with ... to the default method.
