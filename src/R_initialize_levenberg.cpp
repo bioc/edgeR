@@ -12,7 +12,7 @@ const int unity=1;
 
 struct QRdecomposition {
     QRdecomposition(int nrows, int ncoefs, const double* curX) : NR(nrows), NC(ncoefs),
-            X(curX, curX+NC*NR), Xcopy(NR*NC), tau(NC), effects(NR), weights(NR), 
+            X(curX), Xcopy(NR*NC), tau(NC), effects(NR), weights(NR), 
             lwork_geqrf(-1), lwork_ormqr(-1) {
 
         // Setting up the workspace for dgeqrf.
@@ -46,7 +46,7 @@ struct QRdecomposition {
 
     void decompose() {
         auto xcIt=Xcopy.begin();
-        std::copy(X.begin(), X.end(), xcIt);
+        std::copy(X, X + Xcopy.size(), xcIt);
         for (int coef=0; coef<NC; ++coef) {
             for (int lib=0; lib<NR; ++lib) {
                 (*xcIt)*=weights[lib];
@@ -81,7 +81,8 @@ struct QRdecomposition {
     }
 
     const int NR, NC;
-    std::vector<double> X, Xcopy, tau, effects, weights, work_geqrf, work_ormqr;
+    const double* X;
+    std::vector<double> Xcopy, tau, effects, weights, work_geqrf, work_ormqr;
     int lwork_geqrf, lwork_ormqr, info;
 };
 
@@ -91,9 +92,9 @@ SEXP get_levenberg_start(SEXP y, SEXP offset, SEXP disp, SEXP weights, SEXP desi
     const int num_tags=counts.get_nrow();
     const int num_libs=counts.get_ncol();
 
-    int num_coefs=0;
-    std::vector<double> X=check_design_matrix(design, num_libs, num_coefs);
-    QRdecomposition QR(num_libs, num_coefs, X.data());
+    Rcpp::NumericMatrix X=check_design_matrix(design, num_libs);
+    const int num_coefs=X.ncol();
+    QRdecomposition QR(num_libs, num_coefs, X.begin());
 
     // Initializing pointers to the assorted features.
     compressed_matrix allo=check_CM_dims(offset, num_tags, num_libs, "offset", "count");

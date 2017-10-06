@@ -21,9 +21,9 @@ SEXP compute_apl(SEXP y, SEXP means, SEXP disps, SEXP weights, SEXP adjust, SEXP
     bool do_adjust=check_logical_scalar(adjust, "adjustment specifier");
 
     // Setting up the CR adjustment object.
-    int num_coefs=0;
-    std::vector<double> X=check_design_matrix(design, num_libs, num_coefs);
-    adj_coxreid acr(num_libs, num_coefs, X.data());
+    Rcpp::NumericMatrix X=check_design_matrix(design, num_libs);
+    const int num_coefs=X.ncol();
+    adj_coxreid acr(num_libs, num_coefs, X.begin());
 
     // Generating output values.
     Rcpp::NumericVector output(num_tags);

@@ -37,7 +37,7 @@ private:
 
 compressed_matrix check_CM_dims(Rcpp::RObject, int, int, const char*, const char*);
 
-std::vector<double> check_design_matrix(Rcpp::RObject, int, int&);
+Rcpp::NumericMatrix check_design_matrix(Rcpp::RObject, int);
 
 bool check_logical_scalar(Rcpp::RObject, const char*);
 

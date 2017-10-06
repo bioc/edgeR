@@ -14,7 +14,7 @@
 
 \title{Counts per Million or Reads per Kilobase per Million}
 
-\description{Computes counts per million (CPM) or reads per kilobase per million (RPKM) values.}
+\description{Compute counts per million (CPM) or reads per kilobase per million (RPKM).}
 
 \usage{
 \method{cpm}{DGEList}(y, normalized.lib.sizes = TRUE,
@@ -25,14 +25,12 @@
        log = FALSE, prior.count = 0.25, \dots)
 \method{rpkm}{default}(y, gene.length, lib.size = NULL,
        log = FALSE, prior.count = 0.25, \dots)
-\method{cpmByGroup}{DGEList}(y, group = NULL,
-       log = FALSE, prior.count = 0.25, \dots)
-\method{cpmByGroup}{default}(y, group = NULL, dispersion = 0.05,
-       log = FALSE, prior.count = 0.25, \dots)
-\method{rpkmByGroup}{DGEList}(y, group = NULL, gene.length = NULL,
-       log = FALSE, prior.count = 0.25, \dots)
-\method{rpkmByGroup}{default}(y, group = NULL, gene.length = NULL, dispersion = 0.05,
-       log = FALSE, prior.count = 0.25, \dots)
+\method{cpmByGroup}{DGEList}(y, group = NULL, dispersion = NULL, \ldots)
+\method{cpmByGroup}{default}(y, group = NULL,
+       dispersion = 0.05, offset = NULL, weights = NULL, \ldots)
+\method{rpkmByGroup}{DGEList}(y, group = NULL, gene.length = NULL, dispersion = NULL, \ldots)
+\method{rpkmByGroup}{default}(y, group = NULL, gene.length,
+       dispersion = 0.05, offset = NULL, weights = NULL, \ldots)
 }
 
 \arguments{ 
@@ -44,10 +42,16 @@
 \item{gene.length}{vector of length \code{nrow(y)} giving gene length in bases, or the name of the column \code{y$genes} containing the gene lengths.}
 \item{group}{factor giving group membership for columns of \code{y}. Defaults to \code{y$sample$group} for the \code{DGEList} method and to a single level factor for the default method.}
 \item{dispersion}{numeric vector of negative binomial dispersions.}
+\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a scalar or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix.}
+\item{weights}{numeric vector or matrix of non-negative quantitative weights.
+Can be a vector of length equal to the number of libraries, or a matrix of the same size as \code{y}.}
 \item{\dots}{for \code{cpm} and \code{rpkm}, other arguments are not used. For \code{cpmByGroup}, other arguments are passed to \code{glmFit}.}
 }
 
-\value{A numeric matrix of CPM or RPKM values. If \code{log = TRUE}, then the values are on the log2 scale.}
+\value{A numeric matrix of CPM or RPKM values.
+\code{cpm} and \code{rpkm} produce matrices of the same size as \code{y}.
+\code{cpmByGroup} and \code{rpkmByGroup} produce matrices with a column for each level of \code{group}.
+If \code{log = TRUE}, then the values are on the log2 scale.}
 
 \details{
 CPM or RPKM values are useful descriptive measures for the expression level of a gene.
@@ -57,6 +61,8 @@ If log-values are computed, then a small count, given by \code{prior.count} but 
 
 The \code{rpkm} method for \code{DGEList} objects will try to find the gene lengths in a column of \code{y$genes} called \code{Length} or \code{length}.
 Failing that, it will look for any column name containing \code{"length"} in any capitalization.
+
+\code{cpmByGroup} and \code{rpkmByGroup} compute group average values on the unlogged scale.
 }
 
 \note{

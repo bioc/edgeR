@@ -25,7 +25,7 @@ Defaults to a single column of ones, equivalent to treating the columns as repli
 
 \item{dispersion}{numeric scalar, vector or matrix of negative binomial dispersions. Can be a common value for all genes, a vector of dispersion values with one for each gene, or a matrix of dispersion values with one for each observation. If \code{NULL} will be extracted from \code{y}, with order of precedence: genewise dispersion, trended dispersions, common dispersion.}
 
-\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a scalor or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix.}
+\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a scalar or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix.}
 
 \item{weights}{optional numeric matrix giving prior weights for the observations (for each library and gene) to be used in the GLM calculations.}
 

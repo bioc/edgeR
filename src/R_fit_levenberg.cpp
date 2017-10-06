@@ -9,9 +9,8 @@ SEXP fit_levenberg (SEXP y, SEXP offset, SEXP disp, SEXP weights, SEXP design, S
     const int num_libs=counts.get_ncol();
 	
     // Getting and checking the dimensions of the arguments.    
-    int num_coefs=0;
-    std::vector<double> X=check_design_matrix(design, num_libs, num_coefs);
-    const double* xptr=X.data();
+    Rcpp::NumericMatrix X=check_design_matrix(design, num_libs);
+    const int num_coefs=X.ncol();
 
     Rcpp::NumericMatrix Beta(beta);
     if (Beta.nrow()!=num_tags || Beta.ncol()!=num_coefs) {
@@ -35,7 +34,7 @@ SEXP fit_levenberg (SEXP y, SEXP offset, SEXP disp, SEXP weights, SEXP design, S
     Rcpp::LogicalVector out_conv(num_tags);
 
     std::vector<double> current(num_libs), tmp_beta(num_coefs), tmp_fitted(num_libs);
-	glm_levenberg glbg(num_libs, num_coefs, xptr, max_it, tolerance);
+	glm_levenberg glbg(num_libs, num_coefs, X.begin(), max_it, tolerance);
 
     for (int tag=0; tag<num_tags; ++tag) {
         counts.fill_row(tag, current.data());

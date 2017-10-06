@@ -1,42 +1,36 @@
 cpmByGroup <- function(y, ...)
 UseMethod("cpmByGroup")
 
-cpmByGroup.DGEList <- function(y, group=NULL, log=FALSE, prior.count=0.25, ...)
+cpmByGroup.DGEList <- function(y, group=NULL, dispersion=NULL, ...)
 #	Counts per million averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017
+#	Created 10 July 2017. Last modified 5 Oct 2017.
 {
-	if(!is.null(group)) y$samples$group <- group
-	if(!log) prior.count <- 0
-	fit <- glmFit(y,prior.count=prior.count,...)
+	if(is.null(group)) group <- y$samples$group
+	group <- as.factor(group)
 
-	logCPM <- fit$coefficients + log(1e6)
-	if(log) {
-		logCPM/log(2)
-	} else {
-		exp(logCPM)
-	}
+	if(is.null(dispersion)) dispersion <- getDispersion(y)
+	if(is.null(dispersion)) dispersion <- 0.05
+	offset <- getOffset(y)
+
+	fit <- mglmOneWay(y,group=group,dispersion=dispersion,offset=offset,weights=y$weights)
+	exp(fit$coefficients) * 1e6
 }
 
-cpmByGroup.default <- function(y, group=NULL, dispersion=0.05, log=FALSE, prior.count=0.25, ...)
+cpmByGroup.default <- function(y, group=NULL, dispersion=0.05, offset=NULL, weights=NULL, ...)
 #	Counts per million averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017
+#	Created 10 July 2017. Last modified 5 Oct 2017.
 {
-	if(!log) prior.count <- 0
+	y <- as.matrix(y)
+
 	if(is.null(group)) {
-		fit <- glmFit(y,dispersion=dispersion,prior.count=prior.count,...)
-	} else {
-		group <- as.factor(group)
-		design <- model.matrix(~0+group)
-		colnames(design) <- levels(group)
-		fit <- glmFit(y,design=design,dispersion=dispersion,prior.count=prior.count,...)
+		group <- factor(rep_len(1,ncol(y)))
+		levels(group) <- "AveCPM"
 	}
 
-	logCPM <- fit$coefficients + log(1e6)
-	if(log) {
-		logCPM/log(2)
-	} else {
-		exp(logCPM)
-	}
+	if(is.null(offset)) offset <- log(colSums(y))
+
+	fit <- mglmOneWay(y,group=group,dispersion=dispersion,offset=offset,weights=weights)
+	exp(fit$coefficients) / 1e6
 }

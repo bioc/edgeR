@@ -136,13 +136,12 @@ compressed_matrix check_CM_dims(Rcpp::RObject incoming, int nrow, int ncol, cons
      return out;
 }
 
-std::vector<double> check_design_matrix(Rcpp::RObject design, int nlibs, int& ncoefs) {
+Rcpp::NumericMatrix check_design_matrix(Rcpp::RObject design, int nlibs) {
     Rcpp::NumericMatrix X(design);
     if (X.nrow()!=nlibs) {
         throw std::runtime_error("number of rows in the design matrix should be equal to the number of libraries");
     }
-    ncoefs=X.ncol();
-    return std::vector<double>(X.begin(), X.end());
+    return X;
 }
 
 template<typename T, class V>
