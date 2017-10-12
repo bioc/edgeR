@@ -4,15 +4,21 @@ estimateDisp <- function(y, ...)
 UseMethod("estimateDisp")
 
 estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", mixed.df=FALSE, tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
-#  Yunshun Chen. Created 16 March 2016.
+#  Yunshun Chen.
+#  Created 16 March 2016. Last modified 9 Oct 2017.
 {
 	y <- validDGEList(y)
 	group <- y$samples$group
 	lib.size <- y$samples$lib.size * y$samples$norm.factors
 
+	if(is.null(design)) {
+		design <- y$design
+	} else {
+		y$design <- design
+	}
+
 	d <- estimateDisp(y=y$counts, design=design, group=group, lib.size=lib.size, offset=getOffset(y), prior.df=prior.df, trend.method=trend.method, mixed.df=mixed.df, tagwise=tagwise, span=span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, weights=y$weights, ...)
 
-	if(!is.null(design)) y$design <- design
 	y$common.dispersion <- d$common.dispersion
 	y$trended.dispersion <- d$trended.dispersion
 	if(tagwise) y$tagwise.dispersion <- d$tagwise.dispersion
@@ -27,7 +33,7 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL, trend.method="locfit", mixed.df=FALSE, tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
 #  Use GLM approach if a design matrix is given, and classic approach otherwise.
 #  It calculates a matrix of likelihoods for each gene at a set of dispersion grid points, and then calls WLEB() to do the shrinkage.
-#  Yunshun Chen, Aaron Lun, Gordon Smyth. Created July 2012. Last modified 21 June 2017.
+#  Yunshun Chen, Aaron Lun, Gordon Smyth. Created July 2012. Last modified 11 October 2017.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -102,7 +108,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 
 		# Identify which observations have means of zero (weights aren't needed here).
 		glmfit <- glmFit(sely, design, offset=seloffset, dispersion=0.05, prior.count=0)
-        zerofit <- (glmfit$counts < 1e-4 & glmfit$fitted.values < 1e-4)
+		zerofit <- (glmfit$counts < 1e-4 & glmfit$fitted.values < 1e-4)
 		by.group <- .comboGroups(zerofit)
 
 		for (subg in by.group) { 
@@ -122,7 +128,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 			cury <- .subsetMatrixWithoutCopying(sely, i=subg, j=cur.nzero)
 			curo <- .subsetMatrixWithoutCopying(seloffset, i=subg, j=cur.nzero)
 			curw <- .subsetMatrixWithoutCopying(selweights, i=subg, j=cur.nzero)
-		   
+
 			# Using the last fit to hot-start the next fit
 			last.beta <- NULL
 			for(i in seq_len(grid.length)) {
@@ -134,16 +140,28 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 		}
 	}
 
+	# Calculate common dispersion
 	overall <- maximizeInterpolant(spline.pts, matrix(colSums(l0), nrow=1))
 	common.dispersion <- 0.1 * 2^overall
-	AveLogCPM <- aveLogCPM(y, lib.size=lib.size, dispersion=common.dispersion, weights=weights)
 
-	out.1 <- WLEB(theta=spline.pts, loglik=l0, covariate=AveLogCPM[sel], trend.method=trend.method, 
-		mixed.df=mixed.df, span=span, overall=FALSE, individual=FALSE, m0.out=TRUE)
-	disp.trend <- 0.1 * 2^out.1$trend
-	trended.dispersion <- rep( disp.trend[which.min(AveLogCPM[sel])], ntags )
-	trended.dispersion[sel] <- disp.trend
-
+	# Allow dispersion trend?
+	if(trend.method!="none"){
+		AveLogCPM <- aveLogCPM(y, lib.size=lib.size, dispersion=common.dispersion, weights=weights)
+		out.1 <- WLEB(theta=spline.pts, loglik=l0, covariate=AveLogCPM[sel], trend.method=trend.method, 
+			mixed.df=mixed.df, span=span, overall=FALSE, individual=FALSE, m0.out=TRUE)
+		span <- out.1$span
+		m0 <- out.1$shared.loglik
+		disp.trend <- 0.1 * 2^out.1$trend
+		trended.dispersion <- rep( disp.trend[which.min(AveLogCPM[sel])], ntags )
+		trended.dispersion[sel] <- disp.trend
+	} else {
+		AveLogCPM <- NULL
+		m0 <- matrix(colMeans(l0), ntags, length(spline.pts), byrow=TRUE)
+		disp.trend <- common.dispersion
+		trended.dispersion <- NULL
+	}
+	
+	# Are tagwise dispersions required?
 	if(!tagwise) return(list(common.dispersion=common.dispersion, trended.dispersion=trended.dispersion))
 
 	# Calculate prior.df
@@ -154,7 +172,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 		df.residual <- glmfit$df.residual
 
 		# Adjust df.residual for fitted values at zero
-        zerofit <- (glmfit$counts < 1e-4 & glmfit$fitted.values < 1e-4)
+		zerofit <- (glmfit$counts < 1e-4 & glmfit$fitted.values < 1e-4)
 		df.residual <- .residDF(zerofit, design)
 
 		# Empirical Bayes squeezing of the quasi-likelihood variance factors
@@ -167,11 +185,11 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	ncoefs <- ncol(design)
 	prior.n <- prior.df/(nlibs-ncoefs)
 
-	if (trend.method!='none') { 
+	# Initiate tagwise dispersions
+	if(trend.method!="none")
 		tagwise.dispersion <- trended.dispersion
-	} else {
+	else
 		tagwise.dispersion <- rep(common.dispersion, ntags)
-	}
 
 	# Checking if the shrinkage is near-infinite.
 	too.large <- prior.n > 1e6
@@ -181,9 +199,9 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 			temp.n[too.large] <- 1e6 
 		}
 
-		# Estimating tagwise dispersions	
+		# Estimating tagwise dispersions
 		out.2 <- WLEB(theta=spline.pts, loglik=l0, prior.n=temp.n, covariate=AveLogCPM[sel], 
-			trend.method=trend.method, mixed.df=mixed.df, span=span, overall=FALSE, trend=FALSE, m0=out.1$shared.loglik)
+			trend.method=trend.method, mixed.df=mixed.df, span=span, overall=FALSE, trend=FALSE, m0=m0)
 
 		if (!robust) { 
 			tagwise.dispersion[sel] <- 0.1 * 2^out.2$individual
@@ -200,7 +218,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 		prior.n[sel] <- temp.n
 	}
 
-	list(common.dispersion=common.dispersion, trended.dispersion=trended.dispersion, tagwise.dispersion=tagwise.dispersion, span=out.1$span, prior.df=prior.df, prior.n=prior.n)
+	list(common.dispersion=common.dispersion, trended.dispersion=trended.dispersion, tagwise.dispersion=tagwise.dispersion, span=span, prior.df=prior.df, prior.n=prior.n)
 }
 
 

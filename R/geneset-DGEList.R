@@ -46,7 +46,7 @@ romer.DGEList <- function(y, index, design=NULL, contrast=ncol(design), ...)
 .zscoreDGE <- function(y, design=NULL, contrast=ncol(design))
 #	Calculate NB z-scores given a DGEList object.
 #	Yunshun Chen, Gordon Smyth
-#	Created 27 May 2015.  Last modified 19 June 2015.
+#	Created 27 May 2015.  Last modified 11 Oct 2017.
 {
 #	Check for all zero counts
 	allzero <- rowSums(y$counts>1e-8)==0
@@ -57,6 +57,7 @@ romer.DGEList <- function(y, index, design=NULL, contrast=ncol(design), ...)
 	if(is.null(dispersion)) stop("Dispersion estimate not found. Please estimate the dispersion(s) before you proceed.")
 
 #	Make default design matrix from group factor
+	if(is.null(design)) design <- y$design
 	if(is.null(design)) {
 		if(nlevels(y$samples$group)<2) stop("design not supplied and samples all belong to the same group")
 		design <- model.matrix(~y$samples$group)

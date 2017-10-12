@@ -1,7 +1,7 @@
-topTags <- function(object,n=10,adjust.method="BH",sort.by="PValue",p.value=1) 
+topTags <- function(object,n=10L,adjust.method="BH",sort.by="PValue",p.value=1) 
 #	Summary table of the n most differentially expressed tags
-#	Mark Robinson, Davis McCarthy, Gordon Smyth
-#	Created September 2008.  Last modified 31 Oct 2014 (Yunshun Chen).
+#	Mark Robinson, Davis McCarthy, Gordon Smyth, Yunshun Chen.
+#	Created September 2008.  Last modified 9 Oct 2017.
 {
 #	Check object
 	if(is.null(object$table)) stop("Need to run exactTest or glmLRT first")
@@ -10,7 +10,7 @@ topTags <- function(object,n=10,adjust.method="BH",sort.by="PValue",p.value=1)
 
 #	Check n
 	n <- min(n,nrow(object$table))
-	if(n<1) stop("No rows to output")
+	if(n<1L) stop("No rows to output")
 
 #	Check adjust.method
 	FWER.methods <- c("holm", "hochberg", "hommel", "bonferroni")
@@ -48,7 +48,9 @@ topTags <- function(object,n=10,adjust.method="BH",sort.by="PValue",p.value=1)
 #	Add gene annotation if appropriate
 	if(!is.null(object$genes)){
 		if(is.null(dim(object$genes))) object$genes <- data.frame(ID=object$genes,stringsAsFactors=FALSE)
+		rn <- row.names(tab)
 		tab <- cbind(object$genes[o,,drop=FALSE], tab)
+		row.names(tab) <- rn
 	}
 	
 #	Thin out fit p.value threshold
@@ -60,7 +62,7 @@ topTags <- function(object,n=10,adjust.method="BH",sort.by="PValue",p.value=1)
 
 #	Enough rows left?
 	if(nrow(tab) < n) n <- nrow(tab)
-	if(n < 1) return(data.frame())
+	if(n < 1L) return(data.frame())
 		
 #	Output object
 	new("TopTags",list(

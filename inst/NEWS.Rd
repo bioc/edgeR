@@ -4,6 +4,24 @@
 
 \section{Version 3.20.0}{\itemize{
 \item
+DGEList() sets genes and counts to have same row.names.
+
+\item
+topTags() preserves row.names.
+
+\item
+estimateDisp() uses 'y$design' if it exists.
+
+\item
+estimateDisp() doesn't use average log-CPM in the prior.df calculation if 'trend.method' is 'none'.
+
+\item
+estimateDisp() doesn't return trended.dispersion if 'trend.method' is 'none'. 
+
+\item
+Design matrix defaults to 'y$design' before 'y$samples$group' in all the gene set testing functions.
+
+\item
 New arg 'group' for mglmOneWay(). Results in slight speed improvement for glmFit().
 
 \item

@@ -52,6 +52,7 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 	if(!is.null(genes)) {
 		genes <- as.data.frame(genes, stringsAsFactors=FALSE)
 		if(nrow(genes) != ntags) stop("Counts and genes have different numbers of rows")
+		row.names(genes) <- row.names(counts)
 		x$genes <- genes
 	}
 
