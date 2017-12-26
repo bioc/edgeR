@@ -45,7 +45,7 @@
 \item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a scalar or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix.}
 \item{weights}{numeric vector or matrix of non-negative quantitative weights.
 Can be a vector of length equal to the number of libraries, or a matrix of the same size as \code{y}.}
-\item{\dots}{for \code{cpm} and \code{rpkm}, other arguments are not used. For \code{cpmByGroup}, other arguments are passed to \code{glmFit}.}
+\item{\dots}{other arguments are not used.}
 }
 
 \value{A numeric matrix of CPM or RPKM values.
