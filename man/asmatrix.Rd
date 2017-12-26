@@ -21,6 +21,6 @@ A numeric matrix.
 }
 \author{Gordon Smyth}
 \seealso{
-  \code{\link{as.matrix}} in the base package or \code{\link[limma]{as.matrix.RGList}} in the limma package.
+  \code{\link{as.matrix}} in the base package or \code{\link[limma:asmatrix]{as.matrix}} in the limma package.
 }
 \keyword{array}

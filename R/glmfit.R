@@ -27,10 +27,11 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries
 #	Davis McCarthy and Gordon Smyth
-#	Created 17 August 2010. Last modified 10 July 2017.
+#	Created 17 August 2010. Last modified 14 Dec 2017.
 {
 #	Check y
 	y <- as.matrix(y)
+	if(mode(y) != "numeric") stop("y is not a numeric matrix")
 	ntag <- nrow(y)
 	nlib <- ncol(y)
 
@@ -41,15 +42,34 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 		colnames(design) <- "Intercept"
 	} else {
 		design <- as.matrix(design)
+		if(nrow(design) != nlib) stop("nrow(design) disagrees with ncol(y)")
 		ne <- nonEstimable(design)
 		if(!is.null(ne)) stop(paste("Design matrix not of full rank.  The following coefficients not estimable:\n", paste(ne, collapse = " ")))
 	}
 
 #	Check dispersion
-	if(is.null(dispersion)) stop("No dispersion values provided.")    
+	if(is.null(dispersion)) stop("No dispersion values provided.")
+	dispersion <- as.numeric(dispersion)
+	if(length(dispersion) != 1L && length(dispersion) != ntag) stop("dispersion has wrong length, should agree with nrow(y)")
 	dispersion.mat <- .compressDispersions(y, dispersion)
 
-#	Check offset and lib.size
+#	Check offset
+	if(!is.null(offset)) {
+		if(mode(offset) != "numeric") stop("offset is not numeric")
+		if(is.null(dim(offset))) {
+			if(length(offset) != 1L && length(offset) != nlib) stop("offset has wrong length. As a vector, it should agree with ncol(y)")
+		} else {
+			if( !all(dim(offset)==dim(y)) ) stop("Dimensions of offset don't agree with dimensions of y")
+		}
+	}
+
+#	Check lib.size
+	if(!is.null(lib.size)) {
+		lib.size <- as.numeric(lib.size)
+		if(length(lib.size) != 1L && length(lib.size) != nlib) stop("lib.size has wrong length, should agree with ncol(y)")
+	}
+
+#	Comsolidate lib.size and offset into a compressed matrix
 	offset <- .compressOffsets(y=y, lib.size=lib.size, offset=offset)
 
 #	weights are checked in lower-level functions

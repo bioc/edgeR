@@ -67,7 +67,7 @@ This approach is somewhat less conservative.
 \seealso{
 \code{\link{topTags}} displays results from \code{glmTreat}.
 
-\code{\link[limma]{treat}} is the corresponding function in the limma package, designed on normally distributed expression data rather than negative binomial counts.
+\code{\link{treat}} is the corresponding function in the limma package, designed on normally distributed expression data rather than negative binomial counts.
 }
 
 \references{

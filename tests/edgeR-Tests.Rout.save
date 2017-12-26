@@ -1,5 +1,5 @@
 
-R version 3.4.0 (2017-04-21) -- "You Stupid Darkness"
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
 Copyright (C) 2017 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
@@ -538,4 +538,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   3.09    0.10    3.21 
+   3.29    0.04    3.34 
