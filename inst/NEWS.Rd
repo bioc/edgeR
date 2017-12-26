@@ -2,6 +2,25 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+
+\section{Version 3.20.3}{\itemize{
+\item
+New function modelMatrixMeth() to construct design matrices for analysis of methylation data.
+
+\item
+New function filterByExpr() to filter low expression genes or features.
+}}
+
+
+\section{Version 3.20.2}{\itemize{
+\item
+decideTestsDGE() now includes a 'label' attribute, which allows more information row.names for the summary results table from decideTestsDGE() or decideTests().
+
+\item
+More intuitive error messages from glmFit() when the arguments are not conformal.
+}}
+
+
 \section{Version 3.20.0}{\itemize{
 \item
 DGEList() sets genes and counts to have same row.names.
