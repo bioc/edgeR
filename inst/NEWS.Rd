@@ -2,6 +2,31 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+
+\section{Version 3.21.2}{\itemize{
+\item
+New function modelMatrixMeth() to construct design matrices for analysis of methylation data.
+
+\item
+New function filterByExpr() to filter low expression genes or features.
+
+\item
+decideTestsDGE() now includes a 'label' attribute, which allows more information row.names for the summary results table from decideTestsDGE() or decideTests().
+
+\item
+More intuitive error messages from glmFit() when the arguments are not conformal.
+
+\item
+Update User's Guide to cite the Chen et al (2017) methylation workflow.
+}}
+
+
+\section{Version 3.21.1}{\itemize{
+\item
+Bug fix to glmLRT when there is just one gene but multiple contrasts.
+}}
+
+
 \section{Version 3.20.0}{\itemize{
 \item
 DGEList() sets genes and counts to have same row.names.
