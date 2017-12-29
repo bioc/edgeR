@@ -1,8 +1,12 @@
 roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL,...)
 #	Rotation gene set testing for RNA-Seq data
 #	Yunshun Chen, Gordon Smyth
-#	Created 19 Dec 2012. Last revised on 26 Nov 2016
+#	Created 19 Dec 2012. Last revised on 29 Dec 2017.
 {
+	if(is.null(design)) {
+		design <- y$design
+		if(is.null(design)) design <- model.matrix(~y$samples$group)
+	}
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
 	roast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf)
 }
@@ -10,8 +14,12 @@ roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), gen
 mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, adjust.method="BH", midp=TRUE, sort="directional", ...)
 #	Rotation gene set testing for RNA-Seq data with multiple sets
 #	Yunshun Chen, Gordon Smyth
-#	Created 8 Jan 2013.  Last revised 26 Nov 2016.
+#	Created 8 Jan 2013.  Last revised 29 Dec 2017.
 {
+	if(is.null(design)) {
+		design <- y$design
+		if(is.null(design)) design <- model.matrix(~y$samples$group)
+	}
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
 	mroast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf, adjust.method=adjust.method, midp=midp, sort=sort)
 }
@@ -19,8 +27,12 @@ mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), ge
 fry.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, sort="directional", ...)
 #	Rotation gene set testing for RNA-Seq data with multiple sets
 #	Yunshun Chen, Gordon Smyth
-#	Created 1 Dec 2015.  Last revised 26 Nov 2016.
+#	Created 1 Dec 2015.  Last revised 29 Dec 2017.
 {
+	if(is.null(design)) {
+		design <- y$design
+		if(is.null(design)) design <- model.matrix(~y$samples$group)
+	}
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
 	fry(y=y, index=index, design=design, contrast=contrast, standardize="none", geneid=geneid, sort=sort)
 }
@@ -28,8 +40,12 @@ fry.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), genei
 camera.DGEList <- function(y, index, design=NULL, contrast=ncol(design), weights=NULL, use.ranks=FALSE, allow.neg.cor=FALSE, inter.gene.cor=0.01, sort=TRUE, ...)
 #	Rotation gene set testing for RNA-Seq data accounting for inter-gene correlation
 #	Yunshun Chen, Gordon Smyth
-#	Created 07 Jan 2013. Last modified 26 Nov 2016.
+#	Created 07 Jan 2013. Last modified 29 Dec 2017.
 {
+	if(is.null(design)) {
+		design <- y$design
+		if(is.null(design)) design <- model.matrix(~y$samples$group)
+	}
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
 	camera(y=y, index=index, design=design, contrast=contrast, weights=weights, use.ranks=use.ranks, allow.neg.cor=allow.neg.cor, inter.gene.cor=inter.gene.cor, trend.var=FALSE, sort=sort)
 }
@@ -37,8 +53,12 @@ camera.DGEList <- function(y, index, design=NULL, contrast=ncol(design), weights
 romer.DGEList <- function(y, index, design=NULL, contrast=ncol(design), ...)
 #	rotation mean-rank version of GSEA (gene set enrichment analysis) for RNA-Seq data
 #	Yunshun Chen, Gordon Smyth
-#	Created 20 Oct 2014.  Last modified 27 May 2015.
+#	Created 20 Oct 2014.  Last modified 29 Dec 2017.
 {
+	if(is.null(design)) {
+		design <- y$design
+		if(is.null(design)) design <- model.matrix(~y$samples$group)
+	}
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
 	romer(y=y, index=index, design=design, contrast, ...)
 }
