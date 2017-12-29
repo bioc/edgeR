@@ -13,7 +13,7 @@ Test whether a set of genes is highly ranked relative to other genes in terms of
 \arguments{
   \item{y}{a \code{DGEList} object containing dispersion estimates.}
   \item{index}{an index vector or a list of index vectors.  Can be any vector such that \code{y[index,]} selects the rows corresponding to the test set.  The list can be made using \code{\link{ids2indices}}.}
-  \item{design}{design matrix.}
+  \item{design}{design matrix. Defaults to \code{y$design} or, failing that, to \code{model.matrix(~y$samples$group)}.}
   \item{contrast}{contrast of the linear model coefficients for which the test is required. Can be an integer specifying a column of \code{design}, or else a numeric vector of same length as the number of columns of \code{design}.}
   \item{weights}{numeric matrix of observation weights of same size as \code{y}, or a numeric vector of array weights with length equal to \code{ncol(y)}, or a numeric vector of gene weights with length equal to \code{nrow(y)}.}
   \item{use.ranks}{do a rank-based test (\code{TRUE}) or a parametric test (\code{FALSE})?}
