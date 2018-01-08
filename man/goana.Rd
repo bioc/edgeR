@@ -62,9 +62,9 @@ The row names of the data frame give the GO term IDs.
 
 fit <- glmFit(y, design)
 lrt <- glmLRT(fit)
-go <- goana(lrt, species="Hs)
-topGO(go, ont="BP", sort = "up")
-topGO(go, ont="BP", sort = "down")
+go <- goana(lrt, species="Hs")
+topGO(go, ont="BP", sort="up")
+topGO(go, ont="BP", sort="down")
 }
 }
 

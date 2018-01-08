@@ -1,7 +1,5 @@
 \name{maPlot}
-\Rdversion{1.1}
 \alias{maPlot}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Plots Log-Fold Change versus Log-Concentration (or, M versus A) for Count Data
 }
@@ -27,7 +25,7 @@ maPlot(x, y, logAbundance=NULL, logFC=NULL, normalize=FALSE, plot.it=TRUE,
   \item{lowCol}{colour of the smeared points}
   \item{deCol}{colour of the DE (differentially expressed) points}
  \item{de.tags}{indices for genes identified as being differentially expressed; use \code{exactTest} or \code{glmLRT} to identify DE genes. Note that `tag' and `gene' are synonymous here.}
-  \item{smooth.scatter}{logical, whether to produce a 'smooth scatter' plot using the KernSmooth::smoothScatter function or just a regular scatter plot; default is \code{FALSE}, i.e. produce a regular scatter plot}
+  \item{smooth.scatter}{logical, whether to produce a 'smooth scatter' plot using the graphics::smoothScatter function or just a regular scatter plot; default is \code{FALSE}, i.e. produce a regular scatter plot}
   \item{lowess}{logical, indicating whether or not to add a lowess curve to the MA-plot to give an indication of any trend in the log-fold change with log-concentration}
   \item{\dots}{further arguments passed on to \code{plot}}
 }
@@ -47,5 +45,3 @@ The points to be smeared are identified as being equal to the minimum in one of 
 y <- matrix(rnbinom(10000,mu=5,size=2),ncol=4)
 maPlot(y[,1], y[,2])
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.

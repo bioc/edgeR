@@ -18,6 +18,14 @@ decideTestsDGE() now includes a 'label' attribute, which allows more information
 
 \item
 More intuitive error messages from glmFit() when the arguments are not conformal.
+
+\item
+Update User's Guide to cite the Chen et al (2017) methylation workflow.
+}}
+
+\section{Version 3.20.1}{\itemize{
+\item
+Bug fix to glmLRT when there is just one gene but multiple contrasts.
 }}
 
 
