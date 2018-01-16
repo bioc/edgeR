@@ -30,3 +30,8 @@ Logical vector of length \code{nrow(y)} indicating which rows of \code{y} to kee
 }
 
 \author{Gordon Smyth}
+
+\examples{\dontrun{
+keep <- filterByExpr(y)
+y <- y[keep,]
+}}

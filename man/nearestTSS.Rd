@@ -38,6 +38,10 @@ A data.frame with components:
 
 \author{Gordon Smyth}
 
+\seealso{
+\code{\link{nearestReftoX}}
+}
+
 \examples{
 nearestTSS(chr = c("1","1"), locus = c(1000000,2000000))
 }

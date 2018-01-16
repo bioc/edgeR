@@ -1,7 +1,7 @@
 #  FIT GENERALIZED LINEAR MODELS
 
 filterByExpr <- function(y, ...)
-UseMethod("filterbyExpr")
+UseMethod("filterByExpr")
 
 filterByExpr.DGEList <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
 {
