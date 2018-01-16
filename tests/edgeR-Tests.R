@@ -8,6 +8,8 @@ y <- rbind(0,c(0,0,2,2),y)
 rownames(y) <- paste("Tag",1:nrow(y),sep=".")
 d <- DGEList(counts=y,group=rep(1:2,each=2),lib.size=1001:1004)
 
+filterByExpr(d)
+
 # estimate common dispersion and find differences in expression
 d <- estimateCommonDisp(d)
 d$common.dispersion

@@ -29,6 +29,10 @@ Integer vector giving indices of elements of \code{reference}.
 
 \author{Gordon Smyth}
 
+\seealso{
+\code{\link{findInterval}}
+}
+
 \examples{
 nearestReftoX(c(-10,0.5,0.6,2,3), reference = c(-1,0,2))
 }

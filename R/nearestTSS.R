@@ -1,7 +1,7 @@
 nearestTSS <- function(chr,locus,species="Hs")
 #	Find nearest gene transcriptional start sites from orgDb
 #	Gordon Smyth
-#	Created 3 Jan 2018.  Last modified 8 Jan 2018.
+#	Created 3 Jan 2018.  Last modified 11 Jan 2018.
 {
 #	Get access to required annotation functions
 	suppressPackageStartupMessages(OK <- requireNamespace("AnnotationDbi",quietly=TRUE))
@@ -15,20 +15,20 @@ nearestTSS <- function(chr,locus,species="Hs")
 #	Get gene start positions
 	obj <- paste0("org.",species,".egCHRLOC")
 	egCHRLOC <- tryCatch(getFromNamespace(obj,orgPkg), error=function(e) FALSE)
-	if(is.logical(egCHRLOC)) stop("Can't find gene ontology mappings in package ",orgPkg)
+	if(is.logical(egCHRLOC)) stop("Can't find egCHRLOC gene location mappings in package ",orgPkg)
 	EGLOC <- AnnotationDbi::toTable(egCHRLOC)
 
 #	Get first gene end position
 	obj <- paste0("org.",species,".egCHRLOCEND")
 	egCHRLOCEND <- tryCatch(getFromNamespace(obj,orgPkg), error=function(e) FALSE)
-	if(is.logical(egCHRLOCEND)) stop("Can't find gene ontology mappings in package ",orgPkg)
+	if(is.logical(egCHRLOCEND)) stop("Can't find egCHRLOCEND gene end mappings in package ",orgPkg)
 	EGEND <- AnnotationDbi::toTable(egCHRLOCEND)
 	EGLOC$end_location <- EGEND$end_location
 
 #	Get Symbols
 	obj <- paste0("org.",species,".egSYMBOL")
 	egSYMBOL <- tryCatch(getFromNamespace(obj,orgPkg), error=function(e) FALSE)
-	if(is.logical(egSYMBOL)) stop("Can't find gene ontology mappings in package ",orgPkg)
+	if(is.logical(egSYMBOL)) stop("Can't find egSYMBOL gene symbol mappings in package ",orgPkg)
 	EGSym <- AnnotationDbi::toTable(egSYMBOL)
 	m <- match(EGLOC$gene_id,EGSym$gene_id)
 	EGLOC$symbol <- EGSym[m,2]
