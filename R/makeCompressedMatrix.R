@@ -34,7 +34,7 @@ makeCompressedMatrix <- function(x, dims, byrow=TRUE)
 
     dimnames(x) <- NULL
     class(x) <- "CompressedMatrix"
-	attr(x, "Dims") <- dims
+	attr(x, "Dims") <- as.integer(dims)
     attr(x, "repeat.row") <- repeat.row
     attr(x, "repeat.col") <- repeat.col
 	return(x)
@@ -56,13 +56,27 @@ dim.CompressedMatrix <- function(x)
     attr(x, "Dims")
 }
 
-`[.CompressedMatrix` <- function(x, i, j, ...)
+length.CompressedMatrix <- function(x)
+# Getting length. 
+#
+# written by Aaron Lun
+# created 25 January 2018
+{
+    ncol(x)*nrow(x)
+}
+
+`[.CompressedMatrix` <- function(x, i, j, drop=TRUE)
 # A wrapper function to easily subset a makeCompressedMatrix object.
 #
 # written by Aaron Lun
 # created 24 September 2016
 # last modified 21 June 2017
 {
+    Nargs <- nargs() - !(missing(drop))
+    if (Nargs<3L) {
+        return(as.matrix(x)[i])
+    }
+
     raw.mat <- .strip_to_matrix(x)
 	row.status <- attr(x, "repeat.row") 
 	col.status <- attr(x, "repeat.col")
@@ -89,7 +103,32 @@ dim.CompressedMatrix <- function(x)
 	attr(raw.mat, "Dims") <- c(nr, nc)
     attr(raw.mat, "repeat.row") <- row.status
     attr(raw.mat, "repeat.col") <- col.status
+
+    if (drop && 
+        ((!missing(i) && length(i)==1L) ||
+         (!missing(j) && length(j)==1L))) {
+        raw.mat <- as.vector(as.matrix(raw.mat))
+    } 
 	return(raw.mat)
+}
+
+`[<-.CompressedMatrix` <- function(x, i, j, value) 
+# Subset assignment, for completeness' sake.
+#
+# written by Aaron Lun
+# created 25 January 2018
+{
+    ref <- as.matrix(x)
+    if (is(value, "CompressedMatrix")) { 
+        value <- as.matrix(value)
+    }
+
+    if (nargs() < 4L) {
+        ref[i] <- value
+    } else {
+        ref[i,j] <- value
+    }
+    makeCompressedMatrix(ref, attr(x, "Dims"), TRUE)
 }
 
 as.matrix.CompressedMatrix <- function(x, ...) 

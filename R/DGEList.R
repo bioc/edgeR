@@ -1,6 +1,6 @@
 DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE) 
 #	Construct DGEList object from components, with some checking
-#	Last modified 3 Oct 2016
+#	Created 28 Sep 2008. Last modified 22 Jan 2018.
 {
 #	Check counts
 	counts <- as.matrix(counts)
@@ -24,16 +24,22 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 		samples <- as.data.frame(samples)
 		if(nlib != nrow(samples)) stop("Number of rows in 'samples' must equal number of columns in 'counts'")
 	}
-	
+
+#	Get group from samples if appropriate
+	if(is.null(group) && !is.null(samples$group)) {
+		group <- samples$group
+		samples$group <- NULL
+	}
+
 #	Check group
 	if(is.null(group)) {
-		if(!is.null(samples))
-			group <- samples[,1]
-		else
-			group <- rep(1,ncol(counts))
+		group <- rep_len(1L,nlib)
+		levels(group) <- "1"
+		class(group) <- "factor"
+	} else {
+		if(length(group) != nlib) stop("Length of 'group' must equal number of columns in 'counts'")
+		group <- dropEmptyLevels(group)
 	}
-	group <- dropEmptyLevels(group)
-	if(nlib != length(group)) stop("Length of 'group' must equal number of columns in 'counts'")
 
 #	Make data frame of sample information
 	sam <- data.frame(group=group,lib.size=lib.size,norm.factors=norm.factors)

@@ -3,6 +3,8 @@
 \alias{makeCompressedMatrix}
 \alias{CompressedMatrix}
 \alias{[.CompressedMatrix}
+\alias{[<-.CompressedMatrix}
+\alias{length.CompressedMatrix}
 \alias{as.matrix.CompressedMatrix}
 \alias{Ops.CompressedMatrix}
 \alias{cbind.CompressedMatrix}
@@ -17,14 +19,18 @@ Construct a CompressedMatrix object from a scalar, vector or matrix.
 \usage{
 makeCompressedMatrix(x, dims, byrow=TRUE)
 
-\method{as.matrix}{CompressedMatrix}(x, ...)
 \method{dim}{CompressedMatrix}(x)
-\method{[}{CompressedMatrix}(x, i, j, ...) 
+\method{length}{CompressedMatrix}(x)
+
+\method{[}{CompressedMatrix}(x, i, j, drop=TRUE) 
+\method{[}{CompressedMatrix}(x, i, j) <- value
 
 \method{Ops}{CompressedMatrix}(e1, e2)
 
 \method{rbind}{CompressedMatrix}(...)
 \method{cbind}{CompressedMatrix}(...)
+
+\method{as.matrix}{CompressedMatrix}(x, ...)
 }
 
 \arguments{
@@ -32,9 +38,12 @@ makeCompressedMatrix(x, dims, byrow=TRUE)
         For the S3 methods, a CompressedMatrix object.}
   \item{dims}{an integer vector indicating the matrix dimensions, ignored if \code{x} is already a matrix}
   \item{byrow}{logical. If \code{x} is a vector, should it be repeated across rows (default) or across columns?}
-  \item{i, j}{subset indices to apply to \code{x}.}
+  \item{i, j}{subset indices to apply to \code{x}, which behave the same as indices for \code{matrix} subsetting}
+  \item{drop}{logical, indicating whether or not to drop dimensions when subsetting to a single row/column}
+  \item{value}{an array-like object or vector to be used to replace values in \code{x}}
   \item{e1, e2}{a CompressedMatrix object}
-  \item{...}{additional arguments, ignored.}
+  \item{...}{multiple CompressedMatrix objects for \code{rbind} and \code{cbind}.
+  Otherwise additional arguments that are ignored in \code{as.matrix}.}
 }
 
 \details{
@@ -65,7 +74,7 @@ If \code{x} is a CompressedMatrix, it will be returned without modification.
 
 \section{Class methods}{
 Subsetting of a CompressedMatrix object depends on the values of \code{repeat.row} and \code{repeat.col}.
-If the rows are repeated, any subsetting by row will be ignored.
+If the rows are repeated, any subsetting by row will be effectively ignored, only altering the stored dimensions of \code{x} without changing the values.
 Similarly, if the columns are repeated, any subsetting by column will be ignored.
 If neither are repeated, subsetting behaves as it would for a normal matrix.
 
