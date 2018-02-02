@@ -29,6 +29,7 @@ importFrom("Rcpp", sourceCpp)
 
 S3method(Ops,CompressedMatrix)
 S3method("[",CompressedMatrix)
+S3method("[<-",CompressedMatrix)
 S3method(as.data.frame,TopTags)
 S3method(as.matrix,CompressedMatrix)
 S3method(as.matrix,DGEList)
