@@ -12,8 +12,8 @@ Test for over-representation of gene ontology (GO) terms or KEGG pathways in the
 \method{kegga}{DGELRT}(de, geneid = rownames(de), FDR = 0.05, trend = FALSE, \dots)
 }
 \arguments{
-  \item{de}{an \code{DGELRT} object.}
-  \item{geneid}{Entrez Gene identifiers. Either a vector of length \code{nrow(de)} or the name of the column of \code{de$genes} containing the Entrez Gene IDs.}
+  \item{de}{an \code{DGELRT} or \code{DGEExact} object.}
+  \item{geneid}{gene IDs. Either a character vector of length \code{nrow(de)} or the name of the column of \code{de$genes} containing the Gene IDs.}
   \item{FDR}{false discovery rate cutoff for differentially expressed genes. Numeric value between 0 and 1.}
   \item{trend}{adjust analysis for gene length or abundance?
   Can be logical, or a numeric vector of covariate values, or the name of the column of \code{de$genes} containing the covariate values.
@@ -23,7 +23,16 @@ Test for over-representation of gene ontology (GO) terms or KEGG pathways in the
 \details{
 \code{goana} performs Gene Ontology enrichment analyses for the up and down differentially expressed genes from a linear model analysis.
 \code{kegga} performs the corresponding analysis for KEGG pathways.
-The Entrez Gene ID must be supplied for each gene.
+
+The argument \code{de} should be a fitted model object created by \code{glmLRT}, \code{glmTreat}, \code{glmQLFTest} or \code{exactTest}.
+
+For \code{goana}, the gene IDs must be Entrez Gene IDs.
+These can be supplied either as row.names of \code{de} or as a column of \code{de$genes}.
+In the latter case, the column name containing the Entrez IDs is given by \code{geneid}.
+Alternatively, if the Entrez IDs are not part of the \code{de} object, then they can be supplied as a vector argument to \code{geneid}.
+
+For \code{kegga}, gene IDs other than Entrez Gene IDs are supported for some species.
+See \code{\link{kegga.default}} for more information.
 
 If \code{trend=FALSE}, the function computes one-sided hypergeometric tests equivalent to Fisher's exact test.
 
@@ -45,6 +54,10 @@ The row names of the data frame give the GO term IDs.
 }
 
 \references{
+Chen Y, Lun ATL, and Smyth, GK (2016). From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
+\emph{F1000Research} 5, 1438. 
+\url{https://f1000research.com/articles/5-1438}
+
   Young, M. D., Wakefield, M. J., Smyth, G. K., Oshlack, A. (2010).
   Gene ontology analysis for RNA-seq: accounting for selection bias.
   \emph{Genome Biology} 11, R14.
@@ -59,13 +72,11 @@ The row names of the data frame give the GO term IDs.
 
 \examples{
 \dontrun{
-
 fit <- glmFit(y, design)
 lrt <- glmLRT(fit)
 go <- goana(lrt, species="Hs")
 topGO(go, ont="BP", sort="up")
-topGO(go, ont="BP", sort="down")
-}
+topGO(go, ont="BP", sort="down")}
 }
 
 \keyword{gene set test}
