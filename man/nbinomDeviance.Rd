@@ -1,6 +1,5 @@
 \name{nbinomDeviance}
 \alias{nbinomDeviance}
-\alias{nbinomUnitDeviance}
 
 \title{Negative Binomial Deviance}
 
@@ -9,31 +8,28 @@ Fit the same log-link negative binomial or Poisson generalized linear model (GLM
 }
 
 \usage{
-nbinomUnitDeviance(y, mean, dispersion=0)
 nbinomDeviance(y, mean, dispersion=0, weights=NULL)
 }
 
 \arguments{
-\item{y}{numeric vector or matrix containing the negative binomial counts.  If a matrix, then rows for genes and columns for libraries.  \code{nbinomDeviance} treats a vector as a matrix with one row.}
+\item{y}{numeric matrix containing the negative binomial counts, with rows for genes and columns for libraries. A vector will be treated as a matrix with one row.}
 
-\item{mean}{numeric vector matrix of expected values, of same dimension as \code{y}.}
+\item{mean}{numeric matrix of expected values, of same dimension as \code{y}. A vector will be treated as a matrix with one row.}
 
-\item{dispersion}{numeric vector or matrix of negative binomial dispersions.
-Can be a scalar, or a vector of length equal to the number of genes, or a matrix of same dimensions as \code{y}.}
+\item{dispersion}{numeric vector or matrix of negative binomial dispersions, as for \code{\link{glmFit}}.
+Can be a scalar, a vector of length equal to \code{nrow(y)}, or a matrix of same dimensions as \code{y}.}
 
-\item{weights}{numeric vector or matrix of non-negative weights, as for \code{glmFit}.}
+\item{weights}{numeric vector or matrix of non-negative weights, as for \code{\link{glmFit}}.
+Can be a scalar, a vector of length equal to \code{ncol(y)}, or a matrix of same dimensions as \code{y}.}
 }
 
 \details{
-\code{nbinomUnitDeviance} computes the unit deviance for each \code{y} observation.
-\code{nbinomDeviance} computes the total residual deviance for each row of \code{y} observation, i.e., weighted row sums of the unit deviances.
+Computes the total residual deviance for each row of \code{y}, i.e., weighted row sums of the unit deviances.
 
-Care is taken to ensure accurate computation for small dispersion values.
+Care is taken to ensure accurate computation in limiting cases when the dispersion is near zero or \code{mean*dispersion} is very large.
 }
 
 \value{
-\code{nbinomUnitDeviance} returns a numeric vector or matrix of the same size as \code{y}.
-
 \code{nbinomDeviance} returns a numeric vector of length equal to the number of rows of \code{y}.
 }
 
@@ -50,9 +46,12 @@ Differential expression analysis of multifactor RNA-Seq experiments with respect
 
 \author{Gordon Smyth, Yunshun Chen, Aaron Lun.  C++ code by Aaron Lun.}
 
+\seealso{
+\code{\link{nbinomUnitDeviance}}
+}
+
 \examples{
 y <- matrix(1:6,3,2)
 mu <- matrix(3,3,2)
-nbinomUnitDeviance(y,mu,dispersion=0.2)
 nbinomDeviance(y,mu,dispersion=0.2)
 }

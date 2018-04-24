@@ -1,13 +1,13 @@
 #include "glm.h"
 
 /* Function to calculate the deviance. Note the protection for very large mu*phi (where we
- * use a gamma instead) or very small mu*phi (where we use the Poisson instead). This 
- * approximation protects against numerical instability introduced by subtrackting
+ * use a gamma instead) or very small mu*phi (where we use the Poisson instead). This
+ * approximation protects against numerical instability introduced by subtracting
  * a very large log value in (log mu) with another very large logarithm (log mu+1/phi).
  * We need to consider the 'phi' as the approximation is only good when the product is
  * very big or very small.
  */
-    
+
 const double one_tenthousandth=std::pow(10, -4.0);
 const double mildly_low_value=std::pow(10, -8.0);
 

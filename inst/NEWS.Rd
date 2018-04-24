@@ -3,7 +3,16 @@
 \encoding{UTF-8}
 
 
-\section{Version 3.21.2}{\itemize{
+\section{Version 3.22.0}{\itemize{
+\item
+New function read10X() to read 10X Genomics files.
+
+\item
+New function nearestTSS() to find the nearest transcriptional start site (TSS) for given genomic loci.
+
+\item
+New function nearestReftoX() to find the element of a reference table that is closest to each element of an incoming vector.
+
 \item
 New function modelMatrixMeth() to construct design matrices for analysis of methylation data.
 
@@ -11,19 +20,37 @@ New function modelMatrixMeth() to construct design matrices for analysis of meth
 New function filterByExpr() to filter low expression genes or features.
 
 \item
+New rowsum method for DGEList objects.
+
+\item
+nbinomUnitDeviance() now respects vectors.
+
+\item
+DGEList() takes 'group' from 'samples' only if samples has a column called group.
+
+\item
 decideTestsDGE() now includes a 'label' attribute, which allows more information row.names for the summary results table from decideTestsDGE() or decideTests().
+
+\item
+Design now defaults to y$design for all the gene set tests.
 
 \item
 More intuitive error messages from glmFit() when the arguments are not conformal.
 
 \item
 Update User's Guide to cite the Chen et al (2017) methylation workflow.
-}}
 
-
-\section{Version 3.21.1}{\itemize{
 \item
-Bug fix to glmLRT when there is just one gene but multiple contrasts.
+Change glmTreat() default to lfc=log2(1.2).
+
+\item
+Fix incorrect implementation of weights in adjustedProfileLik().
+
+\item
+Bug fix to glmLRT() when there is just one gene but multiple contrasts.
+
+\item
+Bug fix to cpmByGroup().
 }}
 
 
@@ -207,7 +234,7 @@ Add a CRISPR-Cas9 screen case study to the users' guide and rename Nigerian case
 
 \section{Version 3.12.0}{\itemize{
 \item
-New argument tagwise for estimateDisp(), allowing users not to estimate tagwise dispersions. 
+New argument tagwise for estimateDisp(), allowing users to optionally skip estimation of tagwise dispersions, estimating common and trended dispersions only.
 
 \item
 estimateTrendedDisp() has more stable performance and does not return negative trended dispersion estimates.
@@ -235,6 +262,9 @@ New kegga methods for DGEExact and DGELRT objects to perform KEGG pathway analys
 
 \item
 New dimnames<- methods for DGEExact and DGELRT objects.
+
+\item
+glmFit() and glmQLFit() will now accept a matrix of dispersion values, i.e., a potentially different dispersion for each observation.
 
 \item
 Bug fix to dimnames<- method for DGEGLM objects.

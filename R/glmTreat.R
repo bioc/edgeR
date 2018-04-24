@@ -1,7 +1,7 @@
-glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=0, null="interval")
+glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval")
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
 #	Yunshun Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 21 June 2017.
+#	Created on 05 May 2014. Last modified on 25 March 2018.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 

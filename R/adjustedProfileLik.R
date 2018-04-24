@@ -1,34 +1,40 @@
 adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adjust=TRUE, start=NULL, get.coef=FALSE)
-# tagwise Cox-Reid adjusted profile likelihoods for the dispersion
-# dispersion can be scalar or tagwise vector
-# y is matrix: rows are genes/tags/transcripts, columns are samples/libraries
-# offset is matrix of the same dimensions as y
-# Yunshun Chen, Gordon Smyth, Aaron Lun
-# Created June 2010. Last modified 21 June 2017.
+#	Tagwise Cox-Reid adjusted profile log-likelihoods for the dispersion.
+#	dispersion can be a scalar or a tagwise vector.
+#	Computationally, dispersion can also be a matrix, but the apl is still computed tagwise.
+#	y is a matrix: rows are genes/tags/transcripts, columns are samples/libraries.
+#	offset is a matrix of the same dimensions as y.
+
+#	The weights argument was added by Xiaobei Zhou 20 March 2013,
+#	but the log NB probabilities were incorrectly multiplied by the weights.
+#	This is fixed 1 March 2018 with a more rigorous interpretation of weights
+#	in terms of averages.
+
+#	Yunshun Chen, Gordon Smyth, Aaron Lun
+#	Created June 2010. Last modified 1 March 2018.
 {
-#   Checking counts
+#	Checking counts
 	if (!is.numeric(y)) stop("counts must be numeric")
 	y <- as.matrix(y)
 
-#   Checking offsets
+#	Checking offsets
 	offset <- .compressOffsets(y, offset=offset)
 
-#   Checking dispersion
+#	Checking dispersion
 	dispersion <- .compressDispersions(y, dispersion)
 
-#   Checking weights
+#	Checking weights
 	weights <- .compressWeights(y, weights)
 	  
-#	Fit tagwise linear models. This is actually the most time-consuming
-#	operation that I can see for this function.
+#	Fit tagwise linear models
 	fit <- glmFit(y,design=design,dispersion=dispersion,offset=offset,prior.count=0,weights=weights,start=start)
 	mu <- fit$fitted
 
-#   Check other inputs to C++ code
+#	Check other inputs to C++ code
 	adjust <- as.logical(adjust)
-	if (!is.double(design)) storage.mode(design)<-"double"
+	if (!is.double(design)) storage.mode(design) <- "double"
 
-#   Compute adjusted log-likelihood
+#	Compute adjusted log-likelihood
 	apl <- .Call(.cxx_compute_apl, y, mu, dispersion, weights, adjust, design)
 
 #	Deciding what to return.

@@ -26,8 +26,8 @@ glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, s
 glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, prior.count=0.125, start=NULL, ...)
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries
-#	Davis McCarthy and Gordon Smyth
-#	Created 17 August 2010. Last modified 14 Dec 2017.
+#	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun
+#	Created 17 August 2010. Last modified 1 March 2018.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -37,7 +37,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 
 #	Check design
 	if(is.null(design)) {
-		design <- matrix(1,ncol(y),1)
+		design <- matrix(1,nlib,1)
 		rownames(design) <- colnames(y)
 		colnames(design) <- "Intercept"
 	} else {
@@ -49,15 +49,19 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 
 #	Check dispersion
 	if(is.null(dispersion)) stop("No dispersion values provided.")
-	dispersion <- as.numeric(dispersion)
-	if(length(dispersion) != 1L && length(dispersion) != ntag) stop("dispersion has wrong length, should agree with nrow(y)")
+	if(!is.numeric(dispersion)) stop("dispersion must be numeric")
+	if(is.null(dim(dispersion))) {
+		if( !any(length(dispersion)==c(1L,ntag)) ) stop("dispersion has wrong length. As a vector, it should agree with nrow(y)")
+	} else {
+		if( !all(dim(dispersion)==dim(y)) ) stop("Dimensions of dispersion don't agree with dimensions of y")
+	}
 	dispersion.mat <- .compressDispersions(y, dispersion)
 
 #	Check offset
 	if(!is.null(offset)) {
-		if(mode(offset) != "numeric") stop("offset is not numeric")
+		if(!is.numeric(offset)) stop("offset must be numeric")
 		if(is.null(dim(offset))) {
-			if(length(offset) != 1L && length(offset) != nlib) stop("offset has wrong length. As a vector, it should agree with ncol(y)")
+			if( !any(length(offset)==c(1L,nlib)) ) stop("offset has wrong length. As a vector, it should agree with ncol(y)")
 		} else {
 			if( !all(dim(offset)==dim(y)) ) stop("Dimensions of offset don't agree with dimensions of y")
 		}
@@ -65,8 +69,8 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 
 #	Check lib.size
 	if(!is.null(lib.size)) {
-		lib.size <- as.numeric(lib.size)
-		if(length(lib.size) != 1L && length(lib.size) != nlib) stop("lib.size has wrong length, should agree with ncol(y)")
+		if(!is.numeric(lib.size)) stop("lib.size must be numeric")
+		if( !any(length(lib.size)==c(1L,lib.size)) ) stop("lib.size has wrong length, should agree with ncol(y)")
 	}
 
 #	Comsolidate lib.size and offset into a compressed matrix

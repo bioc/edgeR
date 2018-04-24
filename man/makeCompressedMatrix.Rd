@@ -127,7 +127,7 @@ as.matrix(offsets)
 }
 
 \seealso{
-\code{\link{expandAsMatrix}}
+\code{\link{as.matrix}}, \code{\link{expandAsMatrix}}
 }
 
 \keyword{hplot}

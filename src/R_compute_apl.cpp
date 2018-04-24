@@ -39,36 +39,43 @@ SEXP compute_apl(SEXP y, SEXP means, SEXP disps, SEXP weights, SEXP adjust, SEXP
         /* First computing the log-likelihood. */
         auto cmIt=curmeans.begin();
         for (int lib=0; lib<num_libs; ++lib, ++cmIt) { 
-            const double& cury=current[lib];
-            const double& curmu=(*cmIt);
-            if (curmu==0) { 
-                continue; // Should only be possible if count is zero, where the log-likelihood would then be 0.
+            if ((*cmIt)==0) { 
+                continue; // Mean should only be zero if count is zero, where the log-likelihood would then be 0.
             }
+           
+            // Each y is assumed to be the average of 'weights' counts, so we convert
+            // from averages to the "original sums" in order to compute NB probabilities.
+            const double& curw = wptr[lib];
+            const double curmu = (*cmIt) * curw;
+            const double cury = current[lib] * curw;
+            const double curd = dptr[lib] / curw;
 
             double loglik=0;
-            if (dptr[lib] > 0) {
+            if (curd > 0) {
                 // same as loglik <- rowSums(weights*dnbinom(y,size=1/dispersion,mu=mu,log = TRUE))
-                const double r=1/dptr[lib];
+                const double r=1/curd;
                 const double logmur=std::log(curmu+r);
                 loglik = cury*std::log(curmu) - cury*logmur + r*std::log(r) - r*logmur + lgamma(cury+r) - lgamma(cury+1) - lgamma(r); 
             } else {
                 // same as loglik <- rowSums(weights*dpois(y,lambda=mu,log = TRUE))
                 loglik = cury*std::log(curmu) - curmu - lgamma(cury+1);
             }
-            sum_loglik += loglik * wptr[lib]; // with weights.
+            sum_loglik += loglik;
+
+            // Adding the Jacobian, to account for the fact that we actually want the log-likelihood 
+            // of the _scaled_ NB distribution (after dividing the original sum by the weight).
+            sum_loglik += std::log(curw);
+
+            if (do_adjust) {
+                /* Computing 'W', the matrix of negative binomial working weights.
+                 * The class computes 'XtWX' and performs an LDL decomposition 
+                 * to compute the Cox-Reid adjustment factor.
+                 */
+                working_weights[lib] = curmu/(1 + curd * curmu); 
+            }
         }
         
         if (do_adjust) {
-            /* Computing 'W', the matrix of negative binomial probabilities. 
-             * The class computes 'XtWX' and performs an LDL decomposition 
-             * to compute the Cox-Reid adjustment factor.
-             */
-            auto cmIt=curmeans.begin();
-            for (int lib=0; lib<num_libs; ++lib, ++cmIt) {
-                const double& curmu=*cmIt;
-                working_weights[lib] = wptr[lib] * curmu/(1 + dptr[lib] * curmu);
-            }
-
             double adj=0;
             if (num_coefs==1) {
                 adj=std::accumulate(working_weights.begin(), working_weights.end(), 0.0);
@@ -82,8 +89,8 @@ SEXP compute_apl(SEXP y, SEXP means, SEXP disps, SEXP weights, SEXP adjust, SEXP
                 }
                 adj=x.first;
             }
-		    sum_loglik-=adj;
-		} 
+            sum_loglik-=adj;
+        } 
     }
 
     return output;

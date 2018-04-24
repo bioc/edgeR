@@ -1,26 +1,35 @@
 nbinomDeviance <- function(y,mean,dispersion=0,weights=NULL)
 #	Negative binomial residual deviance
 #	y is a matrix and a deviance is computed for each row
-#	A vector y is taken to be a matrix with one row.
+#	A vector y is taken to be a matrix with one row; in this case mean must also be a vector.
 #	Original version 23 November 2010.
 #	Last modified 21 June 2017.
 {
-#	Convert vector to row matrix
-	if(!is.matrix(y)) y <- array(y, c(1L,length(y)), if(!is.null(names(y))) list(NULL,names(y)))
 	out <- .compute_nbdeviance(y=y, mean=mean, dispersion=dispersion, weights=weights, dosum=TRUE)
 	names(out) <- rownames(y)
 	out
 }
 
-.compute_nbdeviance <- function(y, mean, dispersion, weights, dosum) {
+.compute_nbdeviance <- function(y, mean, dispersion, weights, dosum)
+{
 #	Check y. May be matrix or vector.
-	if(!is.matrix(y)) y <- matrix(y)
-	nobs <- length(y)
+	if(is.matrix(y)) {
+		if(!is.matrix(mean)) stop("y is a matrix but mean is not")
+	} else {
+		n <- length(y)
+		y <- matrix(y,1L,n)
+		if(is.matrix(mean)) {
+			stop("mean is a matrix but y is not")
+		} else {
+			if(length(mean)==n || length(mean==1L)) {
+				mean <- matrix(mean,1L,n)
+			}
+		}
+	}
 
 #	Check mean
-	if(!is.matrix(mean)) mean <- matrix(mean)
+	if(!identical(dim(y),dim(mean))) stop("mean should have same dimensions as y")
 	if(!is.double(mean)) storage.mode(mean) <- "double"
-	if(length(mean)<nobs) stop("mean should have same dimensions as y")
 
 #	Check dispersion (can be tagwise (rowwise) or observation-wise).
 	dispersion <- .compressDispersions(y, dispersion)
@@ -28,15 +37,14 @@ nbinomDeviance <- function(y,mean,dispersion=0,weights=NULL)
 #	Check weights.
 	weights <- .compressWeights(y, weights)
 
-#	Computing unit deviance or residual deviance per gene, depending on 'dosum'.
-	d <- .Call(.cxx_compute_nbdev, y, mean, dispersion, weights, as.logical(dosum))
-	return(d)
+#	Compute matrix of unit deviances, or residual deviance per gene, depending on 'dosum'.
+	.Call(.cxx_compute_nbdev, y, mean, dispersion, weights, as.logical(dosum))
 }
 
 nbinomUnitDeviance <- function(y,mean,dispersion=0) 
 #	Unit deviance for the nbinom distribution.
+#	Created 9 Dec 2013. Last modified 18 Mar 2018.
 {
-	out <- .compute_nbdeviance(y=y, mean=mean, dispersion=dispersion, weights=NULL, dosum=FALSE)
-	dimnames(out) <- dimnames(y)
-	return(out)
+	y[] <- .compute_nbdeviance(y=y, mean=mean, dispersion=dispersion, weights=NULL, dosum=FALSE)
+	y
 }

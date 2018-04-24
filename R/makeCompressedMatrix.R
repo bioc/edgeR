@@ -61,12 +61,13 @@ length.CompressedMatrix <- function(x)
 #
 # written by Aaron Lun
 # created 25 January 2018
+# last modified 1 March 2018
 {
-    ncol(x)*nrow(x)
+    prod(attr(x,"Dims"))
 }
 
 `[.CompressedMatrix` <- function(x, i, j, drop=TRUE)
-# A wrapper function to easily subset a makeCompressedMatrix object.
+# Subsetting for CompressedMatrix objects.
 #
 # written by Aaron Lun
 # created 24 September 2016
@@ -113,7 +114,7 @@ length.CompressedMatrix <- function(x)
 }
 
 `[<-.CompressedMatrix` <- function(x, i, j, value) 
-# Subset assignment, for completeness' sake.
+# Subset assignment for CompressedMatrix objects.
 #
 # written by Aaron Lun
 # created 25 January 2018

@@ -64,8 +64,9 @@ std::pair<double, bool> adj_coxreid::compute(const double* wptr) {
    divide by two, because that's just how the Cox-Reid adjustment works.)
 
    'info > 0' indicates that one of the diagonals is zero. We handle this by replacing the
-   it with an appropriately small non-zero value, if the diagnoal element is zero or NA. This
-   is valid because the set of fitted values which are zero will be constant at all dispersions. 
+   it with an appropriately small non-zero value, if the diagonal element is zero or NA. This
+   is valid because the zero elements correspond to all-zero columns in "WX", which in turn
+   only arise when there are fitted values of zero, which will be constant at all dispersions. 
    Thus, any replacement value will eventually cancel out during interpolation to obtain the CRAPLE.
 
    Note that the LAPACK routine will also do some pivoting, essentially solving PAP* = LDL* for 

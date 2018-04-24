@@ -6,7 +6,7 @@
 \description{Conduct genewise statistical tests for a given coefficient or contrast relative to a specified fold-change threshold.}
 
 \usage{
-glmTreat(glmfit, coef = ncol(glmfit$design), contrast = NULL, lfc = 0, null = "interval")
+glmTreat(glmfit, coef = ncol(glmfit$design), contrast = NULL, lfc = log2(1.2), null = "interval")
 }
 
 \arguments{
@@ -59,7 +59,7 @@ This approach is somewhat less conservative.
 }
 
 \note{
-\code{glmTreat} was previously called \code{treatDGE}.
+\code{glmTreat} was previously called \code{treatDGE} in edgeR versions 3.9.10 and earlier. 
 }
 
 \author{Yunshun Chen and Gordon Smyth}
@@ -67,7 +67,7 @@ This approach is somewhat less conservative.
 \seealso{
 \code{\link{topTags}} displays results from \code{glmTreat}.
 
-\code{\link{treat}} is the corresponding function in the limma package, designed on normally distributed expression data rather than negative binomial counts.
+\code{\link{treat}} is the corresponding function in the limma package, designed for use with normally distributed log-expression data rather than for negative binomial counts.
 }
 
 \references{
