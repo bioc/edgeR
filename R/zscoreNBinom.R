@@ -1,4 +1,4 @@
-zscoreNBinom <- function(q, size, mu, min.mu=NULL)
+zscoreNBinom <- function(q, size, mu)
 #	Z-score equivalents for negative binomial deviates
 #	Non-integer values for q are allowed
 #	Gordon Smyth, Aaron Lun
@@ -8,7 +8,6 @@ zscoreNBinom <- function(q, size, mu, min.mu=NULL)
 #	Ensure arguments all same length
 	n <- length(q)
 	size <- rep_len(size,length.out=n)
-	if(!is.null(min.mu)) mu <- pmax(mu,min.mu)
 	mu <- rep_len(mu,length.out=n)
 
 #	Output object
