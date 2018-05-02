@@ -15,14 +15,14 @@ importFrom("stats", approxfun, as.dist, chisq.test, cmdscale,
            integrate, lm.fit, lm.wfit, median, model.matrix,
            optim, optimize, p.adjust, pbeta, pbinom,
            pchisq, pf, pgamma, pnbinom, pnorm, predict,
-           pt, qbeta, qgamma, qnorm, qqnorm, quantile,
+           pt, qbeta, qf, qgamma, qnorm, qqnorm, quantile,
            rbinom, rmultinom, runif, uniroot)
 importFrom("utils", getFromNamespace, read.delim, read.table, write.table)
 if( tools:::.OStype() == "windows" ) importFrom("utils", "winMenuAddItem")
 
 importFrom("limma",camera,contrastAsCoef,decideTests,fry,goana,kegga,is.fullrank,
-     lmFit,loessFit,mroast,nonEstimable,plotMD,plotMDS,plotWithHighlights,removeExt,
-     roast,romer,squeezeVar,subsetListOfArrays,zscoreGamma,zscoreT)
+     logsumexp,lmFit,loessFit,mroast,nonEstimable,plotMD,plotMDS,plotWithHighlights,
+     removeExt,roast,romer,squeezeVar,subsetListOfArrays,zscoreGamma,zscoreT)
 importClassesFrom("limma","LargeDataObject","Roast","MDS","TestResults")
 importFrom("locfit", locfit)
 importFrom("Rcpp", sourceCpp)
