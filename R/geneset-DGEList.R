@@ -66,7 +66,8 @@ romer.DGEList <- function(y, index, design=NULL, contrast=ncol(design), ...)
 .zscoreDGE <- function(y, design=NULL, contrast=ncol(design))
 #	Calculate NB z-scores given a DGEList object.
 #	Yunshun Chen, Gordon Smyth
-#	Created 27 May 2015.  Last modified 11 Oct 2017.
+#	Created 27 May 2015.
+#	Last modified 1 May 2018.
 {
 #	Check for all zero counts
 	allzero <- rowSums(y$counts>1e-8)==0
@@ -105,6 +106,7 @@ romer.DGEList <- function(y, index, design=NULL, contrast=ncol(design), ...)
 	fit.null <- glmFit(y, design0, prior.count=0)
 
 #	Quantile residuals from null fit
-	y <- zscoreNBinom(y$counts, mu=fit.null$fitted.values, size=1/dispersion)
+#	Applying a floor to mu avoids infinite z-scores when mu=0
+	y <- zscoreNBinom(y$counts, mu=pmax(fit.null$fitted.values,1e-17), size=1/dispersion)
 	y
 }

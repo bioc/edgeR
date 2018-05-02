@@ -1,33 +1,66 @@
-#  SCORE.R
-
-zscoreNBinom <- function(q, size, mu) 
-#  Z-score equivalents for negative binomial deviates
-#  Gordon Smyth, Aaron Lun
-#  created 10 December 2011
-#  last modified 9 March 2015
+zscoreNBinom <- function(q, size, mu, min.mu=NULL)
+#	Z-score equivalents for negative binomial deviates
+#	Non-integer values for q are allowed
+#	Gordon Smyth, Aaron Lun
+#	Created 10 December 2011
+#	Last modified 1 May 2018
 {
-	z <- round(q)
+#	Ensure arguments all same length
 	n <- length(q)
-	size <- rep(size,length.out=n)
-	mu <- rep(mu,length.out=n)
-	d <- dnbinom(q,size=size,mu=mu, log=TRUE)
-	up <- (q >= mu)
+	size <- rep_len(size,length.out=n)
+	if(!is.null(min.mu)) mu <- pmax(mu,min.mu)
+	mu <- rep_len(mu,length.out=n)
 
-	if(any(up)) {
-		p <- pnbinom(q[up],size=size[up],mu=mu[up],lower.tail=FALSE, log.p=TRUE)
-		refined.p <- p + suppressWarnings(log1p(exp(d[up] - p)/2))
-		z[up] <- suppressWarnings(qnorm(refined.p, lower.tail=FALSE, log.p=TRUE))
-	}
-	if(any(!up)) {
-		p <- pnbinom(q[!up],size=size[!up],mu=mu[!up],lower.tail=TRUE, log.p=TRUE)
-		refined.p <- p + suppressWarnings(log1p(-exp(d[!up] - p)/2))
-		z[!up] <- suppressWarnings(qnorm(refined.p,lower.tail=TRUE, log.p=TRUE))
+#	Output object
+	z <- q
+
+#	Point mass, allowing for non-integer values
+	qr <- round(q)
+	logd <- dnbinom(qr,size=size,mu=mu,log=TRUE)
+
+#	Position of q relative to nearest integer
+	delta <- q - qr
+
+#	Treat q=0 as special case (not necessary, just for efficiency)
+	Z <- (qr == 0)
+	w <- delta[Z] + 0.5
+	logp <- logd[Z] + log(w)
+	z[Z] <- qnorm(logp,lower.tail=TRUE,log.p=TRUE)
+
+#	Right and left tails
+	R <- (q >= mu)
+	L <- which(!R & !Z)
+	R <- which(R & !Z)
+
+#	Right tail scores
+	if(length(R)) {
+#		Tail prob w/o point mass
+		logp <- pnbinom(qr[R]+0.5,size=size[R],mu=mu[R],lower.tail=FALSE,log.p=TRUE)
+
+#		Weight for point mass
+		w <- 0.5 - delta[R]
+
+#		Tail prob with weighted point mass
+		logp <- logsumexp(logp, logd[R] + log(w))
+
+#		Z-score
+		z[R] <- qnorm(logp,lower.tail=FALSE,log.p=TRUE)
 	}
 
-	not.fin <- !is.finite(z)
-	if (any(not.fin)) { 
-		z[not.fin] <- (2L*up[not.fin] -1L) * sqrt(nbinomUnitDeviance(q[not.fin], 
-			mean=mu[not.fin], dispersion=1/size[not.fin])) 
+#	Left tail scores
+	if(length(L)) {
+#		Tail prob w/o point mass
+		logp <- pnbinom(qr[L]-0.5,size=size[L],mu=mu[L],lower.tail=TRUE,log.p=TRUE)
+
+#		Weight for point mass
+		w <- delta[L] + 0.5
+
+#		Tail prob with weighted point mass
+		logp <- logsumexp(logp, logd[L] + log(w))
+
+#		Z-score
+		z[L] <- qnorm(logp,lower.tail=TRUE,log.p=TRUE)
 	}
+
 	z
 }
