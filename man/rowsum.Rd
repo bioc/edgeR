@@ -18,6 +18,9 @@ Condense the rows of a DGEList object so that counts are summed over specified g
 \details{
 A new \code{DGEList} object is computed, with the same columns as \code{x}, but for which the rows correspond to the unique values of \code{group}.
 The counts for rows with the same \code{group} value are summed.
+
+Columns of \code{x$genes} will be retained in the output if they contain group-level annotation.
+Columns that vary within groups will be dropped.
 }
 \value{
 \code{DGEList} object with the same number of columns as \code{x} and rows corresponding to the unique values of \code{group}.

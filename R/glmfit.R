@@ -27,7 +27,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries
 #	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun
-#	Created 17 August 2010. Last modified 1 March 2018.
+#	Created 17 August 2010. Last modified 23 May 2018.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -70,7 +70,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 #	Check lib.size
 	if(!is.null(lib.size)) {
 		if(!is.numeric(lib.size)) stop("lib.size must be numeric")
-		if( !any(length(lib.size)==c(1L,lib.size)) ) stop("lib.size has wrong length, should agree with ncol(y)")
+		if( !any(length(lib.size)==c(1L,nlib)) ) stop("lib.size has wrong length, should agree with ncol(y)")
 	}
 
 #	Comsolidate lib.size and offset into a compressed matrix
