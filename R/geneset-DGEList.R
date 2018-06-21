@@ -1,12 +1,13 @@
 roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL,...)
 #	Rotation gene set testing for RNA-Seq data
 #	Yunshun Chen, Gordon Smyth
-#	Created 19 Dec 2012. Last revised on 29 Dec 2017.
+#	Created 19 Dec 2012. Last revised on 3 June 2018.
 {
 	if(is.null(design)) {
 		design <- y$design
 		if(is.null(design)) design <- model.matrix(~y$samples$group)
 	}
+	if(length(geneid)==1L) geneid <- y$genes[[geneid]]
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
 	roast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf)
 }
@@ -14,12 +15,13 @@ roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), gen
 mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, adjust.method="BH", midp=TRUE, sort="directional", ...)
 #	Rotation gene set testing for RNA-Seq data with multiple sets
 #	Yunshun Chen, Gordon Smyth
-#	Created 8 Jan 2013.  Last revised 29 Dec 2017.
+#	Created 8 Jan 2013.  Last revised 3 June 2018.
 {
 	if(is.null(design)) {
 		design <- y$design
 		if(is.null(design)) design <- model.matrix(~y$samples$group)
 	}
+	if(length(geneid)==1L) geneid <- y$genes[[geneid]]
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
 	mroast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf, adjust.method=adjust.method, midp=midp, sort=sort)
 }
@@ -27,12 +29,13 @@ mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), ge
 fry.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, sort="directional", ...)
 #	Rotation gene set testing for RNA-Seq data with multiple sets
 #	Yunshun Chen, Gordon Smyth
-#	Created 1 Dec 2015.  Last revised 29 Dec 2017.
+#	Created 1 Dec 2015.  Last revised 3 June 2018.
 {
 	if(is.null(design)) {
 		design <- y$design
 		if(is.null(design)) design <- model.matrix(~y$samples$group)
 	}
+	if(length(geneid)==1L) geneid <- y$genes[[geneid]]
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
 	fry(y=y, index=index, design=design, contrast=contrast, standardize="none", geneid=geneid, sort=sort)
 }

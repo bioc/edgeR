@@ -3,6 +3,18 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.22.3}{\itemize{
+\item
+New function readBismark2DGE() to read methylation coverage files created by Bismark.
+}}
+
+
+\section{Version 3.22.1}{\itemize{
+\item
+zscoreNBinom now supports non-integer q values.
+}}
+
+
 \section{Version 3.22.0}{\itemize{
 \item
 New function read10X() to read 10X Genomics files.
