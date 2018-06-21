@@ -42,14 +42,18 @@ The data frame \code{table} contains the following columns:
 Instead of testing for genes which have log-fold-changes different from zero, it tests whether the log2-fold-change is greater than \code{lfc} in absolute value.
 \code{glmTreat} is analogous to the TREAT approach developed by McCarthy and Smyth (2009) for microarrays.
 
+Note that the \code{lfc} testing threshold used to define the null hypothesis is not the same as a log2-fold-change cutoff, as the observed log2-fold-change needs to substantially larger than \code{lfc} for the gene to be called as significant.
+In practice, modest values for \code{lfc} such as \code{log2(1.1)}, \code{log2(1.2)} or \code{log2(1.5)} are usually the most useful.
+In practice, setting \code{lfc=log2(1.2)} or \code{lfc=log2(1.5)} will usually cause most differentially expressed genes to have estimated fold-changes of 2-fold or greater, depending on the sample size and precision of the experiment.
+
+Note also that \code{glmTreat} constructs test statistics using the unshrunk log2-fold-changes(\code{unshrunk.logFC}) rather than the log2-fold-changes that are usually reported (\code{logFC}).
+If no shrinkage has been applied to the log-fold-changes, i.e., the glms were fitted with \code{prior.count=0}, then \code{unshrunk.logFC} and \code{logFC} are the same and the former is omitted from the output object.
+
 \code{glmTreat} detects whether \code{glmfit} was produced by \code{glmFit} or \code{glmQLFit}.
 In the former case, it conducts a modified likelihood ratio test (LRT) against the fold-change threshold.
 In the latter case, it conducts a quasi-likelihood (QL) F-test against the threshold.
 
 If \code{lfc=0}, then \code{glmTreat} is equivalent to \code{glmLRT} or \code{glmQLFTest}, depending on whether likelihood or quasi-likelihood is being used.
-
-If there is no shrinkage on log-fold-changes, i.e., fitting glms with \code{prior.count=0}, then \code{unshrunk.logFC} and \code{logFC} are essentially the same. Hence they are merged into one column of \code{logFC} in \code{table}.
-Note that \code{glmTreat} constructs test statistics using \code{unshrunk.logFC} rather than \code{logFC}.
 
 \code{glmTreat} with positive \code{lfc} gives larger p-values than would be obtained with \code{lfc=0}.
 If \code{null="worst.case"}, then \code{glmTreat} conducts a test closely analogous to the \code{treat} function in the limma package.
