@@ -3,6 +3,18 @@
 \encoding{UTF-8}
 
 
+\section{Version 3.22.4}{\itemize{
+\item
+Bug fix to column name returned by decideTestsDGE().
+
+\item
+Improved error messages from DGEList().
+
+\item
+Note added to readBismark2DGE() help page.
+}}
+
+
 \section{Version 3.22.3}{\itemize{
 \item
 New function readBismark2DGE() to read methylation coverage files created by Bismark.

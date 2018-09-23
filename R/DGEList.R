@@ -78,12 +78,12 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 }
 
 .isAllZero <- function(y) 
-# Function to check if all counts are zero in a memory-efficient manner.
+# Check whether all counts are zero in a memory-efficient manner.
 # Also checks and throws an error if NA or negative counts are present.
 {
     check.range <- suppressWarnings(range(y))
-    if (any(is.na(check.range)) || check.range[1] < 0) {
-        stop("counts must be positive finite values")
-    }
-    return(check.range[2]==0);
+    if (is.na(check.range[1])) stop("NA counts not allowed")
+    if (check.range[1] < 0) stop("Negative counts now allowed")
+    if (is.infinite(check.range[2])) stop("Infinite counts not allowed")
+    return(check.range[2]==0)
 }

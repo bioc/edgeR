@@ -19,6 +19,11 @@ This function reads tab-delimited coverage files output by Bismark software.
 Counts from multiple files are collated into a \code{\link[edgeR:DGEList-class]{DGEList}} object.
 }
 
+\note{
+This function represents genomic loci as integers, so the largest locus position must be less than the maximum integer in R (about \code{2e9}).
+The number of chromosomes times the largest locus position must be less than \code{1e16}.
+}
+
 \value{
 A \code{\link[edgeR:DGEList-class]{DGEList}} object with a row for each unique genomic loci found in the files and two columns (containing methylated and unmethylated counts) for each sample.
 }
