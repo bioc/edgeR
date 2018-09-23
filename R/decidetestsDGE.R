@@ -8,7 +8,7 @@ decideTests.DGEExact <- decideTests.DGELRT <- function(object,adjust.method="BH"
 decideTestsDGE <- function(object,adjust.method="BH",p.value=0.05,lfc=0)
 #	Accept or reject hypothesis tests across genes and contrasts
 #	edgeR team. Original author was Davis McCarthy.
-#	Created 15 August 2010. Last modified 14 Dec 2017.
+#	Created 15 August 2010. Last modified 15 July 2018.
 {
 #	Check object class
 	if( !(is(object,"DGEExact") || is(object,"DGELRT")) ) stop("Need DGEExact or DGELRT object")
@@ -43,7 +43,7 @@ decideTestsDGE <- function(object,adjust.method="BH",p.value=0.05,lfc=0)
 #	Assemble TestResults object
 	isDE <- matrix(isDE, ncol=1)
 	row.names(isDE) <- row.names(object)
-	colnames(isDE) <- paste(object$comparison,collapse="+")
+	colnames(isDE) <- paste(rev(object$comparison),collapse="-")
 
 #	Record possible values
 	if(FTest) {

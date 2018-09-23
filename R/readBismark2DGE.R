@@ -1,7 +1,13 @@
 readBismark2DGE <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 #	Read Bismark coverage files and create DGEList
+#
+#	It is assumed that genomic loci can be represented as integers, so
+#	the largest locus position must be less than about 2*10^9.
+#	The number of chromosomes times the largest locus position must be
+#	less than 10^16.
+#
 #	Gordon Smyth
-#	30 May 2018
+#	Created 30 May 2018. Last modified 23 Sep 2018.
 {
 	nsamples <- length(files)
 	if(is.null(sample.names)) sample.names <- removeExt(removeExt(removeExt(files)))
@@ -26,7 +32,6 @@ readBismark2DGE <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 	    LocusList[[i]] <- x[,2]
 	    CountList[[i]] <- as.matrix(x[,3:4])
 	    ChrNames <- unique(c(ChrNames,ChrRleList[[i]]$values))
-	    MaxLocus <- max(MaxLocus,max(x[,2]))
 	}
 
 	if(verbose) cat("Hashing ...\n")
@@ -35,11 +40,11 @@ readBismark2DGE <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 	for(i in 1:nsamples) ChrRleList[[i]]$values <- match(ChrRleList[[i]]$values,ChrNames)
 
 #	Hash the genomic positions
-	HashBase <- MaxLocus+1L
+	HashBase <- length(ChrNames)+1L
 	HashList <- list()
 	HashUnique <- c()
 	for (i in 1:nsamples) {
-		HashList[[i]] <- inverse.rle(ChrRleList[[i]]) + LocusList[[i]] / HashBase
+		HashList[[i]] <- inverse.rle(ChrRleList[[i]]) / HashBase + LocusList[[i]]
 		HashUnique <- unique(c(HashUnique,HashList[[i]]))
 	}
 
@@ -55,8 +60,8 @@ readBismark2DGE <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 	}
 
 #	Unhash
-	Chr <- as.integer(HashUnique)
-	Locus <- as.integer( (HashUnique-Chr) * HashBase + 0.5 )
+	Locus <- as.integer(HashUnique)
+	Chr <- as.integer( (HashUnique-Locus) * HashBase + 0.5 )
 	attr(Chr,"levels") <- ChrNames
 	class(Chr) <- "factor"
 
