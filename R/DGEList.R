@@ -1,6 +1,6 @@
 DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE) 
 #	Construct DGEList object from components, with some checking
-#	Created 28 Sep 2008. Last modified 22 Jan 2018.
+#	Created 28 Sep 2008. Last modified 25 Sep 2018.
 {
 #	Check counts
 	counts <- as.matrix(counts)
@@ -78,12 +78,13 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 }
 
 .isAllZero <- function(y) 
-# Check whether all counts are zero in a memory-efficient manner.
-# Also checks and throws an error if NA or negative counts are present.
+# Check whether all counts are zero.
+# Also checks and stops with an informative error message if negative, NA or infinite counts are present.
 {
-    check.range <- suppressWarnings(range(y))
-    if (is.na(check.range[1])) stop("NA counts not allowed")
-    if (check.range[1] < 0) stop("Negative counts now allowed")
-    if (is.infinite(check.range[2])) stop("Infinite counts not allowed")
-    return(check.range[2]==0)
+	if (!length(y)) return(FALSE)
+	check.range <- range(y)
+	if (is.na(check.range[1])) stop("NA counts not allowed", call.=FALSE)
+	if (check.range[1] < 0) stop("Negative counts not allowed", call.=FALSE)
+	if (is.infinite(check.range[2])) stop("Infinite counts not allowed", call.=FALSE)
+	check.range[2]==0
 }
