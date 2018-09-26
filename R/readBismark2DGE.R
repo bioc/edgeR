@@ -25,13 +25,13 @@ readBismark2DGE <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 	for(i in 1:nsamples) {
 		if(verbose) cat("Reading",files[i],"\n")
 		if(readr)
-		    x <- as.data.frame(suppressWarnings(readr::read_tsv(files[i],col_names=FALSE,col_types="ci__ii",progress=FALSE)))
+			x <- as.data.frame(suppressWarnings(readr::read_tsv(files[i],col_names=FALSE,col_types="ci__ii",progress=FALSE)))
 		else
-		    x <- read.delim(files[i],header=FALSE,colClasses=c("character","integer","NULL","NULL","integer","integer"))
-	    ChrRleList[[i]] <- rle(x[,1])
-	    LocusList[[i]] <- x[,2]
-	    CountList[[i]] <- as.matrix(x[,3:4])
-	    ChrNames <- unique(c(ChrNames,ChrRleList[[i]]$values))
+			x <- read.delim(files[i],header=FALSE,colClasses=c("character","integer","NULL","NULL","integer","integer"))
+		ChrRleList[[i]] <- rle(x[,1])
+		LocusList[[i]] <- x[,2]
+		CountList[[i]] <- as.matrix(x[,3:4])
+		ChrNames <- unique(c(ChrNames,ChrRleList[[i]]$values))
 	}
 
 	if(verbose) cat("Hashing ...\n")
@@ -55,8 +55,8 @@ readBismark2DGE <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 	j <- 1:2
 	for(i in 1:nsamples) {
 		m <- match(HashList[[i]], HashUnique)
-	    counts[m,j] <- CountList[[i]]
-	    j <- j+2L
+		counts[m,j] <- CountList[[i]]
+		j <- j+2L
 	}
 
 #	Unhash
