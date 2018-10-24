@@ -13,7 +13,7 @@ Divides the range of \code{x} into intervals, so that each interval contains a m
 \arguments{ 
 	\item{x}{numeric vector.}
 	\item{intervals}{number of intervals required.}
-	\item{min.n}{minimum number of values in any interval. Must be greater than \code{length(x)/intervals}.}
+	\item{min.n}{minimum number of values in any interval. Must be less than or equal to \code{length(x)/intervals}.}
 }
 
 \value{

@@ -56,7 +56,7 @@ Defaults to a single column of ones, equivalent to treating the columns as repli
 	\item{fitted.values}{matrix of fitted values from glm fits, same number of rows and columns as \code{y}.}
 	\item{deviance}{numeric vector of deviances, one for each gene.}
 
-\code{glmLRT} produces objects of class \code{DGELRT} with the same components as for \code{glmfit} plus the following:
+\code{glmLRT} produces objects of class \code{DGELRT} with the same components as for \code{glmFit} plus the following:
 	\item{table}{data frame with the same rows as \code{y} containing the log2-fold-changes, likelhood ratio statistics and p-values, ready to be displayed by \code{topTags}.}
 	\item{comparison}{character string describing the coefficient or the contrast being tested.}
 

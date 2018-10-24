@@ -8,10 +8,10 @@
 Calculate normalization factors to scale the raw library sizes.
 }
 \usage{
-\method{calcNormFactors}{DGEList}(object, method=c("TMM","RLE","upperquartile","none"),
+\method{calcNormFactors}{DGEList}(object, method=c("TMM","TMMwzp","RLE","upperquartile","none"),
                 refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE,
                 Acutoff=-1e10, p=0.75, \dots)
-\method{calcNormFactors}{default}(object, lib.size=NULL, method=c("TMM","RLE",
+\method{calcNormFactors}{default}(object, lib.size=NULL, method=c("TMM","TMMwzp","RLE",
                 "upperquartile","none"), refColumn=NULL, logratioTrim=.3,
                 sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, \dots)
 }
@@ -33,6 +33,11 @@ Calculate normalization factors to scale the raw library sizes.
 \details{
 \code{method="TMM"} is the weighted trimmed mean of M-values (to the reference) proposed by Robinson and Oshlack (2010), where the weights are from the delta method on Binomial data.
 If \code{refColumn} is unspecified, the library whose upper quartile is closest to the mean upper quartile is used.
+
+\code{method="TMMwzp"} stands for "TMM with zero pairing".
+This is a variant of TMM that should perform better for data with a high proportion of zeros, including single cell RNA-seq.
+In TMM method, genes that have zero count in either library are ignored when comparing pairs of libraries.
+In the TMMwzp method, the positive counts from such genes are reused to increase the number of features by which the libraries are compared.
 
 \code{method="RLE"} is the scaling factor method proposed by Anders and Huber (2010).
 We call it "relative log expression", as median library is calculated from the geometric mean of all columns and the median ratio of each sample to the median library is taken as the scale factor.

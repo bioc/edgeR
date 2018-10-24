@@ -1,7 +1,7 @@
 calcNormFactors <- function(object, ...)
 UseMethod("calcNormFactors")
 
-calcNormFactors.DGEList <- function(object, method=c("TMM","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
+calcNormFactors.DGEList <- function(object, method=c("TMM","TMMwzp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for DGEList objects
 #	Created 2 October 2014.  Last modified 27 August 2015.
 {
@@ -9,11 +9,11 @@ calcNormFactors.DGEList <- function(object, method=c("TMM","RLE","upperquartile"
 	object
 }
 
-calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
+calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMwzp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for count matrices
 #	Mark Robinson.  Edits by Gordon Smyth.
 #	Created October 22 October 2009 by Mark Robinson.
-#	Last modified 31 July 2015.
+#	Last modified 23 Sep 2018.
 {
 #	Check object
 	x <- as.matrix(object)
@@ -42,6 +42,15 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","RLE",
 			f <- rep(NA,ncol(x))
 			for(i in 1:ncol(x))
 				f[i] <- .calcFactorWeighted(obs=x[,i],ref=x[,refColumn], libsize.obs=lib.size[i], libsize.ref=lib.size[refColumn], logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff)
+			f
+		},
+		TMMwzp = {
+			f75 <- .calcFactorQuantile(data=x, lib.size=lib.size, p=0.75)
+			if( is.null(refColumn) ) refColumn <- which.min(abs(f75-mean(f75)))
+			if(length(refColumn)==0 | refColumn < 1 | refColumn > ncol(x)) refColumn <- 1
+			f <- rep(NA,ncol(x))
+			for(i in 1:ncol(x))
+				f[i] <- .calcFactorTMMwzp(obs=x[,i],ref=x[,refColumn], libsize.obs=lib.size[i], libsize.ref=lib.size[refColumn], logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff)
 			f
 		},
 		RLE = .calcFactorRLE(x)/lib.size,
@@ -81,9 +90,9 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","RLE",
 	if( is.null(libsize.obs) ) nO <- sum(obs) else nO <- libsize.obs
 	if( is.null(libsize.ref) ) nR <- sum(ref) else nR <- libsize.ref
 
-	logR <- log2((obs/nO)/(ref/nR))			# log ratio of expression, accounting for library size
-	absE <- (log2(obs/nO) + log2(ref/nR))/2	# absolute expression
-	v <- (nO-obs)/nO/obs + (nR-ref)/nR/ref	 # estimated asymptotic variance
+	logR <- log2((obs/nO)/(ref/nR))          # log ratio of expression, accounting for library size
+	absE <- (log2(obs/nO) + log2(ref/nR))/2  # absolute expression
+	v <- (nO-obs)/nO/obs + (nR-ref)/nR/ref   # estimated asymptotic variance
 
 #	remove infinite values, cutoff based on A
 	fin <- is.finite(logR) & is.finite(absE) & (absE > Acutoff)
@@ -117,3 +126,20 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","RLE",
 	2^f
 }
 
+.calcFactorTMMwzp <- function(obs, ref, libsize.obs=NULL, libsize.ref=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10)
+#	TMM with "pairing of zeros" between the two libraries
+#	Gordon Smyth
+#	19 Sep 2018
+{
+	eps <- 1e-14
+	i <- (obs < eps) & (ref >= eps)
+	j <- (obs >= eps) & (ref < eps)
+	minij <- min(sum(i),sum(j))
+	if(minij==0L) return(.calcFactorWeighted(obs=obs,ref=ref,libsize.obs=libsize.obs,libsize.ref=libsize.ref,logratioTrim=logratioTrim,sumTrim=sumTrim,doWeighting=doWeighting,Acutoff=Acutoff))
+	k <- i | j
+	refk <- sort(ref[k],decreasing=TRUE)
+	obsk <- sort(obs[k],decreasing=TRUE)
+	obs <- c(obs[!k],obsk)
+	ref <- c(ref[!k],refk)
+	.calcFactorWeighted(obs=obs,ref=ref,libsize.obs=libsize.obs,libsize.ref=libsize.ref,logratioTrim=logratioTrim,sumTrim=sumTrim,doWeighting=doWeighting,Acutoff=Acutoff)
+}

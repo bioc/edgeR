@@ -103,7 +103,8 @@ Detecting differential expression in RNA-sequence data using quasi-likelihood wi
 
 Lun, ATL, and Smyth, GK (2017).
 No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.
-\emph{Statistical Applications in Genetics and Molecular Biology}. (Accepted 26 April 2017)
+\emph{Statistical Applications in Genetics and Molecular Biology} 16(2), 83-93.
+\url{https://doi.org/10.1515/sagmb-2017-0010}
 
 Phipson, B, Lee, S, Majewski, IJ, Alexander, WS, and Smyth, GK (2016).
 Robust hyperparameter estimation protects against hypervariable genes and improves power to detect differential expression.
