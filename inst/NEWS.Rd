@@ -2,28 +2,33 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.24.0}{\itemize{
+\item
+New functions catchKallisto() and catchSalmon() to read outputs from kallisto and Salmon.
 
-\section{Version 3.22.4}{\itemize{
+\item
+New function readBismark2DGE() to read methylation coverage files created by Bismark.
+
+\item
+New method 'TMMwzp' for calcNormFactors() to handle lots of zeros better.
+
+\item
+zscoreNBinom() now supports non-integer q values.
+
+\item
+Exported 'scaleOffset' as an S3 method.
+
+\item
+Bug fix to glmfit.default() when lib.size is specified.
+
 \item
 Bug fix to column name returned by decideTestsDGE().
 
 \item
-Improved error messages from DGEList().
+Improve error messages from .isAllZero() and DGEList().
 
 \item
-Note added to readBismark2DGE() help page.
-}}
-
-
-\section{Version 3.22.3}{\itemize{
-\item
-New function readBismark2DGE() to read methylation coverage files created by Bismark.
-}}
-
-
-\section{Version 3.22.1}{\itemize{
-\item
-zscoreNBinom now supports non-integer q values.
+rowsum.DGEList() now removes annotation columns that are not group-level.
 }}
 
 
