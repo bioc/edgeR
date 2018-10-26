@@ -1,10 +1,10 @@
 rpkm <- function(y, ...)
 UseMethod("rpkm")
 
-rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FALSE, prior.count=0.25, ...)
+rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	Reads per kilobase of gene length per million reads of sequencing (RPKM)
 #	Gordon Smyth.
-#	Created 18 March 2013. Last modified 1 November 2012
+#	Created 18 March 2013. Last modified 26 Oct 2018.
 {
 #	Try to find gene lengths
 #	If column name containing gene lengths isn't specified,
@@ -30,10 +30,10 @@ rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FAL
 	rpkm.default(y=y$counts,gene.length=gene.length,lib.size=lib.size,log=log,prior.count=prior.count, ...)
 }
 
-rpkm.default <- function(y, gene.length, lib.size=NULL, log=FALSE, prior.count=0.25, ...)
+rpkm.default <- function(y, gene.length, lib.size=NULL, log=FALSE, prior.count=2, ...)
 #	Reads per kilobase of gene length per million reads of sequencing (RPKM)
 #	Gordon Smyth
-#	Created 1 November 2012. Last modified 18 March 2014.
+#	Created 1 November 2012. Last modified 26 Oct 2018.
 {
 	y <- cpm.default(y=y,lib.size=lib.size,log=log,prior.count=prior.count, ...)
 	gene.length.kb <- gene.length/1000

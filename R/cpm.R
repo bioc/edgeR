@@ -1,20 +1,20 @@
 cpm <- function(y, ...)
 UseMethod("cpm")
 
-cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=0.25, ...)
+cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	Counts per million for a DGEList
 #	Davis McCarthy and Gordon Smyth.
-#	Created 20 June 2011. Last modified 10 July 2017
+#	Created 20 June 2011. Last modified 26 Oct 2018.
 {
 	lib.size <- y$samples$lib.size
 	if(normalized.lib.sizes) lib.size <- lib.size*y$samples$norm.factors
 	cpm.default(y$counts,lib.size=lib.size,log=log,prior.count=prior.count)
 }
 
-cpm.default <- function(y, lib.size=NULL, log=FALSE, prior.count=0.25, ...)
+cpm.default <- function(y, lib.size=NULL, log=FALSE, prior.count=2, ...)
 #	Counts per million for a matrix
 #	Davis McCarthy and Gordon Smyth.
-#	Created 20 June 2011. Last modified 10 July 2017.
+#	Created 20 June 2011. Last modified 26 Oct 2018.
 {
 #	Check y
 	y <- as.matrix(y)

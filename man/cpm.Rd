@@ -18,13 +18,13 @@
 
 \usage{
 \method{cpm}{DGEList}(y, normalized.lib.sizes = TRUE,
-       log = FALSE, prior.count = 0.25, \dots)
+       log = FALSE, prior.count = 2, \dots)
 \method{cpm}{default}(y, lib.size = NULL,
-       log = FALSE, prior.count = 0.25, \dots)
+       log = FALSE, prior.count = 2, \dots)
 \method{rpkm}{DGEList}(y, gene.length = NULL, normalized.lib.sizes = TRUE,
-       log = FALSE, prior.count = 0.25, \dots)
+       log = FALSE, prior.count = 2, \dots)
 \method{rpkm}{default}(y, gene.length, lib.size = NULL,
-       log = FALSE, prior.count = 0.25, \dots)
+       log = FALSE, prior.count = 2, \dots)
 \method{cpmByGroup}{DGEList}(y, group = NULL, dispersion = NULL, \ldots)
 \method{cpmByGroup}{default}(y, group = NULL,
        dispersion = 0.05, offset = NULL, weights = NULL, \ldots)

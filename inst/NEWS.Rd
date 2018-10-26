@@ -4,31 +4,37 @@
 
 \section{Version 3.24.0}{\itemize{
 \item
-New functions catchKallisto() and catchSalmon() to read outputs from kallisto and Salmon.
+New functions catchKallisto() and catchSalmon() to read outputs from kallisto and Salmon
+and to compute overdispersion factors for each transcript from bootstrap samples.
 
 \item
-New function readBismark2DGE() to read methylation coverage files created by Bismark.
+New function readBismark2DGE() to read coverage files created by Bismark for BS-seq methylation data.
 
 \item
-New method 'TMMwzp' for calcNormFactors() to handle lots of zeros better.
+New method "TMMwzp" for calcNormFactors() to better handle samples with a large proportion of zero counts.
+
+\item
+The default value for prior.count increased from 0.25 to 2 in cpm() and rpkm().
+The new value is more generally useful and agrees with the default values in aveLogCPM() and with the DGEList method for plotMDS().
 
 \item
 zscoreNBinom() now supports non-integer q values.
 
 \item
-Exported 'scaleOffset' as an S3 method.
+The scaleOffset() S3 methods for DGEList and default objects are now registered in the NAMESPACE.
+Previously the functions were exported but not registered as S3 methods.
+
+\item
+The rowsum() method for DGEList objects (rowsum.DGEList) now automatically removes gene annotation columns that are not group-level.
+
+\item
+More specific error messages from DGEList() when invalid (NA, negative or infinite) count values are detected.
 
 \item
 Bug fix to glmfit.default() when lib.size is specified.
 
 \item
 Bug fix to column name returned by decideTestsDGE().
-
-\item
-Improve error messages from .isAllZero() and DGEList().
-
-\item
-rowsum.DGEList() now removes annotation columns that are not group-level.
 }}
 
 
