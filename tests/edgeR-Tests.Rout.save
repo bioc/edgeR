@@ -1,5 +1,5 @@
 
-R version 3.5.0 (2018-04-23) -- "Joy in Playing"
+R version 3.5.1 (2018-07-02) -- "Feather Spray"
 Copyright (C) 2018 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
@@ -546,4 +546,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   6.01    0.26    6.23 
+   6.46    0.42    7.00 
