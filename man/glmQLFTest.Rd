@@ -94,7 +94,7 @@ From reads to genes to pathways: differential expression analysis of RNA-Seq exp
 Lun, ATL, Chen, Y, and Smyth, GK (2016).
 It's DE-licious: a recipe for differential expression analyses of RNA-seq experiments using quasi-likelihood methods in edgeR.
 \emph{Methods in Molecular Biology} 1418, 391-416.
-\url{http://www.statsci.org/smyth/pubs/QLedgeRPreprint.pdf>Preprint 8 April 2015}
+\url{http://www.statsci.org/smyth/pubs/QLedgeRPreprint.pdf} (Preprint 8 April 2015)
 
 Lund, SP, Nettleton, D, McCarthy, DJ, and Smyth, GK (2012).
 Detecting differential expression in RNA-sequence data using quasi-likelihood with shrunken dispersion estimates.

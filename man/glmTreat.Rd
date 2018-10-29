@@ -6,7 +6,8 @@
 \description{Conduct genewise statistical tests for a given coefficient or contrast relative to a specified fold-change threshold.}
 
 \usage{
-glmTreat(glmfit, coef = ncol(glmfit$design), contrast = NULL, lfc = log2(1.2), null = "interval")
+glmTreat(glmfit, coef = ncol(glmfit$design), contrast = NULL, lfc = log2(1.2),
+         null = "interval")
 }
 
 \arguments{

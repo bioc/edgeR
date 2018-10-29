@@ -76,6 +76,7 @@ logfc <- predFC(y,design,dispersion=disp, prior.count=0)
 logfc.truncated <- pmax(pmin(logfc,100),-100)
 
 #plot predFC's vs logFC's
-plot(predlfc[,2], logfc.truncated[,2], xlab="Predictive log fold changes", ylab="Raw log fold changes")
+plot(predlfc[,2], logfc.truncated[,2],
+     xlab="Predictive log fold changes", ylab="Raw log fold changes")
 abline(a=0,b=1)
 }

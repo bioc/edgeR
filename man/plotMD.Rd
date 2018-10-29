@@ -72,7 +72,7 @@ See \code{\link{plotWithHighlights}} for how to set colors and graphics paramete
 Ritchie, ME, Phipson, B, Wu, D, Hu, Y, Law, CW, Shi, W, and Smyth, GK (2015).
 limma powers differential expression analyses for RNA-sequencing and microarray studies.
 \emph{Nucleic Acids Research} Volume 43, e47.
-\url{http://nar.oxfordjournals.org/content/43/7/e47}
+\url{https://doi.org/10.1093/nar/gkv007}
 }
 
 \author{Gordon Smyth}

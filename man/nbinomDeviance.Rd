@@ -41,7 +41,7 @@ Generalized linear models. Encyclopedia of Environmetrics 3, Wiley.
 McCarthy, DJ, Chen, Y, Smyth, GK (2012).
 Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\url{http://nar.oxfordjournals.org/content/40/10/4288}
+\url{https://doi.org/10.1093/nar/gks042}
 }
 
 \author{Gordon Smyth, Yunshun Chen, Aaron Lun.  C++ code by Aaron Lun.}

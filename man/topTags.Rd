@@ -3,43 +3,79 @@
 \alias{TopTags-class}
 \alias{show,TopTags-method}
 
-\title{Table of the Top Differentially Expressed Tags}
+\title{Table of the Top Differentially Expressed Genes/Tags}
 
-\description{Extracts the top DE tags in a data frame for a given pair of groups, ranked by p-value or absolute log-fold change.}
+\description{Extracts the most differentially expressed genes (or sequence tags) from a test object, ranked either by p-value or by absolute log-fold-change.}
 
 \usage{
-topTags(object, n=10L, adjust.method="BH", sort.by="PValue", p.value=1)
+topTags(object, n = 10, adjust.method = "BH", sort.by = "PValue", p.value = 1)
 }
 
 \arguments{ 
-\item{object}{a \code{\link[edgeR:DGEList-class]{DGEExact}} object (output from \code{exactTest}) or a \code{\link[edgeR:DGELRT-class]{DGELRT}} object (output from \code{glmLRT}), containing the (at least) the elements \code{table}: a data frame containing the log-concentration (i.e. expression level), the log-fold change in expression between the two groups/conditions and the p-value for differential expression, for each tag. If it is a \code{DGEExact} object, then \code{topTags} will also use the \code{comparison} element, which is a vector giving the two experimental groups/conditions being compared. The object may contain other elements that are not used by \code{topTags}.}
+\item{object}{a \code{\link[edgeR:DGEList-class]{DGEExact}} or \code{\link[edgeR:DGELRT-class]{DGELRT}} object containing test statistics and p-values.
+Usually created by \code{exactTest}, \code{glmLRT}, \code{glmTreat} or \code{glmQLFTest}.}
 
-\item{n}{scalar, number of tags to display/return}
+\item{n}{integer, maximum number of genes/tags to return.}
 
-\item{adjust.method}{character string stating the method used to adjust p-values for multiple testing, passed on to \code{p.adjust}}
+\item{adjust.method}{character string specifying the method used to adjust p-values for multiple testing. See \code{\link{p.adjust}} for possible values.}
 
-\item{sort.by}{character string, should the top tags be sorted by p-value (\code{"PValue"}), by absolute log-fold change (\code{"logFC"}), or not sorted (\code{"none"}).}
+\item{sort.by}{character string specifying the sort method. Possibilities are \code{"PValue"} for p-value, \code{"logFC"} for absolute log-fold change or \code{"none"} for no sorting.}
 
-\item{p.value}{cutoff value for adjusted p-values. Only tags with lower p-values are listed.}
+\item{p.value}{numeric cutoff value for adjusted p-values. Only tags with adjusted p-values equal or lower than specified are returned.}
+}
+
+\details{
+This function accepts a test statistic object created by any of the edgeR functions \code{exactTest}, \code{glmLRT}, \code{glmTreat} or \code{glmQLFTest} and extracts a readable data.frame of the most differentially expressed genes.
+The data.frame collates the annotation and differential expression statistics for the top genes.
+The data.frame is wrapped in a \code{TopTags} output object that records the test statistic used and the multiple testing  adjustment method.
+
+\code{TopTags} objects will return dimensions and hence functions such as \code{dim}, \code{nrow} or \code{ncol} are defined on them.
+\code{TopTags} objects also have a \code{show} method so that printing produces a compact summary of their contents.
+
+This function is closely analogous to the \code{\link{topTable}} function in the limma package.
 }
 
 \value{
-
-an object of class \code{TopTags} containing the following elements for the top \code{n} most differentially expressed tags as determined by \code{sort.by}:
-
-\item{table}{a data frame containing the elements \code{logFC}, the log-abundance ratio, i.e. fold change, for each tag in the two groups being compared, \code{logCPM}, the log-average concentration/abundance for each tag in the two groups being compared, \code{PValue}, exact p-value for differential expression using the NB model. When \code{adjust.method} is not \code{"none"}, there is an extra column of \code{FDR} showing the adjusted p-value if \code{adjust.method} is one of the \code{"BH"}, \code{"BY"} and \code{"fdr"}, or an extra column of \code{FWER} if \code{adjust.method} is one of the \code{"holm"}, \code{"hochberg"}, \code{"hommel"}, and \code{"bonferroni"}.}
-\item{adjust.method}{character string stating the method used to adjust p-values for multiple testing.}
-\item{comparison}{a vector giving the names of the two groups being compared.}
+An object of class \code{TopTags}, which is a list-based class with the following components:
+\item{table}{a data.frame containing differential expression results for the top genes in sorted order.
+The number of rows is the smaller of \code{n} and the number of genes with adjusted p-value less than or equal to \code{p.value}.
+The data.frame includes all the annotation columns from \code{object$genes} and all statistic columns from \code{object$table} plus one of:
+\tabular{rl}{
+\code{FDR}: \tab false discovery rate (only when \code{adjust.method} is \code{"BH"}, \code{"BY"} or \code{"fdr"}) or\cr
+\code{FWER}: \tab family-wise error rate (only when \code{adjust.method} is \code{"holm"}, \code{"hochberg"}, \code{"hommel"} or \code{"bonferroni"}).
+}
+}
+\item{adjust.method}{character string specifying the method used to adjust p-values for multiple testing, same as input argument.}
+\item{comparison}{character vector giving the names of the two groups being compared (for \code{DGEExact} objects) or the glm contrast being tested (for \code{DGELRT} objects).}
 \item{test}{character string stating the name of the test.}
-
-The dimensions, row names and column names of a \code{TopTags} object are defined by those of \code{table}, see \code{\link{dim.TopTags}} or \code{\link{dimnames.TopTags}}.
-
-\code{TopTags} objects also have a \code{show} method so that printing produces a compact summary of their contents.
-
-Note that the terms `tag' and `gene' are synonymous here. The function is only named as `Tags' for historical reasons.
 }
 
-\author{Mark Robinson, Davis McCarthy, Gordon Smyth}
+\note{
+The terms `tag' and `gene' are used synonymously on this page and refer to the rows of \code{object}.
+In general, the rows might be genes, sequence tags, transcripts, exons or whatever type of genomic feature is appropriate for the analysis at hand.
+}
+
+\author{Mark Robinson, Davis McCarthy, Yunshun Chen, Gordon Smyth}
+
+\references{
+Chen Y, Lun ATL, and Smyth, GK (2016).
+From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
+\emph{F1000Research} 5, 1438.
+\url{http://f1000research.com/articles/5-1438}
+
+McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+\emph{Nucleic Acids Research} 40, 4288-4297.
+\url{https://doi.org/10.1093/nar/gks042}
+
+Robinson MD, Smyth GK (2008). Small-sample estimation of negative binomial dispersion, with applications to SAGE data. \emph{Biostatistics} 9, 321-332.
+
+Robinson MD, Smyth GK (2007). Moderated statistical tests for assessing differences in tag abundance. \emph{Bioinformatics} 23, 2881-2887.
+}
+
+\seealso{
+\code{\link{exactTest}}, \code{\link{glmLRT}}, \code{\link{glmTreat}}, \code{\link{glmQLFTest}}, \code{\link{dim.TopTags}}, \code{\link{p.adjust}}.
+}
+
 \examples{
 # generate raw counts from NB, create list object
 y <- matrix(rnbinom(80,size=1,mu=10),nrow=20)
@@ -61,18 +97,3 @@ tp
 # Or order by fold change instead
 topTags(de,sort.by="logFC")
 }
-
-\references{
-Robinson MD, Smyth GK (2008). Small-sample estimation of negative binomial dispersion, with applications to SAGE data. \emph{Biostatistics} 9, 321-332.
-
-Robinson MD, Smyth GK (2007). Moderated statistical tests for assessing differences in tag abundance. \emph{Bioinformatics} 23, 2881-2887.
-}
-
-\seealso{
-\code{\link{exactTest}}, \code{\link{glmLRT}}, \code{\link{p.adjust}}.
-
-Analogous to \code{\link[limma:toptable]{topTable}} in the limma package.
-}
-
-\keyword{algebra}
-

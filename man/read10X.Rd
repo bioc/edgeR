@@ -5,7 +5,10 @@
 
 \description{Reads 10X Genomics files containing single-cell RNA-seq UMI counts in Matrix Market format.}
 
-\usage{read10X(mtx = "matrix.mtx", genes = "genes.tsv", barcodes = NULL, path = NULL, DGEList = TRUE)}
+\usage{
+read10X(mtx = "matrix.mtx", genes = "genes.tsv", barcodes = NULL, path = NULL,
+        DGEList = TRUE)
+}
 
 \arguments{ 
 \item{mtx}{name of \code{mtx} file containing counts in Matrix Market format.}
