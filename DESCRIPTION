@@ -1,6 +1,6 @@
 Package: edgeR
-Version: 3.24.0
-Date: 2018-10-29
+Version: 3.24.1
+Date: 2018-12-03
 Title: Empirical Analysis of Digital Gene Expression Data in R
 Description: Differential expression analysis of RNA-seq expression profiles with biological replication. Implements a range of statistical methodology based on the negative binomial distributions, including empirical Bayes estimation, exact tests, generalized linear models and quasi-likelihood tests. As well as RNA-seq, it be applied to differential signal analysis of other types of genomic data that produce counts, including ChIP-seq, Bisulfite-seq, SAGE and CAGE.
 Author: Yunshun Chen <yuchen@wehi.edu.au>, Aaron Lun <alun@wehi.edu.au>, Davis McCarthy <dmccarthy@wehi.edu.au>, Xiaobei Zhou <xiaobei.zhou@uzh.ch>, Mark Robinson <mark.robinson@imls.uzh.ch>, Gordon Smyth <smyth@wehi.edu.au>
@@ -16,6 +16,9 @@ biocViews: GeneExpression, Transcription, AlternativeSplicing,
         DifferentialMethylation, GeneSetEnrichment, Pathways,
         Genetics, DNAMethylation, Bayesian, Clustering, ChIPSeq,
         Regression, TimeCourse, Sequencing, RNASeq, BatchEffect, 
-        SAGE, Normalization, QualityControl, MultipleComparison
+        SAGE, Normalization, QualityControl, MultipleComparison,
+        BiomedicalInformatics, CellBiology, FunctionalGenomics, 
+        Epigenetics, Genetics, ImmunoOncology, SystemsBiology, 
+        Transcriptomics
 NeedsCompilation: yes
 SystemRequirements: C++11
