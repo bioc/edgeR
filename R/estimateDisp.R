@@ -305,7 +305,7 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 #
 # written by Aaron Lun
 # created 29 September 2016
-# last modified 29 June 2017    
+# last modified 16 December 2018
 {
 	isokay <- TRUE
 	if (!missing(i)) {
@@ -324,8 +324,12 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 	if (isokay) {
 		# Avoids copying if no modification incurred.
 		return(x)
-	} else {
+	} else if (!missing(i) && !missing(j)) {
 		return(x[i,j,drop=FALSE])
+	} else if (!missing(i)) {
+		return(x[i,,drop=FALSE])
+	} else {
+		return(x[,j,drop=FALSE])
 	}
 }
 
