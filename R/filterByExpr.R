@@ -9,7 +9,7 @@ filterByExpr.DGEList <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
 		design <- y$design
 		if(is.null(design)) group <- y$samples$group
 	}
-	if(is.null(lib.size)) lib.size <- y$samples$lib.size * y$samples$norm.factor
+	if(is.null(lib.size)) lib.size <- y$samples$lib.size * y$samples$norm.factors
 	filterByExpr.default(y$counts, design=design, group=group, lib.size=lib.size, ...)
 }
 
