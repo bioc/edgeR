@@ -9,7 +9,7 @@ filterByExpr.DGEList <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
 		design <- y$design
 		if(is.null(design)) group <- y$samples$group
 	}
-	if(is.null(lib.size)) lib.size <- y$samples$lib.size * y$samples$norm.factor
+	if(is.null(lib.size)) lib.size <- y$samples$lib.size * y$samples$norm.factors
 	filterByExpr.default(y$counts, design=design, group=group, lib.size=lib.size, ...)
 }
 
@@ -17,7 +17,7 @@ filterByExpr.default <- function(y, design=NULL, group=NULL, lib.size=NULL, min.
 #	Filter low expressed genes given count matrix
 #	Computes TRUE/FALSE index vector indicating which rows to keep
 #	Gordon Smyth
-#	Created 13 Nov 2017.
+#	Created 13 Nov 2017. Last modified 02 Jan 2019.
 {
 	y <- as.matrix(y)
 	if(mode(y) != "numeric") stop("y is not a numeric matrix")
