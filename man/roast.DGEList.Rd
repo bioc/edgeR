@@ -2,21 +2,21 @@
 \alias{roast.DGEList}
 \alias{mroast.DGEList}
 \alias{fry.DGEList}
-\title{Rotation Gene Set Tests for Digital Gene Expression Data}
+\title{Self-contained Gene Set Tests for Digital Gene Expression Data}
 \description{
 Rotation gene set testing for Negative Binomial generalized linear models.
 }
 
 \usage{
+\method{fry}{DGEList}(y, index = NULL, design = NULL, contrast = ncol(design), geneid = NULL,
+      sort = "directional", ...)
+
 \method{roast}{DGEList}(y, index = NULL, design = NULL, contrast = ncol(design), geneid = NULL,
       set.statistic = "mean", gene.weights = NULL, \dots)
 
 \method{mroast}{DGEList}(y, index = NULL, design = NULL, contrast = ncol(design), geneid = NULL,
        set.statistic = "mean", gene.weights = NULL,
        adjust.method = "BH", midp = TRUE, sort = "directional", ...)
-
-\method{fry}{DGEList}(y, index = NULL, design = NULL, contrast = ncol(design), geneid = NULL,
-      sort = "directional", ...)
 }
 
 \arguments{
@@ -48,14 +48,17 @@ Rotation gene set testing for Negative Binomial generalized linear models.
 }
 
 \details{
-The roast gene set test was proposed by Wu et al (2010) for microarray data.
-This function makes the roast test available for digital gene expression data.
-The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero.
+These functions perform self-contained gene set tests against the null hypothesis that none of the genes in the set are differentially expressed.
+\code{fry} is the recommended function in the edgeR context.
+
+The roast gene set test was proposed by Wu et al (2010) for microarray data and the \code{roast} and \code{mroast} methods documented here extend the test to digital gene expression data.
+The roast method uses residual space rotations instead of permutations to obtain p-values, a technique that take advantage of the full generality of linear models.
+The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero, and the normal deviates are then passed to the limma \code{\link{roast}} function.
 See \code{\link{roast}} for more description of the test and for a complete list of possible arguments.
+\code{mroast} is similar but performs \code{roast} tests for multiple of gene sets instead of just one.
 
-The design matrix defaults to the \code{model.matrix(~y$samples$group)}.
-
-\code{mroast} performs \code{roast} tests for a multiple of gene sets.
+The \code{fry} method documented here similarly generalizes the fry gene set test for microarray data.
+\code{fry} is recommended over \code{roast} or \code{mroast} for count data because, in this context, it is equivalent to \code{mroast} but with an infinite number of rotations.
 }
 
 \seealso{

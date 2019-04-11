@@ -5,11 +5,11 @@ addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1)
 #
 # written by Aaron Lun
 # created 26 September 2016
-# last modified 21 June 2017    
+# last modified 4 Nov 2018    
 {
 #	Check y
-	if (!is.numeric(y)) stop('count matrix must be numeric')
 	y <- as.matrix(y)
+	if (!is.numeric(y)) stop('count matrix must be numeric')
 
 #	Check prior.count
 	prior.count <- .compressPrior(y, prior.count)
@@ -19,9 +19,10 @@ addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1)
 #	for the results to be meaningful as logCPM values
 	offset <- .compressOffsets(y, lib.size=lib.size, offset=offset)
 
-#   Adding the prior count.
+#	Adding the prior count.
 	out <- .Call(.cxx_add_prior_count, y, offset, prior.count)
 	names(out) <- c("y", "offset")
+	dimnames(out$y) <- dimnames(y)
 	out$offset <- makeCompressedMatrix(out$offset, dim(y), byrow=TRUE)
 	return(out)
 }

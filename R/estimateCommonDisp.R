@@ -31,7 +31,9 @@ estimateCommonDisp.default <- function(y, group=NULL, lib.size=NULL, tol=1e-06, 
 #	Check y
 	y <- as.matrix(y)
 	ntags <- nrow(y)
+	if(ntags==0L) stop("No data rows")
 	nlibs <- ncol(y)
+	if(nlibs < 2L) stop("Need at least two libraries")
 
 #	Check group
 	if(is.null(group)) group <- rep(1, nlibs)
@@ -39,10 +41,15 @@ estimateCommonDisp.default <- function(y, group=NULL, lib.size=NULL, tol=1e-06, 
 	group <- dropEmptyLevels(group)
 
 #	Check lib.size
-	if(is.null(lib.size)) lib.size <- colSums(y)
-	if(length(lib.size)!=nlibs) stop("Incorrect length of lib.size.")
+	if(is.null(lib.size)) {
+		lib.size <- colSums(y)
+	} else {
+		if(length(lib.size)!=nlibs) stop("Incorrect length of lib.size.")
+	}
 
+#	Filter low count genes
 	sel <- rowSums(y) > rowsum.filter
+	if(!sum(sel)) stop("No genes satisfy rowsum filter")
 	
 #	Start from small dispersion
 	disp <- 0.01

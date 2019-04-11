@@ -4,7 +4,7 @@ UseMethod("rpkmByGroup")
 rpkmByGroup.DGEList <- function(y, group=NULL, gene.length=NULL, dispersion=NULL, ...)
 #	RPKM or FPKM averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017. Last modified 5 Oct 2017.
+#	Created 10 July 2017. Last modified 4 Nov 2018.
 {
 	if(is.null(group)) group <- y$samples$group
 	group <- as.factor(group)
@@ -34,24 +34,24 @@ rpkmByGroup.DGEList <- function(y, group=NULL, gene.length=NULL, dispersion=NULL
 	if(is.null(dispersion)) dispersion <- 0.05
 	offset <- getOffset(y)
 
-	fit <- mglmOneWay(y,group=group,dispersion=dispersion,offset=offset,weights=y$weights)
-	exp(fit$coefficients) / gene.length * 1e9
+	rpkmByGroup(y$counts,group=group,gene.length=gene.length,dispersion=dispersion,offset=offset,weights=y$weights,...)
 }
 
-rpkmByGroup.default <- function(y, group=NULL, gene.length, dispersion=0.05, offset=NULL, weights=NULL, ...)
+rpkmByGroup.default <- function(y, group=NULL, gene.length, dispersion=0.05, offset=NULL, weights=NULL, log=FALSE, prior.count=2, ...)
 #	RPKM or FPKM averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017. Last modified 5 Oct 2017.
+#	Created 10 July 2017. Last modified 4 Nov 2018.
 {
-	y <- as.matrix(y)
-
 	if(is.null(group)) {
 		group <- factor(rep_len(1,ncol(y)))
 		levels(group) <- "AveRPKM"
 	}
 
-	if(is.null(offset)) offset <- log(colSums(y))
+	z <- cpmByGroup(y=y,group=group,dispersion=dispersion,dispersion=dispersion,offset=offset,weights=weights,log=log,prior.count=prior.count, ...)
+	if(log) {
+		z - log2(gene.length / 1e3)
+	} else {
+		z / (gene.length / 1e3)
+	}
 
-	fit <- mglmOneWay(y,group=group,dispersion=dispersion,offset=offset,weights=weights)
-	exp(fit$coefficients) / gene.length * 1e9
 }

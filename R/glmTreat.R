@@ -54,7 +54,12 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 			unshrunk.logFC <- glmfit$unshrunk.coefficients[, coef, drop=FALSE]/log(2)
 		}
 	} else {
+#		contrast should be a vector or a matrix with one column
 		contrast <- as.matrix(contrast)
+		if(ncol(contrast) > 1L) {
+			warning("Found more than one contrast vector in `contrast`. Using first column only.")
+			contrast <- contrast[,1,drop=FALSE]
+		}
 		reform <- contrastAsCoef(design, contrast=contrast, first=TRUE)
 		coef <- 1
 		unshrunk.logFC <- drop((glmfit$coefficients %*% contrast)/log(2))

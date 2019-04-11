@@ -1,6 +1,6 @@
 \name{camera.DGEList}
 \alias{camera.DGEList}
-\title{Competitive Gene Set Test for Digital Gene Expression Data Accounting for Inter-gene Correlation}
+\title{Competitive Gene Set Tests for Digital Gene Expression Data}
 \description{
 Test whether a set of genes is highly ranked relative to other genes in terms of differential expression, accounting for inter-gene correlation.
 }
@@ -28,12 +28,11 @@ The camera gene set test was proposed by Wu and Smyth (2012) for microarray data
 This function makes the camera test available for digital gene expression data.
 The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero.
 See \code{\link{camera}} for more description of the test and for a complete list of possible arguments.
-
-The design matrix defaults to the \code{model.matrix(~y$samples$group)}.
 }
 
 \value{
-A data.frame. See \code{\link{camera}} for details.
+A data.frame giving the gene set results, with most significant sets to the top.
+See \code{\link{camera}} for details.
 }
 
 \author{Yunshun Chen, Gordon Smyth}

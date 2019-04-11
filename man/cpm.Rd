@@ -26,11 +26,11 @@
 \method{rpkm}{default}(y, gene.length, lib.size = NULL,
        log = FALSE, prior.count = 2, \dots)
 \method{cpmByGroup}{DGEList}(y, group = NULL, dispersion = NULL, \ldots)
-\method{cpmByGroup}{default}(y, group = NULL,
-       dispersion = 0.05, offset = NULL, weights = NULL, \ldots)
+\method{cpmByGroup}{default}(y, group = NULL, dispersion = 0.05,
+       offset = NULL, weights = NULL, log = FALSE, prior.count = 2, \ldots)
 \method{rpkmByGroup}{DGEList}(y, group = NULL, gene.length = NULL, dispersion = NULL, \ldots)
-\method{rpkmByGroup}{default}(y, group = NULL, gene.length,
-       dispersion = 0.05, offset = NULL, weights = NULL, \ldots)
+\method{rpkmByGroup}{default}(y, group = NULL, gene.length, dispersion = 0.05,
+       offset = NULL, weights = NULL, log = FALSE, prior.count = 2, \ldots)
 }
 
 \arguments{ 

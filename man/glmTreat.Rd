@@ -61,6 +61,9 @@ If \code{null="worst.case"}, then \code{glmTreat} conducts a test closely analog
 This conducts a test if which the null hypothesis puts the true logFC on the boundary of the \code{[-lfc,lfc]} interval closest to the observed logFC.
 If \code{null="interval"}, then the null hypotheses assumes an interval of possible values for the true logFC.
 This approach is somewhat less conservative.
+
+Note that, unlike other edgeR functions such as \code{glmLRT} and \code{glmQLFTest}, \code{glmTreat} can only accept a single contrast.
+If \code{contrast} is a matrix with multiple columns, then only the first column will be used.
 }
 
 \note{

@@ -1,8 +1,8 @@
 \name{romer.DGEList}
 \alias{romer.DGEList}
-\title{Rotation Gene Set Tests for Digital Gene Expression Data}
+\title{Rotation Gene Set Enrichment for Digital Gene Expression Data}
 \description{
-Rotation gene set testing for Negative Binomial generalized linear models.
+Romer gene set enrichment tests for Negative Binomial generalized linear models.
 }
 
 \usage{
@@ -29,8 +29,6 @@ The ROMER procedure described by Majewski et al (2010) is implemented in \code{r
 This function makes the romer test available for digital gene expression data such as RNA-Seq data.
 The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero.
 See \code{\link{romer}} for more description of the test and for a complete list of possible arguments.
-
-The design matrix defaults to the \code{model.matrix(~y$samples$group)}.
 }
 
 \seealso{

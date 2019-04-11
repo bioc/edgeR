@@ -4,11 +4,17 @@ glmFit <- function(y, ...)
 UseMethod("glmFit")
 
 glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
-#	Created 11 May 2011.  Last modified 13 Jul 2017.
+#	Created 11 May 2011.  Last modified 21 Nov 2018.
 {
+#	The design matrix defaults to the oneway layout defined by y$samples$group.
+#	If there is only one group, then the design matrix is left NULL so that a
+#	matrix with a single intercept column will be set later by glmFit.default.
 	if(is.null(design)) {
 		design <- y$design
-		if(is.null(design)) design <- model.matrix(~y$samples$group)
+		if(is.null(design)) {
+			group <- droplevels(as.factor(y$samples$group))
+			if(nlevels(group) > 1L) design <- model.matrix(~y$samples$group)
+		}
 	}
 	if(is.null(dispersion)) dispersion <- getDispersion(y)
 	if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")

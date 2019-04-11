@@ -2,6 +2,27 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 #	Construct DGEList object from components, with some checking
 #	Created 28 Sep 2008. Last modified 25 Sep 2018.
 {
+#	Check whether counts is a data.frame
+	if(is.data.frame(counts)) {
+		cl <- vapply(counts,class,FUN.VALUE="")
+		IsNumeric <- (cl %in% c("integer","numeric"))
+		if(any(!IsNumeric)) {
+			a <- which(!IsNumeric)
+			a <- a[length(a)]
+			if(a==1L) {
+				stop(
+"The count matrix is a data.frame instead of a matrix and the first column is of class ",cl[1],"\n",
+"instead of being numeric. Was the first column intended to contain geneids?"
+				)
+			} else {
+				stop(
+"The count matrix is a data.frame instead of a matrix and the first ",a[length(a)]," columns are non-numeric.\n",
+"Should these columns be entered as annotation instead of as counts?"
+				)
+			}
+		}
+	}
+
 #	Check counts
 	counts <- as.matrix(counts)
 	nlib <- ncol(counts)

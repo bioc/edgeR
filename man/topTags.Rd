@@ -41,7 +41,7 @@ An object of class \code{TopTags}, which is a list-based class with the followin
 The number of rows is the smaller of \code{n} and the number of genes with adjusted p-value less than or equal to \code{p.value}.
 The data.frame includes all the annotation columns from \code{object$genes} and all statistic columns from \code{object$table} plus one of:
 \tabular{rl}{
-\code{FDR}: \tab false discovery rate (only when \code{adjust.method} is \code{"BH"}, \code{"BY"} or \code{"fdr"}) or\cr
+\code{FDR}: \tab false discovery rate (only when \code{adjust.method} is \code{"BH"}, \code{"BY"} or \code{"fdr"})\cr
 \code{FWER}: \tab family-wise error rate (only when \code{adjust.method} is \code{"holm"}, \code{"hochberg"}, \code{"hommel"} or \code{"bonferroni"}).
 }
 }

@@ -13,11 +13,14 @@
 }
 \arguments{ 
 \item{y}{numeric vector or matrix of counts, or a \code{DGEList} object.}
-\item{offset}{numeric vector or matrix of offsets to be scaled.}
+\item{offset}{numeric vector or matrix of offsets to be scaled. If a vector, its length must equal to the length of \code{y} or the number of columns of \code{y}. If a matrix, its dimension must equal to the dimension of \code{y}.}
 \item{\dots}{other arguments that are not currently used.}
 }
 
-\value{numeric vector or matrix of scaled offsets.}
+\value{
+\code{scaleOffset.default} returns a numeric vector if \code{offset} is a vector or a matrix if \code{offset} is a matrix.
+\code{scaleOffset.DGEList} computes the scaled offests and store them in the \code{offset} component of the input \code{DGEList} object.
+}
 
 \details{
 \code{scaleOffset} ensures that the scale of offsets are consistent with library sizes.

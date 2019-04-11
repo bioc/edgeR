@@ -24,7 +24,7 @@ aveLogCPM.DGEList <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispe
 }
 
 aveLogCPM.DGEGLM <- function(y, prior.count=2, dispersion=NULL, ...)
-#	log2(AveCPM)
+#	aveLogCPM method for DGEGLM objects.
 #	Gordon Smyth
 #	Created 11 March 2013.  Last modified 24 Nov 2013.
 {
@@ -35,12 +35,16 @@ aveLogCPM.DGEGLM <- function(y, prior.count=2, dispersion=NULL, ...)
 }
 
 aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersion=NULL,weights=NULL, ...)
-#	log2(AveCPM)
-#	Gordon Smyth
-#	Created 25 Aug 2012. Last modified 21 Jun 2017.
+#	Compute average log2-cpm for each gene over all samples.
+#	This measure is designed to be used as the x-axis for all abundance-dependent trend analyses in edgeR.
+#	It is generally held fixed through an edgeR analysis.
+#	Original author: Gordon Smyth
+#	Created 25 Aug 2012. Last modified 19 Nov 2018.
 {
-#	Special case when all counts and library sizes are zero
 	y <- as.matrix(y)
+	if(nrow(y)==0L) return(numeric(0))
+
+#	Special case when all counts and library sizes are zero
 	if(.isAllZero(y)) {
 		if ((is.null(lib.size) || max(lib.size)==0) && (is.null(offset) || max(offset)==-Inf)) {
 			abundance <- rep(-log(nrow(y)),nrow(y))

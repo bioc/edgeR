@@ -31,14 +31,17 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 }
 
 estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL, trend.method="locfit", mixed.df=FALSE, tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
-#  Use GLM approach if a design matrix is given, and classic approach otherwise.
-#  It calculates a matrix of likelihoods for each gene at a set of dispersion grid points, and then calls WLEB() to do the shrinkage.
-#  Yunshun Chen, Aaron Lun, Gordon Smyth. Created July 2012. Last modified 11 October 2017.
+#  Estimate common, trended and tagwise dispersions
+#  Use GLM approach if design matrix is given and classic approach otherwise.
+#  A matrix of likelihoods is computed for each gene at a set of dispersion grid points
+#  and WLEB() is called for weighted likelihood empirical Bayes.
+#  Yunshun Chen, Aaron Lun, Gordon Smyth.
+#  Created July 2012. Last modified 19 Nov 2018.
 {
 #	Check y
 	y <- as.matrix(y)
 	ntags <- nrow(y)
-	if(ntags==0) return(numeric(0))
+	if(ntags==0) return(list(span=span, prior.df=prior.df, prior.n=prior.n))
 	nlibs <- ncol(y)
 	
 #	Check trend.method
