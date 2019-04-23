@@ -1,13 +1,11 @@
 
-R version 3.5.1 (2018-07-02) -- "Feather Spray"
-Copyright (C) 2018 The R Foundation for Statistical Computing
+R version 3.6.0 RC (2019-04-19 r76407) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -329,7 +327,7 @@ Tag.8  -0.7918166 12.86353 0.7356185 0.391068049 0.8603497
 > colnames(y) <- c("x0","x1","x2")
 > rownames(y) <- paste("Gene",1:ntags,sep="")
 > d <- DGEList(y)
-> d <- calcNormFactors(d)
+> d <- calcNormFactors(d,method="TMM")
 > fit <- glmFit(d, design, dispersion=dispersion.true, prior.count=0.5/3)
 > results <- glmLRT(fit, coef=2)
 > topTags(results)
@@ -442,6 +440,9 @@ $AveLogCPM
 995 more elements ...
 
 > 
+> calcNormFactors(d$counts,method="TMMwsp")
+[1] 1.0156094 0.9995486 0.9850752
+> 
 > d2 <- estimateDisp(d, design)
 > summary(d2$tagwise.dispersion)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -546,4 +547,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   6.46    0.42    7.00 
+   2.03    0.07    2.10 

@@ -11,7 +11,8 @@ and to compute overdispersion factors for each transcript from bootstrap samples
 New function readBismark2DGE() to read coverage files created by Bismark for BS-seq methylation data.
 
 \item
-New method "TMMwzp" for calcNormFactors() to better handle samples with a large proportion of zero counts.
+The default method for calcNormFactors() has been changed to "TMMwsp".
+This is a new method, similar to TMM, but designed to better handle samples with a high proportion of zero counts.
 
 \item
 The default value for prior.count increased from 0.25 to 2 in cpm() and rpkm().
