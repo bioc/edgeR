@@ -25,7 +25,10 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMMwsp","TM
 
 #	Check method
 #	Backward compatability with previous name
-	if(length(method)==1L && method=="TMMwzp") method="TMMwsp"
+	if(length(method)==1L && method=="TMMwzp") {
+		method <- "TMMwsp"
+		message("TMMwzp has been renamed to TMMwsp")
+	}
 	method <- match.arg(method)
 
 #	Remove all zero rows
