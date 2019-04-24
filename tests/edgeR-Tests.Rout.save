@@ -441,7 +441,8 @@ $AveLogCPM
 
 > 
 > calcNormFactors(d$counts,method="TMMwsp")
-[1] 1.0156094 0.9995486 0.9850752
+       x0        x1        x2 
+1.0156094 0.9995486 0.9850752 
 > 
 > d2 <- estimateDisp(d, design)
 > summary(d2$tagwise.dispersion)
@@ -547,4 +548,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   2.03    0.07    2.10 
+   1.87    0.09    1.96 

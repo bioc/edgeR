@@ -59,7 +59,7 @@ Rows that have zero counts for all columns are removed before normalization fact
 }
 
 \note{
-The default method was changed to \code{"TMMwsp"} in the Bioconductor 3.9 release.
+The default method was changed from \code{"TMM"} to \code{"TMMwsp"} in the Bioconductor 3.9 release.
 }
 
 \value{
@@ -86,4 +86,16 @@ A scaling normalization method for differential expression analysis of RNA-seq d
 \examples{
 y <- matrix( rpois(1000, lambda=5), nrow=200 )
 calcNormFactors(y)
+
+# The TMMwsp and TMM methods ignore genes with largest fold-changes:
+y <- cbind(1,c(1,1,1,1,1,1,1,1,1,100))
+calcNormFactors(y, lib.size=c(1e6,1e6))
+
+# calcNormFactors makes the fold-changes for the majority of genes as close to 1 as possible:
+# In this example, normalizing the library sizes makes most of the CPMs equal in the two samples:
+dge <- DGEList(counts=y)
+cpm(dge)
+dge <- calcNormFactors(dge)
+cpm(dge)
+
 }

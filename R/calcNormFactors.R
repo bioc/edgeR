@@ -11,17 +11,24 @@ calcNormFactors.DGEList <- function(object, method=c("TMMwsp","TMM","RLE","upper
 
 calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMMwsp","TMM","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for count matrices
-#	Mark Robinson.  Edits by Gordon Smyth.
-#	Created October 22 October 2009 by Mark Robinson.
-#	Last modified 23 Apr 2019.
+#	Mark Robinson, Gordon Smyth and edgeR team
+#	Created 22 October 2009. Last modified 24 Apr 2019.
 {
 #	Check object
 	x <- as.matrix(object)
 	if(any(is.na(x))) stop("NA counts not permitted")
+	nsamples <- ncol(x)
 
 #	Check lib.size
-	if(is.null(lib.size)) lib.size <- colSums(x)
-	if(any(is.na(lib.size))) stop("NA lib.sizes not permitted")
+	if(is.null(lib.size)) {
+		lib.size <- colSums(x)
+	} else {
+		if(anyNA(lib.size)) stop("NA lib.sizes not permitted")
+		if(length(lib.size) != nsamples) {
+			if(length(lib.size) > 1L) warning("calcNormFactors: length(lib.size) doesn't match number of samples",call.=FALSE)
+			lib.size <- rep(lib.size,length=nsamples)
+		}
+	}
 
 #	Check method
 #	Backward compatability with previous name
@@ -32,51 +39,58 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMMwsp","TM
 	method <- match.arg(method)
 
 #	Remove all zero rows
-	allzero <- .rowSums(x>0, nrow(x), ncol(x)) == 0
+	allzero <- .rowSums(x>0, nrow(x), nsamples) == 0L
 	if(any(allzero)) x <- x[!allzero,,drop=FALSE]
 
 #	Degenerate cases
-	if(nrow(x)==0 || ncol(x)==1) method="none"
+	if(nrow(x)==0 || nsamples==1) method="none"
 
 #	Calculate factors
 	f <- switch(method,
 		TMM = {
 			f75 <- .calcFactorQuantile(data=x, lib.size=lib.size, p=0.75)
 			if( is.null(refColumn) ) refColumn <- which.min(abs(f75-mean(f75)))
-			if(length(refColumn)==0 | refColumn < 1 | refColumn > ncol(x)) refColumn <- 1
-			f <- rep(NA,ncol(x))
-			for(i in 1:ncol(x))
+			if(length(refColumn)==0L | refColumn < 1 | refColumn > nsamples) refColumn <- 1L
+			f <- rep(NA,nsamples)
+			for(i in 1:nsamples)
 				f[i] <- .calcFactorTMM(obs=x[,i],ref=x[,refColumn], libsize.obs=lib.size[i], libsize.ref=lib.size[refColumn], logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff)
 			f
 		},
 		TMMwsp = {
 			f75 <- .calcFactorQuantile(data=x, lib.size=lib.size, p=0.75)
 			if( is.null(refColumn) ) refColumn <- which.min(abs(f75-mean(f75)))
-			if(length(refColumn)==0 | refColumn < 1 | refColumn > ncol(x)) refColumn <- 1
-			f <- rep(NA,ncol(x))
-			for(i in 1:ncol(x))
+			if(length(refColumn)==0L | refColumn < 1L | refColumn > nsamples) refColumn <- 1L
+			f <- rep(NA,nsamples)
+			for(i in 1:nsamples)
 				f[i] <- .calcFactorTMMwsp(obs=x[,i],ref=x[,refColumn], libsize.obs=lib.size[i], libsize.ref=lib.size[refColumn], logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff)
 			f
 		},
 		RLE = .calcFactorRLE(x)/lib.size,
 		upperquartile = .calcFactorQuantile(x,lib.size,p=p),
-		none = rep(1,ncol(x))
+		none = rep(1,nsamples)
 	)
 
 #	Factors should multiple to one
 	f <- f/exp(mean(log(f)))
 
 #	Output
+	names(f) <- colnames(x)
 	f
 }
 
-.calcFactorRLE <- function (data)
+.calcFactorRLE <- function(data)
+#	Scale factors as in Anders et al (2010)
+#	Mark Robinson
+#	Created 16 Aug 2010
 {
 	gm <- exp(rowMeans(log(data)))
 	apply(data, 2, function(u) median((u/gm)[gm > 0]))
 }
 
 .calcFactorQuantile <- function (data, lib.size, p=0.75)
+#	Generalized version of upper-quartile normalization
+#	Mark Robinson
+#	Created 16 Aug 2010
 {
 #	i <- apply(data<=0,1,all)
 #	if(any(i)) data <- data[!i,,drop=FALSE]
@@ -87,6 +101,7 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMMwsp","TM
 
 .calcFactorTMM <- function(obs, ref, libsize.obs=NULL, libsize.ref=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10)
 #	TMM between two libraries
+#	Mark Robinson
 {
 	obs <- as.numeric(obs)
 	ref <- as.numeric(ref)
@@ -199,11 +214,11 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMMwsp","TM
 #	Trim
 	loM <- as.integer(n * logratioTrim) + 1L
 	hiM <- n + 1L - loM
-	keep.M <- rep(FALSE,n)
+	keep.M <- rep.int(FALSE,n)
 	keep.M[o.M[loM:hiM]] <- TRUE
 	loA <- as.integer(n * sumTrim) + 1L
 	hiA <- n + 1L - loA
-	keep.A <- rep(FALSE,n)
+	keep.A <- rep.int(FALSE,n)
 	keep.A[o.A[loA:hiA]] <- TRUE
 	keep <- keep.M & keep.A
 	M <- M[keep]
