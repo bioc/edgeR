@@ -6,15 +6,14 @@
 \description{Reads 10X Genomics files containing single-cell RNA-seq UMI counts in Matrix Market format.}
 
 \usage{
-read10X(mtx = "matrix.mtx", genes = "genes.tsv", barcodes = NULL, path = NULL,
-        DGEList = TRUE)
+read10X(mtx = NULL, genes = NULL, barcodes = NULL, path = ".", DGEList = TRUE)
 }
 
-\arguments{ 
-\item{mtx}{name of \code{mtx} file containing counts in Matrix Market format.}
-\item{genes}{name of file containing gene IDs and names.}
-\item{barcodes}{optional name of file containing barcodes. Usually \code{"barcodes.tsv"}.}
-\item{path}{optional character string giving the directory containing the files.
+\arguments{
+\item{mtx}{name of \code{mtx} file containing counts in Matrix Exchange Format. Defaults to \code{matrix.mtx} or \code{matrix.mtx.gz}.}
+\item{genes}{name of file containing gene IDs and names. Defaults to \code{features.tsv} or \code{genes.tsv} or gzipped versions of the same.}
+\item{barcodes}{optional name of file containing barcodes. Defaults to \code{"barcodes.tsv"} or \code{barcodes.tsv.gz}.}
+\item{path}{character string giving the directory containing the files.
 Defaults to the current working directory.}
 \item{DGEList}{logical. If \code{TRUE}, a \code{DGEList} will be returned, otherwise an unclassed list is returned.}
 }
@@ -25,7 +24,7 @@ This function reads output files created by the 10X Genomics Cellranger pipeline
 The UMI counts are assembled into an integer matrix in R with accompanying gene IDs and gene symbols.
 The results are returned as either a \code{DGEList} or an ordinary list.
 
-Any or all the files (\code{mtx}, \code{genes} and \code{barcodes}) can be provided as gzip archives with extension \code{.gz}.
+The files \code{mtx}, \code{genes} and \code{barcodes} can be provided in either gzipped or unzipped versions.
 
 This function creates an ordinary matrix of counts.
 To read the counts instead into a sparse matrix format, the \code{read10xResults} function in the scater package is an alternative.
@@ -48,8 +47,8 @@ GEOmtx <- paste0(GEO,"GSM2510617_P7-matrix.mtx.gz")
 GEOgenes <- paste0(GEO,"GSM2510617_P7-genes.tsv.gz")
 download.file(GEOmtx,"matrix.mtx.gz")
 download.file(GEOgenes,"genes.tsv.gz")
-y <- read10X("matrix.mtx.gz", "genes.tsv.gz")}
-}
+y <- read10X("matrix.mtx.gz", "genes.tsv.gz")
+}}
 
 \seealso{
 \code{read10xResults} in the scater package.

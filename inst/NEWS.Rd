@@ -2,6 +2,30 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.26.0}{\itemize{
+\item
+The 'TMMwzp' method for calcNormFactors() has been renamed to 'TMMwsp' and used by default.
+
+\item
+read10X() now automatically detects files names from latest CellRanger version.
+
+\item
+glmTreat() now checks whether 'contrast' is a matrix with multiple columns and uses first column.
+
+\item
+calcNormFactors.default() now returns a named vector.
+
+\item
+New 'random' method for zscoreNBinom().
+
+\item
+Add arguments 'log' and 'prior.count' to cpmByGroup() and rpkmByGroup().
+
+\item
+Bug fix to filterByExpr().
+}}
+
+
 \section{Version 3.24.0}{\itemize{
 \item
 New functions catchKallisto() and catchSalmon() to read outputs from kallisto and Salmon
@@ -11,8 +35,7 @@ and to compute overdispersion factors for each transcript from bootstrap samples
 New function readBismark2DGE() to read coverage files created by Bismark for BS-seq methylation data.
 
 \item
-The default method for calcNormFactors() has been changed to "TMMwsp".
-This is a new method, similar to TMM, but designed to better handle samples with a high proportion of zero counts.
+New method 'TMMwzp' for calcNormFactors() to better handle samples with a large proportion of zero counts.
 
 \item
 The default value for prior.count increased from 0.25 to 2 in cpm() and rpkm().
