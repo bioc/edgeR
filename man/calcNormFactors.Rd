@@ -9,11 +9,11 @@ Calculate normalization factors to scale the raw library sizes.
 }
 \usage{
 \method{calcNormFactors}{DGEList}(object,
-                method=c("TMMwsp","TMM","RLE","upperquartile","none"),
+                method=c("TMM","TMMwsp","RLE","upperquartile","none"),
                 refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE,
                 Acutoff=-1e10, p=0.75, \dots)
 \method{calcNormFactors}{default}(object, lib.size=NULL,
-                method=c("TMMwsp","TMM","RLE","upperquartile","none"),
+                method=c("TMM","TMMwsp","RLE","upperquartile","none"),
                 refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE,
                 Acutoff=-1e10, p=0.75, \dots)
 }
@@ -41,7 +41,7 @@ By default, the M-values are weighted according to inverse variances, as compute
 If \code{refColumn} is unspecified, then the library whose upper quartile is closest to the mean upper quartile is used.
 
 \code{method="TMMwsp"} stands for "TMM with singleton pairing".
-This is a variant of TMM that should perform better for data with a high proportion of zeros, including single cell RNA-seq.
+This is a variant of TMM that is intended to perform better for data with a high proportion of zeros.
 In the TMM method, genes that have zero count in either library are ignored when comparing pairs of libraries.
 In the TMMwsp method, the positive counts from such genes are reused to increase the number of features by which the libraries are compared.
 The singleton positive counts are paired up between the libraries in decreasing order of size and then a slightly modified TMM method is applied to the re-ordered libraries.

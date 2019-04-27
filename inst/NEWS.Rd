@@ -4,16 +4,14 @@
 
 \section{Version 3.26.0}{\itemize{
 \item
-The 'TMMwzp' method for calcNormFactors() has been renamed to 'TMMwsp' and used by default.
-
-\item
 read10X() now automatically detects files names from latest CellRanger version.
 
 \item
 glmTreat() now checks whether 'contrast' is a matrix with multiple columns and uses first column.
 
 \item
-calcNormFactors.default() now returns a named vector.
+The TMMwzp method has been renamed to TMMwsp, but calls to method="TMMwzp" will still be respected.
+calcNormFactors(object) now returns a named vector when 'object' is a matrix, with colnames(objects) as the names.
 
 \item
 New 'random' method for zscoreNBinom().
@@ -35,7 +33,7 @@ and to compute overdispersion factors for each transcript from bootstrap samples
 New function readBismark2DGE() to read coverage files created by Bismark for BS-seq methylation data.
 
 \item
-New method 'TMMwzp' for calcNormFactors() to better handle samples with a large proportion of zero counts.
+New method 'TMMwzp' for calcNormFactors() to better handle samples with large proportions of zero counts.
 
 \item
 The default value for prior.count increased from 0.25 to 2 in cpm() and rpkm().

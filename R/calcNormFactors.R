@@ -1,18 +1,18 @@
 calcNormFactors <- function(object, ...)
 UseMethod("calcNormFactors")
 
-calcNormFactors.DGEList <- function(object, method=c("TMMwsp","TMM","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
+calcNormFactors.DGEList <- function(object, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for DGEList objects
-#	Created 2 October 2014.  Last modified 27 August 2015.
+#	Created 2 October 2014.  Last modified 27 April 2019.
 {
 	object$samples$norm.factors <- calcNormFactors(object=object$counts, lib.size=object$samples$lib.size, method=method, refColumn=refColumn, logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff, p=p)
 	object
 }
 
-calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMMwsp","TMM","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
+calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for count matrices
 #	Mark Robinson, Gordon Smyth and edgeR team
-#	Created 22 October 2009. Last modified 24 Apr 2019.
+#	Created 22 October 2009. Last modified 27 Apr 2019.
 {
 #	Check object
 	x <- as.matrix(object)
