@@ -1,7 +1,7 @@
 citHeader("See Section 1.2 in the User's Guide for more detail about how to cite the different edgeR pipelines.")
 
 citEntry(
-  entry="article",
+  entry = "article",
   title = "edgeR: a Bioconductor package for differential expression analysis of digital gene expression data",
   author = "Mark D Robinson and Davis J McCarthy and Gordon K Smyth",
   journal = "Bioinformatics",
@@ -9,12 +9,12 @@ citEntry(
   number = "1",
   pages = "139-140",
   year = 2010,
-  url = "https://doi.org/10.1093/bioinformatics/btp616",
+  doi = "10.1093/bioinformatics/btp616",
   textVersion = "Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140"
 )
 
 citEntry(
-  entry="article",
+  entry = "article",
   author = "Davis J McCarthy and Yunshun Chen and Gordon K Smyth", 
   title = "Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation", 
   year = 2012,
@@ -22,6 +22,6 @@ citEntry(
   volume = "40",
   number = "10",
   pages = "4288-4297",
-  url = "https://doi.org/10.1093/nar/gks042",
+  doi = "10.1093/nar/gks042",
   textVersion = "McCarthy DJ, Chen Y and Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation. Nucleic Acids Research 40, 4288-4297"
 )
