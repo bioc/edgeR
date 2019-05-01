@@ -5,7 +5,7 @@
 
 \title{Filter Genes By Expression Level}
 
-\description{Determine which genes have sufficiently large counts to be retained in a statistal analysis.}
+\description{Determine which genes have sufficiently large counts to be retained in a statistical analysis.}
 
 \usage{
 \method{filterByExpr}{DGEList}(y, design = NULL, group = NULL, lib.size = NULL, \dots)
