@@ -1,7 +1,7 @@
 kegga.DGELRT <- function(de, geneid = rownames(de), FDR = 0.05, trend = FALSE, ...)
 #	KEGG analysis of DE genes from linear model fit
 #	Gordon Smyth
-#	Created 4 June 2015.  Last modified 4 June 2015.
+#	Created 4 June 2015.  Last modified 10 May 2019.
 {
 #	Avoid argument collision with default method
 	dots <- names(list(...))
@@ -49,16 +49,20 @@ kegga.DGELRT <- function(de, geneid = rownames(de), FDR = 0.05, trend = FALSE, .
 	if(!is.numeric(FDR) | length(FDR) != 1) stop("FDR must be numeric and of length 1.")
 	if(FDR < 0 | FDR > 1) stop("FDR should be between 0 and 1.")
 
-#	Get up and down DE genes
-	fdr.coef <- p.adjust(de$table$PValue, method = "BH")
-	EG.DE.UP <- universe[fdr.coef < FDR & de$table$logFC > 0]
-	EG.DE.DN <- universe[fdr.coef < FDR & de$table$logFC < 0]
-	DEGenes <- list(Up=EG.DE.UP, Down=EG.DE.DN)
-
 #	If no DE genes, return data.frame with 0 rows
-	if(length(EG.DE.UP)==0 && length(EG.DE.DN)==0) {
+	sig <- (p.adjust(de$table$PValue, method = "BH") < FDR)
+	if(sum(sig)==0L) {
 		message("No DE genes")
 		return(data.frame())
+	}
+
+#	Get up and down DE genes
+	if(de$df.test[1] > 1) {
+		DEGenes <- universe[sig]
+	} else {
+		EG.DE.UP <- universe[sig & de$table$logFC > 0]
+		EG.DE.DN <- universe[sig & de$table$logFC < 0]
+		DEGenes <- list(Up=EG.DE.UP, Down=EG.DE.DN)
 	}
 
 	if(trend)
