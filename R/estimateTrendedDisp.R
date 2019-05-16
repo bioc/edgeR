@@ -20,7 +20,7 @@ estimateTrendedDisp.DGEList <- function(y, method="bin.spline", df=5, span=2/3, 
 
 estimateTrendedDisp.default <- function(y, group=NULL, lib.size=NULL, AveLogCPM=NULL, method="bin.spline", df=5, span=2/3, ...)
 # Yunshun Chen, Gordon Smyth.
-# Created 2 Feb 2012, last modified on 18 March 2016.
+# Created 2 Feb 2012, last modified on 16 May 2019.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -68,7 +68,7 @@ estimateTrendedDisp.default <- function(y, group=NULL, lib.size=NULL, AveLogCPM=
 	
 	if( method=="bin.loess" ) {
 		fit <- loessFit(sqrt(disp.bins), AveLogCPM.bins, span=span, iterations=1)
-		f <- approxfun(AveLogCPM.bins, fit$fitted, rule=2)
+		f <- approxfun(AveLogCPM.bins, fit$fitted, rule=2, ties=list("ordered",mean))
 		trended.dispersion <- f(AveLogCPM)^2
 	}
 	
