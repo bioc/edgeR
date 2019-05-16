@@ -2,7 +2,7 @@ dispBinTrend <- function(y, design=NULL, offset=NULL, df=5, span=0.3, min.n=400,
 #	Estimate common dispersion in bins based on AveLogCPM,
 #	then fit a curve through the dispersions
 #	Davis McCarthy, Gordon Smyth
-#	Created 10 Feb 2011.  Last modified 25 Nov 2013.
+#	Created 10 Feb 2011.  Last modified 16 May 2019.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -70,7 +70,7 @@ dispBinTrend <- function(y, design=NULL, offset=NULL, df=5, span=0.3, min.n=400,
 
 #	If few bins, use linear interpolation
 	if(nbins<7) {
-		f <- approxfun(bin.A,sqrt(bin.d),rule=2)
+		f <- approxfun(bin.A, sqrt(bin.d), rule=2, ties=list("ordered",mean))
 		dispersion <- f(AveLogCPM)^2
 		return(list(AveLogCPM=AveLogCPM, dispersion=dispersion, bin.AveLogCPM=bin.A, bin.dispersion=bin.d))
 	}
@@ -92,7 +92,7 @@ dispBinTrend <- function(y, design=NULL, offset=NULL, df=5, span=0.3, min.n=400,
 #	Loess smoother though binned dispersions
 	if( method.trend=="loess" ) {
 		fit <- loessFit(sqrt(bin.d), bin.A, span=span, iterations=1)
-		f <- approxfun(bin.A, fit$fitted, rule=2)
+		f <- approxfun(bin.A, fit$fitted, rule=2, ties=list("ordered",mean))
 		dispersion <- f(AveLogCPM)^2
 	}
 
