@@ -39,26 +39,16 @@ plotMD.DGEGLM <- function(object, column=ncol(object), coef=NULL, xlab="Average 
 	plotWithHighlights(x=object$AveLogCPM,y=logFC,xlab=xlab,ylab=ylab,main=main,status=status,...)
 }
 
-plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change", main=object$comparison, status=object$genes$Status, contrast=1, values=names(table(status)), col=NULL, adjust.method="BH", p.value=0.05, ...)
+plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change", main=object$comparison, status=object$genes$Status, contrast=1, adjust.method="BH", p.value=0.05, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
-#	Created 24 June 2015. Last modified 21 March 2017.
+#	Created 24 June 2015. Last modified 17 June 2019.
 {
 	logFC <- object$table$logFC
 	FTest <- is.null(logFC)
 	
-	if(is.null(status)) {
+	if(is.null(status))
 		status <- decideTestsDGE(object, adjust.method=adjust.method, p.value=p.value)
-		if(FTest) {
-			status <- c("non-DE", "DE")[status+1L]
-			values <- "DE"
-			col <- "red"
-		} else {
-			status <- c("Down", "non-DE", "Up")[status+2L]
-			values <- c("Up","Down")
-			col <- c("red","blue")
-		}
-	}
 
 #	Multiple contrasts
 	if(FTest) {
@@ -68,20 +58,16 @@ plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change"
 		contrast.name <- gsub("logFC[.]", "", names(object$table)[sel])
 		main <- paste0("Contrast ", contrast.name)
 	}
-	plotWithHighlights(x=object$table$logCPM,y=logFC,xlab=xlab,ylab=ylab,main=main,status=status,values=values,col=col, ...)
+	plotWithHighlights(x=object$table$logCPM,y=logFC,xlab=xlab,ylab=ylab,main=main,status=status,...)
 }
 
-plotMD.DGEExact <- function(object, xlab="Average log CPM", ylab="log-fold-change", main=NULL, status=object$genes$Status, values=names(table(status)), col=NULL, adjust.method="BH", p.value=0.05, ...)
+plotMD.DGEExact <- function(object, xlab="Average log CPM", ylab="log-fold-change", main=NULL, status=object$genes$Status, adjust.method="BH", p.value=0.05, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
 #	Created 24 June 2015.  Last modified 7 Feb 2017.
 {
-	if(is.null(status)) {
+	if(is.null(status))
 		status <- decideTestsDGE(object, adjust.method=adjust.method, p.value=p.value)
-		status <- c("Down", "non-DE", "Up")[status+2L]
-		values <- c("Up","Down")
-		col <- c("red","blue")
-	}
 	if(is.null(main)) main <- paste(object$comparison[2],"vs",object$comparison[1])
-	plotWithHighlights(x=object$table$logCPM,y=object$table$logFC,xlab=xlab,ylab=ylab,main=main,status=status,values=values,col=col,...)
+	plotWithHighlights(x=object$table$logCPM,y=object$table$logFC,xlab=xlab,ylab=ylab,main=main,status=status,...)
 }
