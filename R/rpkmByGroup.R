@@ -40,14 +40,14 @@ rpkmByGroup.DGEList <- function(y, group=NULL, gene.length=NULL, dispersion=NULL
 rpkmByGroup.default <- function(y, group=NULL, gene.length, dispersion=0.05, offset=NULL, weights=NULL, log=FALSE, prior.count=2, ...)
 #	RPKM or FPKM averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017. Last modified 4 Nov 2018.
+#	Created 10 July 2017. Last modified 21 June 2019.
 {
 	if(is.null(group)) {
 		group <- factor(rep_len(1,ncol(y)))
 		levels(group) <- "AveRPKM"
 	}
 
-	z <- cpmByGroup(y=y,group=group,dispersion=dispersion,dispersion=dispersion,offset=offset,weights=weights,log=log,prior.count=prior.count, ...)
+	z <- cpmByGroup(y=y,group=group,dispersion=dispersion,offset=offset,weights=weights,log=log,prior.count=prior.count, ...)
 	if(log) {
 		z - log2(gene.length / 1e3)
 	} else {
