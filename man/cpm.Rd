@@ -85,4 +85,8 @@ cpm(d,log=TRUE)
 
 d$genes <- data.frame(Length=c(1000,2000,500,1500,3000))
 rpkm(d)
+
+cpmByGroup(d, group=c(1,1,2,2))
+
+rpkmByGroup(d, group=c(1,1,2,2))
 }
