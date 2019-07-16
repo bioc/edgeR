@@ -1,7 +1,7 @@
-roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL,...)
+roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, nrot=1e4, ...)
 #	Rotation gene set testing for RNA-Seq data
 #	Yunshun Chen, Gordon Smyth
-#	Created 19 Dec 2012. Last revised on 3 June 2018.
+#	Created 19 Dec 2012. Last revised on 16 July 2019.
 {
 	if(is.null(design)) {
 		design <- y$design
@@ -9,13 +9,13 @@ roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), gen
 	}
 	if(length(geneid)==1L) geneid <- y$genes[[geneid]]
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
-	roast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf)
+	roast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf, nrot=nrot, approx.zscore=TRUE)
 }
 
-mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, adjust.method="BH", midp=TRUE, sort="directional", ...)
+mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, nrot=1e4, adjust.method="BH", midp=TRUE, sort="directional", ...)
 #	Rotation gene set testing for RNA-Seq data with multiple sets
 #	Yunshun Chen, Gordon Smyth
-#	Created 8 Jan 2013.  Last revised 3 June 2018.
+#	Created 8 Jan 2013.  Last revised 16 July 2019.
 {
 	if(is.null(design)) {
 		design <- y$design
@@ -23,7 +23,7 @@ mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), ge
 	}
 	if(length(geneid)==1L) geneid <- y$genes[[geneid]]
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
-	mroast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf, adjust.method=adjust.method, midp=midp, sort=sort)
+	mroast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf, nrot=nrot, approx.zscore=TRUE, adjust.method=adjust.method, midp=midp, sort=sort)
 }
 
 fry.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, sort="directional", ...)
