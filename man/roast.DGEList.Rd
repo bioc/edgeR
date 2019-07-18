@@ -12,10 +12,10 @@ Rotation gene set testing for Negative Binomial generalized linear models.
       sort = "directional", ...)
 
 \method{roast}{DGEList}(y, index = NULL, design = NULL, contrast = ncol(design), geneid = NULL,
-      set.statistic = "mean", gene.weights = NULL, nrot = 1e4, \dots)
+      set.statistic = "mean", gene.weights = NULL, nrot = 9999, \dots)
 
 \method{mroast}{DGEList}(y, index = NULL, design = NULL, contrast = ncol(design), geneid = NULL,
-       set.statistic = "mean", gene.weights = NULL, nrot = 1e4,
+       set.statistic = "mean", gene.weights = NULL, nrot = 9999,
        adjust.method = "BH", midp = TRUE, sort = "directional", \dots)
 }
 

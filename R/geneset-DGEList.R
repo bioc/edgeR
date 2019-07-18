@@ -1,7 +1,7 @@
-roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, nrot=1e4, ...)
+roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, nrot=9999, ...)
 #	Rotation gene set testing for RNA-Seq data
 #	Yunshun Chen, Gordon Smyth
-#	Created 19 Dec 2012. Last revised on 16 July 2019.
+#	Created 19 Dec 2012. Last revised on 18 July 2019.
 {
 	if(is.null(design)) {
 		design <- y$design
@@ -12,10 +12,10 @@ roast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), gen
 	roast(y=y, index=index, design=design, contrast=contrast, geneid=geneid, set.statistic=set.statistic, gene.weights=gene.weights, var.prior=1, df.prior=Inf, nrot=nrot, approx.zscore=TRUE)
 }
 
-mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, nrot=1e4, adjust.method="BH", midp=TRUE, sort="directional", ...)
+mroast.DGEList <- function(y, index=NULL, design=NULL, contrast=ncol(design), geneid=NULL, set.statistic="mean", gene.weights=NULL, nrot=9999, adjust.method="BH", midp=TRUE, sort="directional", ...)
 #	Rotation gene set testing for RNA-Seq data with multiple sets
 #	Yunshun Chen, Gordon Smyth
-#	Created 8 Jan 2013.  Last revised 16 July 2019.
+#	Created 8 Jan 2013.  Last revised 18 July 2019.
 {
 	if(is.null(design)) {
 		design <- y$design
