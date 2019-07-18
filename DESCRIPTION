@@ -6,7 +6,7 @@ Description: Differential expression analysis of RNA-seq expression profiles wit
 Author: Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
 Maintainer: Yunshun Chen <yuchen@wehi.edu.au>, Aaron Lun <infinite.monkeys.with.keyboards@gmail.com>, Mark Robinson <mark.robinson@imls.uzh.ch>, Davis McCarthy <dmccarthy@wehi.edu.au>, Gordon Smyth <smyth@wehi.edu.au>
 License: GPL (>=2)
-Depends: R (>= 2.15.0), limma (>= 3.34.5)
+Depends: R (>= 3.6.0), limma (>= 3.41.5)
 Imports: graphics, stats, utils, methods, locfit, Rcpp
 Suggests: AnnotationDbi, jsonlite, org.Hs.eg.db, readr, rhdf5, splines
 LinkingTo: Rcpp
