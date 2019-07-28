@@ -2,15 +2,15 @@ catchSalmon <- function(paths,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Gordon Smyth
-#	Created 1 April 2018. Last modified 5 Sep 2018.
+#	Created 1 April 2018. Last modified 27 July 2019.
 {
 	NSamples <- length(paths)
 
 #	Use jsonlite and readr packages for reading
 	OK <- requireNamespace("jsonlite",quietly=TRUE)
-	if(!OK) stop("jsonlite package required but not installed (or can't be loaded)")
+	if(!OK) stop("jsonlite package required but is not installed (or can't be loaded)")
 	OK <- requireNamespace("readr",quietly=TRUE)
-	if(!OK) stop("readr package required but not installed (or can't be loaded)")
+	if(!OK) stop("readr package required but is not installed (or can't be loaded)")
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {

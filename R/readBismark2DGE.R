@@ -7,13 +7,13 @@ readBismark2DGE <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 #	less than 10^16.
 #
 #	Gordon Smyth
-#	Created 30 May 2018. Last modified 23 Sep 2018.
+#	Created 30 May 2018. Last modified 26 July 2019.
 {
 	nsamples <- length(files)
 	if(is.null(sample.names)) sample.names <- removeExt(removeExt(removeExt(files)))
 	if(readr) {
 		OK <- requireNamespace("readr",quietly=TRUE)
-		if(!OK) stop("readr package required but not installed (or can't be loaded)")
+		if(!OK) stop("readr package required but is not installed (or can't be loaded)")
 	}
 
 #	Read all files and store

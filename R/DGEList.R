@@ -1,23 +1,22 @@
 DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE) 
 #	Construct DGEList object from components, with some checking
-#	Created 28 Sep 2008. Last modified 25 Sep 2018.
+#	Created 28 Sep 2008. Last modified 26 July 2019.
 {
 #	Check whether counts is a data.frame
 	if(is.data.frame(counts)) {
 		cl <- vapply(counts,class,FUN.VALUE="")
 		IsNumeric <- (cl %in% c("integer","numeric"))
-		if(any(!IsNumeric)) {
-			a <- which(!IsNumeric)
-			a <- a[length(a)]
-			if(a==1L) {
+		a <- which(!IsNumeric)
+		if(length(a)) {
+			if(length(a)==1L && a[1]==1L) {
 				stop(
 "The count matrix is a data.frame instead of a matrix and the first column is of class ",cl[1],"\n",
-"instead of being numeric. Was the first column intended to contain geneids?"
+"  instead of being numeric. Was the first column intended to contain geneids?"
 				)
 			} else {
 				stop(
-"The count matrix is a data.frame instead of a matrix and the first ",a[length(a)]," columns are non-numeric.\n",
-"Should these columns be entered as annotation instead of as counts?"
+"The count matrix is a data.frame instead of a matrix and ",length(a)," columns are non-numeric.\n",
+"  Should these columns be gene annotation instead of counts?"
 				)
 			}
 		}
@@ -25,6 +24,7 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 
 #	Check counts
 	counts <- as.matrix(counts)
+	if( !any(typeof(counts) == c("integer","double")) ) stop("non-numeric values found in counts")
 	nlib <- ncol(counts)
 	ntags <- nrow(counts)
 	if(nlib>0L && is.null(colnames(counts))) colnames(counts) <- paste0("Sample",1L:nlib)

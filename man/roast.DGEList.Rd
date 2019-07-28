@@ -12,11 +12,11 @@ Rotation gene set testing for Negative Binomial generalized linear models.
       sort = "directional", ...)
 
 \method{roast}{DGEList}(y, index = NULL, design = NULL, contrast = ncol(design), geneid = NULL,
-      set.statistic = "mean", gene.weights = NULL, \dots)
+      set.statistic = "mean", gene.weights = NULL, nrot = 1999, \dots)
 
 \method{mroast}{DGEList}(y, index = NULL, design = NULL, contrast = ncol(design), geneid = NULL,
-       set.statistic = "mean", gene.weights = NULL,
-       adjust.method = "BH", midp = TRUE, sort = "directional", ...)
+       set.statistic = "mean", gene.weights = NULL, nrot = 1999,
+       adjust.method = "BH", midp = TRUE, sort = "directional", \dots)
 }
 
 \arguments{
@@ -35,6 +35,7 @@ Rotation gene set testing for Negative Binomial generalized linear models.
   \item{gene.weights}{numeric vector of directional (positive or negative) genewise weights.
         For \code{mroast} or \code{fry}, this vector must have length equal to \code{nrow(y)}.
         For \code{roast}, can be of length \code{nrow(y)} or of length equal to the number of genes in the test set.} 
+  \item{nrot}{number of rotations used to compute the p-values.}
   \item{adjust.method}{method used to adjust the p-values for multiple testing. See \code{\link{p.adjust}} for possible values.}
   \item{midp}{logical, should mid-p-values be used in instead of ordinary p-values when adjusting for multiple testing?}
   \item{sort}{character, whether to sort output table by directional p-value (\code{"directional"}), non-directional p-value (\code{"mixed"}), or not at all (\code{"none"}).}
