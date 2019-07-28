@@ -2,13 +2,13 @@ catchKallisto <- function(paths,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Gordon Smyth
-#	Created 2 April 2018. Last modified 5 Sep 2018.
+#	Created 2 April 2018. Last modified 26 July Sep 2019.
 {
 	NSamples <- length(paths)
 
 #	Use rhdf5 package for reading
 	suppressPackageStartupMessages(OK <- requireNamespace("rhdf5",quietly=TRUE))
-	if(!OK) stop("rhdf5 package required but not installed (or can't be loaded)")
+	if(!OK) stop("rhdf5 package required but is not installed (or can't be loaded)")
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {
