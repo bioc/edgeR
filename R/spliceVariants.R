@@ -18,12 +18,12 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 	}
 
 	geneID <- as.vector(unlist(geneID))
-	## Order genes by geneID: we need some way to reorganise the data---output cannot possibly be same dimension as input so this is a sensible way to organise things
+#	Order genes by geneID: we need some way to reorganise the data---output cannot possibly be same dimension as input so this is a sensible way to organise things
 	o <- order(geneID)
 	geneID <- geneID[o]
 	y.mat <- y.mat[o,]
 	uniqIDs <- unique(geneID)
-	## Organise the dispersion values to be used in the NB models
+#	Organise the dispersion values to be used in the NB models
 	if( is.null(dispersion) ) {
 		if(estimate.genewise.disp) {
 			dispersion <- estimateExonGenewiseDisp(y.mat, geneID, group)
@@ -52,20 +52,19 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 			genewise.disp <- FALSE
 		}
 	}
-	## Can't get any results if there are no counts for an exon, so remove all-zero exons
+#	Can't get any results if there are no counts for an exon, so remove all-zero exons
 	keep <- rowSums(y.mat) > 0
 	exons <- y.mat[keep,]
 	rownames(exons) <- geneID[keep]
 	uniqIDs <- unique(geneID[keep])
-	na.vec <- rep(NA, length(uniqIDs))
+	na.vec <- rep_len(NA_real_, length(uniqIDs))
 	if(genewise.disp)
 		dispersion <- dispersion[names(dispersion) %in% uniqIDs]
 	if(!genewise.disp) {
 		dispersion <- rep(dispersion, length(uniqIDs))
 		names(dispersion) <- uniqIDs
 	}
-	## We want to know how many exons each gene has
-	nexons <- na.vec
+#	We want to know how many exons each gene has
 	dummy <- rowsum(rep(1, nrow(exons)), rownames(exons))
 	nexons <- as.vector(dummy)
 	names(nexons) <- rownames(dummy)
@@ -73,13 +72,13 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 	nexons <- nexons[mm]
 	if(trace)
 		cat("Max number exons: ",max(nexons),"\n")
-	## Genes with the same number of exons have the same design matrix, allowing some parallelization of computations
+#	Genes with the same number of exons have the same design matrix, allowing some parallelization of computations
 	splicevars.out <- data.frame(logFC= na.vec, logCPM = na.vec, LR = na.vec, PValue = na.vec)
 	rownames(splicevars.out) <- uniqIDs
 	abundance <- na.vec
-	## For loop iterates over number of exons for genes, starting at 2 (can't have splice variants if only one exon!)
+#	For loop iterates over number of exons for genes, starting at 2 (can't have splice variants if only one exon!)
 	for(i.exons in sort(unique(nexons))) {
-		## Select the genes with the right number of exons for this iteration
+	#	Select the genes with the right number of exons for this iteration
 		this.genes <- nexons==i.exons
 		full.index <- rownames(exons) %in% uniqIDs[this.genes]
 		if( any(this.genes) ) {
@@ -93,11 +92,11 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 			else {
 				exon.this <- factor(rep(1:i.exons, each=ncol(exons)))
 				group.this <- as.factor(rep(group, i.exons))
-				## Define design matrices for this group of genes
+			#	Define design matrices for this group of genes
 				X.full <- model.matrix(~ exon.this + group.this + exon.this:group.this )
 				X.null <- model.matrix(~ exon.this + group.this )
 				coef <- (ncol(X.null)+1):ncol(X.full)
-				## Fit NB GLMs to these genes
+			#	Fit NB GLMs to these genes
 				fit.this <- glmFit(gene.counts.mat, X.full, dispersion[this.genes], offset=0, prior.count=0)
 				abundance[this.genes] <- aveLogCPM(gene.counts.mat, lib.size=expanded.lib.size)
 				results.this <- glmLRT(fit.this, coef=coef)
@@ -113,10 +112,10 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 		}
 	}
 	splicevars.out$logCPM <- abundance
-	## Create a list with the exons divided up neatly by geneID (a bit slow using in-built fn)
-	## Not really necessary, so leave out for the time being
-	## exon.list <- split(as.data.frame(exons), rownames(exons))
-	## names(exon.list) <- uniqIDs
+#	Create a list with the exons divided up neatly by geneID (a bit slow using in-built fn)
+#	Not really necessary, so leave out for the time being
+#	exon.list <- split(as.data.frame(exons), rownames(exons))
+#	names(exon.list) <- uniqIDs
 	if(!genewise.disp)
 		dispersion <- dispersion[1]
 	new("DGEExact",list(table=splicevars.out, comparison=NULL, genes=data.frame(GeneID=uniqIDs), dispersion=dispersion))
@@ -125,11 +124,11 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 
 
 estimateExonGenewiseDisp <- function(y, geneID, group=NULL)
-	## Function to estimate a common dispersion from exon count data
-	## Created by Davis McCarthy, 29 July 2011.
-	## Last modified 29 July 2011.
+#	Function to estimate a common dispersion from exon count data
+#	Created by Davis McCarthy, 29 July 2011.
+#	Last modified 7 Aug 2019.
 {
-	## Check objects coming in
+#	Check objects coming in
 	if( is(y, "DGEList") ) {
 		y.mat <- y$counts
 		if( is.null(group) )
@@ -141,33 +140,33 @@ estimateExonGenewiseDisp <- function(y, geneID, group=NULL)
 			stop("y is a matrix and no group argument has been supplied. Please supply group argument\n")
 	}
 	geneID <- as.vector(unlist(geneID))
-	## Cannot maintain order of the argument y, so order on geneID so that we have some sensible organisation
+#	Cannot maintain order of the argument y, so order on geneID so that we have some sensible organisation
 	o <- order(geneID)
 	geneID <- geneID[o]
 	y.mat <- y.mat[o,]
-	## Sum counts from all exons for each gene to get gene-level counts and form DGEList object
+#	Sum counts from all exons for each gene to get gene-level counts and form DGEList object
 	gene.counts <- rowsum(y.mat, geneID)
-	genewise.disp <- rep(NA, nrow(gene.counts))
+	genewise.disp <- rep_len(NA_real_, nrow(gene.counts))
 	names(genewise.disp) <- rownames(gene.counts)
 	gene.data <- DGEList(counts=gene.counts, group=group)
-	## Cannot properly compute dispersion if there are no counts for the gene
+#	Cannot properly compute dispersion if there are no counts for the gene
 	used <- rowSums(gene.data$counts) > 0
-	## Need to first estimate a common dispersion
+#	Need to first estimate a common dispersion
 	gene.data <- estimateCommonDisp(gene.data[used,])
-	## Next estimate tagwise dispersion for each gene, with trend. Default prop.used=2/3, grid.length=200
+#	Next estimate tagwise dispersion for each gene, with trend. Default prop.used=2/3, grid.length=200
 	gene.data <- estimateTagwiseDisp(gene.data, trend="movingave")
-	## For those gene which have sufficient (>0) counts, assign estimated dispersion
+#	For those gene which have sufficient (>0) counts, assign estimated dispersion
 	genewise.disp[used] <- gene.data$tagwise.dispersion
-	## For those genes with zero counts, assign maximum estimated dispersion value
+#	For those genes with zero counts, assign maximum estimated dispersion value
 	genewise.disp[!used] <- max(gene.data$tagwise.dispersion)
 	genewise.disp
 }
 
 
 plotExonUsage <- function(y, geneID, group=NULL, transform="none", counts.per.million=TRUE, legend.coords=NULL, ...)
-	## Plots exon usage from a matrix, DGEList or list of exon counts
-	## Created by Davis McCarthy, 30 July 2011.
-	## Last modified 2 Aug 2011.
+#	Plots exon usage from a matrix, DGEList or list of exon counts
+#	Created by Davis McCarthy, 30 July 2011.
+#	Last modified 2 Aug 2011.
 {
 	if( is(y,"DGEList") ) {
 		ind <- rownames(y$counts) %in% geneID
@@ -222,7 +221,7 @@ plotExonUsage <- function(y, geneID, group=NULL, transform="none", counts.per.mi
 	for( i in 2:ncol(exon.mat) )
 		lines(exon.mat[,i], type="b", col=cols[group[i]], ...)
 	if(is.null(legend.coords)) {
-		legend.coords <- rep(NA,2)
+		legend.coords <- rep_len(NA_real_,2L)
 		legend.coords[1] <- 0.8*nrow(exon.mat)
 		legend.coords[2] <- 0.9*max(exon.mat)
 	}

@@ -1,10 +1,10 @@
 Package: edgeR
-Version: 3.27.11
-Date: 2019-08-04
+Version: 3.27.12
+Date: 2019-08-13
 Title: Empirical Analysis of Digital Gene Expression Data in R
 Description: Differential expression analysis of RNA-seq expression profiles with biological replication. Implements a range of statistical methodology based on the negative binomial distributions, including empirical Bayes estimation, exact tests, generalized linear models and quasi-likelihood tests. As well as RNA-seq, it be applied to differential signal analysis of other types of genomic data that produce counts, including ChIP-seq, Bisulfite-seq, SAGE and CAGE.
 Author: Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
-Maintainer: Yunshun Chen <yuchen@wehi.edu.au>, Aaron Lun <infinite.monkeys.with.keyboards@gmail.com>, Davis McCarthy <dmccarthy@svi.edu.au>, Mark Robinson <mark.robinson@imls.uzh.ch>, Gordon Smyth <smyth@wehi.edu.au>
+Maintainer: Yunshun Chen <yuchen@wehi.edu.au>, Aaron Lun <infinite.monkeys.with.keyboards@gmail.com>, Mark Robinson <mark.robinson@imls.uzh.ch>, Gordon Smyth <smyth@wehi.edu.au>
 License: GPL (>=2)
 Depends: R (>= 3.6.0), limma (>= 3.41.5)
 Imports: graphics, stats, utils, methods, locfit, Rcpp

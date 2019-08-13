@@ -18,6 +18,7 @@ dim.DGEGLM <- function(x) if(is.null(x$coefficients)) c(0,0) else dim(as.matrix(
 dim.DGEExact <- dim.TopTags <- dim.DGELRT <- function(x) if(is.null(x$table)) c(0,0) else dim(as.matrix(x$table))
 
 # S3 length methods
+# These methods have been removed so that edgeR objects will return list length instead of matrix length
 
 #length.DGEList <- length.DGEExact <- length.TopTags <- length.DGEGLM <- length.DGELRT <- function(x) prod(dim(x))
 
@@ -68,3 +69,27 @@ assign("dimnames<-.DGELRT",function(x,value)
 	x
 })
 
+# S3 head and tail methods
+
+head.DGEList <- head.DGEExact <- head.DGEGLM <- head.DGELRT <- head.TopTags <-
+function (x, n = 6L, ...) 
+{
+	stopifnot(length(n) == 1L)
+	n <- if (n < 0L) 
+		max(nrow(x) + n, 0L)
+	else
+		min(n, nrow(x))
+	x[seq_len(n),]
+}
+
+tail.DGEList <- tail.DGEExact <- tail.DGEGLM <- tail.DGELRT <- tail.TopTags <-
+function (x, n = 6L, ...) 
+{
+	stopifnot(length(n) == 1L)
+	nrx <- nrow(x)
+	n <- if (n < 0L) 
+		max(nrx + n, 0L)
+	else
+		min(n, nrx)
+	x[seq.int(to = nrx, length.out = n),]
+}

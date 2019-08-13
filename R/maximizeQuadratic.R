@@ -1,7 +1,7 @@
 maximizeQuadratic <- function(y, x=1:ncol(y))
 #	Maximize a function using quadratic approximation
 #	Yunshun Chen and Gordon Smyth
-#	Created 20 Oct 2011.  Last modified 13 May 2014.
+#	Created 20 Oct 2011.  Last modified 7 Aug 2019.
 {	
 	if(is.vector(y)) 
 		y <- matrix(y, nrow=1)
@@ -19,7 +19,7 @@ maximizeQuadratic <- function(y, x=1:ncol(y))
 		stop("x must be either a vector or a matrix")
 	}
 
-	z <- rep(NA, ntags)
+	z <- rep_len(NA_real_, ntags)
 	lower <- i==1
 	upper <- i==npts
 	z[lower] <- x[lower, 1]

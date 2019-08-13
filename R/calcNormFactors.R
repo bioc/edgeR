@@ -51,7 +51,7 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 			f75 <- .calcFactorQuantile(data=x, lib.size=lib.size, p=0.75)
 			if( is.null(refColumn) ) refColumn <- which.min(abs(f75-mean(f75)))
 			if(length(refColumn)==0L | refColumn < 1 | refColumn > nsamples) refColumn <- 1L
-			f <- rep(NA,nsamples)
+			f <- rep_len(NA_real_,nsamples)
 			for(i in 1:nsamples)
 				f[i] <- .calcFactorTMM(obs=x[,i],ref=x[,refColumn], libsize.obs=lib.size[i], libsize.ref=lib.size[refColumn], logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff)
 			f
@@ -60,7 +60,7 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 			f75 <- .calcFactorQuantile(data=x, lib.size=lib.size, p=0.75)
 			if( is.null(refColumn) ) refColumn <- which.min(abs(f75-mean(f75)))
 			if(length(refColumn)==0L | refColumn < 1L | refColumn > nsamples) refColumn <- 1L
-			f <- rep(NA,nsamples)
+			f <- rep_len(NA_real_,nsamples)
 			for(i in 1:nsamples)
 				f[i] <- .calcFactorTMMwsp(obs=x[,i],ref=x[,refColumn], libsize.obs=lib.size[i], libsize.ref=lib.size[refColumn], logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff)
 			f

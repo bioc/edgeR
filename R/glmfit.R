@@ -33,7 +33,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries
 #	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun
-#	Created 17 August 2010. Last modified 23 May 2018.
+#	Created 17 August 2010. Last modified 7 Aug 2019.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -55,6 +55,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 
 #	Check dispersion
 	if(is.null(dispersion)) stop("No dispersion values provided.")
+	if(anyNA(dispersion)) stop("NA dispersions not allowed")
 	if(!is.numeric(dispersion)) stop("dispersion must be numeric")
 	if(is.null(dim(dispersion))) {
 		if( !any(length(dispersion)==c(1L,ntag)) ) stop("dispersion has wrong length. As a vector, it should agree with nrow(y)")

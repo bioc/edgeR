@@ -66,8 +66,8 @@ catchSalmon <- function(paths,verbose=TRUE)
 		OverDisp <- pmax(OverDisp,1)
 		OverDisp[!i] <- OverDispPrior
 	} else {
-		OverDisp[] <- NA
-		OverDispPrior <- NA
+		OverDisp[] <- NA_real_
+		OverDispPrior <- NA_real_
 	}
 
 #	Prepare output

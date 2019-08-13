@@ -1,7 +1,7 @@
 dispCoxReidSplineTrend <- function(y, design, offset=NULL, df = 5, subset=10000, AveLogCPM=NULL, method.optim="Nelder-Mead", trace=0)
 #	Estimate spline trend dispersion
 #	Gordon Smyth, Yunshun Chen, Davis McCarthy
-#	Created 16 Dec 2010.  Last modified 2 Feb 2015.
+#	Created 16 Dec 2010.  Last modified 7 Aug 2019.
 {
 	y <- as.matrix(y)
 	nlibs <- ncol(y)
@@ -38,7 +38,7 @@ dispCoxReidSplineTrend <- function(y, design, offset=NULL, df = 5, subset=10000,
 	par0 <- rep(0,df+1)
 	par0[1] <- median(abundance.nonzero[i]) + log(0.1)
 	out <- optim(par0,fun,y=y.nonzero[i,],design=design,offset=offset.nonzero[i,],abundance=abundance.nonzero[i],X=X[i,],control=list(trace=trace),method=method.optim)
-	disp <- rep(NA, ntags)
+	disp <- rep_len(NA_real_, ntags)
 	disp.nonzero <-  as.vector(exp(X %*% out$par - abundance.nonzero))
 	disp[all.zero] <- disp.nonzero[which.min(abundance.nonzero)]
 	disp[!all.zero] <- disp.nonzero

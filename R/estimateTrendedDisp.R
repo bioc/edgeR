@@ -45,7 +45,7 @@ estimateTrendedDisp.default <- function(y, group=NULL, lib.size=NULL, AveLogCPM=
 	nbins <- 50
 	if(nbins > ntags) stop("nbins greater than number of rows of data")
 	bins <- cutWithMinN(AveLogCPM, intervals=nbins, min.n=floor(ntags/nbins))
-	disp.bins <- AveLogCPM.bins <- rep(NA, nbins)
+	disp.bins <- AveLogCPM.bins <- rep_len(NA_real_, nbins)
 	
 	for(i in 1:nbins) {
 		tagsinbin <- bins$group==i

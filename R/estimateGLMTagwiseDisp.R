@@ -24,6 +24,7 @@ estimateGLMTagwiseDisp.DGEList <- function(y, design=NULL, prior.df=10, trend=!i
 }
 
 estimateGLMTagwiseDisp.default <- function(y, design=NULL, offset=NULL, dispersion, prior.df=10, trend=TRUE, span=NULL, AveLogCPM=NULL, weights=NULL, ...)
+#	Created 24 March 2011. Last modified 7 Aug 2019.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -41,7 +42,7 @@ estimateGLMTagwiseDisp.default <- function(y, design=NULL, offset=NULL, dispersi
 	}
 	if(ncol(design) >= ncol(y)) {
 		warning("No residual df: setting dispersion to NA")
-		return(rep(NA,ntags))
+		return(rep_len(NA_real_,ntags))
 	}
 
 #	Check offset

@@ -29,7 +29,7 @@ estimateGLMCommonDisp.default <- function(y, design=NULL, offset=NULL, method="C
 	}
 	if(ncol(design) >= ncol(y)) {
 		warning("No residual df: setting dispersion to NA")
-		return(NA)
+		return(NA_real_)
 	}
 
 #	Check method

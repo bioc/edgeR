@@ -1,64 +1,41 @@
-## DGLMSTDRESID.R
-
-dglmStdResid <- function(y, design, dispersion=0, offset=0, nbins=100, make.plot=TRUE, xlab="Mean", ylab="Ave. binned standardized residual", ... ) {
-    ## Function to bin DGE data based on fitted values for the abundance and compute and plot the average of the standardized residuals from a Poisson model fit in each bin against the average abundance for each bin. Allows us to investigate the mean-variance relationship in the data and compute a variance function for the negative binomial model.
-    ## Davis McCarthy
-    ## Created 9 November 2010. Last modified 1 March  2012.
+plotMeanVar2 <- function(y, design=NULL, dispersion=0, offset=0, nbins=100, make.plot=TRUE, xlab="Mean", ylab="Ave. binned standardized residual", ... )
+# Fit a Poisson (or NB) glm to each row
+# Compute squared residuals
+# Bin by size of fitted value and plot average squared residual vs average fitted value
+# Davis McCarthy and Gordon Smyth
+# Created 9 November 2010.
+# Renamed from binStdResidPois() to dglmStdResid() and moved from meanVar.R to dglmStdResid.R on 25 Nov 2010.
+# Renamed from dglmStdResid() to meanVar2() on 7 Aug 2019.
+# Last modified 7 Aug 2019.
+{
+#	Fit Poisson or NB GLM
 	ngenes <- nrow(y)
 	nlibs <- ncol(y)
-    if( length(offset)!=nlibs & length(offset)!=1 & length(offset)!=length(y) )
-		stop("Number of entries in argument 'offset' incompatible with 'y'. Must have length equal to 1 or to the number of entries in the matrix of counts or to the number of columns in the matrix of counts.\n")
-	else
-		offset <- matrix(offset, nrow=ngenes, ncol=nlibs, byrow=TRUE)
-	fit <- mglmLevenberg(y, design=design, dispersion=0, offset=offset)
-    means <- as.vector(fit$fitted)
-    std.resid <- nlibs * ( as.vector(y) - means )^2 / ( nlibs - ncol(design) ) # Obtain an approximate value for the standardized residual: denominator is (n - p) / n instead of the usual (1 - leverage)
-    n <- length(means)
-    means.quantiles <- quantile(means, probs=seq(0,1,length=nbins+1))
-    means.quantiles[1] <- 0
-    if(any(duplicated(means.quantiles)))
-        stop("Duplicated quantiles for the means, so cannot produce bins. Try altering nbins.")
-    else
-        f <- cut(means,breaks=means.quantiles)
-    bins <- split(1:n,f)
-    std.resid.bins <- means.bins <- list()
-    for(i in 1:nbins){
-        means.bins[[i]] <- means[bins[[i]]]
-        std.resid.bins[[i]] <- std.resid[bins[[i]]]
-    }
-    ave.means <- sapply(means.bins, mean)
-    ave.std.resid <- sapply(std.resid.bins, mean)
-    out <- list(ave.means=ave.means, ave.std.resid=ave.std.resid, bin.means=means.bins, bin.std.resid=std.resid.bins, means=means, standardized.residuals=std.resid, bins=bins, nbins=nbins, ngenes=ngenes, nlibs=nlibs)
-    out$dispersion.estimate <- getDispersions(out)
-    if(make.plot)
-        plot(ave.means, ave.std.resid, pch="x", col="darkgreen", cex=1.5, log="xy", xlab=xlab, ylab=ylab, plot.first=grid(), ...)
-    return( invisible( out ) )
+	if(is.null(design)) design <- matrix(1,nlibs,1)
+	Mu <- glmFit(y, design=design, dispersion=0, offset=offset)$fitted.values
+
+#	Extract fitted values and squared residuals
+#	Use approximate leverages
+	ColMeanMu <- colMeans(Mu)
+	V <- ColMeanMu + dispersion*ColMeanMu^2
+	h1 <- 1-hat(design/sqrt(V),intercept=FALSE)
+	j <- (h1 < 1e-14)
+	if(any(j)) {
+		y <- y[,!j]
+		Mu <- Mu[,!j]
+		h1 <- h1[!j]
+	}
+	ResidSqr <- (y - Mu)^2 / h1
+
+#	Bin by Mu and compute average Mu and ResidSqr for each bin
+	bins <- cutWithMinN(Mu, intervals=nbins, min.n=3)
+	X <- cbind(1,as.vector(Mu),as.vector(ResidSqr))
+	BinMeans <- rowsum(X,bins$group,reorder=FALSE)
+	AveMu <- BinMeans[,2] / BinMeans[,1]
+	AveResidSqr <- BinMeans[,3] / BinMeans[,1]
+
+#	Plot
+	if(make.plot) plot(AveMu, AveResidSqr, log="xy", xlab=xlab, ylab=ylab, ...)
+
+	invisible(list(mean=AveMu,var=AveResidSqr))
 }
-
-
-getDispersions <- function(binned.object) {
-    ## Estimate the dispersion parameter for each DGE observation from the variance function calculated by binning the standardized residuals from the Poisson GLM based on the estimated (fitted) mean for the observation. Operates on the output of binStdResidPois
-    ## Davis McCarthy
-    ## Created 9 November 2010. Last modified 9 November 2010.
-    dispersion <- rep(NA, length=length(binned.object$means))
-    bin.dispersion <- ( binned.object$ave.std.resid - binned.object$ave.means) / binned.object$ave.means^2
-    bin.dispersion.used <- bin.dispersion
-    whichbin <- 1:binned.object$nbins
-    for( i in 1:binned.object$nbins) {
-        if(bin.dispersion[i] > 0)
-            dispersion[binned.object$bins[[i]]] <- bin.dispersion.used[i] <- bin.dispersion[i]
-        else {
-            next.ok <- min( whichbin[ bin.dispersion > 0 & whichbin > i ] )
-            dispersion[binned.object$bins[[i]]] <- bin.dispersion.used[i] <- bin.dispersion[ next.ok ]
-        }
-    }
-    dispersion <- matrix(dispersion, nrow=binned.object$ngenes, ncol=binned.object$nlibs)
-    list(bin.dispersion=bin.dispersion, bin.dispersion.used=bin.dispersion.used, dispersion=dispersion)
-}
-
-
-    
-
-
-
-

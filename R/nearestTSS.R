@@ -70,7 +70,7 @@ nearestTSS <- function(chr,locus,species="Hs")
 
 #	Expand EGLOC to input length
 	EGLOC$Chromosome <- NULL
-	ILocus[ILocus==0L] <- NA
+	ILocus[ILocus==0L] <- NA_integer_
 	Out <- EGLOC[ILocus,,drop=FALSE]
 	Out$distance <- Out$tss - locus
 	Out$distance[Out$neg] <- -Out$distance[Out$neg]

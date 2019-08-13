@@ -36,7 +36,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 #  A matrix of likelihoods is computed for each gene at a set of dispersion grid points
 #  and WLEB() is called for weighted likelihood empirical Bayes.
 #  Yunshun Chen, Aaron Lun, Gordon Smyth.
-#  Created July 2012. Last modified 19 Nov 2018.
+#  Created July 2012. Last modified 7 Aug 2019.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -84,7 +84,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 			design <- model.matrix(~group)
 		if( all(tabulate(group)<=1) ) {
 			warning("There is no replication, setting dispersion to NA.")
-			return(list(common.dispersion=NA, trended.dispersion=NA, tagwise.dispersion=NA))
+			return(list(common.dispersion=NA_real_, trended.dispersion=NA_real_, tagwise.dispersion=NA_real_))
 		}
 		
 		eq <- equalizeLibSizes(y, group=group, dispersion=0.01, lib.size=lib.size)
@@ -106,7 +106,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 		design <- as.matrix(design)
 		if(ncol(design) >= nlibs) {
 			warning("No residual df: setting dispersion to NA")
-			return(list(common.dispersion=NA, trended.dispersion=NA, tagwise.dispersion=NA))
+			return(list(common.dispersion=NA_real_, trended.dispersion=NA_real_, tagwise.dispersion=NA_real_))
 		}
 
 		# Identify which observations have means of zero (weights aren't needed here).

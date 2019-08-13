@@ -4,7 +4,7 @@ estimateCommonDisp <- function(y, ...)
 UseMethod("estimateCommonDisp")
 
 estimateCommonDisp.DGEList <- function(y, tol=1e-06, rowsum.filter=5, verbose=FALSE, ...)
-# Yunshun Chen. Created 18 March 2016.
+# Yunshun Chen. Created 7 Aug 2019.
 {
 	y <- validDGEList(y)
 	group <- y$samples$group
@@ -12,7 +12,7 @@ estimateCommonDisp.DGEList <- function(y, tol=1e-06, rowsum.filter=5, verbose=FA
 	
 	if( all(tabulate(group)<=1) ) {
 		warning("There is no replication, setting dispersion to NA.")
-		y$common.dispersion <- NA
+		y$common.dispersion <- NA_real_
 		return(y)
 	}
 

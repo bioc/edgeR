@@ -2,7 +2,7 @@
 \alias{binMeanVar}
 \alias{plotMeanVar}
 
-\title{Explore the mean-variance relationship for DGE data}
+\title{Explore the Mean-Variance Relationship for DGE Data}
 
 \description{Appropriate modelling of the mean-variance relationship in DGE data is important for making inferences about differential expression. Here are functions to compute gene means and variances, as well at looking at these quantities when data is binned based on overall expression level.}
 
@@ -84,6 +84,8 @@ plotMeanVar(d, meanvar=meanvar, show.tagwise.vars=TRUE, NBline=TRUE)
 }
 
 \seealso{
+\code{\link{plotMeanVar2}} is related in purpose but works from raw counts and uses standardized residuals.
+
 \code{\link{plotMDS.DGEList}}, \code{\link{plotSmear}} and
 \code{\link{maPlot}} provide more ways of visualizing DGE data.
 
