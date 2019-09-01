@@ -2,7 +2,7 @@ catchSalmon <- function(paths,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Gordon Smyth
-#	Created 1 April 2018. Last modified 27 July 2019.
+#	Created 1 April 2018. Last modified 28 Aug 2019.
 {
 	NSamples <- length(paths)
 
@@ -25,7 +25,10 @@ catchSalmon <- function(paths,verbose=TRUE)
 #		Meta information
 		Meta <- jsonlite::fromJSON(MetaFile)
 		NTx <- Meta$num_targets
+		if(is.null(NTx)) NTx <- Meta$num_valid_targets
+		if(is.null(NTx)) stop("Can't find number of targets")
 		NBoot <- Meta$num_bootstraps
+		if(is.null(NBoot)) stop("Can't find number of bootstraps")
 		if(verbose) cat(NTx,"transcripts,",NBoot,"bootstraps\n")
 
 #		Read counts

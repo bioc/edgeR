@@ -58,10 +58,6 @@ For symmetry, normalization factors are adjusted to multiply to 1.
 Rows that have zero counts for all columns are removed before normalization factors are computed, so that rows with all zero counts do not affect the estimated factors.
 }
 
-\note{
-The default method was changed from \code{"TMM"} to \code{"TMMwsp"} in the Bioconductor 3.9 release.
-}
-
 \value{
 If \code{object} is a \code{matrix}, the output is a vector with length \code{ncol(object)} giving the relative normalization factors.
 If \code{object} is a \code{DGEList}, then it is returned as output with the relative normalization factors in \code{object$samples$norm.factors}.
