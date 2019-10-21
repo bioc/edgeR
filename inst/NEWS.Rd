@@ -2,6 +2,36 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.28.0}{\itemize{
+\item
+Add head() and tail() methods for edgeR classes.
+
+\item
+Remove the 'mixed.df' argument and add a 'locfit.mixed' option to 'trend.method' in estimateDisp() and WLEB().
+
+\item
+Add two new arguments 'large.n' and 'min.prop' to filterByExpr() to allow users to change parameters previously hard-wired.
+
+\item
+Remove 'values' and 'col' arguments to plotMD.DGELRT() and plotMD.ExactTest() as no longer needed because of changes to plotWithHighlights().
+
+\item
+roast.DGEList() and mroast.DGEList() now pass the 'nrot' argument to roast.default().
+
+\item
+Rename dglmStdResid() to plotMeanVar2().
+
+\item
+getDispersions() is no longer exported.
+
+\item
+Estimated dispersions are now numeric even if NA.
+
+\item
+Bug fix to goana.DGELRT() and kegga.DGELRT() when the LRT was on more than 1 df.
+}}
+
+
 \section{Version 3.26.0}{\itemize{
 \item
 read10X() now automatically detects files names from latest CellRanger version.

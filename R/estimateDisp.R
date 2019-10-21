@@ -3,9 +3,9 @@
 estimateDisp <- function(y, ...)
 UseMethod("estimateDisp")
 
-estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", mixed.df=FALSE, tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
+estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 #  Yunshun Chen.
-#  Created 16 March 2016. Last modified 9 Oct 2017.
+#  Created 16 March 2016. Last modified 16 Oct 2019.
 {
 	y <- validDGEList(y)
 	group <- y$samples$group
@@ -17,7 +17,7 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 		y$design <- design
 	}
 
-	d <- estimateDisp(y=y$counts, design=design, group=group, lib.size=lib.size, offset=getOffset(y), prior.df=prior.df, trend.method=trend.method, mixed.df=mixed.df, tagwise=tagwise, span=span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, weights=y$weights, ...)
+	d <- estimateDisp(y=y$counts, design=design, group=group, lib.size=lib.size, offset=getOffset(y), prior.df=prior.df, trend.method=trend.method, tagwise=tagwise, span=span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, weights=y$weights, ...)
 
 	y$common.dispersion <- d$common.dispersion
 	y$trended.dispersion <- d$trended.dispersion
@@ -30,13 +30,13 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 	y
 }
 
-estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL, trend.method="locfit", mixed.df=FALSE, tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
+estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
 #  Estimate common, trended and tagwise dispersions
 #  Use GLM approach if design matrix is given and classic approach otherwise.
 #  A matrix of likelihoods is computed for each gene at a set of dispersion grid points
 #  and WLEB() is called for weighted likelihood empirical Bayes.
 #  Yunshun Chen, Aaron Lun, Gordon Smyth.
-#  Created July 2012. Last modified 7 Aug 2019.
+#  Created July 2012. Last modified 16 Oct 2019.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -45,7 +45,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	nlibs <- ncol(y)
 	
 #	Check trend.method
-	trend.method <- match.arg(trend.method, c("none", "loess", "locfit", "movingave"))
+	trend.method <- match.arg(trend.method, c("none", "loess", "locfit", "movingave", "locfit.mixed"))
 	
 #	Check group
 	if(is.null(group)) group <- rep(1, nlibs)
@@ -151,7 +151,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	if(trend.method!="none"){
 		AveLogCPM <- aveLogCPM(y, lib.size=lib.size, dispersion=common.dispersion, weights=weights)
 		out.1 <- WLEB(theta=spline.pts, loglik=l0, covariate=AveLogCPM[sel], trend.method=trend.method, 
-			mixed.df=mixed.df, span=span, overall=FALSE, individual=FALSE, m0.out=TRUE)
+			span=span, overall=FALSE, individual=FALSE, m0.out=TRUE)
 		span <- out.1$span
 		m0 <- out.1$shared.loglik
 		disp.trend <- 0.1 * 2^out.1$trend
@@ -204,7 +204,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 
 		# Estimating tagwise dispersions
 		out.2 <- WLEB(theta=spline.pts, loglik=l0, prior.n=temp.n, covariate=AveLogCPM[sel], 
-			trend.method=trend.method, mixed.df=mixed.df, span=span, overall=FALSE, trend=FALSE, m0=m0)
+			trend.method=trend.method, span=span, overall=FALSE, trend=FALSE, m0=m0)
 
 		if (!robust) { 
 			tagwise.dispersion[sel] <- 0.1 * 2^out.2$individual
@@ -225,12 +225,12 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 }
 
 
-WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit", mixed.df=FALSE, span=NULL, 
+WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit", span=NULL, 
 	overall=TRUE, trend=TRUE, individual=TRUE, m0=NULL, m0.out=FALSE)
 #  Weighted likelihood empirical Bayes for estimating a parameter vector theta
 #  given log-likelihood values on a grid of theta values
 #  Yunshun Chen, Gordon Smyth
-#	Created July 2012. Last modified 24 October 2012.
+#	Created July 2012. Last modified 16 Oct 2019.
 {
 #	Check loglik
 	loglik <- as.matrix(loglik)
@@ -241,9 +241,7 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 	if(is.null(covariate))
 		trend.method <- "none"
 	else
-		trend.method <- match.arg(trend.method, c("none", "loess", "locfit", "movingave"))
-
-	if(trend.method=="locfit" & mixed.df) trend.method <- "locfit_mix"
+		trend.method <- match.arg(trend.method, c("none", "loess", "locfit", "movingave", "locfit.mixed"))
 
 #	Set span
 	if(is.null(span)) if(ntags<=50) span <- 1 else span <- 0.25+0.75*(50/ntags)^0.5
@@ -266,7 +264,7 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 		},
 		"loess" = loessByCol(loglik, covariate, span=span)$fitted.values,
 		"locfit" = locfitByCol(loglik, covariate, span=span, degree=0),
-		"locfit_mix" = {
+		"locfit.mixed" = {
 			deg0 <- locfitByCol(loglik, covariate, span=span, degree=0)
 			deg1 <- locfitByCol(loglik, covariate, span=span, degree=1)
 			r <- range(covariate)
@@ -277,7 +275,7 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 	)
 
 #	make sure each row of m0 is unimodal
-	if(trend.method=="locfit_mix"){
+	if(trend.method=="locfit.mixed"){
 		for(i in ncol(m0):3){
 			diff1_m0 <- m0[,i] - m0[,i-1]
 			diff2_m0 <- m0[,i-1] - m0[,i-2]

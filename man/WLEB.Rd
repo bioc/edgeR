@@ -1,15 +1,15 @@
 \name{WLEB}
 \alias{WLEB}
 
-\title{Calculate Weighted Likelihood Empirical Bayes Estimates}
+\title{Weighted Likelihood Empirical Bayes}
 
 \description{
-Estimates the parameters which maximize the given log-likelihood matrix using empirical Bayes method.
+Compute empirical Bayes moderated parameter estimators using a weighted likelihood approach.
 }
 
 \usage{
-WLEB(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit", mixed.df=FALSE, 
-     span=NULL, overall=TRUE, trend=TRUE, individual=TRUE, m0=NULL, m0.out=FALSE)
+WLEB(theta, loglik, prior.n = 5, covariate = NULL, trend.method = "locfit", span = NULL, 
+     overall = TRUE, trend = TRUE, individual = TRUE, m0 = NULL, m0.out = FALSE)
 }
 
 \arguments{
@@ -17,8 +17,7 @@ WLEB(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit", mixed.df=F
 \item{loglik}{numeric matrix of log-likelihood of all the candidates at those values of parameter.}
 \item{prior.n}{numeric scaler, estimate of the prior weight, i.e. the smoothing parameter that indicates the weight to put on the common likelihood compared to the individual's likelihood.}
 \item{covariate}{numeric vector of values across which a parameter trend is fitted}
-\item{trend.method}{method for estimating the parameter trend. Possible values are \code{"none"}, \code{"movingave"} and \code{"loess"}.}
-\item{mixed.df}{logical, only used when \code{trend.method="locfit"}. If \code{FALSE}, \code{locfit} uses a polynomial of degree 0. If \code{TRUE}, \code{locfit} uses a polynomial of degree 1 for rows with small covariate values. Care is taken to smooth the curve.}
+\item{trend.method}{method for estimating the parameter trend. Possible values are \code{"none"}, \code{"movingave"}, \code{"loess"}, \code{"locfit"} or \code{"locfit.mixed"}. The latter options cause \code{movingAverageByCol()}, \code{loessBycol()} and \code{locfitByCol()} respectively to be called to smooth \code{loglik} by the covariate values. The \code{"locfit.mixed"} method is the same as \code{"locfit"} but uses a polynomial of degree 1 for lowly expressed genes.}
 \item{span}{width of the smoothing window, as a proportion of the data set.}
 \item{overall}{logical, should a single value of the parameter which maximizes the sum of all the log-likelihoods be estimated?}
 \item{trend}{logical, should a parameter trend (against the covariate) which maximizes the local shared log-likelihoods be estimated?}
