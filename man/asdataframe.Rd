@@ -1,22 +1,24 @@
 \name{as.data.frame}
+\alias{as.data.frame.DGEExact}
+\alias{as.data.frame.DGELRT}
 \alias{as.data.frame.TopTags}
 \title{Turn a TopTags Object into a Dataframe}
 \description{
 Turn a \code{TopTags} object into a \code{data.frame}.
 }
 \usage{
-\method{as.data.frame}{TopTags}(x, row.names = NULL, optional = FALSE, \dots)
+\method{as.data.frame}{TopTags}(x, row.names = NULL, \dots)
 }
 \arguments{
   \item{x}{an object of class \code{TopTags}}
   \item{row.names}{\code{NULL} or a character vector giving the row names for the
           data frame.  Missing values are not allowed.}
-  \item{optional}{logical. If \code{TRUE}, setting row names and converting column
-          names (to syntactic names) is optional.}
-  \item{\dots}{additional arguments to be passed to or from methods.}
+  \item{\dots}{other arguments are not currently used.}
 }
 \details{
-This method combines all the components of \code{x} which have a row for each gene into a \code{data.frame}.
+Convert edgeR objects into data.frames.
+This method returns the \code{table} component of a \code{TopTags} object.
+For \code{DGEExact} and \code{DGELRT} objects, the \code{genes} and \code{table} components are combined into a data.frame, similar to what is done by \code{topTags} but without sorting or p-value adjustment.
 }
 \value{
 A data.frame.

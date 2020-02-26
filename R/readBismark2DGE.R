@@ -7,8 +7,9 @@ readBismark2DGE <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 #	less than 10^16.
 #
 #	Gordon Smyth
-#	Created 30 May 2018. Last modified 26 July 2019.
+#	Created 30 May 2018. Last modified 26 Feb 2020.
 {
+	files <- as.character(files)
 	nsamples <- length(files)
 	if(is.null(sample.names)) sample.names <- removeExt(removeExt(removeExt(files)))
 	if(readr) {

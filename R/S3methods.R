@@ -4,7 +4,15 @@ as.matrix.DGEList <- function(x,...) as.matrix(x$counts)
 
 # S3 as.data.frame method
 
-as.data.frame.TopTags <- function(x,row.names=NULL,optional=FALSE,...)
+as.data.frame.DGEExact <- as.data.frame.DGELRT <- function(x,row.names=NULL,...)
+{
+	if(is.null(x$genes)) {
+		if(!is.null(row.names)) row.names(x$table) <- row.names
+		x$table		
+	} else
+		data.frame(x$genes,x$table,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
+}
+as.data.frame.TopTags <- function(x,row.names=NULL,...)
 {
 	if(!is.null(row.names)) row.names(x$table) <- row.names
 	x$table
