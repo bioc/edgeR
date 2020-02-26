@@ -1,8 +1,26 @@
 nearestTSS <- function(chr,locus,species="Hs")
-#	Find nearest gene transcriptional start sites from orgDb
+#	Find nearest gene transcriptional start sites from the appropriate organism db package
 #	Gordon Smyth
-#	Created 3 Jan 2018.  Last modified 11 Jan 2018.
+#	Created 3 Jan 2018.  Last modified 21 Dec 2019.
 {
+#	Check input
+	chr <- as.character(chr)
+	locus <- as.integer(locus)
+	n <- length(chr)
+	if(length(locus) == 1L) 
+		locus <- rep_len(locus,n)
+	else
+		if(length(locus) != n) stop("Length of locus doesn't agree with length of chr")
+
+#	Replace NAs with empty string
+	if(anyNA(chr)) {
+		chr[is.na(chr)] <- ""
+	}
+	if(anyNA(locus)) {
+		chr[is.na(locus)] <- ""
+		locus[is.na(locus)] <- 0L
+	}
+
 #	Get access to required annotation functions
 	suppressPackageStartupMessages(OK <- requireNamespace("AnnotationDbi",quietly=TRUE))
 	if(!OK) stop("AnnotationDbi package required but is not installed (or can't be loaded)")
@@ -57,7 +75,8 @@ nearestTSS <- function(chr,locus,species="Hs")
 	if(length(grep("^chr",chr[1]))) EGLOC$Chromosome <- paste0("chr",EGLOC$Chromosome)
 
 #	Prepare output
-	ILocus <- rep_len(0L,length(chr))
+	n <- length(chr)
+	ILocus <- rep_len(0L,n)
 
 #	Cycle over chromosomes
 	ChrNames <- unique(EGLOC$Chromosome)
@@ -68,13 +87,22 @@ nearestTSS <- function(chr,locus,species="Hs")
 		ILocus[iinc] <- iref[Which]
 	}
 
-#	Expand EGLOC to input length
+#	Reorder EGLOC to match input loci
 	EGLOC$Chromosome <- NULL
-	ILocus[ILocus==0L] <- NA_integer_
 	Out <- EGLOC[ILocus,,drop=FALSE]
-	Out$distance <- Out$tss - locus
+	Out$distance <- Out$tss - locus[ILocus > 0L]
 	Out$distance[Out$neg] <- -Out$distance[Out$neg]
 	Out$neg <- NULL
 
-	Out
+#	If any incoming loci not found, return rows with NAs
+	if(nrow(Out) < n) {
+		ChrNA <- rep_len(NA_character_,n)
+		IntNA <- rep_len(NA_integer_,n)
+		Out2 <- data.frame(gene_id=ChrNA,symbol=ChrNA,width=IntNA,tss=IntNA,strand=ChrNA,distance=IntNA,stringsAsFactors=FALSE)
+		Out2[ILocus > 0L,] <- Out
+		return(Out2)
+	} else {
+		row.names(Out) <- 1:n
+		return(Out)
+	}
 }

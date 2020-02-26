@@ -1,6 +1,6 @@
 DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE) 
 #	Construct DGEList object from components, with some checking
-#	Created 28 Sep 2008. Last modified 26 July 2019.
+#	Created 28 Sep 2008. Last modified 16 Jan 2020.
 {
 #	Check whether counts is a data.frame
 	if(is.data.frame(counts)) {
@@ -32,13 +32,32 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 	.isAllZero(counts) # don't really care about all-zeroes, but do want to protect against NA's, negative values.
 
 #	Check lib.size
-	if(is.null(lib.size)) lib.size <- colSums(counts)
-	if(nlib != length(lib.size)) stop("length of 'lib.size' must equal number of columns in 'counts'")
-	if(any(lib.size==0L)) warning("library size of zero detected")
+	if(is.null(lib.size)) {
+		lib.size <- colSums(counts)
+		if(min(lib.size) <= 0) warning("library size of zero detected")
+	} else {
+		if(!is.numeric(lib.size)) stop("'lib.size' must be numeric")
+		if(nlib != length(lib.size)) stop("length of 'lib.size' must equal number of columns in 'counts'")
+		minlibsize <- min(lib.size)
+		if(is.na(minlibsize)) stop("NA library sizes not allowed")
+		if(minlibsize < 0) stop("negative library sizes not permitted")
+		if(minlibsize == 0) {
+			if(any(lib.size==0 & colSums(counts)>0)) stop("library size set to zero but counts are nonzero")
+			warning("library size of zero detected")
+		}
+	}
 
 #	Check norm.factors
-	if(is.null(norm.factors)) norm.factors <- rep(1,ncol(counts))
-	if(nlib != length(norm.factors)) stop("Length of 'norm.factors' must equal number of columns in 'counts'")
+	if(is.null(norm.factors)) {
+		norm.factors <- rep(1,ncol(counts))
+	} else {
+		if(!is.numeric(norm.factors)) stop("'lib.size' must be numeric")
+		if(nlib != length(norm.factors)) stop("Length of 'norm.factors' must equal number of columns in 'counts'")
+		minnf <- min(norm.factors)
+		if(is.na(minnf)) stop("NA norm factors not allowed")
+		if(minnf <= 0) stop("norm factors should be positive")
+		if( abs(prod(norm.factors) - 1) > 1e-6 ) warning("norm factors don't multiply to 1")
+	}
 
 #	Check samples
 	if(!is.null(samples)) {

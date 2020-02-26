@@ -22,12 +22,25 @@ WLEB(theta, loglik, prior.n = 5, covariate = NULL, trend.method = "locfit", span
 \item{overall}{logical, should a single value of the parameter which maximizes the sum of all the log-likelihoods be estimated?}
 \item{trend}{logical, should a parameter trend (against the covariate) which maximizes the local shared log-likelihoods be estimated?}
 \item{individual}{logical, should individual estimates of all the candidates after applying empirical Bayes method along the trend be estimated?}
-\item{m0}{numeric matrix of local shared log-likelihoods. If \code{Null}, it will be calculated using the method selected by \code{trend.method}.}
+\item{m0}{numeric matrix of local shared log-likelihoods. If \code{NULL}, it will be calculated using the method selected by \code{trend.method}.}
 \item{m0.out}{logical, should local shared log-likelihoods be included in the output?}
 }
 
 \details{
-This function is a generic function that calculates an overall estimate, trend estimates and individual estimates for each candidate given the values of the log-likelihood of all the candidates at some specified parameter values.
+This function implements a very general empirical Bayes strategy outlined by McCarthy et al (2012).
+McCarthy et el used the method to estimate genewise negative binomial dispersion parameters, but here the method is generalized to apply to any parameter and any likelihood function.
+The method gives similar results to parametric empirical Bayes with a conjugate prior, when a conjugate prior exists, but does not require the prior distribution to be specified.
+The prior distribution is instead inferred from the pooled likelihood, i.e., from the likelihood that would be arise from pooling all the cases or from pooling all the cases with similar covariate values.
+
+The function assumes a series of cases.
+Each case leads to data set from which a parameter (theta) is to be estimated.
+For each case, the log-likelihood function has been evaluated over a grid of possible values for theta.
+The function takes as input the matrix of log-likelihood values where the rows correspond to cases and the columns correspond to putative parameter values.
+
+Each case is associated with a covariate value that might affect theta.
+The "overall" parameter estimate is the maximum likelihood estimator of theta that arises if the likelihood is averaged over cases and then maximized over theta.
+The "trend" parameter estimates are estimates for theta that arise if each column of \code{loglik} is replaced by a smooth trend with respect to the covariate.
+The "individual" parameter estimate for each case is a compromise between the maximum likelihood estimate for that case alone and a global parameter estimate computed from all the cases, the latter being either the overall estimate (if \code{trend.method="none"} or the trend estimate (otherwise).
 }
 
 \value{
@@ -39,6 +52,13 @@ A list with the following:
 }
 
 \author{Yunshun Chen, Gordon Smyth}
+
+\references{
+McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+\emph{Nucleic Acids Research} 40, 4288-4297.
+\url{https://doi.org/10.1093/nar/gks042}
+}
+
 \examples{
 y <- matrix(rpois(100, lambda=10), ncol=4)
 theta <- 7:14

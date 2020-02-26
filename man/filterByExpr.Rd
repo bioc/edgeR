@@ -28,12 +28,12 @@ For the default method, other arguments are not currently used.}
 }
 
 \details{
-This function implements the filtering strategy that was intuitively described by Chen & Smyth (2016).
+This function implements the filtering strategy that was intuitively described by Chen et al (2016).
 Roughly speaking, the strategy keeps genes that have at least \code{min.count} reads in a worthwhile number samples.
 More precisely, the filtering keeps genes that have count-per-million (CPM) above \emph{k} in \emph{n} samples, where \emph{k} is determined by \code{min.count} and by the sample library sizes and \emph{n} is determined by the design matrix.
 
 \emph{n} is essentially the smallest group sample size or, more generally, the minimum inverse leverage of any fitted value.
-If all the group sizes are larger than \code{large.n}, then this is relaxed slightly, but with \emph{n} always greater than \code{min.prop} of the smallest group size (70\% by default.
+If all the group sizes are larger than \code{large.n}, then this is relaxed slightly, but with \emph{n} always greater than \code{min.prop} of the smallest group size (70\% by default).
 
 In addition, each kept gene is required to have at least \code{min.total.count} reads across all the samples.
 }
@@ -52,6 +52,6 @@ From reads to genes to pathways: differential expression analysis of RNA-Seq exp
 }
 
 \examples{\dontrun{
-keep <- filterByExpr(y)
+keep <- filterByExpr(y, design)
 y <- y[keep,]
 }}

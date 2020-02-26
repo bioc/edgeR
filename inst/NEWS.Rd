@@ -2,6 +2,24 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.28.1}{\itemize{
+\item In readBismark2DGE, force `files` to be character vector. Previously
+  the function failed if `files` was a factor.
+
+\item Add warning messages when filterByExpr is used without specifying group or design.
+
+\item Add as.data.frame methods for DGEExact and DGELRT objects.
+
+\item Remove `optional` argument from as.data.frame.TopTags.
+
+\item DGEList() does more comprehensive checking of the lib.size and norm.factors arguments.
+
+\item Bug fix for nearestTSS when `chr` contains values that don't match any chromosome.
+
+\item Expand details section of WLEB.Rd.
+}}
+
+
 \section{Version 3.28.0}{\itemize{
 \item
 Add head() and tail() methods for edgeR classes.
