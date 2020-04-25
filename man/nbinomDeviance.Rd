@@ -55,3 +55,5 @@ y <- matrix(1:6,3,2)
 mu <- matrix(3,3,2)
 nbinomDeviance(y,mu,dispersion=0.2)
 }
+
+\concept{Model fit}

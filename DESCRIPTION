@@ -1,16 +1,16 @@
 Package: edgeR
-Version: 3.29.1
-Date: 2020-02-26
+Version: 3.29.2
+Date: 2020-04-25
 Title: Empirical Analysis of Digital Gene Expression Data in R
-Description: Differential expression analysis of RNA-seq expression profiles with biological replication. Implements a range of statistical methodology based on the negative binomial distributions, including empirical Bayes estimation, exact tests, generalized linear models and quasi-likelihood tests. As well as RNA-seq, it be applied to differential signal analysis of other types of genomic data that produce counts, including ChIP-seq, Bisulfite-seq, SAGE and CAGE.
+Description: Differential expression analysis of RNA-seq expression profiles with biological replication. Implements a range of statistical methodology based on the negative binomial distributions, including empirical Bayes estimation, exact tests, generalized linear models and quasi-likelihood tests. As well as RNA-seq, it be applied to differential signal analysis of other types of genomic data that produce read counts, including ChIP-seq, ATAC-seq, Bisulfite-seq, SAGE and CAGE.
 Author: Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
 Maintainer: Yunshun Chen <yuchen@wehi.edu.au>, Aaron Lun <infinite.monkeys.with.keyboards@gmail.com>, Mark Robinson <mark.robinson@imls.uzh.ch>, Gordon Smyth <smyth@wehi.edu.au>
 License: GPL (>=2)
 Depends: R (>= 3.6.0), limma (>= 3.41.5)
-Imports: graphics, stats, utils, methods, locfit, Rcpp
-Suggests: AnnotationDbi, jsonlite, org.Hs.eg.db, readr, rhdf5, splines
+Imports: methods, graphics, stats, utils, locfit, Rcpp
+Suggests: jsonlite, readr, rhdf5, splines, Biobase, AnnotationDbi, SummarizedExperiment, org.Hs.eg.db
 LinkingTo: Rcpp
-URL: http://bioinf.wehi.edu.au/edgeR
+URL: http://bioinf.wehi.edu.au/edgeR, https://bioconductor.org/packages/edgeR
 biocViews: GeneExpression, Transcription, AlternativeSplicing,
         Coverage, DifferentialExpression, DifferentialSplicing,
         DifferentialMethylation, GeneSetEnrichment, Pathways,

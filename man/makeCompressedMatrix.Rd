@@ -130,4 +130,4 @@ as.matrix(offsets)
 \code{\link{as.matrix}}, \code{\link{expandAsMatrix}}
 }
 
-\keyword{hplot}
+\concept{edgeR classes}

@@ -38,5 +38,4 @@ ll2<-commonCondLogLikDerDelta(y,delta=0.5,der=1)
 \code{\link{estimateCommonDisp}} is the user-level function for estimating the common dispersion parameter.
 }
 
-
-\keyword{file}
+\concept{Dispersion estimation}

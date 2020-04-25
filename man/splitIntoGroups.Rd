@@ -34,4 +34,3 @@ z1 <- splitIntoGroups(d)
 z2 <- splitIntoGroupsPseudo(d$counts, d$group, pair=c(1,2))
 }
 
-\keyword{algebra}

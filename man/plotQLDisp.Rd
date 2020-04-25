@@ -52,4 +52,4 @@ From reads to genes to pathways: differential expression analysis of RNA-Seq exp
 \url{http://f1000research.com/articles/5-1438}
 }
 
-\keyword{plot}
+\concept{Dispersion estimation}

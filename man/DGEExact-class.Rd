@@ -37,5 +37,5 @@ The dimensions, row names and column names of a \code{DGEExact} object are defin
 Other classes defined in edgeR are \code{\link{DGEList-class}}, \code{\link{DGEGLM-class}}, \code{\link{DGELRT-class}}, \code{\link{TopTags-class}}
 }
 
-\keyword{classes}
+\concept{edgeR classes}
 

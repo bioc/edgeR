@@ -57,5 +57,3 @@ Aaron Lun
 \code{\link{cpm}},
 \code{\link{predFC}}
 }
-
-

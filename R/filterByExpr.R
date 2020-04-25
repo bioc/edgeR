@@ -21,6 +21,13 @@ filterByExpr.DGEList <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
 	filterByExpr.default(y$counts, design=design, group=group, lib.size=lib.size, ...)
 }
 
+filterByExpr.SummarizedExperiment <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
+#	Created 19 March 2020. Last revised 19 March 2020.
+{
+	y <- SE2DGEList(y)
+	filterByExpr.DGEList(y, design=design, group=group, lib.size=lib.size, ...)
+}
+
 filterByExpr.default <- function(y, design=NULL, group=NULL, lib.size=NULL, min.count=10, min.total.count=15, large.n=10, min.prop=0.7, ...)
 #	Filter low expressed genes given count matrix
 #	Computes TRUE/FALSE index vector indicating which rows to keep

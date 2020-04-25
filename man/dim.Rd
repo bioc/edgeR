@@ -39,4 +39,5 @@ dim(M)
 ncol(M)
 nrow(M)
 }
-\keyword{array}
+
+\concept{edgeR classes}

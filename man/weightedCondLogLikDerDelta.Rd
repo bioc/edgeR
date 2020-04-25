@@ -40,4 +40,5 @@ y<-splitIntoGroups(d)
 ll1<-weightedCondLogLikDerDelta(y,delta=0.5,tag=1,prior.n=10,der=0)
 ll2<-weightedCondLogLikDerDelta(y,delta=0.5,tag=1,prior.n=10,der=1)
 }
-\keyword{file}
+
+\concept{Dispersion estimation}

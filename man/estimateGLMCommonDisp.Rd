@@ -79,4 +79,4 @@ d2 <- estimateCommonDisp(d, verbose=TRUE)
 \code{\link{estimateCommonDisp}} for the common dispersion or \code{\link{estimateTagwiseDisp}} for genewise dispersions in the context of a multiple group experiment (one-way layout).
 }
 
-\keyword{models}
+\concept{Dispersion estimation}

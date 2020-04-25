@@ -45,5 +45,5 @@ The dimensions, row names and column names of a \code{DGEList} object are define
 
 \author{edgeR team. First created by Mark Robinson.}
 
-\keyword{classes}
+\concept{edgeR classes}
 

@@ -12,6 +12,13 @@ predFC.DGEList <- function(y,design,prior.count=0.125,offset=NULL,dispersion=NUL
 	predFC.default(y=y$counts,design=design,prior.count=prior.count,offset=offset,dispersion=dispersion,weights=weights,...)
 }
 
+predFC.SummarizedExperiment <- function(y,design,prior.count=0.125,offset=NULL,dispersion=NULL,weights=NULL,...)
+#	Created 03 April 2020.  Last modified 03 April 2020.
+{
+	y <- SE2DGEList(y)
+	predFC.DGEList(y, design=design, prior.count=prior.count, offset=offset, dispersion=dispersion, weights=weights, ...)
+}
+
 predFC.default <- function(y,design,prior.count=0.125,offset=NULL,dispersion=0,weights=NULL,...)
 #	Shrink log-fold-changes towards zero by augmenting data counts
 #	Gordon Smyth and Belinda Phipson

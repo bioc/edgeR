@@ -29,3 +29,5 @@ x <- matrix(rpois(20,lambda=5),10,2)
 gini(x)
 }
 \author{Gordon Smyth}
+
+\concept{Data exploration}

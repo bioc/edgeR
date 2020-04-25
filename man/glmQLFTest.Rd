@@ -1,6 +1,7 @@
 \name{glmQLFit}
 \alias{glmQLFit}
 \alias{glmQLFit.DGEList}
+\alias{glmQLFit.SummarizedExperiment}
 \alias{glmQLFit.default}
 \alias{glmQLFTest}
 
@@ -12,6 +13,8 @@ Conduct genewise statistical tests for a given coefficient or contrast.}
 \usage{
 \method{glmQLFit}{DGEList}(y, design=NULL, dispersion=NULL, abundance.trend=TRUE,
         robust=FALSE, winsor.tail.p=c(0.05, 0.1), \dots)
+\method{glmQLFit}{SummarizedExperiment}(y, design=NULL, dispersion=NULL, abundance.trend=TRUE,
+        robust=FALSE, winsor.tail.p=c(0.05, 0.1), \dots)
 \method{glmQLFit}{default}(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL,
         weights=NULL, abundance.trend=TRUE, AveLogCPM=NULL, robust=FALSE,
         winsor.tail.p=c(0.05, 0.1), \dots)
@@ -19,7 +22,7 @@ glmQLFTest(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.bound=TRUE)
 }
 
 \arguments{
-\item{y}{a matrix of counts, or a \code{DGEList} object with (at least) elements \code{counts} (table of unadjusted counts) and \code{samples} (data frame containing information about experimental group, library size and normalization factor for the library size)}
+\item{y}{a matrix of counts, or a \code{DGEList} object with (at least) elements \code{counts} (table of unadjusted counts) and \code{samples} (data frame containing information about experimental group, library size and normalization factor for the library size), or a \code{SummarizedExperiment} object with (at least) an element \code{counts} in its \code{assays}.}
 
 \item{design}{numeric matrix giving the design matrix for the genewise linear models.}
 
@@ -147,4 +150,7 @@ results <- glmQLFTest(fit)
 topTags(results)
 }
 
-\keyword{models}
+\concept{Model fit}
+\concept{Dispersion estimation}
+\concept{Differential expression}
+

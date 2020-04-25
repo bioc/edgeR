@@ -87,4 +87,4 @@ dge <- estimateTagwiseDisp(dge)
 \code{\link{movingAverageByCol}} and \code{\link{loessByCol}} implement the moving average or loess smoothers.
 }
 
-\keyword{algebra}
+\concept{Dispersion estimation}

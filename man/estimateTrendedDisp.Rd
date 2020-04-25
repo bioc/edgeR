@@ -53,3 +53,4 @@ y <- estimateTrendedDisp(y)
 \code{\link{estimateCommonDisp}} estimates a common value for the dispersion parameter for all genes - should generally be run before \code{estimateTrendedDisp}.
 }
 
+\concept{Dispersion estimation}

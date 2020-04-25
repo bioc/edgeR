@@ -76,4 +76,4 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Matthew E Ritchie, Belinda Phipson
   \emph{F1000Research} 6, 2055.
 }
 
-\keyword{package}
+\concept{Documentation}

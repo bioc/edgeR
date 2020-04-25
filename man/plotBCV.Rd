@@ -40,4 +40,4 @@ y <- estimateTagwiseDisp(y)
 plotBCV(y)
 }
 
-\keyword{plot}
+\concept{Dispersion estimation}

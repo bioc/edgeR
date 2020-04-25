@@ -1,6 +1,7 @@
 \name{estimateDisp}
 \alias{estimateDisp}
 \alias{estimateDisp.DGEList}
+\alias{estimateDisp.SummarizedExperiment}
 \alias{estimateDisp.default}
 
 \title{Estimate Common, Trended and Tagwise Negative Binomial dispersions by weighted likelihood empirical Bayes}
@@ -13,13 +14,16 @@ Maximizes the negative binomial likelihood to give the estimate of the common, t
 \S3method{estimateDisp}{DGEList}(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE,
             span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, 
             winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
+\S3method{estimateDisp}{SummarizedExperiment}(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE,
+            span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, 
+            winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 \S3method{estimateDisp}{default}(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL,
             trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, 
             grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
 }
 
 \arguments{
-\item{y}{matrix of counts or a \code{DGEList} object.}
+\item{y}{matrix of counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object.}
 \item{design}{numeric design matrix. Defaults to \code{model.matrix(~group)} if \code{group} is specified and otherwise to a single column of ones.}
 \item{prior.df}{prior degrees of freedom. It is used in calculating \code{prior.n}.}
 \item{trend.method}{method for estimating dispersion trend. Possible values are \code{"locfit"} (default), \code{"none"}, \code{"movingave"}, \code{"loess"} and \code{"locfit.mixed"}, which uses a polynomial of degree 1 for lowly expressed genes.}
@@ -49,6 +53,8 @@ Maximizes the negative binomial likelihood to give the estimate of the common, t
 	\item{prior.df}{prior degrees of freedom. It is a vector when robust method is used.}
 	\item{prior.n}{estimate of the prior weight, i.e. the smoothing parameter that indicates the weight to put on the common likelihood compared to the individual tag's likelihood.}
 	\item{span}{width of the smoothing window used in estimating dispersions.}
+
+\code{estimateDisp.SummarizedExperiment} converts the input \code{SummarizedExperiment} object into a \code{DGEList} object, and then calls \code{estimateDisp.DGEList}. The output is a \code{DGEList} object.
 
 \code{estimateDisp.default} returns a list containing \code{common.dispersion}, \code{trended.dispersion}, \code{tagwise.dispersion} (if \code{tagwise=TRUE}), \code{span}, \code{prior.df} and \code{prior.n}.
 }
@@ -90,3 +96,5 @@ d2 <- estimateDisp(d, design)
 \seealso{
 \code{\link{estimateCommonDisp}}, \code{\link{estimateTagwiseDisp}}, \code{\link{estimateGLMCommonDisp}}, \code{\link{estimateGLMTrendedDisp}}, \code{\link{estimateGLMTagwiseDisp}}
 }
+
+\concept{Dispersion estimation}

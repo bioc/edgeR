@@ -65,4 +65,4 @@ with(d2,plot(AveLogCPM,sqrt(dispersion)))
 \code{\link{estimateGLMTrendedDisp}}
 }
 
-\keyword{models}
+\concept{Dispersion estimation}

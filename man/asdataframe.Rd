@@ -27,4 +27,5 @@ A data.frame.
 \seealso{
   \code{\link[base]{as.data.frame}} in the base package.
 }
-\keyword{array}
+
+\concept{edgeR classes}

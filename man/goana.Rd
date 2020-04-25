@@ -79,4 +79,4 @@ topGO(go, ont="BP", sort="up")
 topGO(go, ont="BP", sort="down")}
 }
 
-\keyword{gene set test}
+\concept{Gene set testing}

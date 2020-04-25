@@ -44,3 +44,6 @@ colnames(d)
 d$samples
 }
 
+\concept{edgeR classes}
+
+

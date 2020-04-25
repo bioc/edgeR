@@ -38,4 +38,4 @@ getPriorN(d)
 \code{\link{as.matrix.DGEList}}.
 }
 
-\keyword{file}
+\concept{Dispersion estimation}

@@ -77,3 +77,5 @@ summary(d$tagwise.dispersion)
 
 \code{\link{estimateCommonDisp}} for common dispersion or \code{\link{estimateTagwiseDisp}} for tagwise dispersions in the context of a multiple group experiment (one-way layout).
 }
+
+\concept{Dispersion estimation}

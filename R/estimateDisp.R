@@ -30,6 +30,15 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 	y
 }
 
+estimateDisp.SummarizedExperiment <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
+#  Yunshun Chen.
+#  Created 19 March 2020. Last modified 19 March 2020.
+{
+	y <- SE2DGEList(y)
+	y <- estimateDisp.DGEList(y, design=design, prior.df=prior.df, trend.method=trend.method, tagwise=tagwise, span=span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, ...)
+	y
+}
+
 estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
 #  Estimate common, trended and tagwise dispersions
 #  Use GLM approach if design matrix is given and classic approach otherwise.

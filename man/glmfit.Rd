@@ -1,6 +1,7 @@
 \name{glmFit}
 \alias{glmFit}
 \alias{glmFit.DGEList}
+\alias{glmFit.SummarizedExperiment}
 \alias{glmFit.default}
 \alias{glmLRT}
 
@@ -11,13 +12,14 @@ Conduct genewise statistical tests for a given coefficient or coefficient contra
 
 \usage{
 \method{glmFit}{DGEList}(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, \dots)
+\method{glmFit}{SummarizedExperiment}(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, \dots)
 \method{glmFit}{default}(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL,
        prior.count=0.125, start=NULL, \dots)
 glmLRT(glmfit, coef=ncol(glmfit$design), contrast=NULL)
 }
 
 \arguments{
-\item{y}{an object that contains the raw counts for each library (the measure of expression level); alternatively, a matrix of counts, or a \code{DGEList} object with (at least) elements \code{counts} (table of unadjusted counts) and \code{samples} (data frame containing information about experimental group, library size and normalization factor for the library size)}
+\item{y}{an object that contains the raw counts for each library (the measure of expression level); alternatively, a matrix of counts, or a \code{DGEList} object with (at least) elements \code{counts} (table of unadjusted counts) and \code{samples} (data frame containing information about experimental group, library size and normalization factor for the library size), or a \code{SummarizedExperiment} object with (at least) an component \code{counts} in its \code{assays}.}
 
 \item{design}{numeric matrix giving the design matrix for the genewise linear models.
 Must be of full column rank.
@@ -131,4 +133,5 @@ Low-level computations are done by \code{\link{mglmOneGroup}} or \code{\link{mgl
 \code{\link{topTags}} displays results from \code{glmLRT}.
 }
 
-\keyword{models}
+\concept{Model fit}
+\concept{Differential expression}

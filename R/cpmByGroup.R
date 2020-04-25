@@ -16,6 +16,13 @@ cpmByGroup.DGEList <- function(y, group=NULL, dispersion=NULL, ...)
 	cpmByGroup(y$counts,group=group,dispersion=dispersion,offset=offset,weights=y$weights,...)
 }
 
+cpmByGroup.SummarizedExperiment <- function(y, group=NULL, dispersion=NULL, ...)
+#	Created 03 April 2020.  Last modified 03 April 2020.
+{
+	y <- SE2DGEList(y)
+	cpmByGroup.DGEList(y, group=group, dispersion=dispersion, ...)
+}
+
 cpmByGroup.default <- function(y, group=NULL, dispersion=0.05, offset=NULL, weights=NULL, log=FALSE, prior.count=2, ...)
 #	Counts per million averaged by group
 #	Gordon Smyth

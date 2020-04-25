@@ -42,3 +42,10 @@ sumTechReps.DGEList <- function(x,ID=colnames(x),...)
 	rownames(y$samples) <- colnames(y$counts)
 	y
 }
+
+sumTechReps.SummarizedExperiment <- function(x, ID, ...)
+#	Created 03 April 2020.  Last modified 03 April 2020.
+{
+	x <- SE2DGEList(x)
+	sumTechReps.DGEList(x, ID=ID, ...)
+}

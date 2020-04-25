@@ -36,4 +36,5 @@ object holding data from all samples and all genes from the individual objects.
 dge <- cbind(dge1,dge2,dge3)
 }
 }
-\keyword{manip}
+
+\concept{edgeR classes}

@@ -79,3 +79,5 @@ gof(fit)
 
 \code{\link{glmFit}} for more information on fitting NB GLMs to DGE data.
 }
+
+\concept{Dispersion estimation}

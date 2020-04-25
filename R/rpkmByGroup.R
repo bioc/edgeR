@@ -37,6 +37,13 @@ rpkmByGroup.DGEList <- function(y, group=NULL, gene.length=NULL, dispersion=NULL
 	rpkmByGroup(y$counts,group=group,gene.length=gene.length,dispersion=dispersion,offset=offset,weights=y$weights,...)
 }
 
+rpkmByGroup.SummarizedExperiment <- function(y, group=NULL, gene.length=NULL, dispersion=NULL, ...)
+#	Created 03 April 2020.  Last modified 03 April 2020.
+{
+	y <- SE2DGEList(y)
+	rpkmByGroup.DGEList(y, group=group, gene.length=gene.length, dispersion=dispersion, ...)
+}
+
 rpkmByGroup.default <- function(y, group=NULL, gene.length, dispersion=0.05, offset=NULL, weights=NULL, log=FALSE, prior.count=2, ...)
 #	RPKM or FPKM averaged by group
 #	Gordon Smyth

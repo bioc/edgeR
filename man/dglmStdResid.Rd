@@ -61,3 +61,5 @@ abline(0,1)
 
 \code{\link{plotMDS.DGEList}}, \code{\link{plotSmear}}, \code{\link{plotMD.DGEList}} and \code{\link{plotBCV}} provide other ways to visualize DGE data.
 }
+
+\concept{Dispersion estimation}

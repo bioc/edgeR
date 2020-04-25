@@ -23,6 +23,13 @@ aveLogCPM.DGEList <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispe
 	aveLogCPM(y$counts,lib.size=lib.size,prior.count=prior.count,dispersion=dispersion,weights=y$weights)
 }
 
+aveLogCPM.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispersion=NULL, ...)
+#	Created 03 April 2020.  Last modified 03 April 2020.
+{
+	y <- SE2DGEList(y)
+	aveLogCPM.DGEList(y, normalized.lib.sizes=normalized.lib.sizes, prior.count=prior.count, dispersion=dispersion, ...)
+}
+
 aveLogCPM.DGEGLM <- function(y, prior.count=2, dispersion=NULL, ...)
 #	aveLogCPM method for DGEGLM objects.
 #	Gordon Smyth

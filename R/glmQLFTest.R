@@ -28,11 +28,19 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 	new("DGEGLM",fit)
 }
 
+glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), ...)
+#	Created 03 April 2020.  Last modified 03 April 2020.
+{
+	y <- SE2DGEList(y)
+	glmQLFit.DGEList(y, design=design, dispersion=dispersion, abundance.trend=abundance.trend, robust=robust, winsor.tail.p=winsor.tail.p, ...)
+}
+
+
 glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, 
         abundance.trend=TRUE, AveLogCPM=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), ...)
 # 	Fits a GLM and computes quasi-likelihood dispersions for each gene.
 # 	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun.
-# 	Originally part of glmQLFTest, as separate function 15 September 2014. Last modified 03 October 2016.
+# 	Originally part of glmQLFTest, as separate function 15 September 2014. Last modified 4 April 2020.
 {
 	glmfit <- glmFit(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights,...)
 
@@ -50,7 +58,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 
 #	Empirical Bayes squeezing of the quasi-likelihood variance factors
 	s2 <- glmfit$deviance / df.residual
-	s2[df.residual==0] <- 0
+	s2[df.residual==0L] <- 0
 	s2 <- pmax(s2,0)
 	s2.fit <- squeezeVar(s2,df=df.residual,covariate=AveLogCPM,robust=robust,winsor.tail.p=winsor.tail.p)
 

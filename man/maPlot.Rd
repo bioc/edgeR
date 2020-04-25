@@ -40,8 +40,10 @@ The points to be smeared are identified as being equal to the minimum in one of 
 
 \author{Mark Robinson, Davis McCarthy}
 
-
 \examples{
 y <- matrix(rnbinom(10000,mu=5,size=2),ncol=4)
 maPlot(y[,1], y[,2])
 }
+
+\concept{Model fit}
+

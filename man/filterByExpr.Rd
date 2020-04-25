@@ -1,6 +1,7 @@
 \name{filterByExpr}
 \alias{filterByExpr}
 \alias{filterByExpr.DGEList}
+\alias{filterByExpr.SummarizedExperiment}
 \alias{filterByExpr.default}
 
 \title{Filter Genes By Expression Level}
@@ -9,12 +10,13 @@
 
 \usage{
 \method{filterByExpr}{DGEList}(y, design = NULL, group = NULL, lib.size = NULL, \dots)
+\method{filterByExpr}{SummarizedExperiment}(y, design = NULL, group = NULL, lib.size = NULL, \dots)
 \method{filterByExpr}{default}(y, design = NULL, group = NULL, lib.size = NULL,
              min.count = 10, min.total.count = 15, large.n = 10, min.prop = 0.7, \dots)
 }
 
 \arguments{ 
-\item{y}{matrix of counts or a \code{DGEList} object.}
+\item{y}{matrix of counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object.}
 \item{design}{design matrix. Ignored if \code{group} is not \code{NULL}.}
 \item{group}{vector or factor giving group membership for a oneway layout, if appropriate.}
 \item{lib.size}{library size, defaults to \code{colSums(y)}.}
@@ -23,7 +25,7 @@
 \item{large.n}{integer. Number of samples per group that is considered to be \dQuote{large}.}
 \item{min.prop}{numeric. Minimum proportion of samples in the smallest group that express the gene.}
 \item{\dots}{any other arguments.
-For the \code{DGEList} methods, other arguments will be passed to the default method.
+For the \code{DGEList} and \code{SummarizedExperiment} methods, other arguments will be passed to the default method.
 For the default method, other arguments are not currently used.}
 }
 

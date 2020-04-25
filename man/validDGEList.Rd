@@ -35,3 +35,5 @@ validDGEList(dge)
 \seealso{
 \code{\link{DGEList}}
 }
+
+\concept{edgeR classes}

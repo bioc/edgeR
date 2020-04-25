@@ -36,5 +36,3 @@ maximizeQuadratic(y)
 \seealso{
 \code{\link{maximizeInterpolant}}
 }
-
-\keyword{interpolation}

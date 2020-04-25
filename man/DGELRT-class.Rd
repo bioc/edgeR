@@ -49,5 +49,5 @@ The dimensions, row names and column names of a \code{DGELRT} object are defined
 Other classes defined in edgeR are \code{\link{DGEList-class}}, \code{\link{DGEExact-class}}, \code{\link{DGEGLM-class}}, \code{\link{TopTags-class}}
 }
 
-\keyword{classes}
+\concept{edgeR classes}
 

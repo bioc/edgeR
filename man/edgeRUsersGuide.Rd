@@ -37,4 +37,4 @@ edgeRUsersGuide(view=FALSE)
 \dontrun{edgeRUsersGuide()}
 }
 
-\keyword{documentation}
+\concept{Documentation}

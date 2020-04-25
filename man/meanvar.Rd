@@ -91,4 +91,4 @@ plotMeanVar(d, meanvar=meanvar, show.tagwise.vars=TRUE, NBline=TRUE)
 
 }
 
-\keyword{algebra}
+\concept{Dispersion estimation}

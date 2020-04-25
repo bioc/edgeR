@@ -23,4 +23,5 @@ A numeric matrix.
 \seealso{
   \code{\link{as.matrix}} in the base package or \code{\link[limma:asmatrix]{as.matrix}} in the limma package.
 }
-\keyword{array}
+
+\concept{edgeR classes}

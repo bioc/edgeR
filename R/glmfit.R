@@ -29,6 +29,13 @@ glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, s
 	new("DGEGLM",fit)
 }
 
+glmFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
+#	Created 19 March 2020.  Last modified 19 March 2020.
+{
+	y <- SE2DGEList(y)
+	glmFit.DGEList(y, design=design, dispersion=dispersion, prior.count=prior.count, start=start, ...)
+}
+
 glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, prior.count=0.125, start=NULL, ...)
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries

@@ -58,3 +58,6 @@ de <- exactTest(d)
 de.genes <- rownames(topTags(de, n=500)$table)
 plotSmear(d, de.tags=de.genes)
 }
+
+\concept{Data exploration}
+\concept{Model fit}

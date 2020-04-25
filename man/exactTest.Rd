@@ -45,9 +45,9 @@ Libraries are assumed to be equal in size - e.g. adjusted pseudocounts from the 
 
 \value{
 \code{exactTest} produces an object of class \code{DGEExact} containing the following components:
-\item{table}{data frame containing columns for the log2-fold-change, \code{logFC}, the average log2-counts-per-million, \code{logCPM}, and the two-sided p-value \code{PValue}}
-\item{comparison}{character vector giving the names of the two groups being compared} 
-\item{genes}{optional data frame containing annotation for each gene; taken from \code{object}}
+\item{table}{data frame containing columns for the log2-fold-change (\code{logFC}), the average log2-counts-per-million (\code{logCPM}), and the two-sided p-value (\code{PValue}).}
+\item{comparison}{character vector giving the names of the two groups being compared.} 
+\item{genes}{data frame containing annotation for each gene; taken from \code{object}.}
 
 The low-level functions, \code{exactTestDoubleTail} etc, produce a numeric vector of genewise p-values, one for each row of \code{y1} and \code{y2}.
 }
@@ -107,5 +107,4 @@ sort(p.value)[1:10]
 \code{\link{equalizeLibSizes}}, \code{\link{binomTest}}
 }
 
-\keyword{algebra}
-
+\concept{Differential expression}

@@ -2,6 +2,36 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.30.0}{\itemize{
+\item
+New function voomLmFit() that combines the limma voom-lmFit pipeline with loss of residual df due to zero counts as for glmQLFit().
+The new function is more robust to zero counts than running voom() and lmFit() separately.
+The new function allows sample quality weights and intra-block correlations to be estimated it incorporates the functionality of duplicateCorrelation() and voomWithQualityWeights() as well.
+
+\item
+New function SE2DGEList() to convert a SummarizedExperiment object into a DGEList object.
+
+\item
+S3 methods for SummarizedExperiment objects are added to the following functions: 
+aveLogCPM(), calcNormFactors(), cpm(), cpmByGroup(), estimateDisp(), filterByExpr(), glmFit(), glmQLFit(), plotMD(), plotMDS(), predFC(), rowsum(), rpkm(), rpkmByGroup() and sumTechReps().
+
+\item
+New cpm and rpkm methods for DGEGLM and DGELRT objects.
+
+\item
+New function effectiveLibSizes() to extract normalized library sizes from an edgeR data object or fitted model object.
+
+\item
+Add as.data.frame methods for DGEExact and DGELRT objects and remove the 'optional' argument from as.data.frame.TopTags().
+
+\item
+readBismark2DGE() now forces 'files' to be character vector.
+
+\item
+Add warning messages when filterByExpr() is used without specifying group or design.
+}}
+
+
 \section{Version 3.28.0}{\itemize{
 \item
 Add head() and tail() methods for edgeR classes.

@@ -1,6 +1,7 @@
 \title{Mean-Difference Plot of Count Data}
 \name{plotMD.DGEList}
 \alias{plotMD.DGEList}
+\alias{plotMD.SummarizedExperiment}
 \alias{plotMD.DGEGLM}
 \alias{plotMD.DGELRT}
 \alias{plotMD.DGEExact}
@@ -14,6 +15,8 @@ Creates a mean-difference plot (aka MA plot) with color coding for highlighted p
        ylab="log-ratio (this sample vs others)",
        main=colnames(object)[column], status=object$genes$Status,
        zero.weights=FALSE, prior.count=3, \dots)
+\method{plotMD}{SummarizedExperiment}(object, column=1, xlab="Average log CPM (this sample and others)", 
+       ylab="log-ratio (this sample vs others)", zero.weights=FALSE, prior.count=3, ...)
 \method{plotMD}{DGEGLM}(object, column=ncol(object), coef=NULL, xlab="Average log CPM",
        ylab="log-fold-change", main=colnames(object)[column],
        status=object$genes$Status, zero.weights=FALSE, \dots)
@@ -26,14 +29,14 @@ Creates a mean-difference plot (aka MA plot) with color coding for highlighted p
 }
 
 \arguments{
-  \item{object}{an object of class \code{DGEList}, \code{DGEGLM}, \code{DGEGLM} or \code{DGEExact}.}
+  \item{object}{an object of class \code{DGEList}, \code{SummarizedExperiment}, \code{DGEGLM}, \code{DGEGLM} or \code{DGEExact}.}
   \item{column}{integer, column of \code{object} to be plotted.}
   \item{coef}{alternative to \code{column} for fitted model objects. If specified, then \code{column} is ignored.}
   \item{xlab}{character string, label for x-axis}
   \item{ylab}{character string, label for y-axis}
   \item{main}{character string, title for plot}
   \item{status}{vector giving the control status of each spot on the array, of same length as the number of rows of \code{object}.
-  If \code{NULL} under the \code{DGEList} or \code{DGEGLM} method, then all points are plotted in the default color, symbol and size.
+  If \code{NULL} under the \code{DGEList}, \code{SummarizedExperiment} or \code{DGEGLM} method, then all points are plotted in the default color, symbol and size.
   If \code{NULL} under the \code{DGELRT} or \code{DGEExact} method, then \code{\link{decideTestsDGE}} is run to determine the status of all the genes. The up-regulated  DE genes are highlighted in red and down-regulated in blue.}
   \item{zero.weights}{logical, should spots with zero or negative weights be plotted?}
   \item{prior.count}{the average prior count to be added to each observation. Larger values produce more shrinkage.}
@@ -47,7 +50,7 @@ Creates a mean-difference plot (aka MA plot) with color coding for highlighted p
 A mean-difference plot (MD-plot) is a plot of log fold changes (differences) versus average log values (means).
 The history of mean-difference plots and MA-plots is reviewed in Ritchie et al (2015).
 
-For \code{DGEList} objects, a between-sample MD-plot is produced.
+For \code{DGEList} and \code{SummarizedExperiment} objects, a between-sample MD-plot is produced.
 Counts are first converted to log2-CPM values.
 An articifial array is produced by averaging all the samples other than the sample specified.
 A mean-difference plot is then producing from the specified sample and the artificial sample.
@@ -81,4 +84,4 @@ limma powers differential expression analyses for RNA-sequencing and microarray 
 The driver function for \code{plotMD} is \code{\link{plotWithHighlights}}.
 }
 
-\keyword{hplot}
+\concept{Model fit}

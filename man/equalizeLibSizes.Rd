@@ -71,3 +71,4 @@ out <- equalizeLibSizes(y)
 summary(out$pseudo.counts)
 }
 
+\concept{Normalization}

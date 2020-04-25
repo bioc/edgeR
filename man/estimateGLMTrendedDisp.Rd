@@ -62,3 +62,5 @@ plotBCV(disp)
 \seealso{
 \code{\link{dispBinTrend}}, \code{\link{dispCoxReidPowerTrend}} and \code{\link{dispCoxReidSplineTrend}} for details on how the calculations are done.
 }
+
+\concept{Dispersion estimation}

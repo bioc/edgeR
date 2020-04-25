@@ -81,3 +81,4 @@ topSpliceDGE(ds)
 plotSpliceDGE(ds)
 }
 
+\concept{Differential exon usage}

@@ -54,4 +54,4 @@ head(y)
 tail(y)
 }
 
-\keyword{array}
+\concept{edgeR classes}

@@ -73,4 +73,4 @@ freq <- goodTuring(x)
 goodTuringPlot(x)
 }
 
-\keyword{models}
+\concept{Normalization}

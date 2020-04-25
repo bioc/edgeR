@@ -45,4 +45,4 @@ spliceVariants(d, genes, disp)
 \code{\link{estimateExonGenewiseDisp}} for more information about estimating genewise dispersion values from exon-level counts. \code{\link{DGEList}} for more information about the \code{DGEList} class. \code{\link{topTags}} for more information on displaying ranked results from \code{spliceVariants}. \code{\link{estimateCommonDisp}} and related functions for estimating the dispersion parameter for the negative binomial model.
 }
 
-\keyword{htest}
+\concept{Differential exon usage}

@@ -106,3 +106,5 @@ roast(y, iset1, design, contrast=2)
 mroast(y, iset1, design, contrast=2)
 mroast(y, list(set1=iset1, set2=iset2), design, contrast=2)
 }
+
+\concept{Gene set testing}

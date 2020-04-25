@@ -50,4 +50,4 @@ See \code{\link{read.delim}} for other possible arguments that can be accepted.
 \code{\link{DGEList-class}}, \code{\link{DGEList}}.
 }
 
-\keyword{file}
+\concept{Reading data files}

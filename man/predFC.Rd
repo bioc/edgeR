@@ -1,6 +1,7 @@
 \name{predFC}
 \alias{predFC}
 \alias{predFC.DGEList}
+\alias{predFC.SummarizedExperiment}
 \alias{predFC.default}
 
 \title{Predictive log-fold changes}
@@ -8,12 +9,16 @@
 \description{Computes estimated coefficients for a NB glm in such a way that the log-fold-changes are shrunk towards zero.}
 
 \usage{
-\S3method{predFC}{DGEList}(y, design, prior.count=0.125, offset=NULL, dispersion=NULL, weights=NULL, \dots)
-\S3method{predFC}{default}(y, design, prior.count=0.125, offset=NULL, dispersion=0, weights=NULL, \dots)
+\method{predFC}{DGEList}(y, design, prior.count=0.125, offset=NULL, dispersion=NULL, 
+       weights=NULL, \dots)
+\method{predFC}{SummarizedExperiment}(y, design, prior.count=0.125, offset=NULL, dispersion=NULL, 
+       weights=NULL, \dots)
+\method{predFC}{default}(y, design, prior.count=0.125, offset=NULL, dispersion=0, 
+       weights=NULL, \dots)
 }
 
 \arguments{
-\item{y}{a matrix of counts or a \code{DGEList} object} 
+\item{y}{a matrix of counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object} 
 
 \item{design}{the design matrix for the experiment}
 
@@ -80,3 +85,5 @@ plot(predlfc[,2], logfc.truncated[,2],
      xlab="Predictive log fold changes", ylab="Raw log fold changes")
 abline(a=0,b=1)
 }
+
+\concept{Model fit}

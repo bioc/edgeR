@@ -70,4 +70,4 @@ binom.test(5,5+30,p=10000/(10000+15000))$p.value
 binom.test(10,10+50,p=10000/(10000+15000))$p.value
 }
 
-\keyword{htest}
+\concept{Differential expression}

@@ -50,3 +50,5 @@ y <- 1:4
 names(y) <- letters[1:4]
 nbinomUnitDeviance(y,mean=2.5,dispersion=0.2)
 }
+
+\concept{Model fit}

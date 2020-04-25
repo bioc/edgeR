@@ -64,3 +64,5 @@ dge <- estimateCommonDisp(dge, verbose=TRUE)
 \code{\link{estimateTrendedDisp}},
 \code{\link{estimateTagwiseDisp}}
 }
+
+\concept{Dispersion estimation}

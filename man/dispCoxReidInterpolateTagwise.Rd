@@ -72,4 +72,4 @@ d
 \code{\link{estimateGLMTagwiseDisp}}, \code{\link{maximizeInterpolant}}
 }
 
-\keyword{algebra}
+\concept{Dispersion estimation}

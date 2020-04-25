@@ -17,11 +17,13 @@ systematicSubset(n, order.by)
 \item{order.by}{numeric vector of the values by which the indices are ordered.}
 }
 
-\value{\code{systematicSubset} returns a vector of size \code{n}.
+\value{
+\code{systematicSubset} returns a vector of size \code{n}.
 }
 
 
 \author{Gordon Smyth}
+
 \examples{
 y <- rnorm(100, 1, 1)
 systematicSubset(20, y)
@@ -30,5 +32,3 @@ systematicSubset(20, y)
 \seealso{
 \code{\link{order}}
 }
-
-\keyword{subset}

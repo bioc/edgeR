@@ -1,6 +1,7 @@
 \name{calcNormFactors}
 \alias{calcNormFactors}
 \alias{calcNormFactors.DGEList}
+\alias{calcNormFactors.SummarizedExperiment}
 \alias{calcNormFactors.default}
 
 \title{Calculate Normalization Factors to Align Columns of a Count Matrix}
@@ -12,15 +13,18 @@ Calculate normalization factors to scale the raw library sizes.
                 method=c("TMM","TMMwsp","RLE","upperquartile","none"),
                 refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE,
                 Acutoff=-1e10, p=0.75, \dots)
+\method{calcNormFactors}{SummarizedExperiment}(object,
+                method=c("TMM","TMMwsp","RLE","upperquartile","none"),
+                refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE,
+                Acutoff=-1e10, p=0.75, \dots)
 \method{calcNormFactors}{default}(object, lib.size=NULL,
                 method=c("TMM","TMMwsp","RLE","upperquartile","none"),
                 refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE,
                 Acutoff=-1e10, p=0.75, \dots)
 }
 
-
 \arguments{
-  \item{object}{either a \code{matrix} of raw (read) counts or a \code{DGEList} object}
+  \item{object}{a \code{matrix} of raw (read) counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object}
   \item{lib.size}{numeric vector of library sizes of the \code{object}.}
   \item{method}{normalization method to be used}
   \item{refColumn}{column to use as reference for \code{method="TMM"}. Can be a column number or a numeric vector of length \code{nrow(object)}.}
@@ -61,6 +65,7 @@ Rows that have zero counts for all columns are removed before normalization fact
 \value{
 If \code{object} is a \code{matrix}, the output is a vector with length \code{ncol(object)} giving the relative normalization factors.
 If \code{object} is a \code{DGEList}, then it is returned as output with the relative normalization factors in \code{object$samples$norm.factors}.
+If \code{object} is a \code{SummarizedExperiment}, then it is converted in to a \code{DGEList} object with the relative normalization factors in \code{object$samples$norm.factors}.
 }
 
 \author{Mark Robinson, Gordon Smyth}
@@ -93,5 +98,6 @@ dge <- DGEList(counts=y)
 cpm(dge)
 dge <- calcNormFactors(dge)
 cpm(dge)
-
 }
+
+\concept{Normalization}

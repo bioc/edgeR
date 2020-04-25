@@ -43,3 +43,4 @@ getDispersion(d)
 
 \seealso{\code{\link[edgeR:DGEList-class]{DGEList-class}}}
 
+\concept{edgeR classes}

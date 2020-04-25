@@ -77,3 +77,5 @@ romer(y, iset1, design, contrast=2)
 romer(y, iset2, design, contrast=2)
 romer(y, list(set1=iset1, set2=iset2), design, contrast=2)
 }
+
+\concept{Gene set testing}

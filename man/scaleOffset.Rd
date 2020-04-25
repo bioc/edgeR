@@ -36,3 +36,5 @@ offset <- rnorm(4)
 scaleOffset(y, offset)
 }
 
+\concept{Normalization}
+

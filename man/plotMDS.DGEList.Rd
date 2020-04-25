@@ -1,6 +1,7 @@
 \title{Multidimensional scaling plot of distances between digital gene expression profiles}
 \name{plotMDS.DGEList}
 \alias{plotMDS.DGEList}
+\alias{plotMDS.SummarizedExperiment}
 \description{
 Plot samples on a two-dimensional scatterplot so that distances on the plot approximate the expression differences between the samples.
 }
@@ -8,9 +9,12 @@ Plot samples on a two-dimensional scatterplot so that distances on the plot appr
 \method{plotMDS}{DGEList}(x, top = 500, labels = NULL, pch = NULL, cex = 1,
         dim.plot = c(1,2), ndim = max(dim.plot), gene.selection = "pairwise",
         xlab = NULL, ylab = NULL, method = "logFC", prior.count = 2, plot = TRUE, \dots)
+\method{plotMDS}{SummarizedExperiment}(x, top = 500, labels = NULL, pch = NULL, cex = 1,
+        dim.plot = c(1,2), ndim = max(dim.plot), gene.selection = "pairwise",
+        xlab = NULL, ylab = NULL, method = "logFC", prior.count = 2, plot = TRUE, \dots)
 }
 \arguments{
-  \item{x}{a \code{DGEList} object.}
+  \item{x}{a \code{DGEList} or \code{SummarizedExperiment} object.}
   \item{top}{number of top genes used to calculate pairwise distances.}
   \item{labels}{character vector of sample names or labels. If \code{x} has no column names, then defaults the index of the samples.}
   \item{pch}{plotting symbol or symbols. See \code{\link{points}} for possible values. Ignored if \code{labels} is non-\code{NULL}.}
@@ -76,4 +80,4 @@ mds <- plotMDS(y, top=200, col=col)
 plotMDS(mds, col=col, labels=group)
 }
 
-\keyword{hplot}
+\concept{Data exploration}

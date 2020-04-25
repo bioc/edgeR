@@ -39,5 +39,3 @@ maximizeInterpolant(x,y)
 Forsythe, G. E., Malcolm, M. A. and Moler, C. B. (1977).
 \emph{Computer Methods for Mathematical Computations}, Prentice-Hall.
 }
-
-\keyword{interpolation}

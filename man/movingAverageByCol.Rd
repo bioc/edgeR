@@ -26,4 +26,4 @@ x <- matrix(rpois(20,lambda=5),10,2)
 movingAverageByCol(x,3)
 }
 \author{Gordon Smyth}
-\keyword{smooth}
+

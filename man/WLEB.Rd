@@ -75,4 +75,4 @@ out
 \code{\link{locfitByCol}}, \code{\link{movingAverageByCol}} and \code{\link{loessByCol}} implement the local fit, moving average or loess smoothers.
 }
 
-\keyword{algebra}
+\concept{Dispersion estimation}

@@ -37,3 +37,6 @@ A list containing components
 s <- catchSalmon(paths)
 dge <- DGEList(counts=s$counts/s$annotation$Overdispersion, genes=s$annotation)
 }}
+
+\concept{Transcript expression}
+

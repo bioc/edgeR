@@ -36,3 +36,5 @@ If a list, its components are either \code{NULL} or a character vector the lengt
 \seealso{
   \code{\link[base]{dimnames}} in the base package.
 }
+
+\concept{edgeR classes}

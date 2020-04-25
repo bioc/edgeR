@@ -60,4 +60,5 @@ lrt <- glmLRT(fit,coef=2)
 res <- decideTests(lrt,p.value=0.1)
 summary(res)
 }
-\keyword{htest}
+
+\concept{Differential expression}

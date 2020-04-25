@@ -62,3 +62,5 @@ This function calls
 and
 \code{\link{estimateGLMTagwiseDisp}}.
 }
+
+\concept{Dispersion estimation}

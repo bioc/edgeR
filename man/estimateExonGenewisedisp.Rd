@@ -38,4 +38,4 @@ estimateExonGenewiseDisp(d, genes)
 \code{\link{estimateCommonDisp}} and related functions for estimating the dispersion parameter for the negative binomial model.
 }
 
-\keyword{models}
+\concept{Dispersion estimation}

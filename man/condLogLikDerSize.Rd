@@ -32,3 +32,5 @@ y <- matrix(rnbinom(10,size=1,mu=10),nrow=5)
 condLogLikDerSize(y,r=1,der=1)
 condLogLikDerDelta(y,delta=0.5,der=1)
 }
+
+\concept{Dispersion estimation}

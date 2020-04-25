@@ -11,6 +11,26 @@ cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, 
 	cpm.default(y$counts,lib.size=lib.size,log=log,prior.count=prior.count)
 }
 
+cpm.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
+#	Counts per million for a SummarizedExperiment
+#	Created 03 April 2020.  Last modified 03 April 2020.
+{
+	y <- SE2DGEList(y)
+	cpm.DGEList(y, normalized.lib.sizes=normalized.lib.sizes, log=log, prior.count=prior.count, ...)
+}
+
+cpm.DGELRT <- cpm.DGEGLM <- function(y, log=FALSE, shrunk=TRUE, ...)
+#	Fitted counts per million from a fitted model object.
+#	Created 19 April 2020.  Last modified 19 April 2020.
+{
+	if(shrunk) {
+		eta <- y$coefficients %*% t(y$design)
+	} else {
+		eta <- y$unshrunk.coefficients %*% t(y$design)
+	}
+	(eta + log(1e6)) / log(2)
+}
+
 cpm.default <- function(y, lib.size=NULL, log=FALSE, prior.count=2, ...)
 #	Counts per million for a matrix
 #	Davis McCarthy and Gordon Smyth.

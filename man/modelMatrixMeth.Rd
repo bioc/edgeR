@@ -51,4 +51,4 @@ design.treatments <- model.matrix(~Treatments)
 modelMatrixMeth(design.treatments)
 }
 
-\keyword{regression}
+\concept{Differential methylation}

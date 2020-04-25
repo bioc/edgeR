@@ -46,3 +46,5 @@ q2qnbinom(x,input.mean,output.mean,dispersion)
 # Similar in principle:
 qnbinom(pnbinom(x,mu=input.mean,size=1/dispersion),mu=output.mean,size=1/dispersion)
 }
+
+\concept{Normalization}

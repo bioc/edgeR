@@ -42,4 +42,3 @@ x <- c(1,2,3,4,5,6,7,100)
 cutWithMinN(x,intervals=3,min.n=1)
 }
 
-\keyword{category}

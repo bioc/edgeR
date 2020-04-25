@@ -130,3 +130,5 @@ X <- model.matrix(~ f1 + f2)
 fit <- mglmLevenberg(y, X, dispersion = dispersion, offset = log(lib.size))
 head(fit$coefficients)
 }
+
+\concept{Model fit}

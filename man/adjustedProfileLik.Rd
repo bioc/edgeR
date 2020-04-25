@@ -66,3 +66,5 @@ adjustedProfileLik(dispersion, y, design, offset=0)
 \seealso{
 \code{\link{glmFit}}
 }
+
+\concept{Dispersion estimation}

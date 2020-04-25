@@ -56,5 +56,6 @@ The dispersion parameter is not estimated from the data; instead a reasonable va
 \code{calcNormOffsetsforChIP} returns a numeric matrix of offsets.
 }
 
-
 \author{Gordon Smyth}
+
+\concept{Normalization}

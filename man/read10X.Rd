@@ -54,4 +54,4 @@ y <- read10X("matrix.mtx.gz", "genes.tsv.gz")
 \code{read10xResults} in the scater package.
 }
 
-\keyword{file}
+\concept{Reading data files}
