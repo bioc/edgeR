@@ -8,7 +8,7 @@ voomLmFit <- function(
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 23 Apr 2020.
+#	Created 21 Jan 2020.  Last modified 31 May 2020.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -45,7 +45,7 @@ voomLmFit <- function(
 	if(n < 2L) stop("Need at least two genes to fit a mean-variance trend")
 	m <- min(counts)
 	if(is.na(m)) stop("NA counts not allowed")
-	if(m < 0) stop("Negative counts now allowed")
+	if(m < 0) stop("Negative counts not allowed")
 
 #	Check design
 	if(is.null(design)) {
