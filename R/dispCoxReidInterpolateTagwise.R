@@ -44,7 +44,7 @@ dispCoxReidInterpolateTagwise <- function(y, design, offset=NULL, dispersion, tr
 
 #	Posterior profile likelihood
 	prior.n <- prior.df/(nlibs-ncoefs)
-	spline.pts <- seq(from=grid.range[1],to=grid.range[2],length=grid.npts)
+	spline.pts <- seq(from=grid.range[1],to=grid.range[2],length.out=grid.npts)
 	apl <- matrix(0, nrow=ntags, ncol=grid.npts)
 	for(i in 1:grid.npts){
 		spline.disp <- dispersion * 2^spline.pts[i]

@@ -25,10 +25,9 @@ estimateTagwiseDisp.DGEList <- function(y, prior.df=10, trend="movingave", span=
 	y
 }
 
-
 estimateTagwiseDisp.default <- function(y, group=NULL, lib.size=NULL, dispersion, AveLogCPM=NULL, prior.df=10, trend="movingave", span=NULL, method="grid", grid.length=11, grid.range=c(-6,6), tol=1e-06, verbose=FALSE, ...)
 #  Davis McCarthy, Mark Robinson, Yunshun Chen, Gordon Smyth.
-#  Created 2009. Last modified 18 March 2016.
+#  Created 2009. Last modified 1 June 2016.
 
 #  Notes 3 July 2012:
 #  - interpolating derivatives would be better than interpolating loglik values.
@@ -63,7 +62,7 @@ estimateTagwiseDisp.default <- function(y, group=NULL, lib.size=NULL, dispersion
 
 	if(method=="grid"){  # do spline interpolation
 		if(verbose) message("Using interpolation to estimate tagwise dispersion. ")
-		spline.pts <- seq(from=grid.range[1], to=grid.range[2], length=grid.length)
+		spline.pts <- seq(from=grid.range[1], to=grid.range[2], length.out=grid.length)
 		spline.disp <- dispersion * 2^spline.pts
 		grid.vals <- spline.disp/(1+spline.disp)
 	

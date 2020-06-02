@@ -3,8 +3,9 @@ UseMethod("calcNormFactors")
 
 calcNormFactors.DGEList <- function(object, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for DGEList objects
-#	Created 2 October 2014.  Last modified 27 April 2019.
+#	Created 2 October 2014.  Last modified 2 June 2020.
 {
+	if(!is.null(object$offset)) warning("object contains offsets, which take precedence over library\nsizes and norm factors (and which will not be recomputed).")
 	object$samples$norm.factors <- calcNormFactors(object=object$counts, lib.size=object$samples$lib.size, method=method, refColumn=refColumn, logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff, p=p)
 	object
 }
@@ -21,7 +22,7 @@ calcNormFactors.SummarizedExperiment <- function(object, method=c("TMM","TMMwsp"
 calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for count matrices
 #	Mark Robinson, Gordon Smyth and edgeR team
-#	Created 22 October 2009. Last modified 27 Apr 2019.
+#	Created 22 October 2009. Last modified 2 June 2020.
 {
 #	Check object
 	x <- as.matrix(object)
@@ -35,7 +36,7 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 		if(anyNA(lib.size)) stop("NA lib.sizes not permitted")
 		if(length(lib.size) != nsamples) {
 			if(length(lib.size) > 1L) warning("calcNormFactors: length(lib.size) doesn't match number of samples",call.=FALSE)
-			lib.size <- rep(lib.size,length=nsamples)
+			lib.size <- rep_len(lib.size,nsamples)
 		}
 	}
 
@@ -76,7 +77,7 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 		},
 		RLE = .calcFactorRLE(x)/lib.size,
 		upperquartile = .calcFactorQuantile(x,lib.size,p=p),
-		none = rep(1,nsamples)
+		none = rep_len(1,nsamples)
 	)
 
 #	Factors should multiple to one
@@ -99,13 +100,10 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 .calcFactorQuantile <- function (data, lib.size, p=0.75)
 #	Generalized version of upper-quartile normalization
 #	Mark Robinson
-#	Created 16 Aug 2010
+#	Created 16 Aug 2010. Last modified 2 Jun 2020.
 {
-#	i <- apply(data<=0,1,all)
-#	if(any(i)) data <- data[!i,,drop=FALSE]
 	y <- t(t(data)/lib.size)
-	f <- apply(y,2,function(x) quantile(x,p=p))
-#	f/exp(mean(log(f)))
+	f <- apply(y,2,function(x) quantile(x,probs=p))
 }
 
 .calcFactorTMM <- function(obs, ref, libsize.obs=NULL, libsize.ref=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10)

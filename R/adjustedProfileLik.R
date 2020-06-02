@@ -11,7 +11,7 @@ adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adju
 #	in terms of averages.
 
 #	Yunshun Chen, Gordon Smyth, Aaron Lun
-#	Created June 2010. Last modified 1 March 2018.
+#	Created June 2010. Last modified 22 May 2020.
 {
 #	Checking counts
 	if (!is.numeric(y)) stop("counts must be numeric")
@@ -28,7 +28,7 @@ adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adju
 	  
 #	Fit tagwise linear models
 	fit <- glmFit(y,design=design,dispersion=dispersion,offset=offset,prior.count=0,weights=weights,start=start)
-	mu <- fit$fitted
+	mu <- fit$fitted.values
 
 #	Check other inputs to C++ code
 	adjust <- as.logical(adjust)

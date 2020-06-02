@@ -56,7 +56,7 @@ estimateTrendedDisp.default <- function(y, group=NULL, lib.size=NULL, AveLogCPM=
 	if( method=="bin.spline" ) {
 		if(!requireNamespace("splines",quietly=TRUE)) stop("splines required but is not available")
 		p1 <- (1:(df-1))/df
-		knots1 <- quantile(AveLogCPM.bins, p=p1)
+		knots1 <- quantile(AveLogCPM.bins, probs=p1)
 		r <- range(AveLogCPM.bins)
 		knots2 <- r[1] + p1*(r[2]-r[1])
 		knots <- 0.3*knots1 + 0.7*knots2

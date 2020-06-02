@@ -78,7 +78,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	selweights <- .subsetMatrixWithoutCopying(weights, i=sel)
 	
 #	Spline points
-	spline.pts <- seq(from=grid.range[1], to=grid.range[2], length=grid.length)
+	spline.pts <- seq(from=grid.range[1], to=grid.range[2], length.out=grid.length)
 	spline.disp <- 0.1 * 2^spline.pts
 	grid.vals <- spline.disp/(1+spline.disp)
 	l0 <- matrix(0, sum(sel), grid.length)
@@ -178,7 +178,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 
 	# Calculate prior.df
 	if(is.null(prior.df)){
-		glmfit <- glmFit(sely, offset=seloffset, weight=selweights, design=design, dispersion=disp.trend, prior.count=0)
+		glmfit <- glmFit(sely, offset=seloffset, weights=selweights, design=design, dispersion=disp.trend, prior.count=0)
 
 		# Residual deviances
 		df.residual <- glmfit$df.residual

@@ -13,7 +13,7 @@ plotBCV <- function(y, xlab="Average log CPM", ylab="Biological coefficient of v
 #	Points to determine y axis limits
 	disp <- getDispersion(y)
 	if(is.null(disp)) stop("No dispersions to plot")
-	if(attr(disp,"type")=="common") disp <- rep(disp, length=length(A))
+	if(attr(disp,"type")=="common") disp <- rep_len(disp, length(A))
 
 #	Make plot
 	plot(A, sqrt(disp), xlab=xlab, ylab=ylab, type="n", ...)

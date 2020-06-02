@@ -2,7 +2,7 @@ normalizeChIPtoInput <- function(input,response,dispersion=0.01,niter=6,loss="p"
 #	Normalize ChIP-Seq counts to input
 #	and test for enrichment
 #	Gordon Smyth  
-#	2 Dec 2011.  Last modified 11 Dec 2011.
+#	2 Dec 2011.  Last modified 1 Jun 2020.
 {
 	if(length(input)!=length(response)) stop("input and response must be same length")
 	if(any(input<0) || any(response<0)) stop("negative values not allowed")
@@ -55,7 +55,7 @@ normalizeChIPtoInput <- function(input,response,dispersion=0.01,niter=6,loss="p"
 
 #	Starting value for proportion of enriched marks
 	prop.enriched <- 0.5
-	scaling.factor.interval <- quantile(response/input,prob=c(0.1,0.8))
+	scaling.factor.interval <- quantile(response/input,probs=c(0.1,0.8))
 	
 	if(diff(scaling.factor.interval)==0) {
 		scaling.factor <- scaling.factor.interval[1]
