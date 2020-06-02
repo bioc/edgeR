@@ -8,7 +8,7 @@ exactTestDoubleTail <- function(y1,y2,dispersion=0,big.count=900)
 #	instead of trying to find smaller of tail probabilities?
 
 #	Gordon Smyth
-#	28 Sep 2019.  Last modified 10 Jan 2012.
+#	28 Sep 2019.  Last modified 2 Jun 2020.
 {
 #	Convert matrices to vectors
 	ntags <- NROW(y1)
@@ -16,7 +16,7 @@ exactTestDoubleTail <- function(y1,y2,dispersion=0,big.count=900)
 	n2 <- NCOL(y2)
 	if(n1>1) s1 <- round(rowSums(y1)) else s1 <- round(y1)
 	if(n2>1) s2 <- round(rowSums(y2)) else s2 <- round(y2)
-	if(length(dispersion)==1) dispersion <- rep(dispersion,ntags)
+	if(length(dispersion)==1) dispersion <- rep_len(dispersion,ntags)
 
 #	Null fitted values
 	s <- s1+s2
@@ -24,7 +24,7 @@ exactTestDoubleTail <- function(y1,y2,dispersion=0,big.count=900)
 	mu1 <- n1*mu
 	mu2 <- n2*mu
 
-	pvals <- rep(1,ntags)
+	pvals <- rep_len(1,ntags)
 	names(pvals) <- names(y1)
 
 #	Poisson case
@@ -40,7 +40,7 @@ exactTestDoubleTail <- function(y1,y2,dispersion=0,big.count=900)
 		pvals[big] <- exactTestBetaApprox(y1[big,,drop=FALSE],y2[big,,drop=FALSE],dispersion[big])
 	}
 
-	p.bot <- size1 <- size2 <- rep(0,ntags)
+	p.bot <- size1 <- size2 <- rep_len(0,ntags)
 	left <- s1<mu1 & !pois & !big
 	if(any(left)) {
 		p.bot[left] <- dnbinom(s[left],size=(n1+n2)/dispersion[left],mu=s[left])

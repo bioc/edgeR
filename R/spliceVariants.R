@@ -60,12 +60,12 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 	na.vec <- rep_len(NA_real_, length(uniqIDs))
 	if(genewise.disp)
 		dispersion <- dispersion[names(dispersion) %in% uniqIDs]
-	if(!genewise.disp) {
-		dispersion <- rep(dispersion, length(uniqIDs))
+	else {
+		dispersion <- rep_len(dispersion, length(uniqIDs))
 		names(dispersion) <- uniqIDs
 	}
 #	We want to know how many exons each gene has
-	dummy <- rowsum(rep(1, nrow(exons)), rownames(exons))
+	dummy <- rowsum(rep_len(1, nrow(exons)), rownames(exons))
 	nexons <- as.vector(dummy)
 	names(nexons) <- rownames(dummy)
 	mm <- match(uniqIDs,names(nexons))
@@ -83,7 +83,7 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 		full.index <- rownames(exons) %in% uniqIDs[this.genes]
 		if( any(this.genes) ) {
 			gene.counts.mat <- matrix(t(exons[full.index,]), nrow=sum(this.genes), ncol=ncol(exons)*i.exons, byrow=TRUE)
-			expanded.lib.size <- rep(lib.size, i.exons)
+			expanded.lib.size <- rep.int(lib.size, i.exons)
 			if(i.exons==1) {
 				abundance[this.genes] <- aveLogCPM(gene.counts.mat, lib.size=expanded.lib.size)
 				splicevars.out$LR[this.genes] <- 0
@@ -91,7 +91,7 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 			}
 			else {
 				exon.this <- factor(rep(1:i.exons, each=ncol(exons)))
-				group.this <- as.factor(rep(group, i.exons))
+				group.this <- as.factor(rep.int(group, i.exons))
 			#	Define design matrices for this group of genes
 				X.full <- model.matrix(~ exon.this + group.this + exon.this:group.this )
 				X.null <- model.matrix(~ exon.this + group.this )
