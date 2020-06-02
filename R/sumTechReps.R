@@ -17,7 +17,7 @@ sumTechReps.default <- function(x,ID=colnames(x),...)
 sumTechReps.DGEList <- function(x,ID=colnames(x),...)
 #	Sum over replicate columns, for matrices
 #	Yifang Hu and Gordon Smyth
-#	Created 14 March 2014. Last modified 17 March 2014.
+#	Created 14 March 2014. Last modified 2 Jun 2020.
 {
 	d <- duplicated(ID)
 	if(!any(d)) return(x)
@@ -35,7 +35,7 @@ sumTechReps.DGEList <- function(x,ID=colnames(x),...)
 
 #	Average normalization factors
 	y$samples$norm.factors <- drop(rowsum(x$samples$norm.factors,group=ID,reorder=FALSE,na.rm=FALSE))
-	n <- rep(1L,nrow(x$samples))
+	n <- rep_len(1L,nrow(x$samples))
 	n <- drop(rowsum(n,group=ID,reorder=FALSE,na.rm=FALSE))
 	y$samples$norm.factors <- y$samples$norm.factors/n
 

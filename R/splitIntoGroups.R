@@ -12,7 +12,7 @@ splitIntoGroups.DGEList <- function(y, ...)
 
 splitIntoGroups.default <- function(y, group=NULL, ...) 
 # Written by Davis McCarthy, February 2009, idea suggested by Mark Robinson
-# Last modified 18 March 2016.
+# Last modified 2 Jun 2020.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -20,7 +20,7 @@ splitIntoGroups.default <- function(y, group=NULL, ...)
 	nlibs <- ncol(y)
 
 #	Check group
-	if(is.null(group)) group <- rep(1, nlibs)
+	if(is.null(group)) group <- rep_len(1L, nlibs)
 	if(length(group)!=nlibs) stop("Incorrect length of group.")
 	group <- dropEmptyLevels(group)
 	

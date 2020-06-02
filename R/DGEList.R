@@ -1,6 +1,6 @@
 DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE) 
 #	Construct DGEList object from components, with some checking
-#	Created 28 Sep 2008. Last modified 16 Jan 2020.
+#	Created 28 Sep 2008. Last modified 2 Jun 2020.
 {
 #	Check whether counts is a data.frame
 	if(is.data.frame(counts)) {
@@ -49,10 +49,10 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 
 #	Check norm.factors
 	if(is.null(norm.factors)) {
-		norm.factors <- rep(1,ncol(counts))
+		norm.factors <- rep_len(1,ncol(counts))
 	} else {
 		if(!is.numeric(norm.factors)) stop("'lib.size' must be numeric")
-		if(nlib != length(norm.factors)) stop("Length of 'norm.factors' must equal number of columns in 'counts'")
+		if(!identical(nlib,length(norm.factors))) stop("Length of 'norm.factors' must equal number of columns in 'counts'")
 		minnf <- min(norm.factors)
 		if(is.na(minnf)) stop("NA norm factors not allowed")
 		if(minnf <= 0) stop("norm factors should be positive")

@@ -92,7 +92,7 @@ dispBinTrend <- function(y, design=NULL, offset=NULL, df=5, span=0.3, min.n=400,
 #	Loess smoother though binned dispersions
 	if( method.trend=="loess" ) {
 		fit <- loessFit(sqrt(bin.d), bin.A, span=span, iterations=1)
-		f <- approxfun(bin.A, fit$fitted.values, rule=2, ties=mean)
+		f <- approxfun(bin.A, fit$fitted, rule=2, ties=mean)
 		dispersion <- f(AveLogCPM)^2
 	}
 
