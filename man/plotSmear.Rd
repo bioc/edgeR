@@ -38,7 +38,7 @@ The smear is created by using random uniform numbers of width \code{smearWidth} 
 \code{plotSmear} also allows easy highlighting of differentially expressed (DE) genes.
 }
 
-\author{Mark Robinson, Davis McCarthy}
+\author{Mark Robinson created the original concept of smearing the infinite log-fold-changes.}
 
 \seealso{
 \code{\link{maPlot}}, \code{\link{plotMD.DGEList}}

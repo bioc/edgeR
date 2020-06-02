@@ -1,12 +1,12 @@
 plotSmear <- function (object, pair=NULL, de.tags=NULL, xlab="Average logCPM", ylab="logFC", pch=19, cex=.2, smearWidth=.5, panel.first=grid(), smooth.scatter=FALSE, lowess=FALSE, ...)
 # User-level function for creating an MA-plot for DGE data.
-# Created by Mark Robinson. Last modified by Yunshun Chen, 19 March 2012.
+# Created 3 Oct 2009. Last modified 1 Jun 2020.
  
 {
-	if ( !(class(object) %in% c("DGEList", "DGELRT", "DGEExact")) ) 
+	if ( !inherits(object,c("DGEList", "DGELRT", "DGEExact")) ) 
 		stop("Currently only supports DGEList/DGELRT/DGEExact objects as the object argument.")
 	if( is(object, "DGEList") && is.null(object$samples$group) )
-		stop("Cannot produce a smear plot if no experimental groups are defined. Here, d$samples$groups is NULL.\n")
+		stop("Cannot produce a smear plot if no experimental groups are defined. Here, object$samples$group is NULL.\n")
 	if( is(object, "DGEList") ) {
 		levs.group <- levels(object$samples$group)
 		if(length(levs.group)==1)

@@ -2,7 +2,7 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
-\section{Version 3.30.0}{\itemize{
+\section{Version 3.30.2}{\itemize{
 \item
 New function voomLmFit() that combines the limma voom-lmFit pipeline with loss of residual df due to zero counts as for glmQLFit().
 The new function is more robust to zero counts than running voom() and lmFit() separately.
@@ -29,6 +29,12 @@ readBismark2DGE() now forces 'files' to be character vector.
 
 \item
 Add warning messages when filterByExpr() is used without specifying group or design.
+
+\item
+Add warning message when calcNormFactors() is applied to DGEList object containing an offset matrix.
+
+\item
+Rewrite User's Guide Section 3.5 on Multilevel Experiments so that the code is valid regardless of the number of subjects in each disease group.
 }}
 
 

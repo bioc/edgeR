@@ -31,7 +31,7 @@ cutWithMinN <- function(x, intervals=2, min.n=1)
 	breaks.eqx[intervals+1L] <- breaks.eqx[intervals+1L]+1
 
 #	Breaks equally spaced by quantiles
-	breaks.eqn <- quantile(x,p=seq(from=0,to=1,length.out=intervals+1L))
+	breaks.eqn <- quantile(x,probs=seq(from=0,to=1,length.out=intervals+1L))
 	breaks.eqn[1] <- breaks.eqn[1]-1
 	breaks.eqn[intervals+1L] <- breaks.eqn[intervals+1L]+1
 

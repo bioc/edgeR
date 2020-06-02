@@ -1,4 +1,5 @@
 library(edgeR)
+options(warnPartialMatchArgs=TRUE,warnPartialMatchAttr=TRUE,warnPartialMatchDollar=TRUE)
 
 set.seed(0); u <- runif(100)
 
@@ -30,8 +31,8 @@ summary(d2$tagwise.dispersion)
 de <- exactTest(d2)
 topTags(de)
 
-summary(exactTest(d2,rejection="smallp")$table$PValue)
-summary(exactTest(d2,rejection="deviance")$table$PValue)
+summary(exactTest(d2,rejection.region="smallp")$table$PValue)
+summary(exactTest(d2,rejection.region="deviance")$table$PValue)
 
 d2 <- estimateTagwiseDisp(d,trend="loess",span=0.8,prior.df=20)
 summary(d2$tagwise.dispersion)
@@ -53,7 +54,7 @@ lrt <- glmLRT(fit,coef=2)
 topTags(lrt)
 
 fit <- glmFit(d,design,dispersion=d$common.dispersion,prior.count=0.5)
-summary(fit$coef)
+summary(fit$coefficients)
 
 fit <- glmFit(d,design,prior.count=0.5/4)
 lrt <- glmLRT(fit,coef=2)
@@ -130,7 +131,7 @@ exactTestBetaApprox(ys$y1,ys$y2,dispersion=2/3)
 y[1,3:4] <- 0
 design <- model.matrix(~group)
 fit <- glmFit(y,design,dispersion=2/3,prior.count=0.5/7)
-summary(fit$coef)
+summary(fit$coefficients)
 
 lrt <- glmLRT(fit,contrast=cbind(c(0,1,0),c(0,0,1)))
 topTags(lrt)

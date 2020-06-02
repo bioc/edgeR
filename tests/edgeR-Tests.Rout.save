@@ -1,13 +1,11 @@
 
-R version 4.0.0 RC (2020-04-20 r78265) -- "Arbor Day"
+R version 4.0.0 (2020-04-24) -- "Arbor Day"
 Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -19,6 +17,7 @@ Type 'q()' to quit R.
 
 > library(edgeR)
 Loading required package: limma
+> options(warnPartialMatchArgs=TRUE,warnPartialMatchAttr=TRUE,warnPartialMatchDollar=TRUE)
 > 
 > set.seed(0); u <- runif(100)
 > 
@@ -114,10 +113,10 @@ Tag.3  -0.7300525 13.54155 0.40001438 0.9711975
 Tag.12  0.7080985 14.31389 0.43530227 0.9711975
 Tag.8  -0.7918376 12.86353 0.49782701 0.9711975
 > 
-> summary(exactTest(d2,rejection="smallp")$table$PValue)
+> summary(exactTest(d2,rejection.region="smallp")$table$PValue)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.02428 0.36369 0.55662 0.54319 0.78889 1.00000 
-> summary(exactTest(d2,rejection="deviance")$table$PValue)
+> summary(exactTest(d2,rejection.region="deviance")$table$PValue)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.02428 0.36369 0.55662 0.54319 0.78889 1.00000 
 > 
@@ -233,7 +232,7 @@ Tag.3  -0.7300410 13.54155 0.8300307 0.36226364 0.8276702
 Tag.8  -0.7917906 12.86353 0.7830377 0.37621371 0.8276702
 > 
 > fit <- glmFit(d,design,dispersion=d$common.dispersion,prior.count=0.5)
-> summary(fit$coef)
+> summary(fit$coefficients)
   (Intercept)         group2        
  Min.   :-7.604   Min.   :-1.13681  
  1st Qu.:-4.895   1st Qu.:-0.32341  
@@ -477,7 +476,7 @@ $AveLogCPM
 > y[1,3:4] <- 0
 > design <- model.matrix(~group)
 > fit <- glmFit(y,design,dispersion=2/3,prior.count=0.5/7)
-> summary(fit$coef)
+> summary(fit$coefficients)
   (Intercept)         group2            group3        
  Min.   :-1.817   Min.   :-5.0171   Min.   :-0.64646  
  1st Qu.:-1.812   1st Qu.:-1.1565   1st Qu.:-0.13919  
@@ -550,4 +549,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   7.51    0.51    8.48 
+   2.31    0.15    2.46 
