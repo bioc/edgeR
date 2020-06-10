@@ -11,7 +11,7 @@ binomTest <- function(y1, y2, n1=sum(y1), n2=sum(y2), p=n1/(n1+n2))
 #	Gordon Smyth
 #	In statmod package 15 Nov 2003.
 #	In edgeR package 11 Feb 2011.
-#  Last modified 1 March 2011.
+#	Last modified 9 Jun 2020.
 {
 	if(length(y1) != length(y2)) stop("y1 and y2 must have same length")
 	if(any(is.na(y1)) || any(is.na(y2))) stop("missing values not allowed")
@@ -20,7 +20,7 @@ binomTest <- function(y1, y2, n1=sum(y1), n2=sum(y2), p=n1/(n1+n2))
 	if(any(y1<0) || any(y2<0)) stop("y1 and y2 must be non-negative")
 	if(p<=0 || p>=1) stop("p must be between 0 and 1")
 	size <- y1+y2
-	p.value <- rep.int(1,length(y1))
+	p.value <- rep_len(1,length(y1))
 	if(p==0.5) {
 		i <- (size>0)
 		if(any(i)) {

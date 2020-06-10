@@ -2,13 +2,13 @@ cutWithMinN <- function(x, intervals=2, min.n=1)
 #	Cut numeric x into intervals, as equally spaced as possible subject
 #	to including a minimum number of values in each interval
 #	Gordon Smyth
-#	7 May 2011.  Last modified 17 Apr 2013.
+#	7 May 2011.  Last modified 9 Jun 2020.
 {
 #	Check input
 	x <- as.numeric(x)
 	isna <- is.na(x)
 	if(any(isna)) {
-		group <- rep.int(NA,length(x))
+		group <- rep_len(NA_real_,length(x))
 		out <- Recall(x=x[!isna],intervals=intervals,min.n=min.n)
 		group[!isna] <- out$group
 		out$group <- group
@@ -57,7 +57,7 @@ cutWithMinN <- function(x, intervals=2, min.n=1)
 	o <- order(x)
 	n <- floor(nx/intervals)
 	nresid <- nx - intervals*n
-	n <- rep.int(n,intervals)
+	n <- rep_len(n,intervals)
 	if(nresid>0) n[1:nresid] <- n[1:nresid]+1
 	z <- rep(1:intervals,n)
 	z[o] <- z

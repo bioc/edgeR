@@ -25,8 +25,8 @@ importFrom("limma",arrayWeights, asMatrixWeights, camera, contrastAsCoef,
            decideTests, duplicateCorrelation, fry, goana, kegga, is.fullrank,
            logsumexp, lmFit, loessFit, mroast, nonEstimable,
            normalizeBetweenArrays, plotMD, plotMDS, plotWithHighlights,
-           removeExt, roast, romer, squeezeVar, subsetListOfArrays, zscoreGamma,
-           zscoreT)
+           removeExt, roast, romer, squeezeVar, subsetListOfArrays,
+           weightedLowess, zscoreGamma, zscoreT)
 importClassesFrom("limma","LargeDataObject","Roast","MDS","TestResults")
 importFrom("locfit", locfit)
 importFrom("Rcpp", sourceCpp)

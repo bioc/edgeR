@@ -129,7 +129,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth, Davis McCarthy and Yunshun Chen.
-#	Created 1 July 2010.  Last modified 31 Oct 2017.
+#	Created 1 July 2010.  Last modified 9 June 2020.
 {
 #	Check glmfit
 	if(!is(glmfit,"DGEGLM")) {
@@ -176,7 +176,7 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 			i <- contrast!=0
 			coef.name <- paste(paste(contrast[i],coef.names[i],sep="*"),collapse=" ")
 		}
-		Dvec <- rep.int(1,nlibs)
+		Dvec <- rep_len(1,nlibs)
 		Dvec[coef] <- diag(qrc$qr)[coef]
 		Q <- qr.Q(qrc,complete=TRUE,Dvec=Dvec)
 		design <- design %*% Q

@@ -2,7 +2,7 @@ dispBinTrend <- function(y, design=NULL, offset=NULL, df=5, span=0.3, min.n=400,
 #	Estimate common dispersion in bins based on AveLogCPM,
 #	then fit a curve through the dispersions
 #	Davis McCarthy, Gordon Smyth
-#	Created 10 Feb 2011.  Last modified 1 Jun 2020.
+#	Created 10 Feb 2011.  Last modified 9 Jun 2020.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -64,7 +64,7 @@ dispBinTrend <- function(y, design=NULL, offset=NULL, df=5, span=0.3, min.n=400,
 
 #	If just one bin, trended dispersion is constant
 	if(nbins==1) {
-		dispersion <- rep.int(bin.d,ntags)
+		dispersion <- rep_len(bin.d,ntags)
 		return(list(AveLogCPM=AveLogCPM, dispersion=dispersion, bin.AveLogCPM=bin.A, bin.dispersion=bin.d))
 	}
 

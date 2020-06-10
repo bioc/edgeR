@@ -155,7 +155,7 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 .calcFactorTMMwsp <- function(obs, ref, libsize.obs=NULL, libsize.ref=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10)
 #	TMM with pairing of singleton positive counts between the obs and ref libraries
 #	Gordon Smyth
-#	Created 19 Sep 2018. Last modified 23 April 2019.
+#	Created 19 Sep 2018. Last modified 9 Jun 2020.
 {
 	obs <- as.numeric(obs)
 	ref <- as.numeric(ref)
@@ -221,11 +221,11 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 #	Trim
 	loM <- as.integer(n * logratioTrim) + 1L
 	hiM <- n + 1L - loM
-	keep.M <- rep.int(FALSE,n)
+	keep.M <- rep_len(FALSE,n)
 	keep.M[o.M[loM:hiM]] <- TRUE
 	loA <- as.integer(n * sumTrim) + 1L
 	hiA <- n + 1L - loA
-	keep.A <- rep.int(FALSE,n)
+	keep.A <- rep_len(FALSE,n)
 	keep.A[o.A[loA:hiA]] <- TRUE
 	keep <- keep.M & keep.A
 	M <- M[keep]

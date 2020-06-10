@@ -8,7 +8,7 @@ voomLmFit <- function(
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 31 May 2020.
+#	Created 21 Jan 2020.  Last modified 10 Jun 2020.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -68,7 +68,6 @@ voomLmFit <- function(
 
 #	Fit linear model
 	fit <- lmFit(y,design,weights=prior.weights)
-	if(is.null(fit$Amean)) fit$Amean <- rowMeans(y)
 
 #	Find largest leverage value of design matrix
 	if(is.null(fit$qr))
@@ -116,9 +115,14 @@ voomLmFit <- function(
 	}
 
 #	Fit lowess trend to sqrt-standard-deviations by log-count-size
-	sx <- fit$Amean[HasRep]+mean(log2(lib.size+1))-log2(1e6)
+	Amean <- Amean2 <- rowMeans(y)
+	if(AnyZeroRows) Amean2[RowHasZero] <- rowMeans(yNAshort,na.rm=TRUE)
+	sx <- Amean2[HasRep]+mean(log2(lib.size+1))-log2(1e6)
 	sy <- sqrt(fit$sigma[HasRep])
-	l <- lowess(sx,sy,f=span)
+	if(AnyZeroRows)
+		l <- weightedLowess(sx,sy,span=span,weights=fit$df.residual[HasRep],output.style="lowess")
+	else
+		l <- lowess(sx,sy,f=span)
 	if(plot) {
 		plot(sx,sy,xlab="log2( count size + 0.5 )",ylab="Sqrt( standard deviation )",pch=16,cex=0.25)
 		title("voom: Mean-variance trend")
@@ -183,14 +187,16 @@ voomLmFit <- function(
 		else
 			weights <- prior.weights
 		fit <- lmFit(y,design,block=block,correlation=correlation,weights=weights)
-		if(is.null(fit$Amean)) fit$Amean <- rowMeans(y)
 		if(AnyZeroRows) {
 			fitNA <- suppressWarnings(lmFit(yNAshort,design,block=block,correlation=correlation,weights=weights[RowHasZero,,drop=FALSE]))
 			fit$df.residual[RowHasZero] <- fitNA$df.residual
 			fit$sigma[RowHasZero] <- fitNA$sigma
 		}
 		sy <- sqrt(fit$sigma[HasRep])
-		l <- lowess(sx,sy,f=span)
+		if(AnyZeroRows)
+			l <- weightedLowess(sx,sy,span=span,weights=fit$df.residual[HasRep],output.style="lowess")
+		else
+			l <- lowess(sx,sy,f=span)
 		if(plot) {
 			lines(l,col="red")
 			legend("topright",lty=c(2,1),col="red",legend=c("First","Final"))
@@ -234,7 +240,7 @@ voomLmFit <- function(
 
 #	Final linear model fit with voom weights
 	fit <- lmFit(y,design,block=block,correlation=correlation,weights=weights)
-	if(is.null(fit$Amean)) fit$Amean <- rowMeans(y)
+	if(is.null(fit$Amean)) fit$Amean <- Amean
 	if(AnyZeroRows) {
 		fitNA <- suppressWarnings(lmFit(yNAshort,design,block=block,correlation=correlation,weights=weights[RowHasZero,,drop=FALSE]))
 		fit$df.residual[RowHasZero] <- fitNA$df.residual

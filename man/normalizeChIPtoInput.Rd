@@ -30,7 +30,7 @@ calcNormOffsetsforChIP(input, response, dispersion=0.01, niter=6, loss="p", plot
 \code{normalizeChIPtoInput} identifies significant enrichment for a ChIP-Seq mark relative to input values.
 The ChIP-Seq mark might be for example transcriptional factor binding or an epigenetic mark.
 The function works on the data from one sample.
-Replicate libraries are not explicitly accounted for, and would normally be pooled before using this function.
+Replicate libraries are not explicitly accounted for; this function can either be run on each sample individually or on a pooled of replicates.
 
 ChIP-Seq counts are assumed to be summarized by gene or similar genomic feature of interest.
 
@@ -40,11 +40,13 @@ The function aligns the counts to the input so that the counts for the unmarked 
 The function estimates the proportion of marked genes, and removes marked genes from the fitting process.
 For this purpose, marked genes are those with a Holm-adjusted mid-p-value less than 0.5.
 
+When \code{plot=TRUE}, the genes shown in red are the marked genes (with Holm mid-p-value < 0.5) that have been removed as probably enriched during the fitting process.
+The normalization line has been fitted to the non-marked genes plotted in black.
+
 The read counts are treated as negative binomial.
 The dispersion parameter is not estimated from the data; instead a reasonable value is assumed to be given.
 
 \code{calcNormOffsetsforChIP} returns a numeric matrix of offsets, ready for linear modelling.
-
 }
 
 \value{
