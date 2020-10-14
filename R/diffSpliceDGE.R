@@ -1,7 +1,7 @@
 diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL, prior.count=0.125, verbose=TRUE)
 # Identify exons and genes with splice variants using negative binomial GLMs
 # Yunshun Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 21 June 2017.
+# Created 29 March 2014.  Last modified 13 Oct 2020.
 {
 #	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
@@ -51,7 +51,10 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 #	Note that contrast takes precedence over coef: if contrast is given
 #	then reform design matrix so that contrast of interest is the first column
 	if(is.null(contrast)) {
-		if(length(coef) > 1) coef <- unique(coef)
+		if(length(coef) > 1) {
+			warning("coef is a vector, should be a single value. Using first value only.")
+			coef <- coef[1]
+		}
 		if(is.character(coef)) {
 			check.coef <- coef %in% colnames(design)
 			if(any(!check.coef)) stop("One or more named coef arguments do not match a column of the design matrix.")
@@ -63,6 +66,10 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 		beta <- coefficients[, coef, drop=FALSE]
 	} else {
 		contrast <- as.matrix(contrast)
+		if(ncol(contrast) > 1L) {
+			warning("contrast is a matrix, should be a vector. Using first column only.")
+			contrast <- contrast[,1,drop=FALSE]
+		}
 		reform <- contrastAsCoef(design, contrast=contrast, first=TRUE)
 		coef <- 1
 		beta <- drop(coefficients %*% contrast)

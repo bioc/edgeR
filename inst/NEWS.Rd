@@ -2,6 +2,30 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.32.0}{\itemize{
+\item
+cpm.default() and rpkm.default() now accept offset.
+
+\item
+scaleOffset() now accepts CompressedMatrix offset and accounts for norm.factors.
+
+\item
+Revise the lowess trend fitting in voomLmFit() to downweight genes with exact zeros and hence fewer df to estimate the variance.
+
+\item
+Add as.data.frame method for DGEList class.
+
+\item
+Change default choice for refColumn in calcNormFactors() with method="TMMwsp". The new method chooses the column with the largest sum of sqrt-counts.
+
+\item
+processAmplicons() can now accommodate data from newer screens that use a staggered primer design.
+
+\item
+Fixed a bug that diffSpliceDGE() accept more than one coef. It now gives a warning if more than one coef or contrast is supplied. It only uses the first.
+}}
+
+
 \section{Version 3.30.2}{\itemize{
 \item
 New function voomLmFit() that combines the limma voom-lmFit pipeline with loss of residual df due to zero counts as for glmQLFit().

@@ -42,13 +42,14 @@ The effective library sizes for use in downstream analysis are \code{lib.size * 
 
 The TMM method implements the trimmed mean of M-values proposed by Robinson and Oshlack (2010).
 By default, the M-values are weighted according to inverse variances, as computed by the delta method for logarithms of binomial random variables.
-If \code{refColumn} is unspecified, then the library whose upper quartile is closest to the mean upper quartile is used.
+If \code{refColumn} is unspecified, then the column whose count-per-million upper quartile is closest to the mean upper quartile is set as the reference library.
 
 \code{method="TMMwsp"} stands for "TMM with singleton pairing".
 This is a variant of TMM that is intended to perform better for data with a high proportion of zeros.
 In the TMM method, genes that have zero count in either library are ignored when comparing pairs of libraries.
 In the TMMwsp method, the positive counts from such genes are reused to increase the number of features by which the libraries are compared.
 The singleton positive counts are paired up between the libraries in decreasing order of size and then a slightly modified TMM method is applied to the re-ordered libraries.
+If \code{refColumn} is unspecified, then the column with largest sum of square-root counts is used as the reference library.
 
 RLE is the scaling factor method proposed by Anders and Huber (2010).
 We call it "relative log expression", as median library is calculated from the geometric mean of all columns and the median ratio of each sample to the median library is taken as the scale factor.

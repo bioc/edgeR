@@ -1,11 +1,13 @@
 
-R version 4.0.0 (2020-04-24) -- "Arbor Day"
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
 Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -443,7 +445,7 @@ $AveLogCPM
 > 
 > calcNormFactors(d$counts,method="TMMwsp")
        x0        x1        x2 
-1.0156094 0.9995486 0.9850752 
+0.9992437 1.0077007 0.9931093 
 > 
 > d2 <- estimateDisp(d, design)
 > summary(d2$tagwise.dispersion)
@@ -549,4 +551,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   2.31    0.15    2.46 
+   7.12    0.37    8.48 
