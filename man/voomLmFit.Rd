@@ -72,6 +72,8 @@ In that case, \code{voomLmFit} is analogous to running \code{voomWithQualityWeig
 
 \value{
 An MArrayLM object containing linear model fits for each row of data.
+The object includes a \code{targets} data.frame component containing sample annotation.
+Columns of \code{targets} include \code{lib.size} and \code{sample.weight} (if \code{sample.weights=TRUE}).
 }
 
 \author{Gordon Smyth}

@@ -8,7 +8,7 @@ voomLmFit <- function(
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 10 Jun 2020.
+#	Created 21 Jan 2020.  Last modified 20 Jun 2020.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -254,7 +254,7 @@ voomLmFit <- function(
 		fit$targets <- data.frame(lib.size=lib.size)
 		row.names(fit$targets) <- colnames(y)
 	}
-	if(SampleWeights) fit$targets$sample.weights <- sw
+	if(SampleWeights) fit$targets$sample.weight <- sw
 	if(save.plot) {
 		fit$voom.xy <- list(x=sx,y=sy,xlab="log2( count size + 0.5 )",ylab="Sqrt( standard deviation )")
 		fit$voom.line <- l
