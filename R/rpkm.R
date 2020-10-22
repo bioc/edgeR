@@ -4,7 +4,7 @@ UseMethod("rpkm")
 rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	RPKM for a DGEList.
 #	Gordon Smyth.
-#	Created 18 March 2013. Last modified 14 Oct 2020.
+#	Created 18 March 2013. Last modified 22 Oct 2020.
 {
 #	Try to find gene lengths
 #	If column name containing gene lengths isn't specified,
@@ -24,11 +24,11 @@ rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FAL
 		}
 	}
 
+	lib.size <- y$samples$lib.size
 	if(!is.null(y$offset)){
-		if( min(y$offset) > max(log(lib.size)) | min(log(lib.size)) > max(y$offset) ) warning("Offset may not reflect library sizes. Scaling offset may be required.")
+		if( min(y$offset) > max(log(lib.size)) || min(log(lib.size)) > max(y$offset) ) warning("Offset may not reflect library sizes. Scaling offset may be required.")
 		lib.size <- NULL
 	} else {
-		lib.size <- y$samples$lib.size
 		if(normalized.lib.sizes) lib.size <- lib.size*y$samples$norm.factors
 	}
 

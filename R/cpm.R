@@ -4,13 +4,13 @@ UseMethod("cpm")
 cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	Counts per million for a DGEList
 #	Davis McCarthy and Gordon Smyth.
-#	Created 20 June 2011. Last modified 1 June 2020.
+#	Created 20 June 2011. Last modified 22 October 2020.
 {
+	lib.size <- y$samples$lib.size
 	if(!is.null(y$offset)){
-		if( min(y$offset) > max(log(lib.size)) | min(log(lib.size)) > max(y$offset) ) warning("Offset may not reflect library sizes. Scaling offset may be required.")
+		if( min(y$offset) > max(log(lib.size)) || min(log(lib.size)) > max(y$offset) ) warning("Offset may not reflect library sizes. Scaling offset may be required.")
 		lib.size <- NULL
 	} else {
-		lib.size <- y$samples$lib.size
 		if(normalized.lib.sizes) lib.size <- lib.size*y$samples$norm.factors
 	}
 
