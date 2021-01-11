@@ -8,7 +8,7 @@ voomLmFit <- function(
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 20 Jun 2020.
+#	Created 21 Jan 2020.  Last modified 11 Jan 2021.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -78,13 +78,14 @@ voomLmFit <- function(
 
 #	Identify fitted values that are exactly zero and should not contribute to the genewise variances
 #	Note that a single zero is never a problem
-	RowHasZero <- which(rowSums(counts==0) >= max(2,MinGroupSize))
+	eps <- eps <- 1e-4
+	RowHasZero <- which(rowSums(counts < eps) > (max(2,MinGroupSize)-eps))
 	AnyZeroRows <- as.logical(length(RowHasZero))
 	if(AnyZeroRows) {
 		countsZero <- counts[RowHasZero,,drop=FALSE]
 		PoissonFit <- glmFit(countsZero,design=design,lib.size=lib.size,dispersion=0,prior.count=0)
-		IsZero <- (PoissonFit$fitted.values < 1e-4 & countsZero < 1e-4)
-		RowHasExactZero <- which(rowSums(IsZero) > 0)
+		IsZero <- (PoissonFit$fitted.values < eps & countsZero < eps)
+		RowHasExactZero <- which(rowSums(IsZero) > eps)
 #		If any exact zero fits, then rerun the linear model for those rows with NAs
 		if(length(RowHasExactZero)) {
 			RowHasZero <- RowHasZero[RowHasExactZero]
