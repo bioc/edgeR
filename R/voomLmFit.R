@@ -78,7 +78,7 @@ voomLmFit <- function(
 
 #	Identify fitted values that are exactly zero and should not contribute to the genewise variances
 #	Note that a single zero is never a problem
-	eps <- eps <- 1e-4
+	eps <- 1e-4
 	RowHasZero <- which(rowSums(counts < eps) > (max(2,MinGroupSize)-eps))
 	AnyZeroRows <- as.logical(length(RowHasZero))
 	if(AnyZeroRows) {
