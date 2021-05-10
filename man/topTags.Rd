@@ -67,7 +67,7 @@ From reads to genes to pathways: differential expression analysis of RNA-Seq exp
 
 McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\url{https://doi.org/10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}
 
 Robinson MD, Smyth GK (2008). Small-sample estimation of negative binomial dispersion, with applications to SAGE data. \emph{Biostatistics} 9, 321-332.
 
