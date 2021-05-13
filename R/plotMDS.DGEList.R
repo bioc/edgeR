@@ -1,4 +1,4 @@
-plotMDS.DGEList <- function (x,top=500,labels=NULL,pch=NULL,cex=1,dim.plot=c(1,2),gene.selection="pairwise",xlab=NULL,ylab=NULL,method="logFC",prior.count=2,plot=TRUE,...)
+plotMDS.DGEList <- function (x,top=500,labels=NULL,pch=NULL,cex=1,dim.plot=c(1,2),gene.selection="pairwise",xlab=NULL,ylab=NULL,method="logFC",prior.count=2,plot=TRUE,var.explained=TRUE,...)
 #	Multidimensional scaling plot of digital gene expression profiles
 #	Yunshun Chen, Mark Robinson and Gordon Smyth
 #	23 May 2011.  Last modified 13 May 2021.
@@ -10,7 +10,7 @@ plotMDS.DGEList <- function (x,top=500,labels=NULL,pch=NULL,cex=1,dim.plot=c(1,2
 #	Default method is to convert to moderated logCPM and call limma plotMDS
 	if(method=="logFC") {
 		y <- cpm(x,log=TRUE,prior.count=prior.count)
-		return(plotMDS(y,top=top,labels=labels,pch=pch,cex=cex,dim.plot=dim.plot,gene.selection=gene.selection,xlab=xlab,ylab=ylab,plot=plot,...))
+		return(plotMDS(y,top=top,labels=labels,pch=pch,cex=cex,dim.plot=dim.plot,gene.selection=gene.selection,xlab=xlab,ylab=ylab,plot=plot,var.explained=var.explained,...))
 	}
 
 #	From here method="bcv"
@@ -92,14 +92,14 @@ plotMDS.DGEList <- function (x,top=500,labels=NULL,pch=NULL,cex=1,dim.plot=c(1,2
 	if(lambda[i] < 1e-13) warning("dimension ", i, " is degenerate or all zero")
 
 	if(plot)
-		plotMDS(mds,labels=labels,pch=pch,cex=cex,xlab=xlab,ylab=ylab,...)
+		plotMDS(mds,labels=labels,pch=pch,cex=cex,xlab=xlab,ylab=ylab,var.explained=var.explained,...)
 	else
 		mds
 }
 
-plotMDS.SummarizedExperiment <- function(x, top=500, labels=NULL, pch=NULL, cex=1, dim.plot=c(1,2), gene.selection="pairwise", xlab=NULL, ylab=NULL, method="logFC", prior.count=2, plot=TRUE, ...)
-#	Created 03 April 2020.  Last modified 03 April 2020.
+plotMDS.SummarizedExperiment <- function(x, top=500, labels=NULL, pch=NULL, cex=1, dim.plot=c(1,2), gene.selection="pairwise", xlab=NULL, ylab=NULL, method="logFC", prior.count=2, plot=TRUE, var.explained=TRUE, ...)
+#	Created 03 April 2020.  Last modified 13 May 2021.
 {
 	x <- SE2DGEList(x)
-	plotMDS.DGEList(x, top=top, labels=labels, pch=pch, cex=cex, dim.plot=dim.plot, gene.selection=gene.selection, xlab=xlab, ylab=ylab, method=method, prior.count=prior.count, plot=plot, ...)
+	plotMDS.DGEList(x, top=top, labels=labels, pch=pch, cex=cex, dim.plot=dim.plot, gene.selection=gene.selection, xlab=xlab, ylab=ylab, method=method, prior.count=prior.count, plot=plot, var.explained=var.explained, ...)
 }
