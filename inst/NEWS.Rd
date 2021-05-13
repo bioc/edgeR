@@ -7,13 +7,16 @@
 New function featureCounts2DGEList() that converts results from Rsubread::featureCounts() to DGELists.
 
 \item
-Remove the "BCV" method in plotMDS.DGEList().
+Remove the "ndim" argument of plotMDS.DGEList().
 
 \item
 read10X() now counts the number of comment lines in mtx files and skips those lines when reading in the data.
 
 \item
 Fix a bug in voomLmFit() whereby zeros were sometimes incorrectly identified due to floating point errors.
+
+\item
+The "bcv" method of plotMDS.DGEList() is scheduled to be deprecated in a future release of edgeR.
 }}
 
 
