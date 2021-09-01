@@ -7,10 +7,12 @@
 New function featureCounts2DGEList() that converts results from Rsubread::featureCounts() to DGELists.
 
 \item
-Remove the "ndim" argument of plotMDS.DGEList().
+plotMDS.DGEList() now displays the percentage variance explained by each dimension, and a new argument `var.explained` is provided to make that optional.
+plotMDS.DGEList() no longer calls stats::cmdscale() internally and the `ndim` is removed.
 
 \item
 read10X() now counts the number of comment lines in mtx files and skips those lines when reading in the data.
+The method is can still be used but a message about future retirement is also returned.
 
 \item
 Fix a bug in voomLmFit() whereby zeros were sometimes incorrectly identified due to floating point errors.
