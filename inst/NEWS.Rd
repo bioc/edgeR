@@ -13,6 +13,7 @@ The "bcv" method is scheduled to be deprecated in a future release of edgeR.
 
 \item
 read10X() now counts the number of comment lines in mtx files and skips those lines when reading in the data.
+The method is can still be used but a message about future retirement is also returned.
 
 \item
 Fix a bug in voomLmFit() whereby zeros were sometimes incorrectly identified due to floating point errors.
