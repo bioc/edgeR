@@ -1,5 +1,5 @@
 
-R version 4.1.0 beta (2021-05-09 r80275) -- "Camp Pontanezen"
+R version 4.1.1 (2021-08-10) -- "Kick Things"
 Copyright (C) 2021 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
@@ -551,4 +551,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   1.90    0.15    2.06 
+   2.17    0.23    2.40 
