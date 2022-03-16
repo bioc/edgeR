@@ -2,13 +2,13 @@ voomLmFit <- function(
 	counts, design=NULL, block=NULL, prior.weights=NULL,
 	sample.weights=FALSE, var.design=NULL, var.group=NULL, 
 	lib.size=NULL, normalize.method="none",
-	span=0.5, plot=FALSE, save.plot=FALSE
+	span=0.5, plot=FALSE, save.plot=FALSE, keep.EList=TRUE
 )
 #	limma+lmFit pipeline for counts taking into account of structural zeros
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 11 Jan 2021.
+#	Created 21 Jan 2020.  Last modified 16 Mar 2022.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -259,6 +259,9 @@ voomLmFit <- function(
 	if(save.plot) {
 		fit$voom.xy <- list(x=sx,y=sy,xlab="log2( count size + 0.5 )",ylab="Sqrt( standard deviation )")
 		fit$voom.line <- l
+	}
+	if(keep.EList) {
+		fit$EList <- new("EList",list(E=y,weights=weights))
 	}
 	fit
 }

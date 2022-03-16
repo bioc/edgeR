@@ -9,7 +9,7 @@ Transform count data to log2-counts per million (logCPM), estimate voom precisio
 voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
      sample.weights = FALSE, var.design = NULL, var.group = NULL, 
      lib.size = NULL, normalize.method = "none",
-     span = 0.5, plot = FALSE, save.plot = FALSE)
+     span = 0.5, plot = FALSE, save.plot = FALSE, keep.EList = TRUE)
 }
 \arguments{
   \item{counts}{
@@ -49,6 +49,8 @@ voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
     logical, should a plot of the mean-variance trend be displayed?}
   \item{save.plot}{
     logical, should the coordinates and line of the plot be saved in the output?}
+  \item{keep.EList}{
+    logical. If \code{TRUE}, then the normalized log2-CPM values and voom weights will be saved in the component \code{EList} of the output object.}
 }
 
 \details{
@@ -74,6 +76,11 @@ In that case, \code{voomLmFit} is analogous to running \code{voomWithQualityWeig
 An MArrayLM object containing linear model fits for each row of data.
 The object includes a \code{targets} data.frame component containing sample annotation.
 Columns of \code{targets} include \code{lib.size} and \code{sample.weight} (if \code{sample.weights=TRUE}).
+
+If \code{save.plot=TRUE} then the output object will include components \code{voom.xy} and \code{voom.line}.
+\code{voom.xy} contains the x and y coordinates of the points in the voom mean-variance plot in the same format as produced by \code{\link{xy.coords}} and \code{voom.line} contained the estimated trend curve.
+
+If \code{keep.EList=TRUE} then the output object includes component \code{EList}, which is an \code{EList} object in the same format as produced by \code{voom} containing the voom log2-CPM values and the voom weights.
 }
 
 \author{Gordon Smyth}
