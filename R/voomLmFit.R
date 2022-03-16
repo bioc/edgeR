@@ -261,7 +261,7 @@ voomLmFit <- function(
 		fit$voom.line <- l
 	}
 	if(keep.EList) {
-		fit$EList <- new("EList",list(E=y,weights=weights))
+		fit$EList <- new("EList",list(E=y,weights=weights,genes=out$genes))
 	}
 	fit
 }
