@@ -2,13 +2,19 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.38.0}{\itemize{
+\item
+New argument 'keep.EList' for voomLmFit() to store the normalized log2-CPM values and voom weights.
+}}
+
+
 \section{Version 3.34.0}{\itemize{
 \item
 New function featureCounts2DGEList() that converts results from Rsubread::featureCounts() to DGELists.
 
 \item
-plotMDS.DGEList (the DGEList method of plotMDS) now displays the percentage variance explained by each dimension, and a new argument `var.explained` is provided to make that optional.
-It no longer calls stats::cmdscale() internally and the `ndim` argument is removed.
+plotMDS.DGEList (the DGEList method of plotMDS) now displays the percentage variance explained by each dimension, and a new argument 'var.explained' is provided to make that optional.
+It no longer calls stats::cmdscale() internally and the 'ndim' argument is removed.
 The "bcv" method is scheduled to be deprecated in a future release of edgeR.
 
 \item
