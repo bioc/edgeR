@@ -8,6 +8,14 @@ New argument 'keep.EList' for voomLmFit() to store the normalized log2-CPM value
 }}
 
 
+\section{Version 3.36.0}{\itemize{
+\item
+diffSpliceDGE() now returns p-value=1 instead of NA when an exon has all zero counts.
+\item
+Improve error message from readDGE() when there are repeated gene/tag names.
+}}
+
+
 \section{Version 3.34.0}{\itemize{
 \item
 New function featureCounts2DGEList() that converts results from Rsubread::featureCounts() to DGELists.

@@ -37,6 +37,7 @@ Dunn PK, Smyth GK (2018).
 \emph{Generalized linear models with examples in R}.
 Springer, New York, NY.
 \doi{10.1007/978-1-4419-0118-7}
+ISBN: 978-1-4419-0118-7.
 
 Jorgensen B (2013).
 Generalized linear models.
