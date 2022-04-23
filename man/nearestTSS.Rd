@@ -14,7 +14,7 @@ nearestTSS(chr, locus, species="Hs")
   \item{chr}{character vector of chromosome names.}
   \item{locus}{integer or numeric vector of genomic loci, of same length as \code{chr}.}
   \item{species}{character string specifying the species.
-  Possible values are \code{"Hs"} (human), \code{"Mm"} (mouse), \code{"Rn"} (rat), \code{"Dm"} (fly), \code{"Dr"} (zebra fish), \code{"Ce"} (worm), \code{"Bt"} (bovine), \code{"Gg"} (chicken), \code{"Mmu"} (rhesus), \code{"Cf"} (canine) or \code{"Pt"} (chimpanzee).}
+  Possible values are \code{"Hs"} (human hg38), \code{"Mm"} (mouse mm10), \code{"Rn"} (rat), \code{"Dm"} (fly), \code{"Dr"} (zebra fish), \code{"Ce"} (worm), \code{"Bt"} (bovine), \code{"Gg"} (chicken), \code{"Mmu"} (rhesus), \code{"Cf"} (canine) or \code{"Pt"} (chimpanzee).}
 }
 
 \details{
@@ -23,6 +23,7 @@ and finds the nearest transcriptional start site (TSS) for each locus.
 The chromosome names can be in the format \code{"1","2","X"} or can be \code{"chr1","chr2","chrX"}.
 
 This function uses the Bioconductor organism package named "org.XX.eg.db" where XX is \code{species}.
+Note that the results returned for \code{species="Mm"} are for version mm10 of the mouse genome rather than the newer mm39 build.
 }
 
 \value{
