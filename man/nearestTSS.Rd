@@ -22,6 +22,8 @@ This function takes a series of genomic loci, defined by a vector of chromosome 
 and finds the nearest transcriptional start site (TSS) for each locus.
 The chromosome names can be in the format \code{"1","2","X"} or can be \code{"chr1","chr2","chrX"}.
 
+For genes with more than one annotated TSS, only the most 5' (upstream) of the alternative TSS is reported.
+
 This function uses the Bioconductor organism package named "org.XX.eg.db" where XX is \code{species}.
 Note that the results returned for \code{species="Mm"} are for version mm10 of the mouse genome rather than the newer mm39 build.
 }
