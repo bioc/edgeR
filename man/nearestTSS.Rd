@@ -14,8 +14,7 @@ nearestTSS(chr, locus, species="Hs")
   \item{chr}{character vector of chromosome names.}
   \item{locus}{integer or numeric vector of genomic loci, of same length as \code{chr}.}
   \item{species}{character string specifying the species.
-  Possible values include \code{"Hs"} (human), \code{"Mm"} (mouse), \code{"Rn"} (rat), \code{"Dm"} (fly) or \code{"Pt"} (chimpanzee), but other values are possible if the corresponding organism package is available.
-  See \code{\link{alias2Symbol}} for other possible values.}
+  Possible values are \code{"Hs"} (human), \code{"Mm"} (mouse), \code{"Rn"} (rat), \code{"Dm"} (fly), \code{"Dr"} (zebra fish), \code{"Ce"} (worm), \code{"Bt"} (bovine), \code{"Gg"} (chicken), \code{"Mmu"} (rhesus), \code{"Cf"} (canine) or \code{"Pt"} (chimpanzee).}
 }
 
 \details{
@@ -27,7 +26,7 @@ This function uses the Bioconductor organism package named "org.XX.eg.db" where 
 }
 
 \value{
-A data.frame with components:
+A data.frame with the following columns:
   \item{gene_id}{character vector giving the Entrez Gene ID of the nearest TSS for each element of \code{chr} and \code{locus}.}
   \item{symbol}{character vector of gene symbols.}
   \item{strand}{character vector with \code{"+"} for positive strand genes and \code{"-"} for negative strand genes.}
