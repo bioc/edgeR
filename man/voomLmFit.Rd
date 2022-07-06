@@ -66,7 +66,7 @@ This function returns \code{df.residual} values that are less than or equal to t
 If \code{block} is specified, then the intra-block correlation is estimated using \code{duplicateCorrelation}
 In that case, the voom weights and the intra-block correlation are each estimated twice to achieve effective convergence.
 
-Empirical sample quality weights will be estimated if \code{sample.weights=TRUE} or if \code{var.design} or \code{var.group} are non-NULL.
+Empirical sample quality weights will be estimated if \code{sample.weights=TRUE} or if \code{var.design} or \code{var.group} are non-NULL (Liu et al 2015).
 In that case, \code{voomLmFit} is analogous to running \code{voomWithQualityWeights} followed by \code{lmFit}.
 
 \code{voomLmFit} is usually followed by running \code{\link{eBayes}} on the fitted model object.
@@ -91,10 +91,15 @@ Voom: precision weights unlock linear model analysis tools for RNA-seq read coun
 \emph{Genome Biology} 15, R29.
 See also the Preprint Version at \url{http://www.statsci.org/smyth/pubs/VoomPreprint.pdf} incorporating some notational corrections.
 
-Lun, ATL, and Smyth, GK (2017).
+Lun, ATL, Smyth, GK (2017).
 No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.
 \emph{Statistical Applications in Genetics and Molecular Biology} 16(2), 83-93.
 \doi{10.1515/sagmb-2017-0010}
+
+Liu, R, Holik, AZ, Su, S, Jansz, N, Chen, K, Leong, HS, Blewitt, ME, Asselin-Labat, M-L, Smyth, GK, Ritchie, ME (2015).
+Why weight? Modelling sample and observational level variability improves power in RNA-seq analyses.
+\emph{Nucleic Acids Research} 43, e97.
+\doi{10.1093/nar/gkv412}
 }
 
 \seealso{
