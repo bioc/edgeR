@@ -2,6 +2,14 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 3.38.2}{\itemize{
+\item
+New argument 'hairpinBeforeBarcode' for processAmplicons().
+The revised function can process reads where the hairpins/sgRNAs/sample index sequences are in variable positions within each read.
+When `plotPositions=TRUE` a density plot of the  match positions is created to allow the user to assess whether they occur in the expected positions.
+}}
+
+
 \section{Version 3.38.0}{\itemize{
 \item
 New argument 'keep.EList' for voomLmFit() to store the normalized log2-CPM values and voom weights.

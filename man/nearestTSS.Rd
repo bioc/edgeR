@@ -25,7 +25,9 @@ The chromosome names can be in the format \code{"1","2","X"} or can be \code{"ch
 For genes with more than one annotated TSS, only the most 5' (upstream) of the alternative TSS is reported.
 
 This function uses the Bioconductor organism package named "org.XX.eg.db" where XX is \code{species}.
-Note that the results returned for \code{species="Mm"} are for version mm10 of the mouse genome rather than the newer mm39 build.
+Note that each organism package supports only a particular build of the genome for that species.
+For human (\code{species="Hs"}, the results are for the hg38 genome build.
+For mouse (\code{species="Mm"}), the results are for the mm10 genome build.
 }
 
 \value{
