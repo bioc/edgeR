@@ -3,24 +3,32 @@ processAmplicons <- function(readfile, readfile2=NULL, barcodefile, hairpinfile,
 					dualIndexForwardRead=FALSE, verbose=FALSE, barcodesInHeader=FALSE,
 					hairpinBeforeBarcode=FALSE,
 					plotPositions=FALSE)
+#	Oliver Voogd 28 July 2022.
+#	Edits by Gordon Smyth 5 Aug 2022.
 {
-	# a simple check for the existence of the given files
+	# A simple check for the existence of the given files
+	# Also check that files are not gzipped.
 	checkFileExistence <- function(readfilenames){
 		for(i in 1:length(readfilenames)){
 			if (!file.exists(readfilenames[i]))
 				stop("Read file ", readfilenames[i], " doesn't exist.")
+			f <- file(readfilenames[i])
+			connectionclass <- summary(f)$class
+			close(f)
+			if(!identical(connectionclass,"file"))
+				stop("Read file ", readfilenames[i], " is of class ", connectionclass, ". Must be uncompressed text file.")
 		}
 	}
 
 	# Check file existence
 	numfiles <- length(readfile)
-	checkFileExistence(readfile);
-	IsPairedReads <- FALSE;
+	checkFileExistence(readfile)
+	IsPairedReads <- FALSE
 	if (!is.null(readfile2)) {
-		IsPairedReads <- TRUE;
+		IsPairedReads <- TRUE
 		if (numfiles != length(readfile2))
 			stop("readfile and readfile2 length should match each other.")
-		checkFileExistence(readfile2);
+		checkFileExistence(readfile2)
 	}
 
 	IsDualIndexingOnForwardRead <- dualIndexForwardRead
@@ -32,7 +40,7 @@ processAmplicons <- function(readfile, readfile2=NULL, barcodefile, hairpinfile,
 		stop("Hairpin file doesn't exist.")
 
 	# Find the length of the first read
-	reads <- file(readfile[1], "rt");
+	reads <- file(readfile[1], "rt")
 	first_read <- readLines(reads, 2)
 	readlength <- nchar(first_read[2])
 	close(reads)
@@ -230,7 +238,7 @@ processAmplicons <- function(readfile, readfile2=NULL, barcodefile, hairpinfile,
 				polygon(barcode2PositionSummary$read_position, barcode2PositionSummary$counts, col="firebrick", border="firebrick")
 			}
 		}
-	}, error <- function(err) {print(paste("ERROR MESSAGE:	",err))}
+	}, error = function(err) {print(paste("ERROR MESSAGE:	",err))}
 	)
 
 	if (exists("hairpinReadsSummary")) {
