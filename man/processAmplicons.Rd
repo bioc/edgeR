@@ -16,10 +16,10 @@ processAmplicons(readfile, readfile2 = NULL, barcodefile, hairpinfile,
 }
 
 \arguments{
-\item{readfile}{character vector giving one or more FASTQ filenames.}
-\item{readfile2}{optional character vector giving one or more FASTQ filenames for reverse read.}
-\item{barcodefile}{filename containing sample-specific barcode IDs and sequences.}
-\item{hairpinfile}{filename containing hairpin/sgRNA-specific IDs and sequences.}
+\item{readfile}{character vector giving one or more FASTQ filenames. Must be uncompressed text files.}
+\item{readfile2}{optional character vector giving one or more FASTQ filenames for reverse read. Must be uncompressed text files.}
+\item{barcodefile}{filename containing sample-specific barcode IDs and sequences. File may be gzipped.}
+\item{hairpinfile}{filename containing hairpin/sgRNA-specific IDs and sequences. File may be gzipped.}
 \item{allowMismatch}{logical, indicates whether sequence mismatch is allowed.}
 \item{barcodeMismatchBase}{maximum number of base sequence mismatches allowed in a barcode sequence when \code{allowMismatch} is \code{TRUE}.}
 \item{hairpinMismatchBase}{maximum number of base sequence mismatches allowed in a hairpin/sgRNA sequence when \code{allowMismatch} is \code{TRUE}.}
