@@ -1,13 +1,11 @@
 
-R version 4.1.3 (2022-03-10) -- "One Push-Up"
+R version 4.2.1 (2022-06-23 ucrt) -- "Funny-Looking Kid"
 Copyright (C) 2022 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -509,8 +507,8 @@ Coefficient:  LR test on 2 degrees of freedom
 3  0.2876249 -0.4884392 -0.2008143 18.06216  0.1893255 0.909679672 0.90967967
 > 
 > # simple Good-Turing algorithm runs.
-> test1<-1:9
-> freq1<-c(2018046, 449721, 188933, 105668, 68379, 48190, 35709, 37710, 22280)
+> test1 <- 1:9
+> freq1 <- c(2018046, 449721, 188933, 105668, 68379, 48190, 35709, 37710, 22280)
 > goodTuring(rep(test1, freq1))
 $P0
 [1] 0.3814719
@@ -528,7 +526,7 @@ $n
 $n0
 [1] 0
 
-> test2<-c(312, 14491, 16401, 65124, 129797, 323321, 366051, 368599, 405261, 604962)
+> test2 <- c(312, 14491, 16401, 65124, 129797, 323321, 366051, 368599, 405261, 604962)
 > goodTuring(test2)
 $P0
 [1] 0
@@ -547,8 +545,52 @@ $n0
 [1] 0
 
 > 
-> 
+> # Dispersion estimation with fitted values equal to zero
+> ngenes <- 100
+> nsamples <- 3
+> y <- matrix(rnbinom(ngenes*nsamples,size=5,mu=10),ngenes,nsamples)
+> Group <- factor(c(1,2,2))
+> design <- model.matrix(~Group)
+> y[1:5,2:3] <- 0
+> y <- DGEList(counts=y,group=Group)
+> y <- estimateCommonDisp(y)
+> y$common.dispersion
+[1] 0.2407907
+> y <- estimateGLMCommonDisp(y,design)
+> y$common.dispersion
+[1] 0.2181198
+> y <- estimateGLMTrendedDisp(y,design)
+> y$trended.dispersion[1:10]
+ [1] 0.3398724 0.2889110 0.3398724 0.2769872 0.2494308 0.2562610 0.2368123
+ [8] 0.2052054 0.2024856 0.1932597
+> summary(y$trended.dispersion)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.1814  0.2065  0.2188  0.2276  0.2413  0.3399 
+> y <- estimateGLMTagwiseDisp(y,design)
+> y$tagwise.dispersion[1:10]
+ [1] 0.4396666 0.3416568 0.4270057 0.3121297 0.2525866 0.2439067 0.2413469
+ [8] 0.1702664 0.2125485 0.1349552
+> summary(y$tagwise.dispersion)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.1304  0.1799  0.2212  0.2323  0.2678  0.4397 
+> y <- estimateDisp(y,design)
+> y$prior.df
+[1] 2.18263
+> y$common.dispersion
+[1] 0.2185181
+> y$trended.dispersion[1:10]
+ [1] 0.2717585 0.2727238 0.2717585 0.2690969 0.2617797 0.2634692 0.2453099
+ [8] 0.1931524 0.1930463 0.1928675
+> summary(y$trended.dispersion)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.1928  0.1932  0.2086  0.2226  0.2515  0.2728 
+> y$tagwise.dispersion[1:10]
+ [1] 0.2717585 0.2727238 0.2717585 0.2690969 0.2617797 0.1519257 0.1936500
+ [8] 0.1015399 0.2475146 0.1013302
+> summary(y$tagwise.dispersion)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.09719 0.13460 0.19422 0.22321 0.27176 0.61463 
 > 
 > proc.time()
    user  system elapsed 
-   2.14    0.20    2.32 
+   2.09    0.07    2.15 

@@ -141,10 +141,34 @@ lrt <- glmLRT(fit,contrast=cbind(c(-1,1,0),c(0,-1,1),c(-1,0,1)))
 topTags(lrt)
 
 # simple Good-Turing algorithm runs.
-test1<-1:9
-freq1<-c(2018046, 449721, 188933, 105668, 68379, 48190, 35709, 37710, 22280)
+test1 <- 1:9
+freq1 <- c(2018046, 449721, 188933, 105668, 68379, 48190, 35709, 37710, 22280)
 goodTuring(rep(test1, freq1))
-test2<-c(312, 14491, 16401, 65124, 129797, 323321, 366051, 368599, 405261, 604962)
+test2 <- c(312, 14491, 16401, 65124, 129797, 323321, 366051, 368599, 405261, 604962)
 goodTuring(test2)
 
-
+# Dispersion estimation with fitted values equal to zero
+ngenes <- 100
+nsamples <- 3
+y <- matrix(rnbinom(ngenes*nsamples,size=5,mu=10),ngenes,nsamples)
+Group <- factor(c(1,2,2))
+design <- model.matrix(~Group)
+y[1:5,2:3] <- 0
+y <- DGEList(counts=y,group=Group)
+y <- estimateCommonDisp(y)
+y$common.dispersion
+y <- estimateGLMCommonDisp(y,design)
+y$common.dispersion
+y <- estimateGLMTrendedDisp(y,design)
+y$trended.dispersion[1:10]
+summary(y$trended.dispersion)
+y <- estimateGLMTagwiseDisp(y,design)
+y$tagwise.dispersion[1:10]
+summary(y$tagwise.dispersion)
+y <- estimateDisp(y,design)
+y$prior.df
+y$common.dispersion
+y$trended.dispersion[1:10]
+summary(y$trended.dispersion)
+y$tagwise.dispersion[1:10]
+summary(y$tagwise.dispersion)

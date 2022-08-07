@@ -16,7 +16,7 @@ adjustedProfileLik(dispersion, y, design, offset, weights=NULL, adjust=TRUE,
 \item{dispersion}{numeric scalar or vector of dispersions.}
 \item{y}{numeric matrix of counts.}
 \item{design}{numeric matrix giving the design matrix.}
-\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a scalor or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix.}
+\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can also be a scalar (i.e., a single value) or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix.}
 \item{weights}{optional numeric matrix giving observation weights.}
 \item{adjust}{logical, if \code{TRUE} then Cox-Reid adjustment is made to the log-likelihood, if \code{FALSE} then the log-likelihood is returned without adjustment.}
 \item{start}{numeric matrix of starting values for the GLM coefficients, to be passed to \code{\link{glmFit}}.}
