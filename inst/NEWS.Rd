@@ -2,11 +2,17 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
-\section{Version 3.38.2}{\itemize{
+\section{Version 3.40.0}{\itemize{
 \item
 New argument 'hairpinBeforeBarcode' for processAmplicons().
 The revised function can process reads where the hairpins/sgRNAs/sample index sequences are in variable positions within each read.
-When `plotPositions=TRUE` a density plot of the  match positions is created to allow the user to assess whether they occur in the expected positions.
+When 'plotPositions=TRUE' a density plot of the  match positions is created to allow the user to assess whether they occur in the expected positions.
+
+\item
+Update C++ BLAS calls to account for USE_FC_LEN_T setting in R 4.3.0.
+
+\item
+Bug fix to R_compute_apl.cpp to make sure GLM working weights are zero when fitted mu=0.
 }}
 
 
@@ -19,6 +25,7 @@ New argument 'keep.EList' for voomLmFit() to store the normalized log2-CPM value
 \section{Version 3.36.0}{\itemize{
 \item
 diffSpliceDGE() now returns p-value=1 instead of NA when an exon has all zero counts.
+
 \item
 Improve error message from readDGE() when there are repeated gene/tag names.
 }}
