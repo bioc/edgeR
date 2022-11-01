@@ -28,7 +28,7 @@ plotMD.SummarizedExperiment <- function(object, column=1, xlab="Average log CPM 
 #	Created 03 April 2020.  Last modified 01 Oct 2022.
 {
 	object <- SE2DGEList(object)
-	plotMD.DGEList(object, column=column, xlab=xlab, ylab=ylab, main=colnames(y)[column], status=y$genes$Status, zero.weights=zero.weights, prior.count=prior.count, ...)
+	plotMD.DGEList(object, column=column, xlab=xlab, ylab=ylab, zero.weights=zero.weights, prior.count=prior.count, ...)
 }
 
 plotMD.DGEGLM <- function(object, column=ncol(object), coef=NULL, xlab="Average log CPM", ylab="log-fold-change", main=colnames(object)[column], status=object$genes$Status, zero.weights=FALSE, ...)
