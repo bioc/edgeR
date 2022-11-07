@@ -1,14 +1,31 @@
-\name{calcNormFactors}
+\name{normLibSizes}
+\alias{normLibSizes}
+\alias{normLibSizes.DGEList}
+\alias{normLibSizes.SummarizedExperiment}
+\alias{normLibSizes.default}
 \alias{calcNormFactors}
 \alias{calcNormFactors.DGEList}
 \alias{calcNormFactors.SummarizedExperiment}
 \alias{calcNormFactors.default}
 
-\title{Library Size Normalization}
+\title{Normalize Library Sizes}
 \description{
-Calculate scaling factors to convert raw library sizes into effective library sizes.
+Calculate scaling factors to convert the raw library sizes for a set of sequenced samples into normalized effective library sizes.
 }
 \usage{
+\method{normLibSizes}{DGEList}(object,
+                method = c("TMM", "TMMwsp", "RLE", "upperquartile", "none"),
+                refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
+                Acutoff = -1e10, p = 0.75, \dots)
+\method{normLibSizes}{SummarizedExperiment}(object,
+                method = c("TMM","TMMwsp","RLE","upperquartile","none"),
+                refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
+                Acutoff = -1e10, p = 0.75, \dots)
+\method{normLibSizes}{default}(object, lib.size = NULL,
+                method = c("TMM","TMMwsp","RLE","upperquartile","none"),
+                refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
+                Acutoff = -1e10, p = 0.75, \dots)
+
 \method{calcNormFactors}{DGEList}(object,
                 method = c("TMM","TMMwsp","RLE","upperquartile","none"),
                 refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
@@ -24,7 +41,7 @@ Calculate scaling factors to convert raw library sizes into effective library si
 }
 
 \arguments{
-  \item{object}{a \code{matrix} of raw (read) counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object.}
+  \item{object}{a matrix of raw read counts or a \code{DGEList} object or a \code{SummarizedExperiment} object.}
   \item{lib.size}{numeric vector of library sizes corresponding to the columns of the matrix \code{object}.}
   \item{method}{normalization method to be used.}
   \item{refColumn}{column to use as reference for \code{method="TMM"}. Can be a column number or a numeric vector of length \code{nrow(object)}.}
@@ -37,7 +54,7 @@ Calculate scaling factors to convert raw library sizes into effective library si
 }
 
 \details{
-This function computes scaling factors to convert observed library sizes into effective library sizes.
+This function computes scaling factors to convert observed library sizes into normalized library sizes, also called "effective library sizes".
 The effective library sizes for use in downstream analysis are \code{lib.size * norm.factors} where \code{lib.size} contains the original library sizes and \code{norm.factors} is the vector of scaling factors computed by this function.
 
 The TMM method implements the trimmed mean of M-values method proposed by Robinson and Oshlack (2010).
@@ -72,6 +89,11 @@ If \code{object} is a \code{DGEList} or \code{SummarizedExperiment} object, then
 If \code{object} is a \code{SummarizedExperiment} object, then it is converted to a \code{DGEList} using \code{SE2DGEList} and the \code{DGEList} method applied.
 }
 
+\note{
+\code{normLibSizes} is the new name for \code{calcNormFactors}.
+The two functions are equivalent but \code{calcNormFactors} will eventually be retired.
+}
+
 \author{Mark Robinson, Gordon Smyth, Yunshun Chen.}
 
 \references{
@@ -94,17 +116,17 @@ A scaling normalization method for differential expression analysis of RNA-seq d
 
 \examples{
 y <- matrix( rpois(1000, lambda=5), nrow=200 )
-calcNormFactors(y)
+normLibSizes(y)
 
 # The TMMwsp and TMM methods ignore genes with largest fold-changes:
 y <- cbind(1,c(1,1,1,1,1,1,1,1,1,100))
-calcNormFactors(y, lib.size=c(1e6,1e6))
+normLibSizes(y, lib.size=c(1e6,1e6))
 
-# calcNormFactors makes the fold-changes for the majority of genes as close to 1 as possible:
+# normLibSizes makes the fold-changes for the majority of genes as close to 1 as possible:
 # In this example, normalizing the library sizes makes most of the CPMs equal in the two samples:
 dge <- DGEList(counts=y)
 cpm(dge)
-dge <- calcNormFactors(dge)
+dge <- normLibSizes(dge)
 cpm(dge)
 }
 
