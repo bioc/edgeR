@@ -135,7 +135,7 @@ design <- model.matrix(~factor(c(1,1,2,2)))
 y <- rnbinom(ngenes*nlibs,mu=20,size=1/dispersion.true)
 y <- matrix(y,ngenes,nlibs)
 d <- DGEList(y)
-d <- calcNormFactors(d)
+d <- normLibSizes(d)
 
 # Fit the NB GLMs with QL methods
 d <- estimateDisp(d, design)

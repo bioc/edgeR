@@ -67,7 +67,7 @@ rownames(counts) <- paste("gene",1:ngenes, sep=".")
 group <- gl(2,3,labels=c("Grp1","Grp2"))
 counts[1:200,group=="Grp2"] <- counts[1:200,group=="Grp2"] + 10
 y <- DGEList(counts,group=group)
-y <- calcNormFactors(y)
+y <- normLibSizes(y)
 
 # without labels, indexes of samples are plotted.
 col <- as.numeric(group)

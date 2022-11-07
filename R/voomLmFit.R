@@ -26,7 +26,7 @@ voomLmFit <- function(
 		out$genes <- counts$genes
 		out$targets <- counts$samples
 		if(is.null(design) && diff(range(as.numeric(counts$sample$group)))>0) design <- model.matrix(~group,data=counts$samples)
-		if(is.null(lib.size)) lib.size <- effectiveLibSizes(counts)
+		if(is.null(lib.size)) lib.size <- getNormLibSizes(counts)
 		counts <- counts$counts
 	} else {
 		if(is(counts,"eSet")) {

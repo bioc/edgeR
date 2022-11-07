@@ -1,16 +1,16 @@
-\name{effectiveLibSizes}
-\alias{effectiveLibSizes}
-\alias{effectiveLibSizes.default}
-\alias{effectiveLibSizes.DGEList}
-\alias{effectiveLibSizes.DGEGLM}
-\alias{effectiveLibSizes.DGELRT}
+\name{getNormLibSizes}
+\alias{getNormLibSizes}
+\alias{getNormLibSizes.default}
+\alias{getNormLibSizes.DGEList}
+\alias{getNormLibSizes.DGEGLM}
+\alias{getNormLibSizes.DGELRT}
 
 \title{Effective Library Sizes}
 
 \description{Extract effective (normalized) library sizes.}
 
 \usage{
-\method{effectiveLibSizes}{default}(y, log = FALSE, \dots)
+\method{getNormLibSizes}{default}(y, log = FALSE, \dots)
 }
 
 \arguments{ 
@@ -40,15 +40,15 @@ If the object contains a row-specific offsets (i.e., a non-sparse matrix of offs
 \author{Gordon Smyth}
 
 \seealso{
-\code{\link{calcNormFactors}}
+\code{\link{normLibSizes}}
 }
 
 \examples{
 ngenes <- 100
 nsamples <- 4
 y <- DGEList(counts=matrix(rnbinom(ngenes*nsamples,size=1,mu=10),ngenes,nsamples))
-y <- calcNormFactors(y)
-data.frame(y$samples, eff.lib.size=effectiveLibSizes(y))
+y <- normLibSizes(y)
+data.frame(y$samples, eff.lib.size=getNormLibSizes(y))
 }
 
 \concept{Normalization}

@@ -114,7 +114,7 @@ rownames(y) <- paste("gene",1:ngenes,sep=".")
 d <- DGEList(y)
 
 # Normalize
-d <- calcNormFactors(d)
+d <- normLibSizes(d)
 
 # Fit the NB GLMs
 fit <- glmFit(d, design, dispersion=dispersion.true)
