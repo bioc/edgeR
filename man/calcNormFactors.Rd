@@ -111,7 +111,7 @@ A scaling normalization method for differential expression analysis of RNA-seq d
 }
 
 \seealso{
-\code{\link{effectiveLibSizes}}, \code{\link{SE2DGEList}}.
+\code{\link{getNormLibSizes}}, \code{\link{SE2DGEList}}.
 }
 
 \examples{
@@ -128,6 +128,7 @@ dge <- DGEList(counts=y)
 cpm(dge)
 dge <- normLibSizes(dge)
 cpm(dge)
+getNormLibSizes(dge)
 }
 
 \concept{Normalization}
