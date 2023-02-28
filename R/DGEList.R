@@ -1,27 +1,10 @@
-DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE) 
-#	Construct DGEList object from components, with some checking
-#	Created 28 Sep 2008. Last modified 16 Nov 2020.
-{
-#	Check whether counts is a data.frame
-	if(is.data.frame(counts)) {
-		cl <- vapply(counts,class,FUN.VALUE="")
-		IsNumeric <- (cl %in% c("integer","numeric"))
-		a <- which(!IsNumeric)
-		if(length(a)) {
-			if(length(a)==1L && a[1]==1L) {
-				stop(
-"The count matrix is a data.frame instead of a matrix and the first column is of class ",cl[1],"\n",
-"  instead of being numeric. Was the first column intended to contain geneids?"
-				)
-			} else {
-				stop(
-"The count matrix is a data.frame instead of a matrix and ",length(a)," columns are non-numeric.\n",
-"  Should these columns be gene annotation instead of counts?"
-				)
-			}
-		}
-	}
+DGEList <- function(counts, ...)
+UseMethod("DGEList")
 
+DGEList.default <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE, ...)
+#	Construct DGEList object from components, with some checking
+#	Created 28 Sep 2008. Last modified 28 Feb 2023.
+{
 #	Check counts
 	counts <- as.matrix(counts)
 	if( !any(typeof(counts) == c("integer","double")) ) stop("non-numeric values found in counts")
@@ -118,6 +101,49 @@ DGEList <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors
 #	x$weights <- matrix(1,ntags,nlib)
 
 	x
+}
+
+DGEList.data.frame <- function(counts, lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE, annotation.columns=NULL, ...)
+#	Construct DGEList object from components, with some checking
+#	Gordon Smyth
+#	Created 28 Feb 2023. Last modified 1 Mar 2023.
+{
+	if(is.null(annotation.columns)) {
+#		Annotation columns are unspecified, but check for undeclared annotation columns
+		cl <- vapply(counts,class,FUN.VALUE="")
+		IsNumeric <- (cl %in% c("integer","numeric"))
+		NColumns <- length(IsNumeric)
+		AlphaColumns <- which(!IsNumeric)
+		if(length(AlphaColumns)) {
+			LastAlphaColumn <- AlphaColumns[length(AlphaColumns)]
+			if(identical(LastAlphaColumn,NColumns)) stop("`counts` appears to have no numeric columns.")
+			annotation.columns <- 1:LastAlphaColumn
+			numeric.columns <- (LastAlphaColumn+1L):NColumns
+			if(identical(LastAlphaColumn,1L))
+				message("Setting first column of `counts` as gene annotation.")
+			else
+				message("Non-numeric columns found: setting first ",LastAlphaColumn," columns of `counts` to be gene annotation.")
+			if(is.null(genes))
+				genes <- counts[,annotation.columns,drop=FALSE]
+			else
+				genes <- data.frame(counts[,annotation.columns,drop=FALSE],genes)
+			counts <- counts[,numeric.columns,drop=FALSE]
+		}
+	} else {
+#		If annotation columns are specified, separate them out from the numeric columns of counts
+#		First convert annotation.columns to integers
+		if(is.logical(annotation.columns)) annotation.columns <- which(annotation.columns)
+		if(is.character(annotation.columns)) annotation.columns <- which(names(counts) %in% annotation.columns)
+		if(is.null(genes))
+			genes <- counts[,annotation.columns,drop=FALSE]
+		else
+			genes <- data.frame(counts[,annotation.columns,drop=FALSE],genes)
+		counts <- counts[,-annotation.columns,drop=FALSE]
+	}
+
+#	Call default method
+	counts <- as.matrix(counts)
+	DGEList(counts=counts,lib.size=lib.size,norm.factors=norm.factors,samples=samples,group=group,genes=genes,remove.zeros=remove.zeros)
 }
 
 .isAllZero <- function(y) 

@@ -2,6 +2,15 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+
+\section{Version 4.0.0}{\itemize{
+\item
+DGEList() is now an S3 generic function with a method for data.frames.
+The data.frame method allows users to specify which columns contain gene annotation and which contain counts.
+If the annotation columns are not specified, the function will check for non-numeric columns and will attempt to set the leading columns up to the last non-numeric column as annotation.
+}}
+
+
 \section{Version 3.40.0}{\itemize{
 \item
 New argument 'hairpinBeforeBarcode' for processAmplicons().
