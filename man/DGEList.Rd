@@ -12,7 +12,7 @@ Creates a \code{DGEList} object from a table of counts and other optional inform
 }
 
 \usage{
-\method{DGEList}{default}(counts = matrix(0, 0, 0), lib.size = colSums(counts),
+\method{DGEList}{default}(counts, lib.size = colSums(counts),
         norm.factors = rep(1,ncol(counts)), samples = NULL,
         group = NULL, genes = NULL, remove.zeros = FALSE, \dots)
 \method{DGEList}{data.frame}(counts, lib.size = colSums(counts),

@@ -1,9 +1,9 @@
 DGEList <- function(counts, ...)
 UseMethod("DGEList")
 
-DGEList.default <- function(counts=matrix(0,0,0), lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE, ...)
+DGEList.default <- function(counts, lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE, ...)
 #	Construct DGEList object from components, with some checking
-#	Created 28 Sep 2008. Last modified 28 Feb 2023.
+#	Created 28 Sep 2008. Last modified 1 Mar 2023.
 {
 #	Check counts
 	counts <- as.matrix(counts)
