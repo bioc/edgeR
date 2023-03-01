@@ -92,7 +92,7 @@ It also stores \code{df.total}, a numeric vector containing the denominator degr
 Chen Y, Lun ATL, and Smyth, GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
 \emph{F1000Research} 5, 1438.
-\url{http://f1000research.com/articles/5-1438}
+\url{https://f1000research.com/articles/5-1438}
 
 Lun, ATL, Chen, Y, and Smyth, GK (2016).
 It's DE-licious: a recipe for differential expression analyses of RNA-seq experiments using quasi-likelihood methods in edgeR.
@@ -112,7 +112,7 @@ No counts, no variance: allowing for loss of degrees of freedom when assessing b
 Phipson, B, Lee, S, Majewski, IJ, Alexander, WS, and Smyth, GK (2016).
 Robust hyperparameter estimation protects against hypervariable genes and improves power to detect differential expression.
 \emph{Annals of Applied Statistics} 10, 946-963.
-\url{https://projecteuclid.org/euclid.aoas/1469199900}
+\doi{10.1214/16-AOAS920}
 }
 
 \author{Yunshun Chen, Aaron Lun, Davis McCarthy and Gordon Smyth}

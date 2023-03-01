@@ -42,7 +42,7 @@ See \code{\link{romer}} for more description of the test and for a complete list
 Majewski, IJ, Ritchie, ME, Phipson, B, Corbin, J, Pakusch, M, Ebert, A, Busslinger, M, Koseki, H, Hu, Y, Smyth, GK, Alexander, WS, Hilton, DJ, and Blewitt, ME (2010).
 Opposing roles of polycomb repressive complexes in hematopoietic stem and progenitor cells.
 \emph{Blood}, 116, 731-719.
-\url{http://www.ncbi.nlm.nih.gov/pubmed/20445021}
+\doi{10.1182/blood-2009-12-260760}
 
 Dunn, PK, and Smyth, GK (1996).
 Randomized quantile residuals.
@@ -52,6 +52,7 @@ Randomized quantile residuals.
 Routledge, RD (1994).
 Practicing safe statistics with the mid-p.
 \emph{Canadian Journal of Statistics} 22, 103-110.
+\doi{10.2307/3315826}
 }
 
 \examples{

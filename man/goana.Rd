@@ -65,7 +65,7 @@ Chen Y, Lun ATL, and Smyth, GK (2016). From reads to genes to pathways: differen
   Young, M. D., Wakefield, M. J., Smyth, G. K., Oshlack, A. (2010).
   Gene ontology analysis for RNA-seq: accounting for selection bias.
   \emph{Genome Biology} 11, R14.
-  \url{http://genomebiology.com/2010/11/2/R14}
+  \doi{10.1186/gb-2010-11-2-r14}
 }
 
 \seealso{

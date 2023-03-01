@@ -56,17 +56,17 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Matthew E Ritchie, Belinda Phipson
   Dai Z, Sheridan, JM, Gearing, LJ, Moore, DL, Su, S, Wormald, S, Wilcox, S, O'Connor, L, Dickins, RA, Blewitt, ME, Ritchie, ME (2014).
   edgeR: a versatile tool for the analysis of shRNA-seq and CRISPR-Cas9 genetic screens.
   \emph{F1000Research} 3, 95.
-  \url{http://f1000research.com/articles/3-95}
+  \url{https://f1000research.com/articles/3-95}
 
   Lun, ATL, Chen, Y, and Smyth, GK (2016).
   It's DE-licious: a recipe for differential expression analyses of RNA-seq experiments using quasi-likelihood methods in edgeR.
   \emph{Methods in Molecular Biology} 1418, 391-416.
-  \url{http://www.statsci.org/smyth/pubs/QLedgeRPreprint.pdf"} (Preprint 8 April 2015)
+  \url{http://www.statsci.org/smyth/pubs/QLedgeRPreprint.pdf} (Preprint 8 April 2015)
 
   Chen Y, Lun ATL, and Smyth, GK (2016).
   From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
   \emph{F1000Research} 5, 1438.
-  \url{http://f1000research.com/articles/5-1438}
+  \url{https://f1000research.com/articles/5-1438}
 
   Lun, AT, Smyth, GK (2017). No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.
   \emph{Statistical Applications in Genetics and Molecular Biology} 16(2), 83-93.

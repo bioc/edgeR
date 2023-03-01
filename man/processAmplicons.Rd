@@ -54,7 +54,7 @@ The maximum number of mismatch bases in barcode and hairpin/sgRNA are specified 
 
 The program outputs a \code{\link[edgeR:DGEList-class]{DGEList}} object, with a count matrix indicating the number of times each barcode and hairpin/sgRNA combination could be matched in reads from the input FASTQ files.
 
-For further examples and data, refer to the case studies available from \url{http://bioinf.wehi.edu.au/shRNAseq}.
+For further examples and data, refer to the case studies available from \url{https://bioinf.wehi.edu.au/shRNAseq/}.
 
 The argument \code{hairpinBeforeBarcode} was introduced in edgeR release version 3.38.2 and developmental version 3.39.3.
 Previously the function expected the sequences in the FASTQ files to have a fixed structure as per Figure 1A of Dai et al (2014).

@@ -7,8 +7,8 @@ Plot samples on a two-dimensional scatterplot so that distances on the plot appr
 }
 \usage{
 \method{plotMDS}{DGEList}(x, top = 500, labels = NULL, pch = NULL, cex = 1,
-        dim.plot = c(1,2), gene.selection = "pairwise", xlab = NULL, 
-        ylab = NULL, method = "logFC", prior.count = 2, plot = TRUE, var.explained = TRUE, \dots)
+       dim.plot = c(1,2), gene.selection = "pairwise", xlab = NULL, ylab = NULL,
+       method = "logFC", prior.count = 2, plot = TRUE, var.explained = TRUE, \dots)
 }
 \arguments{
   \item{x}{a \code{DGEList} or \code{SummarizedExperiment} object.}

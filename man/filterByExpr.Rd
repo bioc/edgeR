@@ -50,7 +50,7 @@ Logical vector of length \code{nrow(y)} indicating which rows of \code{y} to kee
 Chen Y, Lun ATL, and Smyth, GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
 \emph{F1000Research} 5, 1438.
-\url{http://f1000research.com/articles/5-1438}
+\url{https://f1000research.com/articles/5-1438}
 }
 
 \examples{\dontrun{

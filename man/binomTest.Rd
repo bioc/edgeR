@@ -48,13 +48,13 @@ Numeric vector of p-values.
 }
 
 \references{
-\url{http://en.wikipedia.org/wiki/Binomial_test}
+\url{https://en.wikipedia.org/wiki/Binomial_test}
 
-\url{http://en.wikipedia.org/wiki/Fisher's_exact_test}
+\url{https://en.wikipedia.org/wiki/Fisher's_exact_test}
 
-\url{http://en.wikipedia.org/wiki/Serial_analysis_of_gene_expression}
+\url{https://en.wikipedia.org/wiki/Serial_analysis_of_gene_expression}
 
-http://en.wikipedia.org/wiki/RNA-Seq
+\url{https://en.wikipedia.org/wiki/RNA-Seq}
 }
 
 \author{Gordon Smyth}

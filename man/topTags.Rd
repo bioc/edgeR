@@ -63,7 +63,7 @@ In general, the rows might be genes, sequence tags, transcripts, exons or whatev
 Chen Y, Lun ATL, and Smyth, GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
 \emph{F1000Research} 5, 1438.
-\url{http://f1000research.com/articles/5-1438}
+\url{https://f1000research.com/articles/5-1438}
 
 McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.

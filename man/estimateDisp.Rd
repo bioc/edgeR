@@ -12,14 +12,15 @@ Maximizes the negative binomial likelihood to give the estimate of the common, t
 
 \usage{
 \S3method{estimateDisp}{DGEList}(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE,
-            span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, 
-            winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
+          span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10),
+          robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 \S3method{estimateDisp}{SummarizedExperiment}(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE,
-            span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, 
-            winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
-\S3method{estimateDisp}{default}(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL,
-            trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, 
-            grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
+          span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10),
+          robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
+\S3method{estimateDisp}{default}(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL,
+          prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL,
+          min.row.sum=5, grid.length=21, grid.range=c(-10,10),
+          robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
 }
 
 \arguments{
