@@ -15,7 +15,7 @@ If the annotation columns are not specified, the function will check for non-num
 \item
 New argument 'hairpinBeforeBarcode' for processAmplicons().
 The revised function can process reads where the hairpins/sgRNAs/sample index sequences are in variable positions within each read.
-When 'plotPositions=TRUE' a density plot of the  match positions is created to allow the user to assess whether they occur in the expected positions.
+When 'plotPositions=TRUE' a density plot of the match positions is created to allow the user to assess whether they occur in the expected positions.
 
 \item
 Update C++ BLAS calls to account for USE_FC_LEN_T setting in R 4.3.0.

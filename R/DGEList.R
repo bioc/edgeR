@@ -1,32 +1,34 @@
 DGEList <- function(counts, ...)
 UseMethod("DGEList")
 
-DGEList.default <- function(counts, lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE, ...)
+DGEList.default <- function(counts, lib.size=NULL, norm.factors=NULL, samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE, ...)
 #	Construct DGEList object from components, with some checking
 #	Created 28 Sep 2008. Last modified 1 Mar 2023.
 {
 #	Check counts
 	counts <- as.matrix(counts)
-	if( !any(typeof(counts) == c("integer","double")) ) stop("non-numeric values found in counts")
+	if(!length(counts)) stop("'counts' must contain at least one value")
+	m <- min(counts)
+	if(is.na(m)) stop("NA counts not allowed")
+	if(m < 0) stop("Negative counts not allowed")
+	if(is.infinite(max(counts))) stop("Infinite counts not allowed")
 	nlib <- ncol(counts)
 	ntags <- nrow(counts)
-	if(nlib>0L && is.null(colnames(counts))) colnames(counts) <- paste0("Sample",1L:nlib)
-	if(ntags>0L && is.null(rownames(counts))) rownames(counts) <- 1L:ntags
-	.isAllZero(counts) # don't really care about all-zeroes, but do want to protect against NA's, negative values.
+	if(is.null(colnames(counts))) colnames(counts) <- paste0("Sample",1:nlib)
+	if(is.null(rownames(counts))) rownames(counts) <- 1:ntags
 
 #	Check lib.size
 	if(is.null(lib.size)) {
 		lib.size <- colSums(counts)
-		if(min(lib.size) <= 0) warning("library size of zero detected")
+		if(min(lib.size) <= 0) warning("At least one library size is zero")
 	} else {
 		if(!is.numeric(lib.size)) stop("'lib.size' must be numeric")
-		if(nlib != length(lib.size)) stop("length of 'lib.size' must equal number of columns in 'counts'")
-		minlibsize <- min(lib.size)
-		if(is.na(minlibsize)) stop("NA library sizes not allowed")
-		if(minlibsize < 0) stop("negative library sizes not permitted")
-		if(minlibsize == 0) {
-			if(any(lib.size==0 & colSums(counts)>0)) stop("library size set to zero but counts are nonzero")
-			warning("library size of zero detected")
+		if(!identical(length(lib.size),nlib)) stop("length of 'lib.size' must equal number of samples")
+		m <- min(lib.size)
+		if(is.na(m)) stop("NA library sizes not allowed")
+		if(m < 0) stop("negative library sizes not allowed")
+		if(identical(m,0)) {
+			if(any(lib.size==0 & colSums(counts)>0)) stop("library size set to zero but counts for that sample are nonzero")
 		}
 	}
 
@@ -36,10 +38,10 @@ DGEList.default <- function(counts, lib.size=colSums(counts), norm.factors=rep(1
 	} else {
 		if(!is.numeric(norm.factors)) stop("'lib.size' must be numeric")
 		if(!identical(nlib,length(norm.factors))) stop("Length of 'norm.factors' must equal number of columns in 'counts'")
-		minnf <- min(norm.factors)
-		if(is.na(minnf)) stop("NA norm factors not allowed")
-		if(minnf <= 0) stop("norm factors should be positive")
-		if( abs(prod(norm.factors) - 1) > 1e-6 ) warning("norm factors don't multiply to 1")
+		m <- min(norm.factors)
+		if(is.na(m)) stop("NA norm factors not allowed")
+		if(m <= 0) stop("norm factors must be positive")
+		if( abs(sum(log(norm.factors)) > 1e-6 )) warning("norm factors don't multiply to 1")
 	}
 
 #	Check samples
@@ -103,7 +105,7 @@ DGEList.default <- function(counts, lib.size=colSums(counts), norm.factors=rep(1
 	x
 }
 
-DGEList.data.frame <- function(counts, lib.size=colSums(counts), norm.factors=rep(1,ncol(counts)), samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE, annotation.columns=NULL, ...)
+DGEList.data.frame <- function(counts, lib.size=NULL, norm.factors=NULL, samples=NULL, group=NULL, genes=NULL, remove.zeros=FALSE, annotation.columns=NULL, ...)
 #	Construct DGEList object from components, with some checking
 #	Gordon Smyth
 #	Created 28 Feb 2023. Last modified 1 Mar 2023.
