@@ -4,12 +4,18 @@ glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
 glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), ...)
-# 	Yunshun Chen and Aaron Lun
-#	Created 05 November 2014.  Last modified 13 Jul 2017.
+# 	Yunshun Chen, Aaron Lun, Gordon Smyth
+#	Created 05 November 2014. Last modified 10 April 2023.
 {
+#	The design matrix defaults to the oneway layout defined by y$samples$group.
+#	If there is only one group, then the design matrix is left NULL so that a
+#	matrix with a single intercept column will be set later by glmFit.default.
 	if(is.null(design)) {
 		design <- y$design
-		if(is.null(design)) design <- model.matrix(~y$samples$group)
+		if(is.null(design)) {
+			group <- droplevels(as.factor(y$samples$group))
+			if(nlevels(group) > 1L) design <- model.matrix(~y$samples$group)
+		}
 	}
 	if(is.null(dispersion)) {
 		dispersion <- y$trended.dispersion
@@ -118,25 +124,29 @@ glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.
 }
 
 plotQLDisp <- function(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean Deviance", pch=16, cex=0.2, col.shrunk="red", col.trend="blue", col.raw="black", ...)
-# 	Plots the result of QL-based shrinkage.
-#	Davis McCarthy, Gordon Smyth, Aaron Lun, Yunshun Chen.
-#	Originally part of glmQLFTest, as separate function 15 September 2014.
+# 	Plots raw and empirical Bayes moderated quasi dispersion estimates.
+# 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
+#	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
+#	Split from glmQLFTest as separate function by Aaron Lun and Andy Chen, 15 Sep 2014.
+#	Last modified 11 Apr 2023.
 {
+	if(is.null(glmfit$var.post)) stop("need to run glmQLFit before plotQLDisp")
+
+#	Make sure average logCPM is available
 	A <- glmfit$AveLogCPM
 	if(is.null(A)) A <- aveLogCPM(glmfit)
 	s2 <- glmfit$deviance / glmfit$df.residual.zeros
-	if(is.null(glmfit$var.post)) { stop("need to run glmQLFit before plotQLDisp") }
 
 	plot(A, sqrt(sqrt(s2)),xlab=xlab, ylab=ylab, pch=pch, cex=cex, col=col.raw, ...)
 	points(A, sqrt(sqrt(glmfit$var.post)), pch=pch, cex=cex, col=col.shrunk)
-	if (length(glmfit$var.prior)==1L) { 
+	if(identical(length(glmfit$var.prior),1L)) { 
 		abline(h=sqrt(sqrt(glmfit$var.prior)), col=col.trend)
 	} else {
 		o <- order(A)
 		lines(A[o], sqrt(sqrt(glmfit$var.prior[o])), col=col.trend, lwd=2)
 	}
-	
 	legend("topright", lty=c(-1,-1,1), pch=c(pch,pch,-1), col=c(col.raw,col.shrunk,col.trend), pt.cex=0.7, lwd=2, legend=c("Raw","Squeezed", "Trend"))
-	invisible(NULL)
+
+	invisible(list(x=A,y=sqrt(sqrt(s2))))
 }
 

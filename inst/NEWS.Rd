@@ -3,11 +3,27 @@
 \encoding{UTF-8}
 
 
-\section{Version 4.0.0}{\itemize{
+\section{Version 3.42.0}{\itemize{
 \item
 DGEList() is now an S3 generic function with a method for data.frames.
 The data.frame method allows users to specify which columns contain gene annotation and which contain counts.
 If the annotation columns are not specified, the function will check for non-numeric columns and will attempt to set the leading columns up to the last non-numeric column as annotation.
+
+\item
+New function normLibSizes() is now a synonym for calcNormFactors().
+
+\item
+Rename effectiveLibSizes() to getNormLibSizes().
+
+\item
+New function Seurat2PB() for creating a pseudo-bulk DGEList object from a Seurat object.
+New case study in User's Guide illustrating it's use.
+
+\item
+'y' is now a compulsory argument for DGEList(). Previously it defaulted to a matrix with zero rows and zero columns.
+
+\item
+The case study on alernative splicing in the User's Guide has been replaced with a new data example.
 }}
 
 
