@@ -24,6 +24,9 @@ New case study in User's Guide illustrating it's use.
 
 \item
 The case study on alernative splicing in the User's Guide has been replaced with a new data example.
+
+\item
+New case study in User's Guide on a transcript DE analysis.
 }}
 
 
