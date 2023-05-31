@@ -23,19 +23,23 @@
 \item{min.count}{numeric. Minimum count required for at least some samples.}
 \item{min.total.count}{numeric. Minimum total count required.}
 \item{large.n}{integer. Number of samples per group that is considered to be \dQuote{large}.}
-\item{min.prop}{numeric. Minimum proportion of samples in the smallest group that express the gene.}
+\item{min.prop}{numeric. In large sample situations, the minimum proportion of samples in a group that a gene needs to be expressed in. See Details below for the exact formula.}
 \item{\dots}{any other arguments.
 For the \code{DGEList} and \code{SummarizedExperiment} methods, other arguments will be passed to the default method.
 For the default method, other arguments are not currently used.}
 }
 
 \details{
-This function implements the filtering strategy that was intuitively described by Chen et al (2016).
+This function implements the filtering strategy that was described informally by Chen et al (2016).
 Roughly speaking, the strategy keeps genes that have at least \code{min.count} reads in a worthwhile number samples.
-More precisely, the filtering keeps genes that have count-per-million (CPM) above \emph{k} in \emph{n} samples, where \emph{k} is determined by \code{min.count} and by the sample library sizes and \emph{n} is determined by the design matrix.
 
-\emph{n} is essentially the smallest group sample size or, more generally, the minimum inverse leverage of any fitted value.
-If all the group sizes are larger than \code{large.n}, then this is relaxed slightly, but with \emph{n} always greater than \code{min.prop} of the smallest group size (70\% by default).
+More precisely, the filtering keeps genes that have \code{CPM >= CPM.cutoff} in \code{MinSampleSize} samples,
+where \code{CPM.cutoff = min.count/median(lib.size)*1e6} and \code{MinSampleSize} is the smallest group sample size or, more generally, the minimum inverse leverage computed from the design matrix.
+
+If all the group samples sizes are large, then the above filtering rule is relaxed slightly.
+If \code{MinSampleSize > large.n}, then genes are kept if \code{CPM >= CPM.cutoff} in \code{k} samples where
+\code{k = large.n + (MinSampleSize - large.n) * min.prop}.
+This rule requires that genes are expressed in at least \code{min.prop * MinSampleSize} samples, even when \code{MinSampleSize} is large.
 
 In addition, each kept gene is required to have at least \code{min.total.count} reads across all the samples.
 }
