@@ -1,0 +1,40 @@
+---
+title: edgeR Package Introduction
+date: "10 October 2012 (last revised 10 June 2023)"
+output:
+  BiocStyle::html_document:
+    date: FALSE
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  prompt = TRUE,
+  comment = NA
+)
+```
+
+edgeR is a package for the differential expression analysis of digital gene expression data,
+that is, of count data arising from DNA sequencing technologies.
+It is especially designed for differential expression analyses of RNA-Seq
+or differential marking analyses of ChIP-Seq data.
+
+edgeR implements novel statistical methods based on the negative binomial distribution
+as a model for count variability, including empirical Bayes methods, exact tests, and generalized linear models.
+The package is especially suitable for analysing designed experiments with multiple
+experimental factors but possibly small numbers of replicates.
+It has unique abilities to model transcript specific variation even in small samples,
+a capability essential for prioritizing genes or transcripts that have consistent effects across replicates.
+
+The edgeR User's Guide is available by
+```{r, eval=FALSE, echo=TRUE}
+library(edgeR)
+edgeRUsersGuide()
+```
+or alternatively from the [edgeR landing page](https://bioconductor.org/packages/edgeR).
+
+Documentation for specific functions is available through the usual R help system, e.g., `?glmFit`.
+Further questions about the package should be directed to the [Bioconductor support site](https://support.bioconductor.org).
