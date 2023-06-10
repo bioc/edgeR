@@ -2,8 +2,7 @@
 title: edgeR Package Introduction
 date: "10 October 2012 (last revised 10 June 2023)"
 output:
-  BiocStyle::html_document:
-    date: FALSE
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
