@@ -11,14 +11,14 @@
 Conduct genewise statistical tests for a given coefficient or contrast.}
 
 \usage{
-\method{glmQLFit}{DGEList}(y, design=NULL, dispersion=NULL, abundance.trend=TRUE,
-        robust=FALSE, winsor.tail.p=c(0.05, 0.1), \dots)
-\method{glmQLFit}{SummarizedExperiment}(y, design=NULL, dispersion=NULL, abundance.trend=TRUE,
-        robust=FALSE, winsor.tail.p=c(0.05, 0.1), \dots)
-\method{glmQLFit}{default}(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL,
-        weights=NULL, abundance.trend=TRUE, AveLogCPM=NULL, robust=FALSE,
-        winsor.tail.p=c(0.05, 0.1), \dots)
-glmQLFTest(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.bound=TRUE)
+\method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
+        robust = FALSE, winsor.tail.p = c(0.05, 0.1), legacy = TRUE, keep.unit.mat=TRUE, top.proportion=0.95, \dots)
+\method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
+        robust = FALSE, winsor.tail.p = c(0.05, 0.1), legacy = TRUE, keep.unit.mat=TRUE, top.proportion=0.95, \dots)
+\method{glmQLFit}{default}(y, design = NULL, dispersion = NULL, offset = NULL, lib.size = NULL,
+        weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL, covariate.trend = NULL, robust = FALSE,
+        winsor.tail.p = c(0.05, 0.1), legacy = TRUE, keep.unit.mat=TRUE, \dots)
+glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL, poisson.bound = TRUE)
 }
 
 \arguments{
@@ -36,11 +36,19 @@ glmQLFTest(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.bound=TRUE)
 
 \item{abundance.trend}{logical, whether to allow an abundance-dependent trend when estimating the prior values for the quasi-likelihood multiplicative dispersion parameter.}
 
-\item{AveLogCPM}{average log2-counts per million, the average taken over all libraries in \code{y}. If \code{NULL} will be computed by \code{aveLogCPM(y)}.}
+\item{AveLogCPM}{numeric vector giving average log2-counts per million for each row of \code{y}. If \code{NULL} will be computed by \code{aveLogCPM(y)}.}
+
+\item{covariate.trend}{numeric vector of length \code{nrow(y)}. If non-NULL, then will be used instead of \code{AveLogCPM} as the covariate for a trended prior on the quasi-dispersions.}
 
 \item{robust}{logical, whether to estimate the prior QL dispersion distribution robustly.}
 
 \item{winsor.tail.p}{numeric vector of length 2 giving proportion to trim (Winsorize) from lower and upper tail of the distribution of genewise deviances when estimating the hyperparameters. Positive values produce robust empirical Bayes ignoring outlier small or large deviances. Only used when \code{robust=TRUE}.} 
+
+\item{legacy}{logical, if \code{TRUE} then produce legacy results as for Bioconductor 3.16 and earlier.}
+
+\item{keep.unit.mat}{logical, if \code{TRUE}, then three matrice \code{leverage}, \code{unit.deviance.adj}, \code{unit.df.adj} will be kept.}
+
+\item{top.proportion}{numeric scalar. The quantile of top highly expressed genes used in the estimation of common dispersion. Only used when \code{legacy=TRUE}.}
 
 \item{\dots}{other arguments are passed to \code{\link{glmFit}}.}
 
@@ -68,6 +76,9 @@ The usual residual degrees of freedom are returned as \code{df.residual} while t
 
 \code{glmQLFTest} is similar to \code{glmLRT} except that it replaces likelihood ratio tests with empirical Bayes quasi-likelihood F-tests.
 The p-values from \code{glmQLFTest} are always greater than or equal to those that would be obtained from \code{glmLRT} using the same negative binomial dispersions.
+
+A major upgrade to \code{glmQLFit} was introduced in edgeR 4.0.0 (Bioconductor 3.17) incorporating bias corrected deviances and bias corrected residual df.
+Setting \code{legacy=FALSE} will reproduce earlier results as for Bioconductor 3.16 and earlier.
 }
 
 \note{
@@ -81,8 +92,14 @@ It is not correct to supply genewise dispersions because \code{glmQLFTest} estim
 	\item{df.prior}{a numeric vector or scalar, giving the prior degrees of freedom for the QL dispersions.}
 	\item{var.prior}{a numeric vector of scalar, giving the location of the prior distribution for the QL dispersions.}
 	\item{var.post}{a numeric vector containing the posterior empirical Bayes QL dispersions.} 
+        \item{leverage}{a numeric matrix of scalar, giving the leverage matrix for the generalized linear models.}
+        \item{unit.deviance.adj}{a numeric matrix of scalar, giving the unit deviance for the generalized linear models.}
+        \item{unit.df.adj}{a numeric matrix of scalar, giving the unit degree of freedom for the generalized linear models.}
 \code{df.prior} is a vector of length \code{nrow(y)} if \code{robust=TRUE}, otherwise it has length 1.
 \code{var.prior} is a vector of length \code{nrow(y)} if \code{abundance.trend=TRUE}, otherwise it has length 1.
+\code{leverage} is a matrix of same size as \code{y} if \code{keep.unit.mat=TRUE}. 
+\code{unit.deviance.adj} is a matrix of same size as \code{y} if \code{keep.unit.mat=TRUE}. 
+\code{unit.df.adj} is a matrix of same size as \code{y} if \code{keep.unit.mat=TRUE}. 
 
 \code{glmQFTest} produce an object of class \code{DGELRT} with the same components as produced by \code{\link{glmLRT}}, except that the \code{table$LR} column becomes \code{table$F} and contains quasi-likelihood F-statistics.
 It also stores \code{df.total}, a numeric vector containing the denominator degrees of freedom for the F-test, equal to \code{df.prior + df.residual.zeros}.

@@ -25,6 +25,10 @@ static const R_CallMethodDef all_call_entries[] = {
     CALLDEF(ave_log_cpm, 7),
 
     CALLDEF(check_poisson_bound, 3),
+
+    CALLDEF(compute_adjust_s2, 5),
+    CALLDEF(compute_adjust_s2_non, 5),
+
 	{NULL, NULL, 0}
 };
 

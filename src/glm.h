@@ -35,7 +35,7 @@ private:
 	void autofill(const double*, const double*, double*);
 };
 
-double compute_unit_nb_deviance(double, double, double);
+extern "C" double compute_unit_nb_deviance(double, double, double);
 
 class adj_coxreid {
 public:

@@ -1,7 +1,7 @@
 diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL, prior.count=0.125, verbose=TRUE)
 # Identify exons and genes with splice variants using negative binomial GLMs
 # Yunshun Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 1 Sep 2021.
+# Created 29 March 2014.  Last modified 6 Jan 2023.
 {
 #	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
@@ -119,6 +119,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 #	Testing
 	design0 <- design[, -coef, drop=FALSE]
 	if(isLRT){
+#		LRT
 		fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, dispersion=glmfit$dispersion)
 		fit1 <- glmFit(glmfit$counts, design=design, offset=offset.new, dispersion=glmfit$dispersion)
 		exon.LR <- fit0$deviance - fit1$deviance
@@ -128,13 +129,24 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 		exon.p.value <- pchisq(exon.LR, df=exon.df.test, lower.tail=FALSE, log.p=FALSE)
 		gene.p.value <- pchisq(gene.LR, df=gene.df.test, lower.tail=FALSE, log.p=FALSE)
 	} else {
-		fit0 <- glmQLFit(glmfit$counts, design=design0, offset=offset.new, dispersion=glmfit$dispersion)
-		fit1 <- glmQLFit(glmfit$counts, design=design, offset=offset.new, dispersion=glmfit$dispersion)
-		exon.s2 <- fit1$deviance / fit1$df.residual.zeros
-		exon.s2[fit1$df.residual.zeros==0L] <- 0
-		gene.s2 <- rowsum(exon.s2, geneid, reorder=FALSE) / gene.nexons
-		gene.df.residual <- rowsum(fit1$df.residual.zeros, geneid, reorder=FALSE)
-		squeeze <- squeezeVar(var=gene.s2, df=gene.df.residual, robust=TRUE)	
+#		Quasi F-test
+		legacy <- !is.null(glmfit$df.residual.zeros)
+		fit0 <- glmQLFit(glmfit$counts, design=design0, offset=offset.new, dispersion=glmfit$dispersion, legacy=legacy)
+		fit1 <- glmQLFit(glmfit$counts, design=design, offset=offset.new, dispersion=glmfit$dispersion, legacy=legacy)
+
+		if(legacy){
+			exon.s2 <- fit1$deviance / fit1$df.residual.zeros
+			exon.s2[fit1$df.residual.zeros==0L] <- 0
+			gene.s2 <- rowsum(exon.s2, geneid, reorder=FALSE) / gene.nexons
+			gene.df.residual <- rowsum(fit1$df.residual.zeros, geneid, reorder=FALSE)
+		} else {
+			exon.s2 <- fit1$deviance.adj / fit1$df.residual.adj
+			exon.s2[fit1$df.residual.adj==0L] <- 0
+			gene.s2 <- rowsum(exon.s2, geneid, reorder=FALSE) / gene.nexons
+			gene.df.residual <- rowsum(fit1$df.residual.adj, geneid, reorder=FALSE)
+		}
+
+		squeeze <- squeezeVar(var=gene.s2, df=gene.df.residual, robust=TRUE)
 
 		exon.df.test <- fit0$df.residual - fit1$df.residual
 		gene.df.test <- rowsum(exon.df.test, geneid, reorder=FALSE) - 1

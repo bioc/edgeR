@@ -1,7 +1,7 @@
 glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval")
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
 #	Yunshun Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 25 March 2018.
+#	Created on 05 May 2014. Last modified on 6 Jan 2023.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 
@@ -103,7 +103,14 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 
 #	Convert t to z under the QL pipeline
 	if(!isLRT){
-		df.total <- glmfit$df.prior + glmfit$df.residual.zeros
+		if(is.null(glmfit$df.residual.zeros)) {
+			df.residual <- glmfit$df.residual.adj
+			poisson.bound <- FALSE
+		} else {
+			df.residual <- glmfit$df.residual.zeros
+			poisson.bound <- TRUE
+		}
+		df.total <- glmfit$df.prior + df.residual
 		max.df.residual <- ncol(glmfit$counts)-ncol(glmfit$design)
 		df.total <- pmin(df.total, nrow(glmfit)*max.df.residual)
 		z.left <- limma::zscoreT(z.left/sqrt(glmfit$var.post), df=df.total)
@@ -129,12 +136,14 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	
 #	Ensure it is not more significant than chisquare test with Poisson variance		
 	if(!isLRT){
-		i <- rowSums(glmfit$var.post * (1 + glmfit$fitted.values * glmfit$dispersion) < 1) > 0L
-		if(any(i)) {
-			pois.fit <- glmfit[i,]
-			pois.fit <- glmFit(pois.fit$counts, design=pois.fit$design, offset=pois.fit$offset, weights=pois.fit$weights, start=pois.fit$unshrunk.coefficients, dispersion=0)
-			pois.res <- Recall(pois.fit, coef=coef, contrast=contrast, lfc=lfc)
-			p.value[i] <- pmax(p.value[i], pois.res$table$PValue)
+		if(poisson.bound) {
+			i <- .isBelowPoissonBound(glmfit)
+			if(any(i)) {
+				pois.fit <- glmfit[i,]
+				pois.fit <- glmFit(pois.fit$counts, design=pois.fit$design, offset=pois.fit$offset, weights=pois.fit$weights, start=pois.fit$unshrunk.coefficients, dispersion=0)
+				pois.res <- Recall(pois.fit, coef=coef, contrast=contrast, lfc=lfc)
+				p.value[i] <- pmax(p.value[i], pois.res$table$PValue)
+			}
 		}
 	}
 

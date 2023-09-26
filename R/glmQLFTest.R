@@ -3,7 +3,7 @@
 glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
-glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), ...)
+glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, keep.unit.mat=TRUE, top.proportion=0.95, ...)
 # 	Yunshun Chen, Aaron Lun, Gordon Smyth
 #	Created 05 November 2014. Last modified 10 April 2023.
 {
@@ -17,16 +17,21 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 			if(nlevels(group) > 1L) design <- model.matrix(~y$samples$group)
 		}
 	}
-	if(is.null(dispersion)) {
-		dispersion <- y$trended.dispersion
-		if(is.null(dispersion)) dispersion <- y$common.dispersion
-		if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
-	}
-	offset <- getOffset(y)
 	if(is.null(y$AveLogCPM)) y$AveLogCPM <- aveLogCPM(y)
+	if(is.null(dispersion)) {
+		if(legacy){
+			dispersion <- y$trended.dispersion
+			if(is.null(dispersion)) dispersion <- y$common.dispersion
+			if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
+		}
+		else {
+		    dispersion <- dispCoxReid(y$counts[y$AveLogCPM > quantile(y$AveLogCPM, top.proportion),], design=design)
+		}
+	}	
+	offset <- getOffset(y)
 
 	fit <- glmQLFit(y=y$counts, design=design, dispersion=dispersion, offset=offset, lib.size=NULL, abundance.trend=abundance.trend, 
-		AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, ...)
+		AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, keep.unit.mat=keep.unit.mat, ...)
 	fit$samples <- y$samples
 	fit$genes <- y$genes
 #	fit$prior.df <- y$prior.df
@@ -34,68 +39,145 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 	new("DGEGLM",fit)
 }
 
-glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), ...)
-#	Created 03 April 2020.  Last modified 03 April 2020.
+glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, keep.unit.mat=TRUE, top.proportion=0.95,...)
+#	Created 03 April 2020. Last modified 8 April 2023.
 {
 	y <- SE2DGEList(y)
-	glmQLFit.DGEList(y, design=design, dispersion=dispersion, abundance.trend=abundance.trend, robust=robust, winsor.tail.p=winsor.tail.p, ...)
+	glmQLFit.DGEList(y, design=design, dispersion=dispersion, abundance.trend=abundance.trend, robust=robust, winsor.tail.p=winsor.tail.p, legacy=legacy, keep.unit.mat=keep.unit.mat, top.proportion=top.proportion,...)
 }
 
-
 glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, 
-        abundance.trend=TRUE, AveLogCPM=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), ...)
-# 	Fits a GLM and computes quasi-likelihood dispersions for each gene.
-# 	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun.
-# 	Originally part of glmQLFTest, as separate function 15 September 2014. Last modified 4 April 2020.
+        abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, keep.unit.mat=TRUE, ...)
+# 	Fits a GLM and estimates quasi-likelihood dispersions for each gene.
+#
+# 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
+#	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
+#	Split from glmQLFTest as separate function by Aaron Lun and Andy Chen, 15 Sep 2014.
+#	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
+#	Last modified 08 June 2023.
 {
-	glmfit <- glmFit(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights,...)
+	fit <- glmFit(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
+	fit$deviances <- pmax(fit$deviances,0)
 
-#	Setting up the abundances.
-	if(abundance.trend) {
-		if(is.null(AveLogCPM)) AveLogCPM <- aveLogCPM(y, lib.size=lib.size, weights=weights, dispersion=dispersion) 
-		glmfit$AveLogCPM <- AveLogCPM
-	} else {
-		AveLogCPM <- NULL
+#	Setup covariate for trended prior for quasi-dispersion
+	if(is.null(covariate.trend)) {
+		if(abundance.trend) {
+			if(is.null(AveLogCPM)) AveLogCPM <- aveLogCPM(y, lib.size=lib.size, weights=weights, dispersion=dispersion) 
+			fit$AveLogCPM <- AveLogCPM
+		} else {
+			AveLogCPM <- NULL
+		}
+	} else{
+		AveLogCPM <- covariate.trend
 	}
 
-#	Adjust df.residual for fitted values at zero
-	zerofit <- (glmfit$fitted.values < 1e-4) & (glmfit$counts < 1e-4)
-	df.residual <- .residDF(zerofit, glmfit$design)
+	if(legacy) {
 
-#	Empirical Bayes squeezing of the quasi-likelihood variance factors
-	s2 <- glmfit$deviance / df.residual
-	s2[df.residual==0L] <- 0
-	s2 <- pmax(s2,0)
+#		Old-style adjustment retained as option for backward compatibility.
+#		Adjust df.residual for fitted values at zero.
+		zerofit <- (fit$fitted.values < 1e-4) & (fit$counts < 1e-4)
+		df.residual <- .residDF(zerofit, fit$design)
+		fit$df.residual.zeros <- df.residual
+		s2 <- fit$deviance / df.residual
+		s2[df.residual==0L] <- 0
+
+	} else {
+
+#		New-style adjustment.
+#		Deviance and df.residual are both adjusted for bias and variance.
+
+		ngenes <- nrow(fit$counts)
+		nsamples <- ncol(fit$counts)
+		dispersion <- disp <- fit$dispersion
+		if(identical(length(dispersion),1L)) dispersion <- rep_len(dispersion,ngenes)
+		if(!identical(length(dispersion),ngenes)) stop("dispersion has wrong length")
+
+#		Note that matrices must be transposed for input to C.
+#		intial estimate
+		prior.dispersion <- 1
+		out <- .Call(.cxx_compute_adjust_s2_non, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion)
+
+#		update the quasi-dispersion estimate twice using prior estimate
+		prior.dispersion <- .computePriorS2(out, AveLogCPM)
+		out <- .Call(.cxx_compute_adjust_s2_non, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion)
+		prior.dispersion <- .computePriorS2(out, AveLogCPM)
+		working.dispersion <- disp/prior.dispersion
+
+# 		refit using the working dispersion
+		fit <- glmFit(y, design=design, dispersion=working.dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
+		fit$deviances <- pmax(fit$deviances,0)
+		fit$dispersion <- disp
+		fit$working.dispersion <- working.dispersion
+
+#		add option to keep the unit matice
+		if(keep.unit.mat){
+			out <- .Call(.cxx_compute_adjust_s2, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion)
+			names(out) <- c("df", "deviance", "s2", "leverage", "unit.deviance", "unit.df")
+
+			dn <- dimnames(fit$counts)
+			out$leverage      <- matrix(out$leverage,ngenes,nsamples,byrow=TRUE,dimnames=dn)
+			out$unit.deviance <- matrix(out$unit.deviance,ngenes,nsamples,byrow=TRUE,dimnames=dn)
+			out$unit.df       <- matrix(out$unit.df,ngenes,nsamples,byrow=TRUE,dimnames=dn)
+
+			fit$leverage <- out$leverage
+			fit$unit.deviance.adj <- out$unit.deviance
+			fit$unit.df.adj <- out$unit.df
+		}
+		else{
+			out <- .Call(.cxx_compute_adjust_s2_non, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion)
+			names(out) <- c("df", "deviance", "s2")			
+		}
+
+		s2 <- out$s2
+		fit$df.residual.adj <- df.residual <- out$df
+		fit$deviance.adj <- out$deviance
+	}
+
+#	Empirical Bayes squeezing of the quasi-likelihood dispersions
+#   Correction of extremely small degree of freedom (could be risky to choose 1)
+	df.residual[df.residual < 1] <- 0
 	s2.fit <- squeezeVar(s2,df=df.residual,covariate=AveLogCPM,robust=robust,winsor.tail.p=winsor.tail.p)
 
 #	Storing results
-	glmfit$df.residual.zeros <- df.residual
-	glmfit$df.prior <- s2.fit$df.prior
-	glmfit$var.post <- s2.fit$var.post
-	glmfit$var.prior <- s2.fit$var.prior
-	glmfit
+#	fit$deviances <- pmax(fit$deviances,0)
+	fit$df.prior <- s2.fit$df.prior
+	fit$var.post <- s2.fit$var.post
+	fit$var.prior <- s2.fit$var.prior
+	fit
 }
-
 
 glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.bound=TRUE)
 #	Quasi-likelihood F-tests for DGE glms.
 #	Davis McCarthy, Gordon Smyth, Aaron Lun.
-#	Created 18 Feb 2011. Last modified 04 Oct 2016.
+#	Created 18 Feb 2011. Last modified 5 Jan 2013.
 {
 	if(!is(glmfit,"DGEGLM")) stop("glmfit must be an DGEGLM object produced by glmQLFit") 
-	if(is.null(glmfit$var.post)) stop("need to run glmQLFit before glmQLFTest") 
+	if(is.null(glmfit$var.post)) stop("need to run glmQLFit before glmQLFTest")
+
+#	add check in glmLRT function for new QL method
+#	fitting null model using working dispersion
 	out <- glmLRT(glmfit, coef=coef, contrast=contrast)
+
+#	Older code stored df adjusted for exact zeros in df.residual.zero.
+#	New code stores adjusted df in df.residual.adj.
+	if(is.null(glmfit$df.residual.zeros)) {
+		df.residual <- glmfit$df.residual.adj
+		poisson.bound <- FALSE
+	} else {
+		df.residual <- glmfit$df.residual.zeros
+	}
 
 #	Compute the QL F-statistic
 	F.stat <- out$table$LR / out$df.test / glmfit$var.post
-	df.total <- glmfit$df.prior + glmfit$df.residual.zeros
+	df.total <- glmfit$df.prior + df.residual
 	max.df.residual <- ncol(glmfit$counts)-ncol(glmfit$design)
 	df.total <- pmin(df.total, nrow(glmfit)*max.df.residual)
 
 #	Compute p-values from the QL F-statistic
 	F.pvalue <- pf(F.stat, df1=out$df.test, df2=df.total, lower.tail=FALSE, log.p=FALSE)
 
-#	Ensure is not more significant than chisquare test with Poisson variance
+#	Ensure is not more significant than chisquare test with Poisson variance.
+#	This step is obsolete in the new code.
 	if(poisson.bound) {
 		i <- .isBelowPoissonBound(glmfit)
 		if(any(i)) {
@@ -128,14 +210,26 @@ plotQLDisp <- function(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean 
 # 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as separate function by Aaron Lun and Andy Chen, 15 Sep 2014.
-#	Last modified 11 Apr 2023.
+#	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
+#	Last modified 22 Jan 2023.
 {
 	if(is.null(glmfit$var.post)) stop("need to run glmQLFit before plotQLDisp")
 
 #	Make sure average logCPM is available
 	A <- glmfit$AveLogCPM
 	if(is.null(A)) A <- aveLogCPM(glmfit)
-	s2 <- glmfit$deviance / glmfit$df.residual.zeros
+
+#	Older code put df adjusted for exact zeros in df.residual.zero.
+#	Newer code puts adjusted df in df.residual.adj.
+	if(is.null(glmfit$df.residual.zeros)) {
+		df.residual <- glmfit$df.residual.adj
+		deviance <- glmfit$deviance.adj
+	} else {
+		df.residual <- glmfit$df.residual.zeros
+		deviance <- glmfit$deviance
+	}
+	s2 <- deviance / df.residual
+	s2[df.residual < 1e-8] <- 0
 
 	plot(A, sqrt(sqrt(s2)),xlab=xlab, ylab=ylab, pch=pch, cex=cex, col=col.raw, ...)
 	points(A, sqrt(sqrt(glmfit$var.post)), pch=pch, cex=cex, col=col.shrunk)
@@ -150,3 +244,16 @@ plotQLDisp <- function(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean 
 	invisible(list(x=A,y=sqrt(sqrt(s2))))
 }
 
+.computePriorS2 <- function(out, AveLogCPM)
+# 	Update prior quasi-dispersion estimate using lowess fit
+{
+	if(is.null(AveLogCPM)) s <- max(median(out[[3]]),1)
+	else{
+		df <- out[[1]]
+		s2 <- sqrt(sqrt(out[[3]]))
+		o <- df > 1e-8
+		m <- lowess(AveLogCPM[o], s2[o], f=0.5)
+		s <- max(quantile(m$y, 0.9),1)^4
+	}
+	s
+}

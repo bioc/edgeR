@@ -187,7 +187,13 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 	design0 <- design[,-coef,drop=FALSE]
 
 #	Null fit
-	fit.null <- glmFit(glmfit$counts,design=design0,offset=glmfit$offset,weights=glmfit$weights,dispersion=glmfit$dispersion,prior.count=0)
+# 	adjust dispersion for new QL method using working dispersion
+	if(is.null(glmfit$working.dispersion)) {
+		dispersion <- glmfit$dispersion
+	} else {
+		dispersion <- glmfit$working.dispersion
+	}
+	fit.null <- glmFit(glmfit$counts,design=design0,offset=glmfit$offset,weights=glmfit$weights,dispersion=dispersion,prior.count=0)
 
 #	Likelihood ratio statistic
 	LR <- fit.null$deviance - glmfit$deviance
