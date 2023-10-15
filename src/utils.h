@@ -58,9 +58,7 @@ SEXP ave_log_cpm(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 SEXP check_poisson_bound (SEXP, SEXP, SEXP);
 
-SEXP compute_adjust_s2 (SEXP, SEXP, SEXP, SEXP, SEXP);
-
-SEXP compute_adjust_s2_non (SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP compute_adjust_s2 (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 void processHairpinReads(int *, int *, char**, char**, int*,
 		char**, char**, int*, int*, int*, int*, int*, int*,

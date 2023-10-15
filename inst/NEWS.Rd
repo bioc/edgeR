@@ -2,6 +2,24 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+\section{Version 4.0.0}{\itemize{
+\item
+New statistical methods implemented in glmQLFit() to correct biases of deviance and degrees of freedom for small counts.
+New argument 'legacy' for glmQLFit() to proceed with the new QL methods when set to FALSE.
+New argument 'top.proportion' in glmQLFit() to specify the proportion of top highly expressed genes used in the estimation of common NB dispersion under the new QL methods.
+Under this new QL methods, the output DGEGLM object would contain the following extra components: leverage, unit.deviance.adj, unit.df.adj, deviance.adj, df.residual.adj, working.dispersion.
+See ?glmQLFit for more details.
+
+\item
+New argument 'covariate.trend' for glmQLFit() to allow user-specified covariate for a trended prior on the quasi-dispersions.
+
+\item
+Added roast, mroast, fry, camera and romer S3 methods for DGEGLM objects.
+
+\item
+The edgeR vignette is converted from Sweave and pdf to Rmd and html.
+}}
+
 
 \section{Version 3.42.0}{\itemize{
 \item

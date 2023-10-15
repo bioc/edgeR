@@ -116,12 +116,20 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
                   makeCompressedMatrix(gene.betabar %*% t(design[,coef,drop=FALSE]))
 	coefficients <- beta - gene.betabar
 
+#	adjust dispersion for new QL method using working.dispersion
+	if(is.null(glmfit$working.dispersion)){
+		dispersion <- glmfit$dispersion
+	}
+	else{
+		dispersion <- glmfit$working.dispersion
+	}
+
 #	Testing
 	design0 <- design[, -coef, drop=FALSE]
 	if(isLRT){
 #		LRT
-		fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, dispersion=glmfit$dispersion)
-		fit1 <- glmFit(glmfit$counts, design=design, offset=offset.new, dispersion=glmfit$dispersion)
+		fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, dispersion=dispersion)
+		fit1 <- glmFit(glmfit$counts, design=design, offset=offset.new, dispersion=dispersion)
 		exon.LR <- fit0$deviance - fit1$deviance
 		gene.LR <- rowsum(exon.LR, geneid, reorder=FALSE)
 		exon.df.test <- fit0$df.residual - fit1$df.residual
@@ -131,8 +139,8 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 	} else {
 #		Quasi F-test
 		legacy <- !is.null(glmfit$df.residual.zeros)
-		fit0 <- glmQLFit(glmfit$counts, design=design0, offset=offset.new, dispersion=glmfit$dispersion, legacy=legacy)
-		fit1 <- glmQLFit(glmfit$counts, design=design, offset=offset.new, dispersion=glmfit$dispersion, legacy=legacy)
+		fit0 <- glmQLFit(glmfit$counts, design=design0, offset=offset.new, dispersion=dispersion, legacy=legacy)
+		fit1 <- glmQLFit(glmfit$counts, design=design, offset=offset.new, dispersion=dispersion, legacy=legacy)
 
 		if(legacy){
 			exon.s2 <- fit1$deviance / fit1$df.residual.zeros
@@ -140,10 +148,9 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 			gene.s2 <- rowsum(exon.s2, geneid, reorder=FALSE) / gene.nexons
 			gene.df.residual <- rowsum(fit1$df.residual.zeros, geneid, reorder=FALSE)
 		} else {
-			exon.s2 <- fit1$deviance.adj / fit1$df.residual.adj
-			exon.s2[fit1$df.residual.adj==0L] <- 0
-			gene.s2 <- rowsum(exon.s2, geneid, reorder=FALSE) / gene.nexons
 			gene.df.residual <- rowsum(fit1$df.residual.adj, geneid, reorder=FALSE)
+			gene.s2 <- rowsum(fit1$deviance.adj, geneid, reorder=FALSE) / gene.df.residual
+			gene.df.residual[gene.df.residual < 0.99] <- 0
 		}
 
 		squeeze <- squeezeVar(var=gene.s2, df=gene.df.residual, robust=TRUE)

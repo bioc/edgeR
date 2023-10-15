@@ -26,8 +26,7 @@ static const R_CallMethodDef all_call_entries[] = {
 
     CALLDEF(check_poisson_bound, 3),
 
-    CALLDEF(compute_adjust_s2, 5),
-    CALLDEF(compute_adjust_s2_non, 5),
+    CALLDEF(compute_adjust_s2, 6),
 
 	{NULL, NULL, 0}
 };

@@ -63,7 +63,7 @@ romer.DGEList <- function(y, index, design=NULL, contrast=ncol(design), ...)
 		if(is.null(design)) design <- model.matrix(~y$samples$group)
 	}
 	y <- .zscoreDGE(y=y, design=design, contrast=contrast)
-	romer(y=y, index=index, design=design, contrast, ...)
+	romer(y=y, index=index, design=design, contrast=contrast, ...)
 }
 
 .zscoreDGE <- function(y, design=NULL, contrast=ncol(design))

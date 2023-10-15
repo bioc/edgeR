@@ -1,5 +1,5 @@
 
-R version 4.2.3 (2023-03-15 ucrt) -- "Shortstop Beagle"
+R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
@@ -595,4 +595,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   2.51    0.09    2.65 
+   1.93    0.18    2.07 

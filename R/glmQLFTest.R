@@ -3,9 +3,9 @@
 glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
-glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, keep.unit.mat=TRUE, top.proportion=0.95, ...)
+glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, top.proportion=0.05, ...)
 # 	Yunshun Chen, Aaron Lun, Gordon Smyth
-#	Created 05 November 2014. Last modified 10 April 2023.
+#	Created 05 November 2014. Last modified 2 Oct 2023.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -25,13 +25,15 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 			if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
 		}
 		else {
-		    dispersion <- dispCoxReid(y$counts[y$AveLogCPM > quantile(y$AveLogCPM, top.proportion),], design=design)
+			if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
+			y.top <- y[y$AveLogCPM > quantile(y$AveLogCPM, 1-top.proportion), ]
+		    dispersion <- estimateGLMCommonDisp(y.top, design=design)$common.dispersion
 		}
 	}	
 	offset <- getOffset(y)
 
 	fit <- glmQLFit(y=y$counts, design=design, dispersion=dispersion, offset=offset, lib.size=NULL, abundance.trend=abundance.trend, 
-		AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, keep.unit.mat=keep.unit.mat, ...)
+		AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, ...)
 	fit$samples <- y$samples
 	fit$genes <- y$genes
 #	fit$prior.df <- y$prior.df
@@ -39,22 +41,22 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 	new("DGEGLM",fit)
 }
 
-glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, keep.unit.mat=TRUE, top.proportion=0.95,...)
+glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, top.proportion=0.05,...)
 #	Created 03 April 2020. Last modified 8 April 2023.
 {
 	y <- SE2DGEList(y)
-	glmQLFit.DGEList(y, design=design, dispersion=dispersion, abundance.trend=abundance.trend, robust=robust, winsor.tail.p=winsor.tail.p, legacy=legacy, keep.unit.mat=keep.unit.mat, top.proportion=top.proportion,...)
+	glmQLFit.DGEList(y, design=design, dispersion=dispersion, abundance.trend=abundance.trend, robust=robust, winsor.tail.p=winsor.tail.p, legacy=legacy, top.proportion=top.proportion,...)
 }
 
 glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, 
-        abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, keep.unit.mat=TRUE, ...)
+        abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, ...)
 # 	Fits a GLM and estimates quasi-likelihood dispersions for each gene.
 #
 # 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as separate function by Aaron Lun and Andy Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
-#	Last modified 08 June 2023.
+#	Last modified 2 Oct 2023.
 {
 	fit <- glmFit(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
 	fit$deviances <- pmax(fit$deviances,0)
@@ -88,45 +90,47 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 
 		ngenes <- nrow(fit$counts)
 		nsamples <- ncol(fit$counts)
+		prior.dispersion <- 1
 		dispersion <- disp <- fit$dispersion
 		if(identical(length(dispersion),1L)) dispersion <- rep_len(dispersion,ngenes)
 		if(!identical(length(dispersion),ngenes)) stop("dispersion has wrong length")
 
-#		Note that matrices must be transposed for input to C.
-#		intial estimate
-		prior.dispersion <- 1
-		out <- .Call(.cxx_compute_adjust_s2_non, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion)
+#		Add the support for the weights from y$weights
+#		we omit the update of quasi-dispersion if weights exist
+		if(is.null(weights)){
+#	 		Note that matrices must be transposed for input to C
+#			intial estimate
+			sample.weights <- matrix(1,ngenes,nsamples)
+			out <- .Call(.cxx_compute_adjust_s2, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion, t(sample.weights))
 
-#		update the quasi-dispersion estimate twice using prior estimate
-		prior.dispersion <- .computePriorS2(out, AveLogCPM)
-		out <- .Call(.cxx_compute_adjust_s2_non, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion)
-		prior.dispersion <- .computePriorS2(out, AveLogCPM)
-		working.dispersion <- disp/prior.dispersion
+#			update the quasi-dispersion estimate twice using prior estimate
+			prior.dispersion <- .computePriorS2(out, AveLogCPM)
+			out <- .Call(.cxx_compute_adjust_s2, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion, t(sample.weights))
+			prior.dispersion <- .computePriorS2(out, AveLogCPM)
+			working.dispersion <- disp/prior.dispersion
 
-# 		refit using the working dispersion
-		fit <- glmFit(y, design=design, dispersion=working.dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
-		fit$deviances <- pmax(fit$deviances,0)
-		fit$dispersion <- disp
-		fit$working.dispersion <- working.dispersion
-
-#		add option to keep the unit matice
-		if(keep.unit.mat){
-			out <- .Call(.cxx_compute_adjust_s2, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion)
-			names(out) <- c("df", "deviance", "s2", "leverage", "unit.deviance", "unit.df")
-
-			dn <- dimnames(fit$counts)
-			out$leverage      <- matrix(out$leverage,ngenes,nsamples,byrow=TRUE,dimnames=dn)
-			out$unit.deviance <- matrix(out$unit.deviance,ngenes,nsamples,byrow=TRUE,dimnames=dn)
-			out$unit.df       <- matrix(out$unit.df,ngenes,nsamples,byrow=TRUE,dimnames=dn)
-
-			fit$leverage <- out$leverage
-			fit$unit.deviance.adj <- out$unit.deviance
-			fit$unit.df.adj <- out$unit.df
+# 			refit using the working dispersion
+			fit <- glmFit(y, design=design, dispersion=working.dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
+			fit$deviances <- pmax(fit$deviances,0)
+			fit$dispersion <- disp
+			fit$working.dispersion <- working.dispersion
 		}
 		else{
-			out <- .Call(.cxx_compute_adjust_s2_non, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion)
-			names(out) <- c("df", "deviance", "s2")			
+#			assume weights are verified by glmFit() and a matrix of the same size as y
+			sample.weights <- weights
 		}
+
+#		prepare outputs
+#		note the unit deviance is not weighted and the adjusted deviance is weighted
+		out <- .Call(.cxx_compute_adjust_s2, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion, t(sample.weights))
+		names(out) <- c("df", "deviance", "s2", "leverage", "unit.deviance", "unit.df")
+		dn <- dimnames(fit$counts)
+		out$leverage      <- matrix(out$leverage,ngenes,nsamples,byrow=TRUE,dimnames=dn)
+		out$unit.deviance <- matrix(out$unit.deviance,ngenes,nsamples,byrow=TRUE,dimnames=dn)
+		out$unit.df       <- matrix(out$unit.df,ngenes,nsamples,byrow=TRUE,dimnames=dn)
+		fit$leverage <- out$leverage
+		fit$unit.deviance.adj <- out$unit.deviance
+		fit$unit.df.adj <- out$unit.df
 
 		s2 <- out$s2
 		fit$df.residual.adj <- df.residual <- out$df
@@ -134,8 +138,8 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 	}
 
 #	Empirical Bayes squeezing of the quasi-likelihood dispersions
-#   Correction of extremely small degree of freedom (could be risky to choose 1)
-	df.residual[df.residual < 1] <- 0
+#   Correction of extremely small degree of freedom (could be risky to choose 0.99)
+	df.residual[df.residual < 0.99] <- 0
 	s2.fit <- squeezeVar(s2,df=df.residual,covariate=AveLogCPM,robust=robust,winsor.tail.p=winsor.tail.p)
 
 #	Storing results
@@ -149,7 +153,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.bound=TRUE)
 #	Quasi-likelihood F-tests for DGE glms.
 #	Davis McCarthy, Gordon Smyth, Aaron Lun.
-#	Created 18 Feb 2011. Last modified 5 Jan 2013.
+#	Created 18 Feb 2011. Last modified 2 Oct 2023.
 {
 	if(!is(glmfit,"DGEGLM")) stop("glmfit must be an DGEGLM object produced by glmQLFit") 
 	if(is.null(glmfit$var.post)) stop("need to run glmQLFit before glmQLFTest")

@@ -1,7 +1,7 @@
 glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval")
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
 #	Yunshun Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 6 Jan 2023.
+#	Created on 05 May 2014. Last modified on 5 Oct 2023.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 
@@ -81,16 +81,24 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	offset.old <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE)
 	offset.adj <- makeCompressedMatrix(lfc*log(2) * design[, coef], dim(glmfit$counts), byrow=TRUE)
 
+#	adjust dispersion for new QL method using working.dispersion
+	if(is.null(glmfit$working.dispersion)){
+		dispersion <- glmfit$dispersion
+	}
+	else{
+		dispersion <- glmfit$working.dispersion
+	}
+
 #	Test statistics at beta_0 = tau
 	offset.new <- offset.old + offset.adj
-	fit0 <- Fit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=glmfit$dispersion, prior.count=0)
-	fit1 <- Fit(glmfit$counts, design=design, offset=offset.new, weights=glmfit$weights, dispersion=glmfit$dispersion, prior.count=0)
+	fit0 <- Fit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
+	fit1 <- Fit(glmfit$counts, design=design, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
 	z.left <- sqrt( pmax(0, fit0$deviance - fit1$deviance) )
 
 #	Test statistics at beta_0 = -tau
 	offset.new <- offset.old - offset.adj
-	fit0 <- Fit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=glmfit$dispersion, prior.count=0)
-	fit1 <- Fit(glmfit$counts, design=design, offset=offset.new, weights=glmfit$weights, dispersion=glmfit$dispersion, prior.count=0)
+	fit0 <- Fit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
+	fit1 <- Fit(glmfit$counts, design=design, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
 	z.right <- sqrt( pmax(0, fit0$deviance - fit1$deviance) )
 
 #	Make sure z.left < z.right

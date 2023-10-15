@@ -129,7 +129,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth, Davis McCarthy and Yunshun Chen.
-#	Created 1 July 2010.  Last modified 9 June 2020.
+#	Created 1 July 2010.  Last modified 2 Oct 2023.
 {
 #	Check glmfit
 	if(!is(glmfit,"DGEGLM")) {
@@ -187,7 +187,7 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 	design0 <- design[,-coef,drop=FALSE]
 
 #	Null fit
-# 	adjust dispersion for new QL method using working dispersion
+#	The new QL method requires working.dispersion to fit the model which is dispersion divided by prior quasi-dispersion
 	if(is.null(glmfit$working.dispersion)) {
 		dispersion <- glmfit$dispersion
 	} else {

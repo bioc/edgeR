@@ -12,12 +12,12 @@ Conduct genewise statistical tests for a given coefficient or contrast.}
 
 \usage{
 \method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
-        robust = FALSE, winsor.tail.p = c(0.05, 0.1), legacy = TRUE, keep.unit.mat=TRUE, top.proportion=0.95, \dots)
+        robust = FALSE, winsor.tail.p = c(0.05, 0.1), legacy = TRUE, top.proportion=0.05, \dots)
 \method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
-        robust = FALSE, winsor.tail.p = c(0.05, 0.1), legacy = TRUE, keep.unit.mat=TRUE, top.proportion=0.95, \dots)
+        robust = FALSE, winsor.tail.p = c(0.05, 0.1), legacy = TRUE, top.proportion=0.05, \dots)
 \method{glmQLFit}{default}(y, design = NULL, dispersion = NULL, offset = NULL, lib.size = NULL,
         weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL, covariate.trend = NULL, robust = FALSE,
-        winsor.tail.p = c(0.05, 0.1), legacy = TRUE, keep.unit.mat=TRUE, \dots)
+        winsor.tail.p = c(0.05, 0.1), legacy = TRUE, \dots)
 glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL, poisson.bound = TRUE)
 }
 
@@ -26,7 +26,7 @@ glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL, poisson.bound = 
 
 \item{design}{numeric matrix giving the design matrix for the genewise linear models.}
 
-\item{dispersion}{numeric scalar, vector or matrix of negative binomial dispersions. If \code{NULL}, then will be extracted from the \code{DGEList} object \code{y}, with order of precedence: trended dispersions, common dispersion, a constant value of 0.05.}
+\item{dispersion}{numeric scalar, vector or matrix of negative binomial dispersions. If \code{NULL} and \code{legacy=TRUE}, then will be extracted from the \code{DGEList} object \code{y}, with order of precedence: trended dispersions, common dispersion, a constant value of 0.05. If \code{NULL} and \code{legacy=FALSE}, then will be estimated using top highly expressed genes.} 
 
 \item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a scalar (i.e., of length 1) or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix. If \code{NULL} will be computed by \code{getOffset(y)}.}
 
@@ -46,9 +46,7 @@ glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL, poisson.bound = 
 
 \item{legacy}{logical, if \code{TRUE} then produce legacy results as for Bioconductor 3.16 and earlier.}
 
-\item{keep.unit.mat}{logical, if \code{TRUE}, then three matrice \code{leverage}, \code{unit.deviance.adj}, \code{unit.df.adj} will be kept.}
-
-\item{top.proportion}{numeric scalar. The quantile of top highly expressed genes used in the estimation of common dispersion. Only used when \code{legacy=TRUE}.}
+\item{top.proportion}{numeric scalar. The proportion of top highly expressed genes used in the estimation of common dispersion. Only used when \code{legacy=TRUE}.}
 
 \item{\dots}{other arguments are passed to \code{\link{glmFit}}.}
 
@@ -89,6 +87,7 @@ It is not correct to supply genewise dispersions because \code{glmQLFTest} estim
 \value{
 \code{glmQLFit} produces an object of class \code{DGEGLM} with the same components as produced by \code{\link{glmFit}}, plus:
 	\item{df.residual.zeros}{a numeric vector containing the number of effective residual degrees of freedom for each gene, taking into account any treatment groups with all zero counts.}
+	\item{df.residual.adj}{a numeric vector containing the number of adjusted residual degrees of freedom for each gene.}
 	\item{df.prior}{a numeric vector or scalar, giving the prior degrees of freedom for the QL dispersions.}
 	\item{var.prior}{a numeric vector of scalar, giving the location of the prior distribution for the QL dispersions.}
 	\item{var.post}{a numeric vector containing the posterior empirical Bayes QL dispersions.} 
@@ -97,9 +96,9 @@ It is not correct to supply genewise dispersions because \code{glmQLFTest} estim
         \item{unit.df.adj}{a numeric matrix of scalar, giving the unit degree of freedom for the generalized linear models.}
 \code{df.prior} is a vector of length \code{nrow(y)} if \code{robust=TRUE}, otherwise it has length 1.
 \code{var.prior} is a vector of length \code{nrow(y)} if \code{abundance.trend=TRUE}, otherwise it has length 1.
-\code{leverage} is a matrix of same size as \code{y} if \code{keep.unit.mat=TRUE}. 
-\code{unit.deviance.adj} is a matrix of same size as \code{y} if \code{keep.unit.mat=TRUE}. 
-\code{unit.df.adj} is a matrix of same size as \code{y} if \code{keep.unit.mat=TRUE}. 
+\code{leverage} is a matrix of same size as \code{y} if \code{legacy=FALSE}. 
+\code{unit.deviance.adj} is a matrix of same size as \code{y} if \code{legacy=FALSE}.
+\code{unit.df.adj} is a matrix of same size as \code{y} if \code{legacy=FALSE}.
 
 \code{glmQFTest} produce an object of class \code{DGELRT} with the same components as produced by \code{\link{glmLRT}}, except that the \code{table$LR} column becomes \code{table$F} and contains quasi-likelihood F-statistics.
 It also stores \code{df.total}, a numeric vector containing the denominator degrees of freedom for the F-test, equal to \code{df.prior + df.residual.zeros}.
@@ -132,7 +131,7 @@ Robust hyperparameter estimation protects against hypervariable genes and improv
 \doi{10.1214/16-AOAS920}
 }
 
-\author{Yunshun Chen, Aaron Lun, Davis McCarthy and Gordon Smyth}
+\author{Yunshun Chen, Aaron Lun, Davis McCarthy, Lizhong Chen and Gordon Smyth}
 
 \seealso{
 \code{\link{topTags}} displays results from \code{glmQLFTest}.
