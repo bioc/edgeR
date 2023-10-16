@@ -89,7 +89,7 @@ romer.DGEGLM <- function(y, index, design=NULL, contrast=ncol(design), ...)
 
 #	Null hypothesis fit
 	counts <- y$counts
-	if(!is.null(fit$deviance.adj)) counts <- counts / pmax(1, y$var.prior)
+	if(!is.null(y$deviance.adj)) counts <- counts / pmax(1, y$var.prior)
 	fit.null <- glmFit(counts, design=design0, dispersion=dispersion, offset=y$offset, weights=y$weights, prior.count=0)
 
 #	Quantile residuals from null fit
