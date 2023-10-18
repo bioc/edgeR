@@ -36,7 +36,6 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 		AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, ...)
 	fit$samples <- y$samples
 	fit$genes <- y$genes
-#	fit$prior.df <- y$prior.df
 	fit$AveLogCPM <- y$AveLogCPM
 	new("DGEGLM",fit)
 }
@@ -54,12 +53,12 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #
 # 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
-#	Split from glmQLFTest as separate function by Aaron Lun and Andy Chen, 15 Sep 2014.
+#	Split from glmQLFTest as separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
 #	Last modified 2 Oct 2023.
 {
 	fit <- glmFit(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
-	fit$deviances <- pmax(fit$deviances,0)
+	fit$deviance <- pmax(fit$deviance,0)
 
 #	Setup covariate for trended prior for quasi-dispersion
 	if(is.null(covariate.trend)) {
@@ -111,7 +110,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 
 # 			refit using the working dispersion
 			fit <- glmFit(y, design=design, dispersion=working.dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
-			fit$deviances <- pmax(fit$deviances,0)
+			fit$deviance <- pmax(fit$deviance,0)
 			fit$dispersion <- disp
 			fit$working.dispersion <- working.dispersion
 		}
@@ -143,7 +142,6 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 	s2.fit <- squeezeVar(s2,df=df.residual,covariate=AveLogCPM,robust=robust,winsor.tail.p=winsor.tail.p)
 
 #	Storing results
-#	fit$deviances <- pmax(fit$deviances,0)
 	fit$df.prior <- s2.fit$df.prior
 	fit$var.post <- s2.fit$var.post
 	fit$var.prior <- s2.fit$var.prior
@@ -213,7 +211,7 @@ plotQLDisp <- function(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean 
 # 	Plots raw and empirical Bayes moderated quasi dispersion estimates.
 # 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
-#	Split from glmQLFTest as separate function by Aaron Lun and Andy Chen, 15 Sep 2014.
+#	Split from glmQLFTest as separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
 #	Last modified 22 Jan 2023.
 {
