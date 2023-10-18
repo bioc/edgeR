@@ -37,7 +37,7 @@ A list containing components
 
 \references{
 Baldoni PL, Chen Y, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2023).
-Dividing out quantification uncertainty allows efficient assessment of differential transcript expression.
+Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
 \emph{bioRxiv}
 \doi{10.1101/2023.04.02.535231}.
 
