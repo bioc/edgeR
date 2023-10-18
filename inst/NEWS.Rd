@@ -4,20 +4,23 @@
 
 \section{Version 4.0.0}{\itemize{
 \item
-New statistical methods implemented in glmQLFit() to correct biases of deviance and degrees of freedom for small counts.
-New argument 'legacy' for glmQLFit() to proceed with the new QL methods when set to FALSE.
-New argument 'top.proportion' in glmQLFit() to specify the proportion of top highly expressed genes used in the estimation of common NB dispersion under the new QL methods.
-Under this new QL methods, the output DGEGLM object would contain the following extra components: leverage, unit.deviance.adj, unit.df.adj, deviance.adj, df.residual.adj, working.dispersion.
-See ?glmQLFit for more details.
+New statistical methods implemented in glmQLFit() to ensure accurate estimation of the quasi-dispersion for data with small counts.
+The new method computes adjusted residual deviances with adjusted degrees of freedom to improve the chisquare approximation to the residual deviance.
+The new methodology includes the new argument 'top.proportion' for glmQLFit() to specify the proportion of highly expressed genes used to estimate the common NB dispersion used in the new method.
+The output DGEGLM object contains new components `leverage`, `unit.deviance.adj`, `unit.df.adj`, `deviance.adj`, `df.residual.adj` and `working.dispersion`.
+The new method can be turned on `legacy=FALSE`. By default, glmQLFit() will give the same results as in previous releases of edgeR.
 
 \item
-New argument 'covariate.trend' for glmQLFit() to allow user-specified covariate for a trended prior on the quasi-dispersions.
+New argument 'covariate.trend' for glmQLFit() to allow a user-specified covariate for the trended prior used to estimate the quasi-dispersions.
 
 \item
-Added roast, mroast, fry, camera and romer S3 methods for DGEGLM objects.
+The gene set testing functions roast(), mroast(), fry(), camera() and romer() now have S3 methods for DGEGLM objects.
 
 \item
-The edgeR vignette is converted from Sweave and pdf to Rmd and html.
+The edgeR Introductory vignette is converted from Sweave and pdf to Rmd and html.
+
+\item
+Revised help pages for filterByExp() and catchSalmon().
 }}
 
 
