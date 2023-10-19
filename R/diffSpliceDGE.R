@@ -1,7 +1,7 @@
 diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL, prior.count=0.125, verbose=TRUE)
 # Identify exons and genes with splice variants using negative binomial GLMs
 # Yunshun Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 6 Jan 2023.
+# Created 29 March 2014.  Last modified 19 Oct 2023.
 {
 #	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
@@ -116,12 +116,12 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
                   makeCompressedMatrix(gene.betabar %*% t(design[,coef,drop=FALSE]))
 	coefficients <- beta - gene.betabar
 
-#	adjust dispersion for new QL method using working.dispersion
-	if(is.null(glmfit$working.dispersion)){
+#	adjust dispersion for new QL method scaled by average QL dispersion
+	if(is.null(glmfit$average.ql.dispersion)){
 		dispersion <- glmfit$dispersion
 	}
 	else{
-		dispersion <- glmfit$working.dispersion
+		dispersion <- glmfit$dispersion/glmfit$average.ql.dispersion
 	}
 
 #	Testing

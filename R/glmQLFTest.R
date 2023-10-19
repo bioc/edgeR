@@ -55,7 +55,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
-#	Last modified 2 Oct 2023.
+#	Last modified 19 Oct 2023.
 {
 	fit <- glmFit(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
 	fit$deviance <- pmax(fit$deviance,0)
@@ -106,13 +106,12 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 			prior.dispersion <- .computePriorS2(out, AveLogCPM)
 			out <- .Call(.cxx_compute_adjust_s2, t(fit$counts), t(fit$fitted.values), fit$design, dispersion, prior.dispersion, t(sample.weights))
 			prior.dispersion <- .computePriorS2(out, AveLogCPM)
-			working.dispersion <- disp/prior.dispersion
+			working.dispersion <- dispersion/prior.dispersion
 
 # 			refit using the working dispersion
 			fit <- glmFit(y, design=design, dispersion=working.dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
 			fit$deviance <- pmax(fit$deviance,0)
 			fit$dispersion <- disp
-			fit$working.dispersion <- working.dispersion
 		}
 		else{
 #			assume weights are verified by glmFit() and a matrix of the same size as y
@@ -134,6 +133,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 		s2 <- out$s2
 		fit$df.residual.adj <- df.residual <- out$df
 		fit$deviance.adj <- out$deviance
+		fit$average.ql.dispersion <- prior.dispersion
 	}
 
 #	Empirical Bayes squeezing of the quasi-likelihood dispersions

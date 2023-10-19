@@ -1,7 +1,7 @@
 glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval")
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
 #	Yunshun Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 5 Oct 2023.
+#	Created on 05 May 2014. Last modified on 19 Oct 2023.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 
@@ -81,12 +81,12 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	offset.old <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE)
 	offset.adj <- makeCompressedMatrix(lfc*log(2) * design[, coef], dim(glmfit$counts), byrow=TRUE)
 
-#	adjust dispersion for new QL method using working.dispersion
-	if(is.null(glmfit$working.dispersion)){
+#	adjust dispersion for new QL method scaled by average QL dispersion
+	if(is.null(glmfit$average.ql.dispersion)){
 		dispersion <- glmfit$dispersion
 	}
 	else{
-		dispersion <- glmfit$working.dispersion
+		dispersion <- glmfit$dispersion/glmfit$average.ql.dispersion
 	}
 
 #	Test statistics at beta_0 = tau

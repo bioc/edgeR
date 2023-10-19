@@ -5,7 +5,7 @@
 \alias{glmQLFit.default}
 \alias{glmQLFTest}
 
-\title{Genewise Negative Binomial Generalized Linear Models with Quasi-likelihood Tests}
+\title{Genewise Negative Binomial Generalized Linear Models with Quasi-Likelihood Tests}
 
 \description{Fit a quasi-likelihood negative binomial generalized log-linear model to count data.
 Conduct genewise statistical tests for a given coefficient or contrast.}
@@ -26,31 +26,31 @@ glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL,
 }
 
 \arguments{
-\item{y}{a matrix of counts, or a \code{DGEList} object with (at least) elements \code{counts} (table of unadjusted counts) and \code{samples} (data frame containing information about experimental group, library size and normalization factor for the library size), or a \code{SummarizedExperiment} object with (at least) an element \code{counts} in its \code{assays}.}
+\item{y}{a matrix of counts or a \code{DGEList} object or a \code{SummarizedExperiment} containing counts. Rows represent genes and columns represent samples.}
 
 \item{design}{numeric matrix giving the design matrix for the genewise linear models.}
 
-\item{dispersion}{numeric scalar, vector or matrix of negative binomial dispersions. If \code{NULL} and \code{legacy=TRUE}, then will be extracted from the \code{DGEList} object \code{y}, with order of precedence: trended dispersions, common dispersion, a constant value of 0.05. If \code{NULL} and \code{legacy=FALSE}, then will be estimated using top highly expressed genes.} 
+\item{dispersion}{negative binomial dispersions. Can be a single value, or a vector of length \code{nrow(y)}, or a matrix of the same size as \code{y}. If \code{NULL} and \code{legacy=TRUE}, then will be extracted from the \code{DGEList} object \code{y}. The trended dispersions will be extracted if present, otherwise common dispersion, or a constant value of 0.05 is neither is present. If \code{NULL} and \code{legacy=FALSE}, then will be estimated using the \code{top.proportion} of most highly expressed genes.} 
 
-\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a scalar (i.e., of length 1) or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix. If \code{NULL} will be computed by \code{getOffset(y)}.}
+\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, then will be computed by \code{getOffset(y)}.}
 
 \item{lib.size}{numeric vector of length \code{ncol(y)} giving library sizes. Only used if \code{offset=NULL}, in which case \code{offset} is set to \code{log(lib.size)}. Defaults to \code{colSums(y)}.}
 
-\item{weights}{numeric matrix of same size as \code{y} giving weights for the log-linear models. If \code{NULL}, will be set to unity for all observations.}
+\item{weights}{numeric matrix of same size as \code{y} giving glm weights. If \code{NULL}, will be set to unity for all observations.}
 
-\item{abundance.trend}{logical, whether to allow an abundance-dependent trend when estimating the prior values for the quasi-likelihood multiplicative dispersion parameter.}
+\item{abundance.trend}{logical, whether to allow an abundance trend for the QL-dispersion prior.}
 
-\item{AveLogCPM}{numeric vector giving average log2-counts per million for each row of \code{y}. If \code{NULL} will be computed by \code{aveLogCPM(y)}.}
+\item{AveLogCPM}{numeric vector giving average log2-counts per million for each row of \code{y}. If \code{NULL}, then will be computed by \code{aveLogCPM(y)}.}
 
-\item{covariate.trend}{numeric vector of length \code{nrow(y)}. If non-NULL, then will be used instead of \code{AveLogCPM} as the covariate for a trended prior on the quasi-dispersions.}
+\item{covariate.trend}{numeric vector of length \code{nrow(y)}. If non-NULL, then will be used instead of \code{AveLogCPM} as the covariate for the trended QL-dispersion prior.}
 
-\item{robust}{logical, whether to estimate the prior QL dispersion distribution robustly.}
+\item{robust}{logical, whether to estimate the prior distribution for the QL-dispersions robustly.}
 
-\item{winsor.tail.p}{numeric vector of length 2 giving proportion to trim (Winsorize) from lower and upper tail of the distribution of genewise deviances when estimating the hyperparameters. Positive values produce robust empirical Bayes ignoring outlier small or large deviances. Only used when \code{robust=TRUE}.} 
+\item{winsor.tail.p}{numeric vector of length 2 giving proportion to trim (Winsorize) from lower and upper tail of the distribution of genewise deviances when estimating the hyperparameters of the QL-dispersion prior. Used as input to \code{squeezeVar} when \code{robust=TRUE}.} 
 
-\item{legacy}{logical, if \code{TRUE} then produce legacy results as for Bioconductor 3.16 and earlier.}
+\item{legacy}{logical, if \code{TRUE} then produce legacy results as for Bioconductor 3.16 and earlier. If \code{FALSE}, then use the new QL-dispersion estimation method with adjusted deviances.}
 
-\item{top.proportion}{numeric scalar. The proportion of top highly expressed genes used in the estimation of common dispersion. Only used when \code{legacy=TRUE}.}
+\item{top.proportion}{the proportion of top highly expressed genes used to get an initial estimate of the NB dispersion. Only used when \code{legacy=TRUE} and \code{dispersion=NULL}.}
 
 \item{\dots}{other arguments are passed to \code{\link{glmFit}}.}
 
@@ -60,27 +60,33 @@ glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL,
 
 \item{contrast}{numeric vector or matrix specifying one or more contrasts of the linear model coefficients to be tested equal to zero.}
 
-\item{poisson.bound}{logical, if \code{TRUE} then the p-value returned will never be less than would be obtained for a likelihood ratio test with NB dispersion equal to zero.}
+\item{poisson.bound}{logical, if \code{TRUE} then the p-value returned will never be less than would be obtained for a likelihood ratio test with NB-dispersion equal to 0 and QL-dispersion equal to 1. Only uses when \code{legacy=TRUE}.}
 }
 
 \details{
-\code{glmQLFit} and \code{glmQLFTest} implement the quasi-likelihood (QL) methods of Lund et al (2012), with some enhancements and with slightly different glm, trend and FDR methods.
+\code{glmQLFit} and \code{glmQLFTest} implement the quasi-likelihood (QL) methods of Lund et al (2012) with some enhancements and with slightly different glm, trend and FDR methods.
 See Lun et al (2016) or Chen et al (2016) for tutorials describing the use of \code{glmQLFit} and \code{glmQLFit} as part of a complete analysis pipeline.
 Another case study using \code{glmQLFit} and \code{glmQLFTest} is given in Section 4.7 of the edgeR User's Guide.
 
-\code{glmQLFit} is similar to \code{glmFit} except that it also estimates QL dispersion values.
-It calls the limma function \code{\link{squeezeVar}} to conduct empirical Bayes moderation of the genewise QL dispersions.
-If \code{robust=TRUE}, then the robust hyperparameter estimation features of \code{squeezeVar} are used (Phipson et al, 2013).
+\code{glmQLFit} is similar to \code{glmFit} except that it also estimates a quasi-dispersion (QL-dispersion) for each gene.
+It calls the limma function \code{\link{squeezeVar}} to conduct empirical Bayes moderation of the genewise QL-dispersions.
+If \code{robust=TRUE}, then the robust hyperparameter estimation features of \code{squeezeVar} are used (Phipson et al, 2016).
 If \code{abundance.trend=TRUE}, then a prior trend is estimated based on the average logCPMs.
-
-\code{glmQLFit} gives special attention to handling of zero counts, and in particular to situations when fitted values of zero provide no useful residual degrees of freedom for estimating the QL dispersion (Lun and Smyth, 2017).
-The usual residual degrees of freedom are returned as \code{df.residual} while the adjusted residual degrees of freedom are returned as \code{df.residuals.zeros}.
+If \code{covariate.trend=TRUE} is not \code{NULL}, then a prior trend is estimated using the \code{covariate.trend} values as predictors.
 
 \code{glmQLFTest} is similar to \code{glmLRT} except that it replaces likelihood ratio tests with empirical Bayes quasi-likelihood F-tests.
 The p-values from \code{glmQLFTest} are always greater than or equal to those that would be obtained from \code{glmLRT} using the same negative binomial dispersions.
 
-A major upgrade to \code{glmQLFit} was introduced in edgeR 4.0.0 (Bioconductor 3.17) incorporating bias corrected deviances and bias corrected residual df.
-Setting \code{legacy=FALSE} will reproduce earlier results as for Bioconductor 3.16 and earlier.
+\code{glmQLFit} gives special attention to handling of small counts and zero counts.
+When \code{legacy=TRUE}, the function uses the method of Lun and Smyth (2017) to adjust the residual degrees of freedom when fitted values of zero provide no useful residual degrees of freedom for estimating the QL dispersion.
+The usual residual degrees of freedom are returned as \code{df.residual} while the adjusted residual degrees of freedom are returned as \code{df.residuals.zeros}.
+
+If \code{legacy=FALSE}, then a more comprehensive adjustment for small counts is used .
+The new method adjusts both the residual deviances and the residual degrees of freedom to improve the accuracy of the quasi-dispersion estimates even for very small counts.
+With this new method, the residual deviance is no longer equal to the usual residual deviance from generalized linear model theory and the residual degrees of freedom are no longer integers.
+With the new method, the \code{glmQLFTest} function should give good error rate control even for data with many small counts.
+The \code{legacy=FALSE} method was introduced in edgeR 4.0.0 with the Bioconductor 3.18 release.
+Setting \code{legacy=FALSE} will reproduce earlier results as for Bioconductor 3.16.
 }
 
 \note{
@@ -89,40 +95,43 @@ It is not correct to supply genewise dispersions because \code{glmQLFTest} estim
 }
 
 \value{
-\code{glmQLFit} produces an object of class \code{DGEGLM} with the same components as produced by \code{\link{glmFit}}, plus:
-	\item{df.residual.zeros}{a numeric vector containing the number of effective residual degrees of freedom for each gene, taking into account any treatment groups with all zero counts.}
-	\item{df.residual.adj}{a numeric vector containing the number of adjusted residual degrees of freedom for each gene.}
-	\item{df.prior}{a numeric vector or scalar, giving the prior degrees of freedom for the QL dispersions.}
-	\item{var.prior}{a numeric vector of scalar, giving the location of the prior distribution for the QL dispersions.}
-	\item{var.post}{a numeric vector containing the posterior empirical Bayes QL dispersions.} 
-        \item{leverage}{a numeric matrix of scalar, giving the leverage matrix for the generalized linear models.}
-        \item{unit.deviance.adj}{a numeric matrix of scalar, giving the unit deviance for the generalized linear models.}
-        \item{unit.df.adj}{a numeric matrix of scalar, giving the unit degree of freedom for the generalized linear models.}
-\code{df.prior} is a vector of length \code{nrow(y)} if \code{robust=TRUE}, otherwise it has length 1.
-\code{var.prior} is a vector of length \code{nrow(y)} if \code{abundance.trend=TRUE}, otherwise it has length 1.
-\code{leverage} is a matrix of same size as \code{y} if \code{legacy=FALSE}. 
-\code{unit.deviance.adj} is a matrix of same size as \code{y} if \code{legacy=FALSE}.
-\code{unit.df.adj} is a matrix of same size as \code{y} if \code{legacy=FALSE}.
+\code{glmQLFit} with \code{legacy=TRUE} produces an object of class \code{DGEGLM} with the same components as produced by \code{\link{glmFit}}, plus:
+\item{df.residual.zeros}{numeric vector of effective residual degrees of freedom for each gene, after accounting for treatment groups with all zero counts.}
+\item{df.prior}{numeric vector of prior degrees of freedom for the QL-dispersions. Has length \code{nrow(y)} if \code{robust=TRUE}, otherwise length 1.}
+\item{var.prior}{numeric vector giving prior value for the QL-dispersions. Has length \code{nrow(y)} is \code{abundance.trend=TRUE}, otherwise length 1.}
+\item{var.post}{numeric vector of posterior genewise QL-dispersions.} 
+
+\code{glmQLFit} with \code{legacy=FALSE} produces an object of class \code{DGEGLM} with the same components as produced by \code{\link{glmFit}}, plus:
+\item{leverage}{numeric matrix of leverages for the genewise glms.}
+\item{unit.deviance.adj}{numeric matrix of adjusted unit deviances for the genewise glms.}
+\item{unit.df.adj}{numeric matrix of adjusted degrees of freedom for the unit deviances.}
+\item{df.residual.adj}{numeric vector of adjusted residual degrees of freedom for each gene.}
+\item{df.prior}{numeric vector of prior degrees of freedom for the QL-dispersions. Has length \code{nrow(y)} if \code{robust=TRUE}, otherwise length 1.}
+\item{var.prior}{numeric vector giving prior value the QL-dispersions. Has length \code{nrow(y)} is \code{abundance.trend=TRUE}, otherwise length 1.}
+\item{var.post}{numeric vector of posterior genewise QL-dispersions.} 
+\item{average.ql.dispersion}{average QL-dispersion, used to scale the NB dispersion after estimating the QL-dispersions.}
 
 \code{glmQFTest} produce an object of class \code{DGELRT} with the same components as produced by \code{\link{glmLRT}}, except that the \code{table$LR} column becomes \code{table$F} and contains quasi-likelihood F-statistics.
 It also stores \code{df.total}, a numeric vector containing the denominator degrees of freedom for the F-test, equal to \code{df.prior + df.residual.zeros}.
 }
 
 \references{
-Chen Y, Lun ATL, and Smyth, GK (2016).
+Chen Y, Lun ATL, Smyth GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
 \emph{F1000Research} 5, 1438.
-\url{https://f1000research.com/articles/5-1438}
+\doi{10.12688/f1000research.8987.2}
 
 Lun, ATL, Chen, Y, and Smyth, GK (2016).
 It's DE-licious: a recipe for differential expression analyses of RNA-seq experiments using quasi-likelihood methods in edgeR.
 \emph{Methods in Molecular Biology} 1418, 391-416.
-\url{http://www.statsci.org/smyth/pubs/QLedgeRPreprint.pdf} (Preprint 8 April 2015)
+\doi{10.1007/978-1-4939-3578-9_19}
+\url{https://gksmyth.github.io/pubs/QLedgeRPreprint.pdf} (Preprint 8 April 2015)
 
 Lund, SP, Nettleton, D, McCarthy, DJ, and Smyth, GK (2012).
 Detecting differential expression in RNA-sequence data using quasi-likelihood with shrunken dispersion estimates.
 \emph{Statistical Applications in Genetics and Molecular Biology} Volume 11, Issue 5, Article 8.
-\url{http://www.statsci.org/smyth/pubs/QuasiSeqPreprint.pdf}
+\doi{10.1515/1544-6115.1826}
+\url{https://gksmyth.github.io/pubs/QuasiSeqPreprint.pdf}
 
 Lun, ATL, and Smyth, GK (2017).
 No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.

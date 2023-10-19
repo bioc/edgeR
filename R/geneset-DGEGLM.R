@@ -54,18 +54,20 @@ romer.DGEGLM <- function(y, index, design=NULL, contrast=ncol(design), ...)
 
 .zscoreGLM <- function(y, design=NULL, contrast=ncol(design))
 #	Calculate NB z-scores given a DGEGLM object.
-#	Yunshun Chen
-#	Created 12 Oct 2023.
+#	Yunshun Chen and Lizhong Chen
+#	Created 19 Oct 2023.
 {
 #	Check for all zero counts
 	allzero <- rowSums(y$counts>1e-8)==0
 	if(any(allzero)) warning(sum(allzero),"rows with all zero counts")
 
-#	Check dispersion estimates in y
-	if(!is.null(y$working.dispersion))
-		dispersion <- y$working.dispersion
-	else 
-		dispersion <- y$dispersion
+#	Prepare count matrix
+	counts <- y$counts
+
+#	check average QL dispersion
+	if(!is.null(y$average.ql.dispersion)){
+		counts <- counts / pmax(1, y$var.prior)
+	}
 
 #	Make default design matrix from group factor
 	if(is.null(design)) design <- y$design
@@ -88,12 +90,11 @@ romer.DGEGLM <- function(y, index, design=NULL, contrast=ncol(design), ...)
 	}
 
 #	Null hypothesis fit
-	counts <- y$counts
-	if(!is.null(y$deviance.adj)) counts <- counts / pmax(1, y$var.prior)
-	fit.null <- glmFit(counts, design=design0, dispersion=dispersion, offset=y$offset, weights=y$weights, prior.count=0)
+#	the scale counts for new QL method still follow the original dispersion
+	fit.null <- glmFit(counts, design=design0, dispersion=y$dispersion, offset=y$offset, weights=y$weights, prior.count=0)
 
 #	Quantile residuals from null fit
 #	Applying a floor to mu avoids infinite z-scores when mu=0
-	y <- zscoreNBinom(counts, mu=pmax(fit.null$fitted.values,1e-17), size=1/dispersion)
+	y <- zscoreNBinom(counts, mu=pmax(fit.null$fitted.values,1e-17), size=1/y$dispersion)
 	y
 }
