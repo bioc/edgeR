@@ -4,18 +4,18 @@
 \alias{decideTests.DGELRT}
 \title{Multiple Testing Across Genes and Contrasts}
 \description{
-Identify which genes are significantly differentially expressed from an edgeR fit object containing p-values and test statistics.
+Identify which genes are significantly differentially expressed from an edgeR test object containing p-values and test statistics.
 }
 \usage{
 decideTestsDGE(object, adjust.method="BH", p.value=0.05, lfc=0)
 \method{decideTests}{DGELRT}(object, adjust.method="BH", p.value=0.05, lfc=0, \dots)
 }
 \arguments{
-  \item{object}{\code{DGEExact}, \code{DGELRT} or \code{glmQLFTest} object from which p-values and log-fold-changes can be extracted.}
+  \item{object}{an object of class \code{DGEExact}, \code{DGELRT} or \code{glmQLFTest} from which p-values and log-fold-changes can be extracted.}
   \item{adjust.method}{character string specifying p-value adjustment method.
-  Possible values are \code{"none"}, \code{"BH"}, \code{"fdr"} (equivalent to \code{"BH"}), \code{"BY"} and \code{"holm"}.
+  Possible values are \code{"none"}, \code{"BH"}, \code{"fdr"}, \code{"BY"} and \code{"holm"}.
   See \code{\link[stats]{p.adjust}} for details.}
-  \item{p.value}{numeric value between 0 and 1 giving the required family-wise error rate or false discovery rate.}
+  \item{p.value}{numeric value between 0 and 1 giving the required family-wise error or false discovery rate.}
   \item{lfc}{numeric, minimum absolute log2-fold-change required.}
   \item{\dots}{other arguments are not used.}
 }
@@ -25,18 +25,26 @@ This is essentially a single-column integer matrix with elements \code{-1}, \cod
 or \code{1} indicating whether each gene is classified as
 significantly down-regulated, not significant or
 significant up-regulated for the comparison contained in \code{object}.
-To be considered significant, genes have to have adjusted p-value below \code{p.value} and log2-fold-change greater than \code{lfc}.
+To be considered significant, genes need to have adjusted p-value below \code{p.value} and log2-fold-change greater than \code{lfc}.
 
 If \code{object} contains F-tests or LRTs for multiple contrasts, then the genes are simply classified as significant (1) or not significant.
-In this case, the log2-fold-change theshold \code{lfc} has to be achieved by at least one of the contrastsf or a gene to be significant.
+In this case, the log2-fold-change theshold \code{lfc} has to be achieved by at least one of the contrasts for a gene to be significant.
 }
 \details{
-This function applies a multiple testing procedure and significance level cutoff to the genewise tests contained in \code{object}.
+This function applies a multiple testing procedure and significance level cutoff to the genewise tests contained in an edgeR test object and collates the results in a data.frame table.
+
+The function can apply optionally apply a logFC cutoff and well as a p-value or FDR cutoff (although logFCs cutoff are not recommended, see note below).
+If the statistical tests are on 1 degree of freedom, then the logFC cutoff is applied to the absolute coefficient or contrast.
+If the statistical tests are on more than 1 degree of freedom, then the logFC cutoff will be satisfied if any of the coefficients or contrasts that define the test are greater than the cutoff.
+
+\code{decideTests} and \code{decideTestDGE} are equivalent.
+\code{decideTestsDGE} is currently retained for backward compatibility but is deprecated and will removed in a future version of edgeR.
 }
 \note{
-Although this function enables users to set p-value and lfc cutoffs simultaneously, this combination criterion not usually recommended.
-Unless the fold changes and p-values are very highly correlated, the addition of a fold change cutoff can increase the family-wise error rate or false discovery rate above the nominal level.
-Users wanting to use fold change thresholding should considering using \code{glmTreat} instead and leaving \code{lfc} at the default value when using \code{decideTestsDGE}.
+Although this function enables users to set p-value and logFC cutoffs simultaneously, this combination criterion not recommended.
+logFC cutoffs tend to favor low expressed genes and thereby reduce rather than increase biological significance.
+Unless the fold changes and p-values are very highly correlated, the addition of a fold change cutoff can also increase the family-wise error rate or false discovery rate above the nominal level.
+Users wanting to use fold change thresholding should considering using \code{glmTreat} instead and leaving \code{lfc} at the default value when using \code{decideTests}.
 }
 \seealso{
 \code{\link[limma:decideTests]{decideTests}} and \code{\link[limma:TestResults]{TestResults}} in the limma package.
