@@ -31,10 +31,17 @@ If \code{object} contains F-tests or LRTs for multiple contrasts, then the genes
 In this case, the log2-fold-change theshold \code{lfc} has to be achieved by at least one of the contrastsf or a gene to be significant.
 }
 \details{
-This function applies a multiple testing procedure and significance level cutoff to the genewise tests contained in \code{object}.
+This function applies a multiple testing procedure and significance level cutoff to the genewise tests contained in an edgeR test object and collates the results in a data.frame table.
+
+The function can apply optionally apply a logFC cutoff and well as a p-value or FDR cutoff (although logFCs cutoff are not generally recommend, see note below).
+If the statistical tests are on 1 degree of freedom, then the logFC cutoff is applied to the absolute coefficient or contrast.
+If the statistical tests are on more than 1 degree of freedom, then the logFC cutoff will be satisfied if any of the coefficients or contrasts that define the test are greater than the cutoff.
+
+\code{decideTests} and \code{decideTestDGE} are equivalent.
+\code{decideTestsDGE} is currently retained for backward compatibility, but it is deprecated and will removed in a future version of edgeR.
 }
 \note{
-Although this function enables users to set p-value and lfc cutoffs simultaneously, this combination criterion not usually recommended.
+Although this function enables users to set p-value and lfc cutoffs simultaneously, this combination criterion not recommended.
 Unless the fold changes and p-values are very highly correlated, the addition of a fold change cutoff can increase the family-wise error rate or false discovery rate above the nominal level.
 Users wanting to use fold change thresholding should considering using \code{glmTreat} instead and leaving \code{lfc} at the default value when using \code{decideTestsDGE}.
 }

@@ -2,10 +2,18 @@
 
 decideTests.DGEExact <- decideTests.DGELRT <- function(object,adjust.method="BH",p.value=0.05,lfc=0,...)
 {
-	decideTestsDGE(object=object,adjust.method=adjust.method,p.value=p.value,lfc=lfc)
+	.decideTestsDGE(object=object,adjust.method=adjust.method,p.value=p.value,lfc=lfc)
 }
 
 decideTestsDGE <- function(object,adjust.method="BH",p.value=0.05,lfc=0)
+#	Mark decideTestsDGE as deprecated.
+#	29 October 2023.
+{
+	.Deprecated(new="decideTests",old="decideTestsDGE")
+	.decideTestsDGE(object=object,adjust.method=adjust.method,p.value=p.value,lfc=lfc)
+}
+
+.decideTestsDGE <- function(object,adjust.method="BH",p.value=0.05,lfc=0)
 #	Accept or reject hypothesis tests across genes and contrasts
 #	edgeR team. Original author was Davis McCarthy.
 #	Created 15 August 2010. Last modified 15 July 2018.
