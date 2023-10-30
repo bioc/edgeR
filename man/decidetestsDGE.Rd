@@ -41,7 +41,7 @@ If the statistical tests are on more than 1 degree of freedom, then the logFC cu
 \code{decideTestsDGE} is currently retained for backward compatibility but will be removed in a future version of edgeR.
 }
 \note{
-Although this function enables users to set p-value and logFC cutoffs simultaneously, this combination criterion not recommended.
+Although this function enables users to set p-value and logFC cutoffs simultaneously, this combination criterion is not recommended.
 logFC cutoffs tend to favor low expressed genes and thereby reduce rather than increase biological significance.
 Unless the fold changes and p-values are very highly correlated, the addition of a fold change cutoff can also increase the family-wise error rate or false discovery rate above the nominal level.
 Users wanting to use fold change thresholding should considering using \code{glmTreat} instead and leaving \code{lfc} at the default value when using \code{decideTests}.
