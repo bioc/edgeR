@@ -38,7 +38,7 @@ If the statistical tests are on 1 degree of freedom, then the logFC cutoff is ap
 If the statistical tests are on more than 1 degree of freedom, then the logFC cutoff will be satisfied if any of the coefficients or contrasts that define the test are greater than the cutoff.
 
 \code{decideTests} and \code{decideTestDGE} are equivalent.
-\code{decideTestsDGE} is currently retained for backward compatibility but is deprecated and will removed in a future version of edgeR.
+\code{decideTestsDGE} is currently retained for backward compatibility but is deprecated and will be removed in a future version of edgeR.
 }
 \note{
 Although this function enables users to set p-value and logFC cutoffs simultaneously, this combination criterion is not recommended.
