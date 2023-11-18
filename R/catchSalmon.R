@@ -2,7 +2,7 @@ catchSalmon <- function(paths,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Gordon Smyth
-#	Created 1 April 2018. Last modified 28 Aug 2019.
+#	Created 1 April 2018. Last modified 19 Nov 2023.
 {
 	NSamples <- length(paths)
 
@@ -11,6 +11,9 @@ catchSalmon <- function(paths,verbose=TRUE)
 	if(!OK) stop("jsonlite package required but is not installed (or can't be loaded)")
 	OK <- requireNamespace("readr",quietly=TRUE)
 	if(!OK) stop("readr package required but is not installed (or can't be loaded)")
+
+#	Initialize vector of inferential sample types
+	ResampleType <- rep_len("",NSamples)
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {
@@ -29,7 +32,9 @@ catchSalmon <- function(paths,verbose=TRUE)
 		if(is.null(NTx)) stop("Can't find number of targets")
 		NBoot <- Meta$num_bootstraps
 		if(is.null(NBoot)) stop("Can't find number of bootstraps")
-		if(verbose) cat(NTx,"transcripts,",NBoot,"bootstraps\n")
+		Type <- Meta$samp_type
+		if(is.null(ResampleType)) Type <- "bootstrap" else ResampleType[j] <- Type
+		if(verbose) cat(NTx,"transcripts,",NBoot,Type,"samples\n")
 
 #		Read counts
 		if(j == 1L) {
@@ -81,5 +86,5 @@ catchSalmon <- function(paths,verbose=TRUE)
 	Quant1$TPM <- Quant1$NumReads <- NULL
 	Quant1$Overdispersion <- OverDisp
 
-	list(counts=Counts,annotation=Quant1,overdispersion.prior=OverDispPrior)
+	list(counts=Counts,annotation=Quant1,overdispersion.prior=OverDispPrior,resample.type=ResampleType)
 }

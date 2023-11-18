@@ -17,7 +17,7 @@ catchSalmon(paths, verbose = TRUE)
 }
 
 \details{
-These functions assume that kallisto (Bray et al 2016) or Salmon (Patro et al 2017) have been run to obtain estimated transcript counts for one or more RNA samples and that bootstrap samples have also been generated.
+These functions assume that kallisto (Bray et al 2016) or Salmon (Patro et al 2017; Zakeri et al 2017) have been run to obtain estimated transcript counts for one or more RNA samples and that bootstrap samples have also been generated.
 These functions catch the counts and use the bootstrap samples to estimate an overdispersion parameter for each transcript.
 The overdispersion represents the variance inflation that occurs from ambiguity in assigning sequence reads to transcripts.
 Transcripts that overlap other transcripts and have greater quantification uncertainty will have larger overdispersions.
@@ -30,7 +30,9 @@ The scaled counts behave much like negative binomial counts and show the same me
 \value{
 A list containing components
 \item{counts}{matrix of transcript counts}
-\item{annotation}{data.frame of transcript information.}
+\item{annotation}{data.frame of transcript information with columns \code{Length}, \code{EffectiveLength} and \code{Overdispersion}.}
+\item{overdispersion.prior}{median overdispersion, used to moderate the transcript-wise overdispersion values.}
+\item{resample.type}{character vector giving type of resampling (\code{"bootstrap"} or \code{"gibbs"}) for each sample. Only for \code{catchSalmon}.}
 }
 
 \author{Gordon Smyth}
@@ -48,6 +50,10 @@ Near-optimal probabilistic RNA-seq quantification.
 Patro R, Duggal G, Love MI, Irizarry RA, Kingsford C (2017).
 Salmon provides fast and bias-aware quantification of transcript expression.
 \emph{Nature Methods}, 14(4), 417-419.
+
+Zakeri M, Srivastava A, Almodaresi F, Patro R (2017).
+Improved data-driven likelihood factorizations for transcript abundance estimation.
+\emph{Bioinformatics} 33(14), i142-i151.
 }
 
 \examples{
