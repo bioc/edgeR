@@ -2,7 +2,7 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
-\section{Version 4.0.0}{\itemize{
+\section{version 4.0.0 (2023-10-25}{\itemize{
 \item
 New statistical methods implemented in glmQLFit() to ensure accurate estimation of the quasi-dispersion for data with small counts.
 The new method computes adjusted residual deviances with adjusted degrees of freedom to improve the chisquare approximation to the residual deviance.
@@ -24,7 +24,7 @@ Revised help pages for filterByExp() and catchSalmon().
 }}
 
 
-\section{Version 3.42.0}{\itemize{
+\section{version 3.42.0 (2023-04-25)}{\itemize{
 \item
 New function Seurat2PB() for creating a pseudo-bulk DGEList object from a Seurat object.
 New case study in User's Guide illustrating its use.
@@ -49,7 +49,7 @@ The case study on alernative splicing in the User's Guide has been replaced with
 }}
 
 
-\section{Version 3.40.0}{\itemize{
+\section{Version 3.40.0 (2023-11-02)}{\itemize{
 \item
 New argument 'hairpinBeforeBarcode' for processAmplicons().
 The revised function can process reads where the hairpins/sgRNAs/sample index sequences are in variable positions within each read.
@@ -63,13 +63,13 @@ Bug fix to R_compute_apl.cpp to make sure GLM working weights are zero when fitt
 }}
 
 
-\section{Version 3.38.0}{\itemize{
+\section{Version 3.38.0 (2022-04-27)}{\itemize{
 \item
 New argument 'keep.EList' for voomLmFit() to store the normalized log2-CPM values and voom weights.
 }}
 
 
-\section{Version 3.36.0}{\itemize{
+\section{Version 3.36.0 (2021-10-27)}{\itemize{
 \item
 diffSpliceDGE() now returns p-value=1 instead of NA when an exon has all zero counts.
 
@@ -78,7 +78,7 @@ Improve error message from readDGE() when there are repeated gene/tag names.
 }}
 
 
-\section{Version 3.34.0}{\itemize{
+\section{Version 3.34.0 (2021-05-20)}{\itemize{
 \item
 New function featureCounts2DGEList() that converts results from Rsubread::featureCounts() to DGELists.
 
@@ -95,7 +95,7 @@ Fix a bug in voomLmFit() whereby zeros were sometimes incorrectly identified due
 }}
 
 
-\section{Version 3.32.0}{\itemize{
+\section{Version 3.32.0 (2020-10-28)}{\itemize{
 \item
 cpm.default() and rpkm.default() now accept offset.
 
@@ -119,7 +119,7 @@ Fixed a bug that diffSpliceDGE() accept more than one coef. It now gives a warni
 }}
 
 
-\section{Version 3.30.2}{\itemize{
+\section{Version 3.30.2 (2020-04-28)}{\itemize{
 \item
 New function voomLmFit() that combines the limma voom-lmFit pipeline with loss of residual df due to zero counts as for glmQLFit().
 The new function is more robust to zero counts than running voom() and lmFit() separately.
@@ -155,7 +155,7 @@ Rewrite User's Guide Section 3.5 on Multilevel Experiments so that the code is v
 }}
 
 
-\section{Version 3.28.0}{\itemize{
+\section{Version 3.28.0 (2019-10-30)}{\itemize{
 \item
 Add head() and tail() methods for edgeR classes.
 
@@ -185,9 +185,9 @@ Bug fix to goana.DGELRT() and kegga.DGELRT() when the LRT was on more than 1 df.
 }}
 
 
-\section{Version 3.26.0}{\itemize{
+\section{Version 3.26.0 (2019-05-03)}{\itemize{
 \item
-read10X() now automatically detects files names from latest CellRanger version.
+read10X() now automatically detects file names from latest CellRanger version.
 
 \item
 glmTreat() now checks whether 'contrast' is a matrix with multiple columns and uses first column.
@@ -207,7 +207,7 @@ Bug fix to filterByExpr().
 }}
 
 
-\section{Version 3.24.0}{\itemize{
+\section{Version 3.24.0 (2018-10-31)}{\itemize{
 \item
 New functions catchKallisto() and catchSalmon() to read outputs from kallisto and Salmon
 and to compute overdispersion factors for each transcript from bootstrap samples.
@@ -243,7 +243,7 @@ Bug fix to column name returned by decideTestsDGE().
 }}
 
 
-\section{Version 3.22.0}{\itemize{
+\section{Version 3.22.0 (2018-04-27)}{\itemize{
 \item
 New function read10X() to read 10X Genomics files.
 
@@ -294,7 +294,7 @@ Bug fix to cpmByGroup().
 }}
 
 
-\section{Version 3.20.0}{\itemize{
+\section{Version 3.20.0 (2017-10-31}{\itemize{
 \item
 DGEList() sets genes and counts to have same row.names.
 
@@ -363,7 +363,7 @@ Added a case study of differential methylation analysis to the user's guide.
 }}
 
 
-\section{Version 3.18.0}{\itemize{
+\section{Version 3.18.0 (2017-04-25)}{\itemize{
 \item
 roast.DGEList(), mroast.DGEList(), fry.DGEList() and camera.DGEList() now have explicit arguments instead of passing arguments with ... to the default method.
 
@@ -390,7 +390,7 @@ gini() now support NA values and avoids integer overflow.
 }}
 
 
-\section{Version 3.16.0}{\itemize{
+\section{Version 3.16.0 (2016-10-18)}{\itemize{
 \item 
 estimateDisp() now respects weights in calculating the APLs.
 
@@ -426,7 +426,7 @@ Migrated some internal calculations and checks to C++ for greater efficiency.
 }}
 
 
-\section{Version 3.14.0}{\itemize{
+\section{Version 3.14.0 (2016-05-04)}{\itemize{
 \item
 estimateDisp(), estimateCommonDisp(), estimateTrendedDisp(), estimateTagwiseDisp(), splitIntoGroups() and equalizeLibSizes() are now S3 generic functions.
 
@@ -472,7 +472,7 @@ Add a CRISPR-Cas9 screen case study to the users' guide and rename Nigerian case
 }}
 
 
-\section{Version 3.12.0}{\itemize{
+\section{Version 3.12.0 (2015-10-14)}{\itemize{
 \item
 New argument tagwise for estimateDisp(), allowing users to optionally skip estimation of tagwise dispersions, estimating common and trended dispersions only.
 
@@ -480,13 +480,13 @@ New argument tagwise for estimateDisp(), allowing users to optionally skip estim
 estimateTrendedDisp() has more stable performance and does not return negative trended dispersion estimates.
 
 \item
-New plotMD methods for DGEList, DGEGLM, DGEExact and DGELRT objects to make a mean-difference plot (aka MA plot).
+New plotMD() methods for DGEList, DGEGLM, DGEExact and DGELRT objects to make a mean-difference plot (aka MA plot).
 
 \item
-readDGE() now recognizes HTSeq style meta genes.
+readDGE() now recognizes HTSeq-style meta genes.
 
 \item
-Remove the F-test in glmLRT().
+Remove the F-test option from glmLRT().
 
 \item
 New argument contrast for diffSpliceDGE(), allowing users to specify the testing contrast. 
@@ -498,7 +498,7 @@ glmTreat() returns both logFC and unshrunk.logFC in the output table.
 New method implemented in glmTreat() to increase the power of the test.
 
 \item
-New kegga methods for DGEExact and DGELRT objects to perform KEGG pathway analysis of differentially expressed genes using Entrez Gene IDs.
+New kegga() methods for DGEExact and DGELRT objects to perform KEGG pathway analysis of differentially expressed genes using Entrez Gene IDs.
 
 \item
 New dimnames<- methods for DGEExact and DGELRT objects.
@@ -514,7 +514,7 @@ User's Guide updated. Three old case studies are replaced by two new comprehensi
 }}
 
 
-\section{Version 3.10.0}{\itemize{
+\section{Version 3.10.0 (2015-04-17)}{\itemize{
 \item
 An DGEList method for romer() has been added, allowing access to rotation gene set enrichment analysis.
 
@@ -533,8 +533,7 @@ Old argument col is now removed, but can be passed using ....
 Various other improvements to the plotMDS method for DGEList objects, better labelling of the axes and protection against degenerate dimensions.
 
 \item
-treatDGE() is renamed as glmTreat().
-It can now optionally work with either likelihood ratio tests or with quasi-likelihood F-tests.
+treatDGE() renamed to glmTreat() and now works with either likelihood ratio tests or with quasi-likelihood F-tests.
 
 \item
 glmQLFit() is now an S3 generic function.
@@ -556,8 +555,7 @@ requireNamespace() is now used internally instead of require() to access functio
 }}
 
 
-\section{Version 3.8.0}{\itemize{
-
+\section{Version 3.8.0 (2014-10-14)}{\itemize{
 \item
 New goana() methods for DGEExact and DGELRT objects to perform Gene Ontology analysis of differentially expressed genes using Entrez Gene IDs.
 
@@ -593,7 +591,7 @@ The SAGE datasets from Zhang et al (1997) are no longer included with the edgeR 
 }}
 
 
-\section{Version 3.6.0}{\itemize{
+\section{Version 3.6.0 (2014-04-12)}{\itemize{
 
 \item
 Improved treatment of fractional counts.
@@ -662,7 +660,7 @@ The functions is.fullrank and nonEstimable are now imported from limma.
 }}
 
 
-\section{Version 3.4.0}{\itemize{
+\section{Version 3.4.0 (2013-10-15}{\itemize{
 
 \item
 estimateDisp() now creates the design matrix correctly when the design matrix is not given as an argument and there is only one group.  Previously this case gave an error.
@@ -695,7 +693,8 @@ predFC() with design=NULL now uses normalization factors correctly.
 However this use of predFC() to compute counts per million is being phased out in favour of cpm().
 }}
 
-\section{Version 3.2.0}{\itemize{
+
+\section{Version 3.2.0 (2013-04-04)}{\itemize{
 
 \item
 The User's Guide has a new section on between and within subject designs and a new case study on RNA-seq profiling of unrelated Nigerian individuals.
@@ -769,7 +768,7 @@ Bug fix to plotMDS.DGEList to make consistent use of norm.factors.
 }}
 
 
-\section{Version 3.0.0}{\itemize{
+\section{Version 3.0.0 (2012-10-02}{\itemize{
 
 \item
 New chapter in the User's Guide covering a number of common types of experimental designs, including multiple groups, multiple factors and additive models.
@@ -847,7 +846,7 @@ Added plot.it argument to maPlot().
 }}
 
 
-\section{Version 2.6.0}{\itemize{
+\section{Version 2.6.0 (2012-03-31)}{\itemize{
 
 \item
 edgeR now depends on limma.
@@ -919,7 +918,7 @@ Minor fixes to various functions to ensure correct results in special cases.
 }}
 
 
-\section{Version 2.4.0}{\itemize{
+\section{Version 2.4.0 (2011-11-01)}{\itemize{
 
 \item New function spliceVariants() for detecting alternative exon usage
       from exon-level count data.
@@ -1010,3 +1009,43 @@ Minor fixes to various functions to ensure correct results in special cases.
       at zero for one or more groups.
 }}
 
+
+\section{Version 2.2.0 (2011-04-14)}{\itemize{
+\item
+Release of generalized linear model pipeline.
+}}
+
+
+\section{Version 1.8.0 (2010-10-18)}{\itemize{
+\item
+Improvements to classic pipeline.
+
+\item
+Introduction of generalized linear model pipeline.
+}}
+
+
+\section{Version 1.6.0 (2010-03-12)}{\itemize{
+\item
+Improvements to classic pipeline.
+}}
+
+
+\section{Version 1.4.0 (2009-10-28)}{\itemize{
+\item
+Improvements to classic pipeline.
+}}
+
+
+\section{Version 1.2.0 (2009-04-21)}{\itemize{
+\item
+Improvements to classic pipeline.
+}}
+
+
+\section{Version 1.0.0 (2008-10-29)}{\itemize{
+\item
+Initial release of classic pipeline.
+Documented topics and functions: 
+alpha.approxeb, approx.expected.info, condLogLikDerDelta, condLogLikDerSize, deDGE, "deDGEList-class", "show,deDGEList-method", "DGEList-class", DGEList, "show,DGEList-method", EBList-class, "show,EBList-method", estimatePs, exactTestNB, findMaxD2, getData, interpolateHelper, logLikDerP, plotMA, "plotMA,deDGEList-method", quantileAdjust, readDGE, tau2.0.objective, topTags.
+}}
