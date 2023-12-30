@@ -22,11 +22,11 @@ calcNormFactors.SummarizedExperiment <- function(object, method=c("TMM","TMMwsp"
 calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for count matrices
 #	Mark Robinson, Gordon Smyth and edgeR team
-#	Created 22 October 2009. Last modified 2 June 2020.
+#	Created 22 October 2009. Last modified 29 Dec 2023.
 {
 #	Check object
 	x <- as.matrix(object)
-	if(any(is.na(x))) stop("NA counts not permitted")
+	if(anyNA(x)) stop("NA counts not permitted")
 	nsamples <- ncol(x)
 
 #	Check lib.size

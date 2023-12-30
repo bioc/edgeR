@@ -49,7 +49,7 @@ The case study on alernative splicing in the User's Guide has been replaced with
 }}
 
 
-\section{Version 3.40.0 (2023-11-02)}{\itemize{
+\section{Version 3.40.0 (2022-11-02)}{\itemize{
 \item
 New argument 'hairpinBeforeBarcode' for processAmplicons().
 The revised function can process reads where the hairpins/sgRNAs/sample index sequences are in variable positions within each read.

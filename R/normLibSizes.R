@@ -27,11 +27,11 @@ normLibSizes.default <- function(object, lib.size=NULL, method=c("TMM","TMMwsp",
 #	Library size normalization for read count matrices.
 #	Method for atomic count matrices.
 #	Mark Robinson, Gordon Smyth and edgeR team
-#	Created 22 October 2009. Last modified 7 Nov 2022.
+#	Created 22 October 2009. Last modified 29 Dec 2023.
 {
 #	Check object
 	x <- as.matrix(object)
-	if(any(is.na(x))) stop("NA counts not permitted")
+	if(anyNA(x)) stop("NA counts not permitted")
 	nsamples <- ncol(x)
 
 #	Check lib.size
