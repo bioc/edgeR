@@ -1004,7 +1004,7 @@ Minor fixes to various functions to ensure correct results in special cases.
 \item Bug fix to mglmOneWay(), which was confusing parametrizations when
       the design matrix included negative values.
 
-\item mglmOneWay() (and hence glmFit) no longer produces NA coefficients
+\item mglmOneWay() (and hence glmFit) no longer produce NA coefficients
       when some of the fitted values were exactly zero.
 
 \item Changes to offset behaviour in estimateGLMCommonDisp(),
@@ -1023,6 +1023,10 @@ Minor fixes to various functions to ensure correct results in special cases.
 \section{Version 2.2.0 (2011-04-14)}{\itemize{
 \item
 Release of generalized linear model pipeline.
+
+\item
+Documented topics and functions:
+adjustedProfileLik, approx.expected.info, as.matrix.DGEList, betaApproxNBTest, binCMLDispersion, binGLMDispersion, binomTest, calcNormFactors, commonCondLogLikDerDelta, condLogLikDerDelta, condLogLikDerSize, decideTestsDGE, "DGEExact-class", "show,DGEExact-method", "DGEGLM-class", "show,DGEGLM-method", "DGEList-class", DGEList, "DGELRT-class", "show,DGELRT-method", dglmStdResid, getDispersions, dim.DGEList, dim.DGEExact, dim.TopTags, dim.DGEGLM, dim.DGELRT, length.DGEList, length.DGEExact, length.TopTags, length.DGEGLM, length.DGELRT, dimnames.DGEList, "dimnames<-.DGEList", dispBinTrend, dispCoxReid, dispDeviance, dispPearson, dispCoxReidInterpolateTagwise, dispCoxReidSplineTrend, dispCoxReidPowerTrend, edgeR, "edgeR-package", equalizeLibSizes, estimateCommonDisp, estimateCRDisp, estimateGLMCommonDisp, estimateGLMCommonDisp.DGEList, estimateGLMCommonDisp.default, estimateGLMTagwiseDisp, estimateGLMTagwiseDisp.DGEList, estimateGLMTagwiseDisp.default, estimateGLMTrendedDisp, estimateGLMTrendedDisp.DGEList, estimateGLMTrendedDisp.default, estimatePs, estimateSmoothing, estimateTagwiseDisp, exactTest, exactTest.matrix, expandAsMatrix, getCounts, getOffsets, glmFit, glmLRT, gof, goodTuring, goodTuringProportions, logLikDerP, maPlot, maximizeInterpolant, binMeanVar, pooledVar, plotMeanVar, mglm, mglmSimple, mglmLS, mglmOneGroup, mglmOneWay, mglmLevenberg, deviances.function, designAsFactor, movingAverageByCol, movingAverageByCol, plotMDS.dge, plotSmear, q2qpois, q2qnbinom, readDGE, splitIntoGroups, splitIntoGroupsPseudo, subsetting, "[.DGEList", "[.DGEExact", "[.DGELRT", systematicSubset, thinCounts, topTags, TopTags-class, show,TopTags-method, "[.TopTags", Tu102, Tu98, NC1, NC2, weightedComLik, weightedComLikMA, weightedCondLogLikDerDelta.
 }}
 
 
@@ -1056,6 +1060,8 @@ Improvements to classic pipeline.
 \section{Version 1.0.0 (2008-10-29)}{\itemize{
 \item
 Initial release of classic pipeline.
+
+\item
 Documented topics and functions: 
 alpha.approxeb, approx.expected.info, condLogLikDerDelta, condLogLikDerSize, deDGE, "deDGEList-class", "show,deDGEList-method", "DGEList-class", DGEList, "show,DGEList-method", EBList-class, "show,EBList-method", estimatePs, exactTestNB, findMaxD2, getData, interpolateHelper, logLikDerP, plotMA, "plotMA,deDGEList-method", quantileAdjust, readDGE, tau2.0.objective, topTags.
 }}
