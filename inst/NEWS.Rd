@@ -5,10 +5,19 @@
 
 \section{version 4.1.5 (2023-12-31}{\itemize{
 \item
-Make `legacy=FALSE` the default for glmQLFit(), so the new QL pipeline becomes the default.
+The new QL pipeline becomes the default for glmQLFit() by setting `legacy=FALSE`.
 
 \item
 The NEWS.Rd file has been revised to include the date of each version release and to include earlier versions of edgeR.
+
+\item
+catchSalmon() now detects whether resamples are Gibbs or bootstrap.
+
+\item
+The catchSalmon help page now explains the columns of the `annotation` output data.frame.
+
+\item
+decideTestsDGE() deprecated in favor of decideTests().
 }}
 
 
@@ -1004,7 +1013,7 @@ Minor fixes to various functions to ensure correct results in special cases.
 \item Bug fix to mglmOneWay(), which was confusing parametrizations when
       the design matrix included negative values.
 
-\item mglmOneWay() (and hence glmFit) no longer produce NA coefficients
+\item mglmOneWay() (and hence glmFit) no longer produces NA coefficients
       when some of the fitted values were exactly zero.
 
 \item Changes to offset behaviour in estimateGLMCommonDisp(),
