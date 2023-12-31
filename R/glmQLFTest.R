@@ -3,7 +3,7 @@
 glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
-glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, top.proportion=0.05, ...)
+glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.05, ...)
 # 	Yunshun Chen, Aaron Lun, Gordon Smyth
 #	Created 05 November 2014. Last modified 2 Oct 2023.
 {
@@ -40,7 +40,7 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 	new("DGEGLM",fit)
 }
 
-glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, top.proportion=0.05,...)
+glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.05,...)
 #	Created 03 April 2020. Last modified 8 April 2023.
 {
 	y <- SE2DGEList(y)
@@ -48,7 +48,7 @@ glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abund
 }
 
 glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, 
-        abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=TRUE, ...)
+        abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, ...)
 # 	Fits a GLM and estimates quasi-likelihood dispersions for each gene.
 #
 # 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.

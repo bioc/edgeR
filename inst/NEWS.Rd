@@ -2,6 +2,16 @@
 \title{edgeR News}
 \encoding{UTF-8}
 
+
+\section{version 4.1.5 (2023-12-31}{\itemize{
+\item
+Make `legacy=FALSE` the default for glmQLFit(), so the new QL pipeline becomes the default.
+
+\item
+The NEWS.Rd file has been revised to include the date of each version release and to include earlier versions of edgeR.
+}}
+
+
 \section{version 4.0.0 (2023-10-25}{\itemize{
 \item
 New statistical methods implemented in glmQLFit() to ensure accurate estimation of the quasi-dispersion for data with small counts.
