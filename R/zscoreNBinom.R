@@ -3,7 +3,7 @@ zscoreNBinom <- function(q, size, mu, method="midp")
 #	Non-integer values for q are allowed
 #	Gordon Smyth, Aaron Lun
 #	Created 10 December 2011
-#	Last modified 15 Feb 2019
+#	Last modified 8 January 2024
 {
 #	Ensure arguments all same length
 	n <- length(q)
@@ -12,7 +12,7 @@ zscoreNBinom <- function(q, size, mu, method="midp")
 
 #	Check method
 	method <- match.arg(method, c("midp","random"))
-	if(method=="randomized") return(.zscoreNBinomRandomized(q=q,size=size,mu=mu))
+	if(method=="random") return(.zscoreNBinomRandomized(q=q,size=size,mu=mu))
 
 #	Output object
 	z <- q
