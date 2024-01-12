@@ -1,7 +1,7 @@
 \name{cutWithMinN}
 \alias{cutWithMinN}
 
-\title{Cut numeric vector into non-empty intervals}
+\title{Cut Numeric Vector Into Non-empty Intervals}
 
 \description{
 Discretizes a numeric vector.

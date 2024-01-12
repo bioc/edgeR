@@ -1,13 +1,11 @@
 
-R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
+R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -593,6 +591,44 @@ $n0
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.09719 0.13460 0.19422 0.22321 0.27176 0.61463 
 > 
+> # glmQLFit
+> fit <- glmQLFit(y,design,legacy=FALSE)
+> fit$dispersion
+[1] 0.2073113
+> summary(fit$var.post)
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+0.007627 0.024804 0.032000 0.143246 0.059155 2.589922 
+> fit$unit.deviance.adj[1:10,]
+   Sample1      Sample2      Sample3
+1        0 0.000000e+00 0.000000e+00
+2        0 0.000000e+00 0.000000e+00
+3        0 0.000000e+00 0.000000e+00
+4        0 0.000000e+00 0.000000e+00
+5        0 0.000000e+00 0.000000e+00
+6        0 7.715120e-02 9.346359e-02
+7        0 2.951426e-01 2.111539e-01
+8        0 1.640577e-02 1.518755e-02
+9        0 1.039516e+00 5.865753e-01
+10       0 6.813594e-05 6.790318e-05
+> fit$unit.df.adj[1:10,]
+   Sample1   Sample2   Sample3
+1        0 0.0000000 0.0000000
+2        0 0.0000000 0.0000000
+3        0 0.0000000 0.0000000
+4        0 0.0000000 0.0000000
+5        0 0.0000000 0.0000000
+6        0 0.4867038 0.4881894
+7        0 0.4992433 0.5021103
+8        0 0.4942884 0.4952040
+9        0 0.4902472 0.4914076
+10       0 0.4942861 0.4952019
+> summary(fit$deviance.adj)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.0778  0.5146  1.0412  1.6254  5.1916 
+> summary(fit$df.residual.adj)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.9759  0.9817  0.9363  0.9881  1.1005 
+> 
 > proc.time()
    user  system elapsed 
-   1.93    0.18    2.07 
+   2.07    0.10    2.18 

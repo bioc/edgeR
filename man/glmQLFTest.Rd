@@ -7,20 +7,20 @@
 
 \title{Genewise Negative Binomial Generalized Linear Models with Quasi-Likelihood Tests}
 
-\description{Fit a quasi-likelihood negative binomial generalized log-linear model to count data.
-Conduct genewise statistical tests for a given coefficient or contrast.}
+\description{Fit a negative binomial generalized log-linear model to the read counts for each gene.
+Conduct genewise quasi F-tests for a given coefficient or coefficient contrast.}
 
 \usage{
-\method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
-        robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = TRUE, top.proportion=0.05, \dots)
-\method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
-        robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = TRUE, top.proportion=0.05, \dots)
 \method{glmQLFit}{default}(y, design = NULL, dispersion = NULL, offset = NULL, lib.size = NULL,
         weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL,
-        covariate.trend = NULL, robust = FALSE,
-        winsor.tail.p = c(0.05, 0.1), legacy = TRUE, \dots)
+        covariate.trend = NULL, robust = FALSE, winsor.tail.p = c(0.05, 0.1),
+        legacy = FALSE, top.proportion = 0.05, \dots)
+\method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
+        robust = FALSE, winsor.tail.p = c(0.05, 0.1),
+        legacy = FALSE, top.proportion = 0.05, \dots)
+\method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
+        robust = FALSE, winsor.tail.p = c(0.05, 0.1),
+        legacy = FALSE, top.proportion = 0.05, \dots)
 glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL,
         poisson.bound = TRUE)
 }
@@ -81,7 +81,7 @@ The p-values from \code{glmQLFTest} are always greater than or equal to those th
 When \code{legacy=TRUE}, the function uses the method of Lun and Smyth (2017) to adjust the residual degrees of freedom when fitted values of zero provide no useful residual degrees of freedom for estimating the QL dispersion.
 The usual residual degrees of freedom are returned as \code{df.residual} while the adjusted residual degrees of freedom are returned as \code{df.residuals.zeros}.
 
-If \code{legacy=FALSE}, then a more comprehensive adjustment for small counts is used .
+If \code{legacy=FALSE}, then a more comprehensive adjustment for small counts is used.
 The new method adjusts both the residual deviances and the residual degrees of freedom to improve the accuracy of the quasi-dispersion estimates even for very small counts.
 With this new method, the residual deviance is no longer equal to the usual residual deviance from generalized linear model theory and the residual degrees of freedom are no longer integers.
 With the new method, the \code{glmQLFTest} function should give good error rate control even for data with many small counts.

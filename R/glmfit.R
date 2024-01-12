@@ -4,7 +4,7 @@ glmFit <- function(y, ...)
 UseMethod("glmFit")
 
 glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
-#	Created 11 May 2011.  Last modified 21 Nov 2018.
+#	Created 11 May 2011.  Last modified 11 Jan 2024.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -21,12 +21,12 @@ glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, s
 	offset <- getOffset(y)
 	if(is.null(y$AveLogCPM)) y$AveLogCPM <- aveLogCPM(y)
 
-	fit <- glmFit(y=y$counts,design=design,dispersion=dispersion,offset=offset,lib.size=NULL,weights=y$weights,prior.count=prior.count,start=start,...)
+	fit <- glmFit.default(y=y$counts,design=design,dispersion=dispersion,offset=offset,lib.size=NULL,weights=y$weights,prior.count=prior.count,start=start,...)
 	fit$samples <- y$samples
 	fit$genes <- y$genes
 	fit$prior.df <- y$prior.df
 	fit$AveLogCPM <- y$AveLogCPM
-	new("DGEGLM",fit)
+	fit
 }
 
 glmFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
