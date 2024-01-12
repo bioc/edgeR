@@ -4,8 +4,8 @@ glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
 glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.05, ...)
-# 	Yunshun Chen, Aaron Lun, Gordon Smyth
-#	Created 05 November 2014. Last modified 2 Oct 2023.
+# 	Yunshun Chen, Aaron Lun, Lizhong Chen, Gordon Smyth
+#	Created 05 November 2014. Last modified 12 Jan 2024.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -17,27 +17,23 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 			if(nlevels(group) > 1L) design <- model.matrix(~y$samples$group)
 		}
 	}
+
 	if(is.null(y$AveLogCPM)) y$AveLogCPM <- aveLogCPM(y)
-	if(is.null(dispersion)) {
-		if(legacy){
-			dispersion <- y$trended.dispersion
-			if(is.null(dispersion)) dispersion <- y$common.dispersion
-			if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
-		}
-		else {
-			if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
-			y.top <- y[y$AveLogCPM > quantile(y$AveLogCPM, 1-top.proportion), ]
-		    dispersion <- estimateGLMCommonDisp(y.top, design=design)$common.dispersion
-		}
+
+	if(legacy && is.null(dispersion)) {
+		dispersion <- y$trended.dispersion
+		if(is.null(dispersion)) dispersion <- y$common.dispersion
+		if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
 	}	
+
 	offset <- getOffset(y)
 
-	fit <- glmQLFit(y=y$counts, design=design, dispersion=dispersion, offset=offset, lib.size=NULL, abundance.trend=abundance.trend, 
-		AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, ...)
+	fit <- glmQLFit.default(y=y$counts, design=design, dispersion=dispersion, offset=offset, lib.size=NULL, abundance.trend=abundance.trend, AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, top.proportion=0.05, ...)
+
 	fit$samples <- y$samples
 	fit$genes <- y$genes
 	fit$AveLogCPM <- y$AveLogCPM
-	new("DGEGLM",fit)
+	fit
 }
 
 glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.05,...)
@@ -48,22 +44,46 @@ glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abund
 }
 
 glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, 
-        abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, ...)
-# 	Fits a GLM and estimates quasi-likelihood dispersions for each gene.
-#
+	abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL,
+	robust=FALSE, winsor.tail.p=c(0.05, 0.1),
+	legacy=FALSE, top.proportion=0.05, ...)
+# 	Fits a GLM and estimates quasi-likelihood dispersions with empirical Bayes moderation for each gene.
 # 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
-#	Last modified 19 Oct 2023.
+#	Last modified 12 Jan 2024.
 {
-	fit <- glmFit(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
+#	Check y
+	y <- as.matrix(y)
+
+#	Check design
+	if(is.null(design)) {
+		design <- matrix(1,ncol(y),1)
+		rownames(design) <- colnames(y)
+		colnames(design) <- "Intercept"
+	}
+
+#	Check AveLogCPM
+	if(is.null(AveLogCPM)) AveLogCPM <- aveLogCPM(y, offset=offset, lib.size=lib.size, weights=weights, dispersion=dispersion)
+
+#	Check dispersion
+	if(is.null(dispersion)) {
+		if(legacy){
+			stop("No dispersion values provided.")
+		} else {
+			if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
+			i <- (AveLogCPM >= quantile(AveLogCPM, 1-top.proportion))
+		    dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, weights=weights[i,,drop=FALSE])
+		}
+	}	
+
+	fit <- glmFit.default(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
 	fit$deviance <- pmax(fit$deviance,0)
 
-#	Setup covariate for trended prior for quasi-dispersion
+#	Covariate for trended prior for quasi-dispersion
 	if(is.null(covariate.trend)) {
 		if(abundance.trend) {
-			if(is.null(AveLogCPM)) AveLogCPM <- aveLogCPM(y, lib.size=lib.size, weights=weights, dispersion=dispersion) 
 			fit$AveLogCPM <- AveLogCPM
 		} else {
 			AveLogCPM <- NULL
@@ -72,6 +92,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 		AveLogCPM <- covariate.trend
 	}
 
+#	Setting the residual deviances and df
 	if(legacy) {
 
 #		Old-style adjustment retained as option for backward compatibility.
@@ -136,7 +157,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 		fit$average.ql.dispersion <- prior.dispersion
 	}
 
-#	Empirical Bayes squeezing of the quasi-likelihood dispersions
+#	Empirical Bayes moderation of quasi-likelihood dispersions
 #   Correction of extremely small degree of freedom (could be risky to choose 0.99)
 	df.residual[df.residual < 0.99] <- 0
 	s2.fit <- squeezeVar(s2,df=df.residual,covariate=AveLogCPM,robust=robust,winsor.tail.p=winsor.tail.p)

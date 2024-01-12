@@ -7,20 +7,20 @@
 
 \title{Genewise Negative Binomial Generalized Linear Models with Quasi-Likelihood Tests}
 
-\description{Fit a quasi-likelihood negative binomial generalized log-linear model to count data.
-Conduct genewise statistical tests for a given coefficient or contrast.}
+\description{Fit a negative binomial generalized log-linear model to the read counts for each gene.
+Conduct genewise quasi F-tests for a given coefficient or coefficient contrast.}
 
 \usage{
 \method{glmQLFit}{default}(y, design = NULL, dispersion = NULL, offset = NULL, lib.size = NULL,
         weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL,
-        covariate.trend = NULL, robust = FALSE,
-        winsor.tail.p = c(0.05, 0.1), legacy = FALSE, \dots)
+        covariate.trend = NULL, robust = FALSE, winsor.tail.p = c(0.05, 0.1),
+        legacy = FALSE, top.proportion = 0.05, \dots)
 \method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion=0.05, \dots)
+        legacy = FALSE, top.proportion = 0.05, \dots)
 \method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion=0.05, \dots)
+        legacy = FALSE, top.proportion = 0.05, \dots)
 glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL,
         poisson.bound = TRUE)
 }

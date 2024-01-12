@@ -8,18 +8,18 @@
 \title{Genewise Negative Binomial Generalized Linear Models}
 
 \description{Fit a negative binomial generalized log-linear model to the read counts for each gene.
-Conduct genewise statistical tests for a given coefficient or coefficient contrast.}
+Conduct genewise likelihood ratio tests for a given coefficient or coefficient contrast.}
 
 \usage{
-\method{glmFit}{DGEList}(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, \dots)
-\method{glmFit}{SummarizedExperiment}(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, \dots)
 \method{glmFit}{default}(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL,
        prior.count=0.125, start=NULL, \dots)
+\method{glmFit}{DGEList}(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, \dots)
+\method{glmFit}{SummarizedExperiment}(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, \dots)
 glmLRT(glmfit, coef=ncol(glmfit$design), contrast=NULL)
 }
 
 \arguments{
-\item{y}{an object that contains the raw counts for each library (the measure of expression level); alternatively, a matrix of counts, or a \code{DGEList} object with (at least) elements \code{counts} (table of unadjusted counts) and \code{samples} (data frame containing information about experimental group, library size and normalization factor for the library size), or a \code{SummarizedExperiment} object with (at least) an component \code{counts} in its \code{assays}.}
+\item{y}{a matrix of counts or a \code{DGEList} object or a \code{SummarizedExperiment} containing counts. Rows represent genes and columns represent samples.}
 
 \item{design}{numeric matrix giving the design matrix for the genewise linear models.
 Must be of full column rank.
