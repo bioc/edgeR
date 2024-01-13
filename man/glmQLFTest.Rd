@@ -86,12 +86,15 @@ The new method adjusts both the residual deviances and the residual degrees of f
 With this new method, the residual deviance is no longer equal to the usual residual deviance from generalized linear model theory and the residual degrees of freedom are no longer integers.
 With the new method, the \code{glmQLFTest} function should give good error rate control even for data with many small counts.
 The \code{legacy=FALSE} method was introduced in edgeR 4.0.0 with the Bioconductor 3.18 release.
-Setting \code{legacy=FALSE} will reproduce earlier results as for Bioconductor 3.16.
+Setting \code{legacy=TRUE} will reproduce earlier results as for Bioconductor 3.16.
+
+\code{glmQLFit} requires the NB dispersion to be pre-specified when \code{legacy=TRUE} but not when \code{legacy=FALSE}.
+In the new pipeline, the NB dispersion will be automatically estimated by \code{glmQLFit} whenever \code{dispersion=NULL}.
 }
 
 \note{
 The negative binomial dispersions \code{dispersion} supplied to \code{glmQLFit} and \code{glmQLFTest} must be based on a global model, that is, they must be either trended or common dispersions.
-It is not correct to supply genewise dispersions because \code{glmQLFTest} estimates genewise variability using the QL dispersion.
+It is not correct to supply genewise dispersions because \code{glmQLFTest} estimates gene-specific variability using the QL dispersions.
 }
 
 \value{
