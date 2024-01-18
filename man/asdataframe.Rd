@@ -1,5 +1,6 @@
 \name{as.data.frame}
 \alias{as.data.frame.DGEList}
+\alias{as.data.frame.DGEGLM}
 \alias{as.data.frame.DGEExact}
 \alias{as.data.frame.DGELRT}
 \alias{as.data.frame.TopTags}
@@ -11,7 +12,7 @@ Turn a \code{TopTags} object into a \code{data.frame}.
 \method{as.data.frame}{TopTags}(x, row.names = NULL, \dots)
 }
 \arguments{
-  \item{x}{an object of class \code{TopTags}}
+  \item{x}{an object of class \code{TopTags}, \code{DGEList}, \code{DGEGLM}, \code{DGEExact} or \code{DGELRT}.}
   \item{row.names}{\code{NULL} or a character vector giving the row names for the
           data frame.  Missing values are not allowed.}
   \item{\dots}{other arguments are not currently used.}
