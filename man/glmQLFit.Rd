@@ -13,13 +13,13 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 \method{glmQLFit}{default}(y, design = NULL, dispersion = NULL, offset = NULL, lib.size = NULL,
         weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL,
         covariate.trend = NULL, robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.05, \dots)
+        legacy = TRUE, top.proportion = 0.05, \dots)
 \method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.05, \dots)
+        legacy = TRUE, top.proportion = 0.05, \dots)
 \method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.05, \dots)
+        legacy = TRUE, top.proportion = 0.05, \dots)
 }
 
 \arguments{
