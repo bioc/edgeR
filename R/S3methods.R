@@ -17,6 +17,15 @@ as.data.frame.DGEList <- function(x,row.names=NULL,...)
 		data.frame(x$genes,x$counts,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
 	}
 }
+as.data.frame.DGEGLM <- function(x,row.names=NULL,...)
+#	Created 18 Jan 2024.
+{
+	if(is.null(x$genes)) {
+		if(!is.null(row.names)) row.names(x$coefficients) <- row.names
+		x$coefficients
+	} else
+		data.frame(x$genes,x$coefficients,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
+}
 as.data.frame.DGEExact <- as.data.frame.DGELRT <- function(x,row.names=NULL,...)
 {
 	if(is.null(x$genes)) {
