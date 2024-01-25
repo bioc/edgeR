@@ -20,7 +20,7 @@ The edgeR package implements original statistical methodology described in the p
 }
 
 \author{
-Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
+Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
 }
 
 \references{

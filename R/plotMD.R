@@ -55,7 +55,7 @@ plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change"
 	FTest <- is.null(logFC)
 	
 	if(is.null(status))
-		status <- decideTestsDGE(object, adjust.method=adjust.method, p.value=p.value)
+		status <- decideTests(object, adjust.method=adjust.method, p.value=p.value)
 
 #	Multiple contrasts
 	if(FTest) {
@@ -74,7 +74,7 @@ plotMD.DGEExact <- function(object, xlab="Average log CPM", ylab="log-fold-chang
 #	Created 24 June 2015.  Last modified 7 Feb 2017.
 {
 	if(is.null(status))
-		status <- decideTestsDGE(object, adjust.method=adjust.method, p.value=p.value)
+		status <- decideTests(object, adjust.method=adjust.method, p.value=p.value)
 	if(is.null(main)) main <- paste(object$comparison[2],"vs",object$comparison[1])
 	plotWithHighlights(x=object$table$logCPM,y=object$table$logFC,xlab=xlab,ylab=ylab,main=main,status=status,...)
 }
