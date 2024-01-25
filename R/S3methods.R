@@ -1,6 +1,7 @@
 # S3 as.matrix method
 
 as.matrix.DGEList <- function(x,...) as.matrix(x$counts)
+as.matrix.DGEGLM <- function(x,...) as.matrix(x$coefficients)
 
 # S3 as.data.frame method
 

@@ -4,7 +4,7 @@
 \alias{as.data.frame.DGEExact}
 \alias{as.data.frame.DGELRT}
 \alias{as.data.frame.TopTags}
-\title{Turn a TopTags Object into a Dataframe}
+\title{Collapse TopTags or Other edgeR Object to a Data Frame}
 \description{
 Turn a \code{TopTags} object into a \code{data.frame}.
 }

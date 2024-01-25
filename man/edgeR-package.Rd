@@ -74,6 +74,11 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Matthew E Ritchie, Belinda Phipson
   Chen, Y, Pal, B, Visvader, JE, Smyth, GK (2017).
   Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR.
   \emph{F1000Research} 6, 2055.
-}
+
+  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024).
+  edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
+  \emph{bioRxiv} 2024.01.21.576131.
+  \doi{10.1101/2024.01.21.576131}
+)}
 
 \concept{Documentation}

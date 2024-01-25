@@ -37,3 +37,13 @@ citEntry(
   doi = "10.12688/f1000research.8987.2",
   textVersion = "Chen Y, Lun ATL, Smyth GK (2016). From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline. F1000Research 5, 1438"
 )
+
+citEntry(
+  entry = "article",
+  author = "Yunshun Chen and Lizhong Chen and Aaron A T Lun and Pedro Baldoni and Gordon K Smyth",
+  title = "edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets",
+  year = 2024,
+  journal = "bioRxiv",
+  doi = "10.1101/2024.01.21.576131",
+  textVersion = "Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024). edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets. bioRxiv doi: 10.1101/2024.01.21.576131"
+)
