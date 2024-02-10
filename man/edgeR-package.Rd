@@ -75,6 +75,10 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Matthew E Ritchie, B
   Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR.
   \emph{F1000Research} 6, 2055.
 
+  Baldoni PL#, Chen Y#, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024).
+  Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
+  \emph{Nucleic Acids Research} 52(3), e13.
+
   Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024).
   edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
   \emph{bioRxiv} 2024.01.21.576131.
