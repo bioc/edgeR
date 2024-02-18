@@ -28,7 +28,7 @@ citEntry(
 
 citEntry(
   entry = "article",
-  author = "Yunshun Chen and Aaron A T Lun and Gordon K Smyth", 
+  author = "Yunshun Chen and Aaron T L Lun and Gordon K Smyth", 
   title = "From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline", 
   year = 2016,
   journal = "F1000Research",
@@ -40,7 +40,7 @@ citEntry(
 
 citEntry(
   entry = "article",
-  author = "Yunshun Chen and Lizhong Chen and Aaron A T Lun and Pedro Baldoni and Gordon K Smyth",
+  author = "Yunshun Chen and Lizhong Chen and Aaron T L Lun and Pedro Baldoni and Gordon K Smyth",
   title = "edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets",
   year = 2024,
   journal = "bioRxiv",

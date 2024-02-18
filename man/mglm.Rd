@@ -84,10 +84,10 @@ It determines how many distinct row values the design matrix is capable of compu
 }
 
 \value{
-\code{mglmOneGroup} produces a numeric vector of coefficients.
+\code{mglmOneGroup} produces a numeric vector of coefficients, which estimate the log-nucleotide-fraction for each gene.
 
 \code{mglmOneWay} produces a list with the following components: 
-	\item{coefficients}{matrix of estimated coefficients for the linear models. Rows correpond to rows of \code{y} and columns to columns of \code{design}.}
+	\item{coefficients}{matrix of estimated coefficients for the linear models. Rows correspond to rows of \code{y} and columns to columns of \code{design}.}
 	\item{fitted.values}{matrix of fitted values. Of same dimensions as \code{y}.}
 
 \code{mglmLevenberg} produces a list with the following components: 
@@ -101,9 +101,13 @@ It determines how many distinct row values the design matrix is capable of compu
 }
 
 \references{
-McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
 \doi{10.1093/nar/gks042}
+
+Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024). edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
+\emph{bioRxiv} 2024.01.21.576131.
+\doi{10.1101/2024.01.21.576131}
 }
 
 \author{Gordon Smyth, Yunshun Chen, Davis McCarthy, Aaron Lun.  C++ code by Aaron Lun.}

@@ -62,7 +62,7 @@ By default, the M-values are weighted according to inverse variances, as compute
 If \code{refColumn} is unspecified, then the column whose count-per-million upper quartile is closest to the mean upper quartile is set as the reference library.
 
 The TMMwsp method stands for "TMM with singleton pairing".
-This is a variant of TMM that is intended to perform better for data with a high proportion of zeros.
+This is a variant of TMM that is intended to have more stable performance when the counts have a high proportion of zeros.
 In the TMM method, genes that have zero count in either library are ignored when comparing pairs of libraries.
 In the TMMwsp method, the positive counts from such genes are reused to increase the number of features by which the libraries are compared.
 The singleton positive counts are paired up between the libraries in decreasing order of size and then a slightly modified TMM method is applied to the re-ordered libraries.
@@ -79,14 +79,14 @@ If \code{method="none"}, then the normalization factors are set to 1.
 For symmetry, normalization factors are adjusted to multiply to 1.
 Rows of \code{object} that have zero counts for all columns are removed before normalization factors are computed.
 The number of such rows does not affect the estimated normalization factors.
+
+If \code{object} is a \code{SummarizedExperiment} object, then it is converted to a \code{DGEList} using \code{SE2DGEList} and the \code{DGEList} method applied.
 }
 
 \value{
 If \code{object} is a \code{matrix}, then the output is a vector with length \code{ncol(object)} giving the library scaling factors.
 
 If \code{object} is a \code{DGEList} or \code{SummarizedExperiment} object, then the output is a \code{DGEList} the same as input with the library scaling factors stored as \code{object$samples$norm.factors}.
-
-If \code{object} is a \code{SummarizedExperiment} object, then it is converted to a \code{DGEList} using \code{SE2DGEList} and the \code{DGEList} method applied.
 }
 
 \note{
@@ -118,14 +118,15 @@ A scaling normalization method for differential expression analysis of RNA-seq d
 y <- matrix( rpois(1000, lambda=5), nrow=200 )
 normLibSizes(y)
 
-# The TMMwsp and TMM methods ignore genes with largest fold-changes:
+# The TMM and TMMwsp methods give zero weight to the genes with the largest fold-changes:
 y <- cbind(1,c(1,1,1,1,1,1,1,1,1,100))
 normLibSizes(y, lib.size=c(1e6,1e6))
 
 # normLibSizes makes the fold-changes for the majority of genes as close to 1 as possible:
-# In this example, normalizing the library sizes makes most of the CPMs equal in the two samples:
+# In this example, computing CPMs with raw library sizes makes the two samples look quite different.
 dge <- DGEList(counts=y)
 cpm(dge)
+# By contrast, normalizing the library sizes makes most of the CPMs equal in the two samples:
 dge <- normLibSizes(dge)
 cpm(dge)
 getNormLibSizes(dge)
