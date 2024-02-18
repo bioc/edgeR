@@ -43,7 +43,7 @@ McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multif
 \doi{10.1093/nar/gks042}
 }
 
-\author{Davis McCarthy and Gordon Smyth}
+\author{Gordon Smyth, Davis McCarthy, Yunshun Chen}
 
 \examples{
 # See glmFit for an example that includes glmLRT
