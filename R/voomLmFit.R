@@ -1,6 +1,6 @@
 voomLmFit <- function(
 	counts, design=NULL, block=NULL, prior.weights=NULL,
-	sample.weights=FALSE, var.design=NULL, var.group=NULL, 
+	sample.weights=FALSE, var.design=NULL, var.group=NULL, prior.n=10,
 	lib.size=NULL, normalize.method="none",
 	span=0.5, plot=FALSE, save.plot=FALSE, keep.EList=TRUE
 )
@@ -159,9 +159,9 @@ voomLmFit <- function(
 #	Estimate sample weights?
 	if(SampleWeights) {
 		if(AnyZeroRows) {
-			sw <- arrayWeights(yNAfull,design,weights=weights,var.design=var.design,var.group=var.group)
+			sw <- arrayWeights(yNAfull,design,weights=weights,var.design=var.design,var.group=var.group,prior.n=prior.n)
 		} else {
-			sw <- arrayWeights(y,design,weights=weights,var.design=var.design,var.group=var.group)
+			sw <- arrayWeights(y,design,weights=weights,var.design=var.design,var.group=var.group,prior.n=prior.n)
 		}
 		message("First sample weights (min/max) ", paste(format(range(sw)),collapse="/") )
 		if(Block) weights <- t(sw * t(weights))
@@ -222,9 +222,9 @@ voomLmFit <- function(
 			weights <- w
 		if(SampleWeights) {
 			if(AnyZeroRows) {
-				sw <- arrayWeights(yNAfull,design,weights=weights,var.design=var.design,var.group=var.group)
+				sw <- arrayWeights(yNAfull,design,weights=weights,var.design=var.design,var.group=var.group,prior.n=prior.n)
 			} else {
-				sw <- arrayWeights(y,design,weights=weights,var.design=var.design,var.group=var.group)
+				sw <- arrayWeights(y,design,weights=weights,var.design=var.design,var.group=var.group,prior.n=prior.n)
 			}
 			message("Final sample weights (min/max) ", paste(format(range(sw)),collapse="/") )
 			weights <- t(sw * t(weights))

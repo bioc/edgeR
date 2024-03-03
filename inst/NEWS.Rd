@@ -8,6 +8,9 @@
 The new QL pipeline becomes the default for glmQLFit() by setting `legacy=FALSE`.
 
 \item
+New argument `prior.n` for voomLmFit().
+
+\item
 The NEWS.Rd file has been revised to include the date of each version release and to include earlier versions of edgeR.
 
 \item

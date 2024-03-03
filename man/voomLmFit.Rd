@@ -7,7 +7,7 @@ Transform count data to log2-counts per million (logCPM), estimate voom precisio
 
 \usage{
 voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
-     sample.weights = FALSE, var.design = NULL, var.group = NULL, 
+     sample.weights = FALSE, var.design = NULL, var.group = NULL, prior.n = 10,
      lib.size = NULL, normalize.method = "none",
      span = 0.5, plot = FALSE, save.plot = FALSE, keep.EList = TRUE)
 }
@@ -41,6 +41,10 @@ voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
   \item{var.group}{
     optional vector or factor indicating groups to have different array weights.
     This is another way to specify \code{var.design} for groupwise sample weights.
+  }
+  \item{prior.n}{
+    prior number of genes for squeezing the weights towards equality.
+    Larger values squeeze the sample weights more strongly towards equality.
   }
   \item{lib.size}{
     numeric vector containing total library sizes for each sample.
