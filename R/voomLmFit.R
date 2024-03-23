@@ -8,7 +8,7 @@ voomLmFit <- function(
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 13 Feb 2024.
+#	Created 21 Jan 2020.  Last modified 23 Mar 2024.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -34,7 +34,12 @@ voomLmFit <- function(
 				stop("Biobase package required but is not installed (or can't be loaded)")
 			if(length(Biobase::fData(counts))) out$genes <- Biobase::fData(counts)
 			if(length(Biobase::pData(counts))) out$targets <- Biobase::pData(counts)
-			counts <- get("counts",Biobase::assayData(counts))
+			if("counts" %in% names(Biobase::assayData(counts))) {
+				counts <- get("counts",Biobase::assayData(counts))
+			} else {
+				counts <- Biobase::exprs(counts)
+				message("Extracting exprs(counts). These should be raw counts.")
+			}
 		} else {
 			counts <- as.matrix(counts)
 		}

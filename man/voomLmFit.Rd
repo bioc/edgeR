@@ -13,8 +13,8 @@ voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
 }
 \arguments{
   \item{counts}{
-    a numeric \code{matrix} containing raw counts, or an \code{ExpressionSet} containing raw counts, or a \code{DGEList} object.
-    Counts must be non-negative and NAs are not permitted.
+    a numeric \code{matrix} containing raw counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object containing raw counts.
+    Counts must be non-negative. Fractional counts are permitted but NAs are not.
   }
   \item{design}{
     design matrix with rows corresponding to samples and columns to coefficients to be estimated.
