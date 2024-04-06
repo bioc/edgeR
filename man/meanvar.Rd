@@ -44,7 +44,7 @@ binMeanVar(x, group, nbins=100, common.dispersion=FALSE, object=NULL)
 
 \item{x}{matrix of count data, with rows representing genes and columns representing samples}
 
-\item{group}{factor giving the experimental group or condition to which each sample (i.e. column of \code{x} or element of {y}) belongs}
+\item{group}{factor giving the experimental group or condition to which each sample (i.e. column of \code{x} or element of \code{y}) belongs}
 
 \item{common.dispersion}{logical, whether or not to compute the common dispersion for each bin of genes.}
 

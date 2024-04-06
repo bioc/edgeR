@@ -23,10 +23,11 @@ By default, is extracted from \code{y} or, if \code{y} contains no dispersion in
 }
 
 \value{
-\code{equalizeLibSizes.DGEList} returns a \code{DGEList} object with the following new components:
+\code{equalizeLibSizes.default} returns a list with components:
 	\item{pseudo.counts}{numeric matrix of normalized pseudo-counts}
 	\item{pseudo.lib.size}{normalized library size}
-\code{equalizeLibSizes.default} returns a list with components {pseudo.counts} and {pseudo.lib.size}.
+
+\code{equalizeLibSizes.DGEList} returns a \code{DGEList} object with the above two components added.
 }
 
 \details{

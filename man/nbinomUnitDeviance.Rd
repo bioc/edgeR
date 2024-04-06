@@ -21,7 +21,7 @@ Can be a scalar, a vector of length \code{nrow(y)} or a matrix of same dimension
 }
 
 \details{
-The unit deviance of the negative binomial distribution is a measure of the distance between \code{y} and {mean}.
+The unit deviance of the negative binomial distribution is a measure of the distance between \code{y} and \code{mean}.
 If \code{mean} and \code{dispersion} are the true mean and dispersion of the negative binomial distribution, then the unit deviance follows an approximate chisquare distribution on 1 degree of freedom.
 
 This function computes the unit deviance for each \code{y} observation.

@@ -32,7 +32,11 @@ maPlot(x, y, logAbundance=NULL, logFC=NULL, normalize=FALSE, plot.it=TRUE,
 \details{
 The points to be smeared are identified as being equal to the minimum in one of the two groups.  The smear is created by using random uniform numbers of width \code{smearWidth} to the left of the minimum A value.
 }
-\value{a plot to the current device (if \code{plot.it=TRUE}), and invisibly returns the \code{M} (logFC) and  \code{A} (logConc)  values used for the plot, plus identifiers \code{w} and \code{v} of genes for which \code{M} and {A} values, or just \code{M} values, respectively, were adjusted to make a nicer looking plot. }
+
+\value{
+If \code{plot.it=TRUE}, a scatterplot is make on the current graphics device , 
+The function also invisibly returns a list containing the \code{M} (logFC) and  \code{A} (logConc) values used for the plot, plus identifiers \code{w} and \code{v} of genes for which \code{M} and \code{A} values, or just \code{M} values, respectively, were adjusted to make a nicer looking plot.
+}
 
 \seealso{
 \code{\link{plotSmear}}
