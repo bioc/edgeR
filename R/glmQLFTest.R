@@ -5,7 +5,7 @@ UseMethod("glmQLFit")
 
 glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.05, ...)
 # 	Yunshun Chen, Aaron Lun, Lizhong Chen, Gordon Smyth
-#	Created 05 November 2014. Last modified 12 Jan 2024.
+#	Created 5 November 2014. Last modified 6 Apr 2024.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -28,7 +28,7 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 
 	offset <- getOffset(y)
 
-	fit <- glmQLFit.default(y=y$counts, design=design, dispersion=dispersion, offset=offset, lib.size=NULL, abundance.trend=abundance.trend, AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, top.proportion=0.05, ...)
+	fit <- glmQLFit.default(y=y$counts, design=design, dispersion=dispersion, offset=offset, lib.size=NULL, abundance.trend=abundance.trend, AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, top.proportion=top.proportion, ...)
 
 	fit$samples <- y$samples
 	fit$genes <- y$genes
@@ -37,7 +37,7 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 }
 
 glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.05,...)
-#	Created 03 April 2020. Last modified 8 April 2023.
+#	Created 3 April 2020. Last modified 8 April 2023.
 {
 	y <- SE2DGEList(y)
 	glmQLFit.DGEList(y, design=design, dispersion=dispersion, abundance.trend=abundance.trend, robust=robust, winsor.tail.p=winsor.tail.p, legacy=legacy, top.proportion=top.proportion,...)
