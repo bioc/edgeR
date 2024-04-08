@@ -1,7 +1,7 @@
 
-R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
-Copyright (C) 2023 The R Foundation for Statistical Computing
-Platform: x86_64-w64-mingw32/x64 (64-bit)
+R version 4.4.0 alpha (2024-04-04 r86334 ucrt)
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -594,10 +594,10 @@ $n0
 > # glmQLFit
 > fit <- glmQLFit(y,design,legacy=FALSE)
 > fit$dispersion
-[1] 0.2073113
+[1] 0.2111012
 > summary(fit$var.post)
     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-0.007627 0.024804 0.032000 0.143246 0.059155 2.589922 
+0.009755 0.034724 0.045412 0.164244 0.087119 2.443318 
 > fit$unit.deviance.adj[1:10,]
    Sample1      Sample2      Sample3
 1        0 0.000000e+00 0.000000e+00
@@ -605,11 +605,11 @@ $n0
 3        0 0.000000e+00 0.000000e+00
 4        0 0.000000e+00 0.000000e+00
 5        0 0.000000e+00 0.000000e+00
-6        0 7.715120e-02 9.346359e-02
-7        0 2.951426e-01 2.111539e-01
-8        0 1.640577e-02 1.518755e-02
-9        0 1.039516e+00 5.865753e-01
-10       0 6.813594e-05 6.790318e-05
+6        0 7.620604e-02 9.236096e-02
+7        0 2.929725e-01 2.093778e-01
+8        0 1.616719e-02 1.496410e-02
+9        0 1.026424e+00 5.783909e-01
+10       0 6.714049e-05 6.690856e-05
 > fit$unit.df.adj[1:10,]
    Sample1   Sample2   Sample3
 1        0 0.0000000 0.0000000
@@ -617,18 +617,18 @@ $n0
 3        0 0.0000000 0.0000000
 4        0 0.0000000 0.0000000
 5        0 0.0000000 0.0000000
-6        0 0.4867038 0.4881894
-7        0 0.4992433 0.5021103
-8        0 0.4942884 0.4952040
-9        0 0.4902472 0.4914076
-10       0 0.4942861 0.4952019
+6        0 0.4867710 0.4882441
+7        0 0.4999077 0.5027680
+8        0 0.4942195 0.4951208
+9        0 0.4902007 0.4913466
+10       0 0.4942172 0.4951186
 > summary(fit$deviance.adj)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.0000  0.0778  0.5146  1.0412  1.6254  5.1916 
+0.00000 0.07681 0.50951 1.02910 1.60289 5.12602 
 > summary(fit$df.residual.adj)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.0000  0.9759  0.9817  0.9363  0.9881  1.1005 
+ 0.0000  0.9760  0.9821  0.9364  0.9879  1.1028 
 > 
 > proc.time()
    user  system elapsed 
-   2.07    0.10    2.18 
+   2.15    0.12    2.26 

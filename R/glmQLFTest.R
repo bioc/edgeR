@@ -3,9 +3,9 @@
 glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
-glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.05, ...)
+glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.1, ...)
 # 	Yunshun Chen, Aaron Lun, Lizhong Chen, Gordon Smyth
-#	Created 5 November 2014. Last modified 6 Apr 2024.
+#	Created 5 November 2014. Last modified 8 Apr 2024.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -36,7 +36,7 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 	fit
 }
 
-glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.05,...)
+glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.1,...)
 #	Created 3 April 2020. Last modified 8 April 2023.
 {
 	y <- SE2DGEList(y)
@@ -46,13 +46,13 @@ glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abund
 glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, 
 	abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL,
 	robust=FALSE, winsor.tail.p=c(0.05, 0.1),
-	legacy=FALSE, top.proportion=0.05, ...)
+	legacy=FALSE, top.proportion=0.1, ...)
 # 	Fits a GLM and estimates quasi-likelihood dispersions with empirical Bayes moderation for each gene.
 # 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
-#	Last modified 12 Jan 2024.
+#	Last modified 8 Apr 2024.
 {
 #	Check y
 	y <- as.matrix(y)

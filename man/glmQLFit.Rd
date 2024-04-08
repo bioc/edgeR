@@ -13,13 +13,13 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 \method{glmQLFit}{default}(y, design = NULL, dispersion = NULL, offset = NULL, lib.size = NULL,
         weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL,
         covariate.trend = NULL, robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.05, \dots)
+        legacy = FALSE, top.proportion = 0.1, \dots)
 \method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.05, \dots)
+        legacy = FALSE, top.proportion = 0.1, \dots)
 \method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.05, \dots)
+        legacy = FALSE, top.proportion = 0.1, \dots)
 }
 
 \arguments{
@@ -27,7 +27,7 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 
 \item{design}{numeric matrix giving the design matrix for the genewise linear models.}
 
-\item{dispersion}{negative binomial dispersions. Can be a single value, or a vector of length \code{nrow(y)}, or a matrix of the same size as \code{y}. If \code{NULL} and \code{legacy=TRUE}, then will be extracted from the \code{DGEList} object \code{y}. The trended dispersions will be extracted if present, otherwise common dispersion, or a constant value of 0.05 is neither is present. If \code{NULL} and \code{legacy=FALSE}, then will be estimated using the \code{top.proportion} of most highly expressed genes.} 
+\item{dispersion}{negative binomial dispersions. Can be a single value, or a vector of length \code{nrow(y)}, or a matrix of the same size as \code{y}. If \code{NULL} and \code{legacy=TRUE}, then will be extracted from the \code{DGEList} object \code{y}. The trended dispersions will be extracted if present, otherwise common dispersion, or will be set to 0.05 if neither is present. If \code{NULL} and \code{legacy=FALSE}, then will be estimated using the \code{top.proportion} of most highly expressed genes.} 
 
 \item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, then will be computed by \code{getOffset(y)}.}
 
