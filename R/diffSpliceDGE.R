@@ -267,7 +267,7 @@ topSpliceDGE <- function(lrt, test="Simes", number=10, FDR=1)
 plotSpliceDGE <- function(lrt, geneid=NULL, genecolname=NULL, rank=1L, FDR = 0.05)
 # Plot exons of most differentially spliced gene
 # Yunshun Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 5 October 2015.
+# Created 29 March 2014.  Last modified 17 April 2024.
 {
 	if(is.null(genecolname)) 
 		genecolname <- lrt$genecolname
@@ -311,7 +311,10 @@ plotSpliceDGE <- function(lrt, geneid=NULL, genecolname=NULL, rank=1L, FDR = 0.0
 				abs.fdr <- abs(log10(top$FDR[m]))
 				from <- range(abs.fdr)
 				to <- c(1,2)
-				cex <- (abs.fdr - from[1])/diff(from) * diff(to) + to[1]
+				if(diff(from) == 0)
+					cex <- rep(1.5, length(m))
+				else
+					cex <- (abs.fdr - from[1])/diff(from) * diff(to) + to[1]
 			}	
 			mark <- match(top[m, exoncolname], exon.id)
 			points((1:length(j))[mark], lrt$coefficients[j[mark]], col = "red", pch = 16, cex = cex)
