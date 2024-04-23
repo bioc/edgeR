@@ -72,7 +72,7 @@ The \code{fry} method documented here similarly generalizes the fry gene set tes
 Dunn, PK, and Smyth, GK (1996).
 Randomized quantile residuals.
 \emph{J. Comput. Graph. Statist.}, 5, 236-244. 
-\url{http://www.statsci.org/smyth/pubs/residual.html}
+\url{https://gksmyth.github.io/pubs/residual.html}
 
 Routledge, RD (1994).
 Practicing safe statistics with the mid-p.

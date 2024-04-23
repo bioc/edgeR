@@ -22,7 +22,7 @@ importFrom("utils", getFromNamespace, head, read.delim, read.table,
            tail, write.table)
 if( tools:::.OStype() == "windows" ) importFrom("utils", "winMenuAddItem")
 
-importFrom("limma",arrayWeights, asMatrixWeights, camera, contrastAsCoef,
+importFrom("limma",arrayWeights, asMatrixWeights, camera, chooseLowessSpan, contrastAsCoef,
            decideTests, duplicateCorrelation, fry, goana, kegga, is.fullrank,
            logsumexp, lmFit, loessFit, mroast, nonEstimable,
            normalizeBetweenArrays, plotMD, plotMDS, plotWithHighlights,

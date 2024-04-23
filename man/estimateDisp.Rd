@@ -75,7 +75,7 @@ Chen, Y, Lun, ATL, and Smyth, GK (2014).
 Differential expression analysis of complex RNA-seq experiments using edgeR.
 In: \emph{Statistical Analysis of Next Generation Sequence Data},
 Somnath Datta and Daniel S. Nettleton (eds), Springer, New York, pages 51-74.
-\url{http://www.statsci.org/smyth/pubs/edgeRChapterPreprint.pdf}
+\url{https://gksmyth.github.io/pubs/edgeRChapterPreprint.pdf}
 
 Phipson, B, Lee, S, Majewski, IJ, Alexander, WS, and Smyth, GK (2016).
 Robust hyperparameter estimation protects against hypervariable genes and improves power to detect differential expression.

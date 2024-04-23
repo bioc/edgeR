@@ -44,7 +44,7 @@ Mid-P confidence intervals: a brief review.
 Dunn, K. P., and Smyth, G. K. (1996).
 Randomized quantile residuals.
 \emph{Journal of Computational and Graphical Statistics} \bold{5}, 1-10.
-\url{http://www.statsci.org/smyth/pubs/residual.html}
+\url{https://gksmyth.github.io/pubs/residual.html}
 }
 
 \author{Gordon Smyth}

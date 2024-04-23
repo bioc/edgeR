@@ -9,7 +9,7 @@ Transform count data to log2-counts per million (logCPM), estimate voom precisio
 voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
      sample.weights = FALSE, var.design = NULL, var.group = NULL, prior.n = 10,
      lib.size = NULL, normalize.method = "none",
-     span = 0.5, plot = FALSE, save.plot = FALSE, keep.EList = TRUE)
+     span = 0.5, adaptive.span = FALSE, plot = FALSE, save.plot = FALSE, keep.EList = TRUE)
 }
 \arguments{
   \item{counts}{
@@ -59,6 +59,10 @@ voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
     width of the smoothing window used for the lowess mean-variance trend.
     Expressed as a proportion between 0 and 1.
   }
+  \item{adaptive.span}{
+    logical.
+    If \code{TRUE}, then an optimal value for \code{span} will be chosen depending on the number of genes.
+  }
   \item{plot}{
     logical, should a plot of the mean-variance trend be displayed?
   }
@@ -87,6 +91,8 @@ Empirical sample quality weights will be estimated if \code{sample.weights=TRUE}
 In that case, \code{voomLmFit} is analogous to running \code{voomWithQualityWeights} followed by \code{lmFit}.
 
 \code{voomLmFit} is usually followed by running \code{\link{eBayes}} on the fitted model object.
+
+If \code{adaptive.span=TRUE}, then an optimal value for \code{span} is chosen by \code{chooseLowessSpan} with \code{n=nrow(counts)}.
 }
 
 \value{
@@ -107,7 +113,7 @@ Law CW, Chen Y, Shi W, Smyth GK (2014).
 Voom: precision weights unlock linear model analysis tools for RNA-seq read counts.
 \emph{Genome Biology} 15, R29.
 \doi{10.1186/gb-2014-15-2-r29}.
-See also the Preprint Version at \url{http://www.statsci.org/smyth/pubs/VoomPreprint.pdf} incorporating some notational corrections.
+See also the Preprint Version at \url{https://gksmyth.github.io/pubs/VoomPreprint.pdf} incorporating some notational corrections.
 
 Lun ATL, Smyth GK (2017).
 No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.

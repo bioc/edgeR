@@ -55,7 +55,7 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Matthew E Ritchie, B
   Differential expression analysis of complex RNA-seq experiments using edgeR.
   In: \emph{Statistical Analysis of Next Generation Sequence Data},
   Somnath Datta and Daniel S Nettleton (eds), Springer, New York, pages 51-74.
-  \url{http://www.statsci.org/smyth/pubs/edgeRChapterPreprint.pdf}
+  \url{https://gksmyth.github.io/pubs/edgeRChapterPreprint.pdf}
 
   Dai Z, Sheridan, JM, Gearing, LJ, Moore, DL, Su, S, Wormald, S, Wilcox, S, O'Connor, L, Dickins, RA, Blewitt, ME, Ritchie, ME (2014).
   edgeR: a versatile tool for the analysis of shRNA-seq and CRISPR-Cas9 genetic screens.
@@ -64,7 +64,7 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Matthew E Ritchie, B
   Lun, ATL, Chen, Y, and Smyth, GK (2016).
   It's DE-licious: a recipe for differential expression analyses of RNA-seq experiments using quasi-likelihood methods in edgeR.
   \emph{Methods in Molecular Biology} 1418, 391-416.
-  \url{http://www.statsci.org/smyth/pubs/QLedgeRPreprint.pdf}
+  \url{https://gksmyth.github.io/pubs/QLedgeRPreprint.pdf}
 
   Chen Y, Lun ATL, and Smyth, GK (2016).
   From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.

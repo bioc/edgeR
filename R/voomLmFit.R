@@ -2,13 +2,13 @@ voomLmFit <- function(
 	counts, design=NULL, block=NULL, prior.weights=NULL,
 	sample.weights=FALSE, var.design=NULL, var.group=NULL, prior.n=10,
 	lib.size=NULL, normalize.method="none",
-	span=0.5, plot=FALSE, save.plot=FALSE, keep.EList=TRUE
+	span=0.5, adaptive.span=FALSE, plot=FALSE, save.plot=FALSE, keep.EList=TRUE
 )
 #	limma+lmFit pipeline for counts taking into account of structural zeros
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 23 Mar 2024.
+#	Created 21 Jan 2020.  Last modified 23 Apr 2024.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -64,6 +64,9 @@ voomLmFit <- function(
 
 #	Expand prior.weights if necessary
 	if(!is.null(prior.weights)) prior.weights <- asMatrixWeights(prior.weights,dim(counts))
+
+#	Choose span based on the number of genes
+	if(adaptive.span) span <- chooseLowessSpan(nrow(counts), small.n=50, min.span=0.3, power=1/3)
 
 #	log2-counts-per-million
 	y <- t(log2(t(counts+0.5)/(lib.size+1)*1e6))
