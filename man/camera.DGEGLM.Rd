@@ -1,4 +1,5 @@
 \name{camera.DGEGLM}
+\alias{camera.DGEList}
 \alias{camera.DGEGLM}
 \title{Competitive Gene Set Tests for Digital Gene Expression Data}
 \description{
@@ -6,14 +7,16 @@ Test whether a set of genes is highly ranked relative to other genes in terms of
 }
 
 \usage{
+\method{camera}{DGEList}(y, index, design = NULL, contrast = ncol(design), weights = NULL,
+       use.ranks = FALSE, allow.neg.cor=FALSE, inter.gene.cor=0.01, sort = TRUE, \dots)
 \method{camera}{DGEGLM}(y, index, design = NULL, contrast = ncol(design), weights = NULL,
        use.ranks = FALSE, allow.neg.cor=FALSE, inter.gene.cor=0.01, sort = TRUE, \dots)
 }
 
 \arguments{
-  \item{y}{a \code{DGEGLM} object.}
+  \item{y}{a \code{DGEList} object containing dispersion estimates or a \code{DGEGLM} object.}
   \item{index}{an index vector or a list of index vectors.  Can be any vector such that \code{y[index,]} selects the rows corresponding to the test set.  The list can be made using \code{\link{ids2indices}}.}
-  \item{design}{design matrix. Defaults to \code{y$design}.}
+  \item{design}{design matrix. Defaults to \code{y$design} or, if that is NULL, to \code{model.matrix(~y$samples$group)}.}
   \item{contrast}{contrast of the linear model coefficients for which the test is required. Can be an integer specifying a column of \code{design}, or else a numeric vector of same length as the number of columns of \code{design}.}
   \item{weights}{numeric matrix of observation weights of same size as \code{y}, or a numeric vector of array weights with length equal to \code{ncol(y)}, or a numeric vector of gene weights with length equal to \code{nrow(y)}.}
   \item{use.ranks}{do a rank-based test (\code{TRUE}) or a parametric test (\code{FALSE})?}
@@ -53,7 +56,6 @@ Wu, D, and Smyth, GK (2012). Camera: a competitive gene set test accounting for 
 }
 
 \seealso{
-\code{\link{roast.DGEGLM}},
 \code{\link{camera}}.
 }
 
