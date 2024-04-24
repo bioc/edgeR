@@ -2,16 +2,20 @@ Seurat2PB <- function(object, sample, cluster="seurat_clusters")
 #	Given a 'Seurat' or 'SeuratObject' data object, create pseudo-bulk samples using
 #   the sample and cluster information and return a DGEList object
 #	Yunshun Chen
-#	04 Jan 2023. Last modified 04 Jan 2023.
+#	04 Jan 2023. Last modified 24 Apr 2024.
 {
 	if(!is(object,"SeuratObject") & !is(object,"Seurat"))
-		stop("object is not of the SeuratObject or Seurat class")
+		stop("object must belong to either the SeuratObject or Seurat classes")
 
 	if(!requireNamespace("SeuratObject",quietly=TRUE))
 		stop("SeuratObject package required but is not installed (or can't be loaded)")
 
 #	Check 'assays'
-    counts <- SeuratObject::GetAssayData(object, assay="RNA", slot="counts")
+    if(packageVersion("SeuratObject") < "5.0.0"){
+        counts <- SeuratObject::GetAssayData(object, assay="RNA", slot="counts")
+    } else {
+        counts <- SeuratObject::GetAssayData(object, assay="RNA", layer="counts")
+    }
 	if( is.null(counts) ) stop("object doesn't contain raw RNA counts")
 
 #   Check 'meta.data'
@@ -43,3 +47,4 @@ Seurat2PB <- function(object, sample, cluster="seurat_clusters")
 #   DGEList
 	DGEList(counts=as.matrix(counts.pb), samples=sample.pb, genes=genes)
 }
+

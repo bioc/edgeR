@@ -267,7 +267,7 @@ plotQLDisp <- function(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean 
 	invisible(list(x=A,y=sqrt(sqrt(s2))))
 }
 
-.computePriorS2 <- function(out, AveLogCPM)
+.computePriorS2 <- function(out, AveLogCPM=NULL)
 # 	Update prior quasi-dispersion estimate using lowess fit
 {
 	if(is.null(AveLogCPM)) s <- max(median(out[[3]]),1)

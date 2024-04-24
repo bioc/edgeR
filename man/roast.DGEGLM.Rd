@@ -25,7 +25,7 @@ Rotation gene set testing for Negative Binomial generalized linear models.
         Can be a vector of integer indices, or a logical vector of length \code{nrow(y)}, or a vector of gene IDs corresponding to entries in \code{geneid}.
         Alternatively it can be a data.frame with the first column containing the index vector and the second column containing directional gene weights.
         For \code{mroast} or \code{fry}, \code{index} is a list of index vectors or a list of data.frames. }
-  \item{design}{the design matrix. Defaults to \code{y$design}.}
+  \item{design}{the design matrix. Defaults to \code{y$design} or, if that is NULL, to \code{model.matrix(~y$samples$group)}.}
   \item{contrast}{contrast for which the test is required.
         Can be an integer specifying a column of \code{design}, or the name of a column of \code{design}, or a numeric contrast vector of length equal to the number of columns of \code{design}.}
   \item{geneid}{gene identifiers corresponding to the rows of \code{y}.

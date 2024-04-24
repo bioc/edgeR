@@ -18,7 +18,7 @@ importFrom("stats", approxfun, chisq.test,
            pchisq, pf, pgamma, pnbinom, pnorm, predict,
            pt, qbeta, qf, qgamma, qnorm, qqnorm, quantile,
            rbinom, rmultinom, runif, uniroot)
-importFrom("utils", getFromNamespace, head, read.delim, read.table,
+importFrom("utils", getFromNamespace, head, packageVersion, read.delim, read.table,
            tail, write.table)
 if( tools:::.OStype() == "windows" ) importFrom("utils", "winMenuAddItem")
 
