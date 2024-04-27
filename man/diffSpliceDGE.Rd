@@ -5,7 +5,7 @@
 \description{Given a negative binomial generalized log-linear model fit at the exon level, test for differential exon usage between experimental conditions.}
 \usage{
 diffSpliceDGE(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL,
-              prior.count=0.125, verbose=TRUE)
+              prior.count=0.125, robust=NULL, verbose=TRUE)
 }
 
 \arguments{
@@ -14,6 +14,7 @@ diffSpliceDGE(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NU
   \item{contrast}{numeric vector specifying the contrast of the linear model coefficients to be tested for differential exon usage. Length must equal to the number of columns of \code{design}. If specified, then takes precedence over \code{coef}.}
   \item{geneid}{gene identifiers. Either a vector of length \code{nrow(glmfit)} or the name of the column of \code{glmfit$genes} containing the gene identifiers. Rows with the same ID are assumed to belong to the same gene.}
   \item{exonid}{exon identifiers. Either a vector of length \code{nrow(glmfit)} or the name of the column of \code{glmfit$genes} containing the exon identifiers.}
+  \item{robust}{logical, should the estimation of the empirical Bayes prior parameters be robustified against outlier sample? If \code{NULL} will be extracted from \code{glmfit}.}
   \item{prior.count}{average prior count to be added to observation to shrink the estimated log-fold-changes towards zero.}
   \item{verbose}{logical, if \code{TRUE} some diagnostic information about the number of genes and exons is output.}
 }
@@ -55,7 +56,7 @@ At gene-level, two different tests are provided. One is converting exon-level p-
 The other is using exon-level test statistics to conduct gene-level tests.
 }
 
-\author{Yunshun Chen and Gordon Smyth}
+\author{Yunshun Chen, Lizhong Chen and Gordon Smyth}
 
 \examples{
 # Gene exon annotation

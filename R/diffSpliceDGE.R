@@ -1,11 +1,16 @@
-diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL, prior.count=0.125, verbose=TRUE)
+diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL, prior.count=0.125, robust=NULL, verbose=TRUE)
 # Identify exons and genes with splice variants using negative binomial GLMs
-# Yunshun Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 19 Oct 2023.
+# Yunshun Chen, Lizhong Chen and Gordon Smyth
+# Created 29 March 2014.  Last modified 30 Oct 2023.
 {
 #	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
-	
+
+#	keep robust consistent with glmfit object
+	if(is.null(robust) & !isLRT){
+		robust <- length(glmfit$df.prior) > 1L
+	}
+
 #	Check input (from diffSplice in limma)
 	exon.genes <- glmfit$genes
 	nexons <- nrow(glmfit)
@@ -64,6 +69,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 		else
 			coef.name <- coef.names[coef]
 		beta <- coefficients[, coef, drop=FALSE]
+#		g.ind <- rowSums(design[,-coef,drop=FALSE]) == 1L
 	} else {
 		contrast <- as.matrix(contrast)
 		if(ncol(contrast) > 1L) {
@@ -77,6 +83,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 		i <- contrast!=0
 		coef.name <- paste(paste(contrast[i],coef.names[i],sep="*"),collapse=" ")
 		design <- reform$design
+#		g.ind <- abs(design[,1]) > 0
 	}
 	beta <- as.vector(beta)	
 	
@@ -113,7 +120,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 
 #	New offset
 	offset.new <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE) + 
-                  makeCompressedMatrix(gene.betabar %*% t(design[,coef,drop=FALSE]))
+                  makeCompressedMatrix(tcrossprod(gene.betabar, design[,coef,drop=FALSE]))
 	coefficients <- beta - gene.betabar
 
 #	adjust dispersion for new QL method scaled by average QL dispersion
@@ -124,64 +131,61 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 		dispersion <- glmfit$dispersion/glmfit$average.ql.dispersion
 	}
 
-#	Testing
-	design0 <- design[, -coef, drop=FALSE]
+#	Testing: Null model
+	fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, dispersion=dispersion)
+
+#	Prepare statistics summary
+	exon.LR <- fit0$deviance - glmfit$deviance
+	gene.LR <- rowsum(exon.LR, geneid, reorder=FALSE)
+	exon.df.test <- fit0$df.residual - glmfit$df.residual
+	gene.df.test <- rowsum(exon.df.test, geneid, reorder=FALSE) - 1
+
+#	degree of freedom and deviance for QL methods
+	if(!is.null(glmfit$df.residual.zeros)){
+		exon.df.residual <- glmfit$df.residual.zeros
+		exon.deviance <- glmfit$deviance
+	}
+
+	if(!is.null(glmfit$df.residual.adj)){
+		exon.df.residual <- glmfit$df.residual.adj
+		exon.deviance <- glmfit$deviance.adj
+	}
+
+#	exon and gene level test
 	if(isLRT){
-#		LRT
-		fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, dispersion=dispersion)
-		fit1 <- glmFit(glmfit$counts, design=design, offset=offset.new, dispersion=dispersion)
-		exon.LR <- fit0$deviance - fit1$deviance
-		gene.LR <- rowsum(exon.LR, geneid, reorder=FALSE)
-		exon.df.test <- fit0$df.residual - fit1$df.residual
-		gene.df.test <- rowsum(exon.df.test, geneid, reorder=FALSE) - 1
 		exon.p.value <- pchisq(exon.LR, df=exon.df.test, lower.tail=FALSE, log.p=FALSE)
 		gene.p.value <- pchisq(gene.LR, df=gene.df.test, lower.tail=FALSE, log.p=FALSE)
 	} else {
-#		Quasi F-test
-		legacy <- !is.null(glmfit$df.residual.zeros)
-		fit0 <- glmQLFit(glmfit$counts, design=design0, offset=offset.new, dispersion=dispersion, legacy=legacy)
-		fit1 <- glmQLFit(glmfit$counts, design=design, offset=offset.new, dispersion=dispersion, legacy=legacy)
+		gene.df.residual <- rowsum(exon.df.residual, geneid, reorder=FALSE)
+		gene.s2 <- rowsum(exon.deviance, geneid, reorder=FALSE) / gene.df.residual
+		gene.df.residual[gene.df.residual < 0.99] <- 0
 
-		if(legacy){
-			exon.s2 <- fit1$deviance / fit1$df.residual.zeros
-			exon.s2[fit1$df.residual.zeros==0L] <- 0
-			gene.s2 <- rowsum(exon.s2, geneid, reorder=FALSE) / gene.nexons
-			gene.df.residual <- rowsum(fit1$df.residual.zeros, geneid, reorder=FALSE)
-		} else {
-			gene.df.residual <- rowsum(fit1$df.residual.adj, geneid, reorder=FALSE)
-			gene.s2 <- rowsum(fit1$deviance.adj, geneid, reorder=FALSE) / gene.df.residual
-			gene.df.residual[gene.df.residual < 0.99] <- 0
-		}
-
-		squeeze <- squeezeVar(var=gene.s2, df=gene.df.residual, robust=TRUE)
-
-		exon.df.test <- fit0$df.residual - fit1$df.residual
-		gene.df.test <- rowsum(exon.df.test, geneid, reorder=FALSE) - 1
+		squeeze <- squeezeVar(var=gene.s2, df=gene.df.residual, robust=robust)
 		gene.df.total <- gene.df.residual + squeeze$df.prior
 		gene.df.total <- pmin(gene.df.total, sum(gene.df.residual))
 		gene.s2.post <- squeeze$var.post
-		
-		exon.LR <- fit0$deviance - fit1$deviance
+
 		exon.F <- exon.LR / exon.df.test / gene.s2.post[g]
 		gene.F <- rowsum(exon.LR, geneid, reorder=FALSE) / gene.df.test / gene.s2.post
 		exon.p.value <- pf(exon.F, df1=exon.df.test, df2=gene.df.total[g], lower.tail=FALSE, log.p=FALSE)
+		gene.p.value <- pf(gene.F, df1=gene.df.test, df2=gene.df.total, lower.tail=FALSE, log.p=FALSE)
 
-#		Ensure is not more significant than chisquare test
+#		Ensure is not more significant than chisquare test for previous QL method
 		i <- gene.s2.post[g] < 1
-		if(any(i)) {
+		if(any(i) & !is.null(glmfit$df.residual.zeros)) {
 			chisq.pvalue <- pchisq(exon.LR[i], df=exon.df.test[i], lower.tail=FALSE, log.p=FALSE)
 			exon.p.value[i] <- pmax(exon.p.value[i], chisq.pvalue)
 		}
-		gene.p.value <- pf(gene.F, df1=gene.df.test, df2=gene.df.total, lower.tail=FALSE, log.p=FALSE)		
-	}	
+	}
 
 #	Gene Simes' p-values
+#	exon.zeros <- rowSums(glmfit$counts[,g.ind]) > 0
 	o <- order(g, exon.p.value, decreasing=FALSE)
 	p <- exon.p.value[o]
 	q <- rep(1, sum(gene.nexons))
 	r <- cumsum(q) - rep(cumsum(q)[cumsum(gene.nexons)]-gene.nexons, gene.nexons)
-	pp <- p*rep(gene.nexons, gene.nexons)/r
-	#pp <- p*rep(gene.nexons-1, gene.nexons)/pmax(r-1, 1)
+#	pp <- p*rep(gene.nexons, gene.nexons)/r
+	pp <- p*pmax(rep(gene.nexons-1, gene.nexons)/r,1)
 	oo <- order(-g, pmin(pp,1), decreasing=TRUE)
 	gene.Simes.p.value <- pp[oo][cumsum(gene.nexons)]
 
