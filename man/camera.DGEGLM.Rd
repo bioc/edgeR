@@ -41,16 +41,17 @@ See \code{\link{camera}} for details.
 \author{Yunshun Chen, Gordon Smyth}
 
 \references{
-Dunn, PK, and Smyth, GK (1996).
+Dunn PK, Smyth GK (1996).
 Randomized quantile residuals.
-\emph{J. Comput. Graph. Statist.}, 5, 236-244. 
+\emph{Journal of Computational and Graphical Statistics} 5, 236-244.
+\doi{10.1080/10618600.1996.10474708}
 \url{https://gksmyth.github.io/pubs/residual.html}
 
-Routledge, RD (1994).
+Routledge RD (1994).
 Practicing safe statistics with the mid-p.
 \emph{Canadian Journal of Statistics} 22, 103-110.
 
-Wu, D, and Smyth, GK (2012). Camera: a competitive gene set test accounting for inter-gene correlation.
+Wu D, Smyth GK (2012). Camera: a competitive gene set test accounting for inter-gene correlation.
 \emph{Nucleic Acids Research} 40, e133.
 \doi{10.1093/nar/gks461}
 }
@@ -76,10 +77,16 @@ y <- matrix(rnbinom(100*4, mu=mu, size=10),100,4)
 y <- DGEList(counts=y, group=group)
 
 # Estimate dispersions
-fit <- glmQLFit(y, design, legacy=FALSE)
+y <- estimateDisp(y, design)
 
-camera(fit, iset1, design)
-camera(fit, iset2, design)
+# Gene set tests
+camera(y, iset1, design)
+camera(y, iset2, design)
+camera(y, list(set1=iset1,set2=iset2), design)
 
-camera(fit, list(set1=iset1,set2=iset2), design)
+# Alternative pre-ranked version
+fit <- glmQLFit(y, design)
+q <- glmQLFTest(fit)
+TStat <- sign(q$table$logFC) * sqrt(q$table$F)
+cameraPR(TStat, list(set1=iset1,set2=iset2))
 }
