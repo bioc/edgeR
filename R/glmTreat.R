@@ -143,7 +143,7 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	}
 	
 #	Ensure it is not more significant than chisquare test with Poisson variance		
-	if(!isLRT){
+	if(!isLRT & !is.null(glmfit$df.residual.zeros)){
 		if(poisson.bound) {
 			i <- .isBelowPoissonBound(glmfit)
 			if(any(i)) {

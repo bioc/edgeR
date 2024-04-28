@@ -3,12 +3,15 @@
 \encoding{UTF-8}
 
 
-\section{version 4.2.0 (2024-04-23}{\itemize{
+\section{version 4.2.0 (2024-04-28}{\itemize{
 \item
 The new QL pipeline becomes the default for glmQLFit() by setting `legacy=FALSE`.
 
 \item
 New arguments `prior.n` and `adaptive.span` for voomLmFit().
+
+\item
+New argument `robust` for diffSpliceDGE().
 
 \item
 The NEWS.Rd file has been revised to include the date of each version release and to include earlier versions of edgeR.
