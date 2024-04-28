@@ -38,7 +38,7 @@ A list containing components
 \author{Gordon Smyth}
 
 \references{
-Baldoni PL, Chen Y, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2023).
+Baldoni PL, Chen Y, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024).
 Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
 \emph{Nucleic Acids Research} 52(3), e13.
 \doi{10.1093/nar/gkad1167}.
