@@ -1,13 +1,13 @@
 glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval")
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
-#	Yunshun Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 19 Oct 2023.
+#	Yunshun Chen, Lizhong Chen and Gordon Smyth
+#	Created on 05 May 2014. Last modified on 28 Apr 2024.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 
 #	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
-	Fit <- ifelse(isLRT, glmFit, glmQLFit)
+#	Fit <- ifelse(isLRT, glmFit, glmQLFit)
 
 #	Switch to glmLRT() or glmQLFTest() if lfc is zero
 	if(lfc==0) {
@@ -81,24 +81,25 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	offset.old <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE)
 	offset.adj <- makeCompressedMatrix(lfc*log(2) * design[, coef], dim(glmfit$counts), byrow=TRUE)
 
-#	adjust dispersion for new QL method scaled by average QL dispersion
-	if(is.null(glmfit$average.ql.dispersion)){
+#	adjust dispersion for new QL method scaled by average QL dispersion and inverse weights
+	if(is.null(glmfit$average.ql.dispersion)) {
 		dispersion <- glmfit$dispersion
-	}
-	else{
+	} else if(is.null(glmfit$weights)) {
 		dispersion <- glmfit$dispersion/glmfit$average.ql.dispersion
+	} else {
+		dispersion <- glmfit$dispersion*glmfit$weights/glmfit$average.ql.dispersion
 	}
 
 #	Test statistics at beta_0 = tau
 	offset.new <- offset.old + offset.adj
-	fit0 <- Fit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
-	fit1 <- Fit(glmfit$counts, design=design, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
+	fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
+	fit1 <- glmFit(glmfit$counts, design=design,  offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
 	z.left <- sqrt( pmax(0, fit0$deviance - fit1$deviance) )
 
 #	Test statistics at beta_0 = -tau
 	offset.new <- offset.old - offset.adj
-	fit0 <- Fit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
-	fit1 <- Fit(glmfit$counts, design=design, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
+	fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
+	fit1 <- glmFit(glmfit$counts, design=design,  offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
 	z.right <- sqrt( pmax(0, fit0$deviance - fit1$deviance) )
 
 #	Make sure z.left < z.right
@@ -143,7 +144,7 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	}
 	
 #	Ensure it is not more significant than chisquare test with Poisson variance		
-	if(!isLRT & !is.null(glmfit$df.residual.zeros)){
+	if(!isLRT){
 		if(poisson.bound) {
 			i <- .isBelowPoissonBound(glmfit)
 			if(any(i)) {
