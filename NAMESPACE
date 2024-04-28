@@ -22,7 +22,7 @@ importFrom("utils", getFromNamespace, head, packageVersion, read.delim, read.tab
            tail, write.table)
 if( tools:::.OStype() == "windows" ) importFrom("utils", "winMenuAddItem")
 
-importFrom("limma",arrayWeights, asMatrixWeights, camera, chooseLowessSpan, contrastAsCoef,
+importFrom("limma",arrayWeights, asMatrixWeights, camera, cameraPR, chooseLowessSpan, contrastAsCoef,
            decideTests, duplicateCorrelation, fry, goana, kegga, is.fullrank,
            logsumexp, lmFit, loessFit, mroast, nonEstimable,
            normalizeBetweenArrays, plotMD, plotMDS, plotWithHighlights,
@@ -57,6 +57,7 @@ S3method(calcNormFactors,DGEList)
 S3method(calcNormFactors,SummarizedExperiment)
 S3method(camera,DGEList)
 S3method(camera,DGEGLM)
+S3method(cameraPR,DGELRT)
 S3method(cbind,CompressedMatrix)
 S3method(cbind,DGEList)
 S3method(cpm,default)

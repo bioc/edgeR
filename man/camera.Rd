@@ -1,6 +1,7 @@
-\name{camera.DGEGLM}
+\name{camera}
 \alias{camera.DGEList}
 \alias{camera.DGEGLM}
+\alias{cameraPR.DGELRT}
 \title{Competitive Gene Set Tests for Digital Gene Expression Data}
 \description{
 Test whether a set of genes is highly ranked relative to other genes in terms of differential expression, accounting for inter-gene correlation.
@@ -11,6 +12,7 @@ Test whether a set of genes is highly ranked relative to other genes in terms of
        use.ranks = FALSE, allow.neg.cor=FALSE, inter.gene.cor=0.01, sort = TRUE, \dots)
 \method{camera}{DGEGLM}(y, index, design = NULL, contrast = ncol(design), weights = NULL,
        use.ranks = FALSE, allow.neg.cor=FALSE, inter.gene.cor=0.01, sort = TRUE, \dots)
+\method{cameraPR}{DGELRT}(statistic, index, use.ranks = FALSE, inter.gene.cor=0.01, sort = TRUE, \dots)
 }
 
 \arguments{
@@ -23,18 +25,23 @@ Test whether a set of genes is highly ranked relative to other genes in terms of
   \item{allow.neg.cor}{should reduced variance inflation factors be allowed for negative correlations?}
   \item{inter.gene.cor}{numeric, optional preset value for the inter-gene correlation within tested sets.  If \code{NA} or \code{NULL}, then an inter-gene correlation will be estimated for each tested set.}
   \item{sort}{logical, should the results be sorted by p-value?}
+  \item{statistic}{a \code{DGELRT} object.}
   \item{\dots}{other arguments are not currently used}
 }
 
 \details{
-The camera gene set test was proposed by Wu and Smyth (2012) for microarray data.
-This function makes the camera test available for digital gene expression data.
-The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero.
-See \code{\link{camera}} for more description of the test and for a complete list of possible arguments.
+Camera is a competitive gene set test proposed by Wu and Smyth (2012) for microarray data and \code{camera} and implemented as an S3 generic function in the limma package.
+It is often used for gene set enrichment analyses (GSEA) together with a database of gene sets such as the MSigDB.
+Here we provide \code{camera} methods for DGEList and DGEGLM class objects.
+The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994), under the null hypothesis that the contrast is zero, and the normal deviates are then passed to limma's camera function.
+
+The \code{cameraPR} function is a variation of the camera method for pre-ranked diffential expression statistics.
+We provide here a \code{cameraPR} method for DGELRT objects.
 }
 
 \value{
-A data.frame giving the gene set results, with most significant sets to the top.
+A data.frame giving the gene set results, with a row for each gene set defined by \code{index}.
+If \code{sort=TRUE} then results are sorted in decreasing order of significance.
 See \code{\link{camera}} for details.
 }
 
@@ -87,6 +94,5 @@ camera(y, list(set1=iset1,set2=iset2), design)
 # Alternative pre-ranked version
 fit <- glmQLFit(y, design)
 q <- glmQLFTest(fit)
-TStat <- sign(q$table$logFC) * sqrt(q$table$F)
-cameraPR(TStat, list(set1=iset1,set2=iset2))
+cameraPR(q, list(set1=iset1,set2=iset2))
 }
