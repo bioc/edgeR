@@ -8,6 +8,9 @@
 The new QL pipeline becomes the default for glmQLFit() by setting `legacy=FALSE`.
 
 \item
+Add cameraPR method for DGELRT objects.
+
+\item
 New arguments `prior.n` and `adaptive.span` for voomLmFit().
 
 \item
