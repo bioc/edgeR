@@ -1,11 +1,13 @@
 
-R version 4.4.0 alpha (2024-04-04 r86334 ucrt)
+R version 4.4.0 (2024-04-24 ucrt) -- "Puppy Cup"
 Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -328,7 +330,7 @@ Tag.8  -0.7918166 12.86353 0.7356185 0.391068049 0.8603497
 > colnames(y) <- c("x0","x1","x2")
 > rownames(y) <- paste("Gene",1:ntags,sep="")
 > d <- DGEList(y)
-> d <- calcNormFactors(d,method="TMM")
+> d <- normLibSizes(d,method="TMM")
 > fit <- glmFit(d, design, dispersion=dispersion.true, prior.count=0.5/3)
 > results <- glmLRT(fit, coef=2)
 > topTags(results)
@@ -441,7 +443,7 @@ $AveLogCPM
 995 more elements ...
 
 > 
-> calcNormFactors(d$counts,method="TMMwsp")
+> normLibSizes(d$counts,method="TMMwsp")
        x0        x1        x2 
 0.9992437 1.0077007 0.9931093 
 > 
@@ -631,4 +633,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   2.15    0.12    2.26 
+   2.45    0.20    2.60 
