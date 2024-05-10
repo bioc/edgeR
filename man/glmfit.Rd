@@ -44,7 +44,7 @@ An object of class \code{DGEGLM} containing components \code{counts}, \code{samp
 	\item{df.residual}{numeric vector of residual degrees of freedom, one for each gene.}
 	\item{offset}{numeric matrix of linear model offsets.}
 	\item{dispersion}{vector of dispersions used for the fit.}
-	\item{coefficients}{numeric matrix of estimated coefficients from the glm fits, on the natural log scale, of size \code{nrow(y)} by \code{ncol(design)}.}
+	\item{coefficients}{numeric matrix of estimated coefficients from the glm fits. Coefficients are on the natural log scale. Matrix has dimensions \code{nrow(y)} by \code{ncol(design)}.}
 	\item{unshrunk.coefficients}{numeric matrix of estimated coefficients from the glm fits when no log-fold-changes shrinkage is applied, on the natural log scale, of size \code{nrow(y)} by \code{ncol(design)}. It exists only when \code{prior.count} is not 0.}
 	\item{fitted.values}{matrix of fitted values from glm fits, same number of rows and columns as \code{y}.}
 	\item{deviance}{numeric vector of deviances, one for each gene.}

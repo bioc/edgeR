@@ -39,10 +39,13 @@ cpm.DGELRT <- cpm.DGEGLM <- function(y, log=FALSE, shrunk=TRUE, ...)
 
 cpm.default <- function(y, lib.size=NULL, offset=NULL, log=FALSE, prior.count=2, ...)
 #	Counts per million for a matrix
-#	Davis McCarthy and Gordon Smyth.
-#	Created 20 June 2011. Last modified 28 May 2020.
+#	Davis McCarthy and Gordon Smyth. C version by Aaron Lun.
+#	Created 20 June 2011. Last modified 10 May 2024.
 {
 #	Check y
+	ymin <- min(y)
+	if(is.na(ymin)) stop("NA counts not allowed")
+	if(ymin < 0) stop("Negative counts not allowed")
 	y <- as.matrix(y)
 	if (any(dim(y)==0L)) {
 		return(y)

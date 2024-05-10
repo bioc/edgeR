@@ -26,8 +26,12 @@ cpmByGroup.SummarizedExperiment <- function(y, group=NULL, dispersion=NULL, ...)
 cpmByGroup.default <- function(y, group=NULL, dispersion=0.05, offset=NULL, weights=NULL, log=FALSE, prior.count=2, ...)
 #	Counts per million averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017. Last modified 4 Nov 2018.
+#	Created 10 July 2017. Last modified 10 May 2024.
 {
+#	Check y
+	ymin <- min(y)
+	if(is.na(ymin)) stop("NA counts not allowed")
+	if(ymin < 0) stop("Negative counts not allowed")
 	y <- as.matrix(y)
 
 	if(is.null(group)) {
