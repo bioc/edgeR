@@ -1,6 +1,7 @@
 \name{catchSalmon}
 \alias{catchSalmon}
 \alias{catchKallisto}
+\alias{catchRSEM}
 
 \title{Process kallisto or Salmon Output}
 
@@ -9,18 +10,23 @@
 \usage{
 catchKallisto(paths, verbose = TRUE)
 catchSalmon(paths, verbose = TRUE)
+catchRSEM(paths, nboot = 100, verbose = TRUE)
 }
 
 \arguments{
 \item{paths}{character vector giving paths to the directories created by the pseudoaligner (either kallisto or Salmon). Each entry corresponds to one RNA-seq sample.}
 \item{verbose}{logical. If \code{TRUE}, summary information is shown as each sample is processed.}
+\item{nboot}{number of Gibbs samples in the RSEM results files.}
 }
 
 \details{
-These functions assume that kallisto (Bray et al 2016) or Salmon (Patro et al 2017; Zakeri et al 2017) have been run to obtain estimated transcript counts for one or more RNA samples and that bootstrap samples have also been generated.
+The functions \code{catchSalmon} or \code{catchKallisto} assume that kallisto (Bray et al 2016) or Salmon (Patro et al 2017; Zakeri et al 2017) have been run to obtain estimated transcript counts for one or more RNA samples and that bootstrap samples or Gibbs samples have also been generated.
 These functions catch the counts and use the bootstrap samples to estimate an overdispersion parameter for each transcript.
 The overdispersion represents the variance inflation that occurs from ambiguity in assigning sequence reads to transcripts.
 Transcripts that overlap other transcripts and have greater quantification uncertainty will have larger overdispersions.
+
+\code{catchRSEM} reads \code{*.isoforms.results} files created by RSEM (Li and Dewey, 2011).
+Each results file is assumed to be in different directory.
 
 To assess differential transcript expression, the transcript counts can be divided by the overdisperson parameters, after which the scaled counts can be input into standard differential expression pipelines designed for gene-level counts (Baldoni et al 2023).
 The edgeR quasi pipeline has been found to perform well with the scaled counts (Baldoni et al 2023).
@@ -46,6 +52,10 @@ Dividing out quantification uncertainty allows efficient assessment of different
 Bray NL, Pimentel H, Melsted P, Pachter L (2016).
 Near-optimal probabilistic RNA-seq quantification.
 \emph{Nature Biotechnology}, 34(5), 525-527.
+
+Li B, Dewey CN (2011).
+RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome.
+\emph{BMC bioinformatics}, 12, 323.
 
 Patro R, Duggal G, Love MI, Irizarry RA, Kingsford C (2017).
 Salmon provides fast and bias-aware quantification of transcript expression.
