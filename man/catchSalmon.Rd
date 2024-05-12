@@ -10,13 +10,14 @@
 \usage{
 catchKallisto(paths, verbose = TRUE)
 catchSalmon(paths, verbose = TRUE)
-catchRSEM(paths, nboot = 100, verbose = TRUE)
+catchRSEM(files = NULL, ngibbs = 100, verbose = TRUE)
 }
 
 \arguments{
 \item{paths}{character vector giving paths to the directories created by the pseudoaligner (either kallisto or Salmon). Each entry corresponds to one RNA-seq sample.}
 \item{verbose}{logical. If \code{TRUE}, summary information is shown as each sample is processed.}
-\item{nboot}{number of Gibbs samples in the RSEM results files.}
+\item{files}{character vector specifying the isoforms.results files output by RSEM. Each entry corresponds to one RNA-seq sample. By default, all files in the current directory with names ending in \code{isoforms.results} will be read.}
+\item{ngibbs}{number of Gibbs samples used to generate the RSEM results files.}
 }
 
 \details{
@@ -25,11 +26,10 @@ These functions catch the counts and use the bootstrap samples to estimate an ov
 The overdispersion represents the variance inflation that occurs from ambiguity in assigning sequence reads to transcripts.
 Transcripts that overlap other transcripts and have greater quantification uncertainty will have larger overdispersions.
 
-\code{catchRSEM} reads \code{*.isoforms.results} files created by RSEM (Li and Dewey, 2011).
-Each results file is assumed to be in different directory.
+\code{catchRSEM} reads \code{*.isoforms.results} files created by RSEM (Li and Dewey, 2011), which should contain means and standard deviations from the Gibbs posterior samples as well as the estimated transcript counts.
 
 To assess differential transcript expression, the transcript counts can be divided by the overdisperson parameters, after which the scaled counts can be input into standard differential expression pipelines designed for gene-level counts (Baldoni et al 2023).
-The edgeR quasi pipeline has been found to perform well with the scaled counts (Baldoni et al 2023).
+The edgeR quasi pipeline has been found to perform well with the scaled counts (Baldoni et al 2024).
 The scaled counts behave much like negative binomial counts and show the same mean-variance trends as for gene-level RNA-seq counts.
 }
 
