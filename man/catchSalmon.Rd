@@ -3,7 +3,7 @@
 \alias{catchKallisto}
 \alias{catchRSEM}
 
-\title{Process kallisto or Salmon Output}
+\title{Process Salmon, kallisto or RSEM Transcript Output}
 
 \description{Read transcript counts from kallisto or Salmon output for a series of biological samples and use bootstrap samples to estimate the read-to-transcript ambiguity for each transcript.}
 
@@ -41,7 +41,7 @@ A list containing components
 \item{resample.type}{character vector giving type of resampling (\code{"bootstrap"} or \code{"gibbs"}) for each sample. Only for \code{catchSalmon}.}
 }
 
-\author{Gordon Smyth}
+\author{Gordon Smyth and Pedro Baldoni}
 
 \references{
 Baldoni PL, Chen Y, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024).

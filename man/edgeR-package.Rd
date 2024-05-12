@@ -20,72 +20,73 @@ The edgeR package implements original statistical methodology described in the p
 }
 
 \author{
-Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
+Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Pedro Baldoni, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
 }
 
 \references{
-  Robinson MD and Smyth GK (2007). Moderated statistical tests for
-  assessing differences in tag abundance. \emph{Bioinformatics} 23, 2881-2887
-
-  Robinson MD and Smyth GK (2008). Small-sample estimation of negative
-  binomial dispersion, with applications to SAGE data. \emph{Biostatistics},
-  9, 321-332
-
-  Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
-  package for differential expression analysis of digital gene
-  expression data. \emph{Bioinformatics} 26, 139-140
-
-  Robinson, MD, Oshlack, A (2010).
-  A scaling normalization method for differential expression analysis of RNA-seq data.
-  \emph{Genome Biology}, 11, R25.
-
-  McCarthy, DJ, Chen, Y, Smyth, GK (2012).
-  Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
-  \emph{Nucleic Acids Research} 40, 4288-4297.
-
-  Anders, S, McCarthy, DJ, Chen, Y, Okoniewski, M, Smyth, GK, Huber, W, and Robinson, MD (2013).
-  Count-based differential expression analysis of RNA sequencing data using R and Bioconductor.
-  \emph{Nature Protocols} 8, 1765-1786.
-
-  Zhou, X, Lindsay, H, Robinson, MD (2014).
-  Robustly detecting differential expression in RNA sequencing data using observation weights.
-  \emph{Nucleic Acids Research} 42, e91.
-
-  Chen, Y, Lun, ATL, and Smyth, GK (2014).
-  Differential expression analysis of complex RNA-seq experiments using edgeR.
-  In: \emph{Statistical Analysis of Next Generation Sequence Data},
-  Somnath Datta and Daniel S Nettleton (eds), Springer, New York, pages 51-74.
-  \url{https://gksmyth.github.io/pubs/edgeRChapterPreprint.pdf}
-
-  Dai Z, Sheridan, JM, Gearing, LJ, Moore, DL, Su, S, Wormald, S, Wilcox, S, O'Connor, L, Dickins, RA, Blewitt, ME, Ritchie, ME (2014).
-  edgeR: a versatile tool for the analysis of shRNA-seq and CRISPR-Cas9 genetic screens.
-  \emph{F1000Research} 3, 95.
-
-  Lun, ATL, Chen, Y, and Smyth, GK (2016).
-  It's DE-licious: a recipe for differential expression analyses of RNA-seq experiments using quasi-likelihood methods in edgeR.
-  \emph{Methods in Molecular Biology} 1418, 391-416.
-  \url{https://gksmyth.github.io/pubs/QLedgeRPreprint.pdf}
-
-  Chen Y, Lun ATL, and Smyth, GK (2016).
-  From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
-  \emph{F1000Research} 5, 1438.
-
-  Lun, AT, Smyth, GK (2017).
-  No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.
-  \emph{Statistical Applications in Genetics and Molecular Biology} 16(2), 83-93.
-
-  Chen, Y, Pal, B, Visvader, JE, Smyth, GK (2017).
-  Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR.
-  \emph{F1000Research} 6, 2055.
+  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024).
+  edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
+  \emph{bioRxiv} 2024.01.21.576131.
+  \doi{10.1101/2024.01.21.576131}
 
   Baldoni PL#, Chen Y#, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024).
   Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
   \emph{Nucleic Acids Research} 52, e13.
 
-  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024).
-  edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
-  \emph{bioRxiv} 2024.01.21.576131.
-  \doi{10.1101/2024.01.21.576131}
+  Chen Y, Pal B, Visvader JE, Smyth GK (2017).
+  Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR.
+  \emph{F1000Research} 6, 2055.
+
+  Lun, AT, Smyth GK (2017).
+  No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.
+  \emph{Statistical Applications in Genetics and Molecular Biology} 16(2), 83-93.
+
+  Chen Y, Lun ATL, Smyth GK (2016).
+  From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
+  \emph{F1000Research} 5, 1438.
+
+  Lun ATL, Chen Y, Smyth GK (2016).
+  It's DE-licious: a recipe for differential expression analyses of RNA-seq experiments using quasi-likelihood methods in edgeR.
+  \emph{Methods in Molecular Biology} 1418, 391-416.
+  \url{https://gksmyth.github.io/pubs/QLedgeRPreprint.pdf}
+
+  Dai Z, Sheridan JM, Gearing LJ, Moore DL, Su S, Wormald S, Wilcox S, O'Connor L, Dickins RA, Blewitt ME, Ritchie ME (2014).
+  edgeR: a versatile tool for the analysis of shRNA-seq and CRISPR-Cas9 genetic screens.
+  \emph{F1000Research} 3, 95.
+
+  Chen Y, Lun ATL, Smyth GK (2014).
+  Differential expression analysis of complex RNA-seq experiments using edgeR.
+  In: \emph{Statistical Analysis of Next Generation Sequence Data},
+  Somnath Datta and Daniel S Nettleton (eds), Springer, New York, pages 51-74.
+  \url{https://gksmyth.github.io/pubs/edgeRChapterPreprint.pdf}
+
+  Zhou X, Lindsay H, Robinson MD (2014).
+  Robustly detecting differential expression in RNA sequencing data using observation weights.
+  \emph{Nucleic Acids Research} 42, e91.
+
+  Anders S, McCarthy DJ, Chen Y, Okoniewski M, Smyth GK, Huber W, Robinson MD (2013).
+  Count-based differential expression analysis of RNA sequencing data using R and Bioconductor.
+  \emph{Nature Protocols} 8, 1765-1786.
+
+  McCarthy DJ#, Chen Y#, Smyth GK (2012).
+  Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+  \emph{Nucleic Acids Research} 40, 4288-4297.
+
+  Robinson MD, Oshlack A (2010).
+  A scaling normalization method for differential expression analysis of RNA-seq data.
+  \emph{Genome Biology}, 11, R25.
+
+  Robinson MD, McCarthy DJ, Smyth GK (2010). edgeR: a Bioconductor
+  package for differential expression analysis of digital gene
+  expression data. \emph{Bioinformatics} 26, 139-140
+
+  Robinson MD, Smyth GK (2008).
+  Small-sample estimation of negative binomial dispersion, with applications to SAGE data.
+  \emph{Biostatistics}, 9, 321-332
+
+  Robinson MD, Smyth GK (2007).
+  Moderated statistical tests for assessing differences in tag abundance.
+  \emph{Bioinformatics} 23, 2881-2887
 )}
 
 \concept{Documentation}
