@@ -3,12 +3,18 @@
 \encoding{UTF-8}
 
 
-\section{version 4.3.5 (2024-07-14}{\itemize{
+\section{version 4.2.1 (2024-07-14}{\itemize{
 \item
 The new (edgeR v4) QL pipeline produces gene-specific residual degrees of freedom (df.residual), which may be greater or less than the nominal residual degrees of freedom, which are equal to the number of observations minus the number of estimated coefficients, i.e., `nrow(design) - ncol(design)`.
 glmQLFit() sets very small values of df.residual to zero for the empirical Bayes dispersion moderation.
 Previously any df.residual < 0.99 was floored in this way.
 Now the flooring cutoff is df.residual < 0.5 if the nominal df.residual is 1 or df.residual < 0.99 if the nominal df.residual is 2 or more.
+
+\item
+New function catchRSEM() analogous to catchKallisto() and catchSalmon().
+
+\item
+Add checks for negative or NA counts to cpm, cpmByGroup, normLibSizes.
 }}
 
 
