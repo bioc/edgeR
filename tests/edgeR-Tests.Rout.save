@@ -1,13 +1,11 @@
 
-R version 4.4.0 (2024-04-24 ucrt) -- "Puppy Cup"
+R version 4.4.1 (2024-06-14 ucrt) -- "Race for Your Life"
 Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -598,8 +596,8 @@ $n0
 > fit$dispersion
 [1] 0.2111012
 > summary(fit$var.post)
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-0.009755 0.034724 0.045412 0.164244 0.087119 2.443318 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.06012 0.60736 0.80020 0.90554 1.20592 2.26596 
 > fit$unit.deviance.adj[1:10,]
    Sample1      Sample2      Sample3
 1        0 0.000000e+00 0.000000e+00
@@ -633,4 +631,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   2.45    0.20    2.60 
+   1.15    0.03    1.84 

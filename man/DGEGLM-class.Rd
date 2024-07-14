@@ -14,7 +14,7 @@ The genomic features are called gene, but in reality might correspond to transcr
 
 Objects of this class contain the following list components:
 \describe{
-  \item{\code{coefficients}:}{ matrix containing the coefficients computed from fitting the model defined by the design matrix to each gene in the dataset.}
+  \item{\code{coefficients}:}{matrix containing the coefficients computed from fitting the model defined by the design matrix to each gene in the dataset. Coefficients are on the natural log scale.}
   \item{\code{df.residual}:}{ vector containing the residual degrees of freedom for the model fit to each gene in the dataset.}
   \item{\code{deviance}:}{ vector giving the deviance from the model fit to each gene.}
   \item{\code{design}:}{ design matrix for the full model from the likelihood ratio test.}
