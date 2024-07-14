@@ -52,7 +52,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
-#	Last modified 8 Apr 2024.
+#	Last modified 14 Jul 2024.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -158,8 +158,8 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 	}
 
 #	Empirical Bayes moderation of quasi-likelihood dispersions
-#   Correction of extremely small degree of freedom (could be risky to choose 0.99)
-	df.residual[df.residual < 0.99] <- 0
+#	Correction of extremely small degree of freedom (could be risky to choose 0.99)
+	df.residual[df.residual < min(-diff(dim(design))/2, 0.99)] <- 0
 	s2.fit <- squeezeVar(s2,df=df.residual,covariate=AveLogCPM,robust=robust,winsor.tail.p=winsor.tail.p)
 
 #	Storing results
