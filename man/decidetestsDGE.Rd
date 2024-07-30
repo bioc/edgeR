@@ -1,5 +1,4 @@
 \name{decideTests}
-\alias{decideTestsDGE}
 \alias{decideTests.DGEExact}
 \alias{decideTests.DGELRT}
 \title{Multiple Testing Across Genes and Contrasts}
@@ -7,7 +6,6 @@
 Identify which genes are significantly differentially expressed from an edgeR test object containing p-values and test statistics.
 }
 \usage{
-decideTestsDGE(object, adjust.method="BH", p.value=0.05, lfc=0)
 \method{decideTests}{DGELRT}(object, adjust.method="BH", p.value=0.05, lfc=0, \dots)
 }
 \arguments{
@@ -36,9 +34,6 @@ This function applies a multiple testing procedure and significance level cutoff
 The function can apply optionally apply a logFC cutoff and well as a p-value or FDR cutoff (although logFCs cutoff are not recommended, see note below).
 If the statistical tests are on 1 degree of freedom, then the logFC cutoff is applied to the absolute coefficient or contrast.
 If the statistical tests are on more than 1 degree of freedom, then the logFC cutoff will be satisfied if any of the coefficients or contrasts that define the test are greater than the cutoff.
-
-\code{decideTests} and \code{decideTestDGE} are equivalent.
-\code{decideTestsDGE} is currently retained for backward compatibility but is deprecated and will be removed in a future version of edgeR.
 }
 \note{
 Although this function enables users to set p-value and logFC cutoffs simultaneously, this combination criterion is not recommended.
