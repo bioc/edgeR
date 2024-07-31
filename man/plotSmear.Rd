@@ -17,7 +17,7 @@ plotSmear(object, pair=NULL, de.tags=NULL, xlab="Average logCPM", ylab="logFC", 
   \item{de.tags}{rownames for genes identified as being differentially expressed; use \code{exactTest} or \code{glmLRT} to identify DE genes. Note that `tag' and `gene' are synonymous here.}
   \item{xlab}{x-label of plot}
   \item{ylab}{y-label of plot}
-  \item{pch}{scalar or vector giving the character(s) to be used in the plot; default value of \code{19} gives a round point.}
+  \item{pch}{plotting character. Can be a single value or a vector of length \code{nrow(object)}. Default value of \code{19} gives a round point.}
   \item{cex}{character expansion factor, numerical value giving the amount by which plotting text and symbols should be magnified relative to the default; default \code{cex=0.2} to make the plotted points smaller}
   \item{smearWidth}{width of the smear}
   \item{panel.first}{an expression to be evaluated after the plot axes are set up but before any plotting takes place; the default \code{grid()} draws a background grid to aid interpretation of the plot}

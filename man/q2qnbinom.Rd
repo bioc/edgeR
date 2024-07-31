@@ -13,9 +13,9 @@ q2qnbinom(x, input.mean, output.mean, dispersion=0)
 
 \arguments{
 \item{x}{numeric matrix of counts.}
-\item{input.mean}{numeric matrix of population means for \code{x}.  If a vector, then of the same length as \code{nrow(x)}.}
-\item{output.mean}{numeric matrix of population means for the output values.  If a vector, then of the same length as \code{nrow(x)}.}
-\item{dispersion}{numeric scalar, vector or matrix giving negative binomial dispersion values.}
+\item{input.mean}{population means for \code{x}. Can be a vector of length \code{nrow(x)} or a matrix of same dimensions as \code{x}.}
+\item{output.mean}{population means for the output values. Can be a vector of length \code{nrow(x)} or a matrix of same dimensions as \code{x}.}
+\item{dispersion}{negative binomial dispersion values. Can be a unit vector, or a vector of length \code{nrow(x)}, or a matrix of same dimensions as \code{x}.}
 }
 
 \details{

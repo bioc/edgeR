@@ -12,12 +12,12 @@ nbinomUnitDeviance(y, mean, dispersion = 0)
 }
 
 \arguments{
-\item{y}{numeric vector or matrix containing negative binomial counts.}
+\item{y}{vector or matrix of negative binomial counts.}
 
-\item{mean}{numeric vector or matrix of expected values. If a matrix, then of same dimensions as \code{y}.}
+\item{mean}{vector or matrix means (expected values). If a matrix, then of same dimensions as \code{y}.}
 
-\item{dispersion}{numeric vector or matrix of negative binomial dispersions.
-Can be a scalar, a vector of length \code{nrow(y)} or a matrix of same dimensions as \code{y}.}
+\item{dispersion}{negative binomial dispersions.
+Can be a single value, a vector of length \code{nrow(y)}, or a matrix of same dimensions as \code{y}.}
 }
 
 \details{
