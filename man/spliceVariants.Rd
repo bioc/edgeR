@@ -15,7 +15,7 @@ spliceVariants(y, geneID, dispersion=NULL, group=NULL, estimate.genewise.disp=TR
 
 \item{geneID}{vector of length equal to the number of rows of \code{y}, which provides the gene identifier for each exon in \code{y}. These identifiers are used to group the relevant exons into genes for the gene-level analysis of splice variation.}
 
-\item{dispersion}{unit vector (in future a vector will also be allowed) supplying the negative binomial dispersion parameter to be used in the negative binomial generalized linear model.}
+\item{dispersion}{negative binomial dispersion. Single numeric value.}
 
 \item{group}{factor supplying the experimental group/condition to which each sample (column of \code{y}) belongs. If \code{NULL} (default) the function will try to extract if from \code{y}, which only works if \code{y} is a \code{DGEList} object.}
 
