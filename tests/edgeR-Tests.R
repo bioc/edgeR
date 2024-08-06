@@ -176,7 +176,7 @@ summary(y$tagwise.dispersion)
 # glmQLFit
 fit <- glmQLFit(y,design,legacy=FALSE)
 fit$dispersion
-summary(fit$var.post)
+summary(fit$s2.post)
 fit$unit.deviance.adj[1:10,]
 fit$unit.df.adj[1:10,]
 summary(fit$deviance.adj)

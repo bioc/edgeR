@@ -66,7 +66,7 @@ romer.DGEGLM <- function(y, index, design=NULL, contrast=ncol(design), ...)
 
 #	check average QL dispersion
 	if(!is.null(y$average.ql.dispersion)){
-		counts <- counts / pmax(1, y$var.prior)
+		counts <- counts / pmax(1, y$s2.prior)
 	}
 
 #	Make default design matrix from group factor

@@ -68,7 +68,7 @@ When \code{legacy=TRUE}, the function uses the method of Lun and Smyth (2017) to
 The usual residual degrees of freedom are returned as \code{df.residual} while the adjusted residual degrees of freedom are returned as \code{df.residuals.zeros}.
 
 If \code{legacy=FALSE}, then a more comprehensive adjustment for small counts is used.
-The new method adjusts both the residual deviances and the residual degrees of freedom to improve the accuracy of the quasi-dispersion estimates even for very small counts.
+The new method adjusts both the residual deviances and the residual degrees of freedom to improve the accuracy of the quasi-dispersion estimates even for very small counts (Chen et al 2024).
 With this new method, the residual deviance is no longer equal to the usual residual deviance from generalized linear model theory and the residual degrees of freedom are no longer integers.
 With the new method, the \code{glmQLFTest} function should give good error rate control even for data with many small counts.
 The \code{legacy=FALSE} method was introduced in edgeR 4.0.0 with the Bioconductor 3.18 release.
@@ -87,8 +87,8 @@ It is not correct to supply genewise dispersions because \code{glmQLFit} estimat
 \code{glmQLFit} with \code{legacy=TRUE} produces an object of class \code{DGEGLM} with the same components as produced by \code{\link{glmFit}}, plus:
 \item{df.residual.zeros}{numeric vector of effective residual degrees of freedom for each gene, after accounting for treatment groups with all zero counts.}
 \item{df.prior}{numeric vector of prior degrees of freedom for the QL-dispersions. Has length \code{nrow(y)} if \code{robust=TRUE}, otherwise length 1.}
-\item{var.prior}{numeric vector giving prior value for the QL-dispersions. Has length \code{nrow(y)} is \code{abundance.trend=TRUE}, otherwise length 1.}
-\item{var.post}{numeric vector of posterior genewise QL-dispersions.} 
+\item{s2.prior}{numeric vector giving prior value for the QL-dispersions. Has length \code{nrow(y)} is \code{abundance.trend=TRUE}, otherwise length 1.}
+\item{s2.post}{numeric vector of posterior genewise QL-dispersions.} 
 
 \code{glmQLFit} with \code{legacy=FALSE} produces an object of class \code{DGEGLM} with the same components as produced by \code{\link{glmFit}}, plus:
 \item{leverage}{numeric matrix of leverages for the genewise glms.}
@@ -96,12 +96,17 @@ It is not correct to supply genewise dispersions because \code{glmQLFit} estimat
 \item{unit.df.adj}{numeric matrix of adjusted degrees of freedom for the unit deviances.}
 \item{df.residual.adj}{numeric vector of adjusted residual degrees of freedom for each gene.}
 \item{df.prior}{numeric vector of prior degrees of freedom for the QL-dispersions. Has length \code{nrow(y)} if \code{robust=TRUE}, otherwise length 1.}
-\item{var.prior}{numeric vector giving prior value the QL-dispersions. Has length \code{nrow(y)} is \code{abundance.trend=TRUE}, otherwise length 1.}
-\item{var.post}{numeric vector of posterior genewise QL-dispersions.} 
+\item{s2.prior}{numeric vector giving prior value the QL-dispersions. Has length \code{nrow(y)} is \code{abundance.trend=TRUE}, otherwise length 1.}
+\item{s2.post}{numeric vector of posterior genewise QL-dispersions.} 
 \item{average.ql.dispersion}{average QL-dispersion, used to scale the NB dispersion after estimating the QL-dispersions.}
 }
 
 \references{
+  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024).
+  edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
+  \emph{bioRxiv} 2024.01.21.576131.
+  \doi{10.1101/2024.01.21.576131}
+
 Chen Y, Lun ATL, Smyth GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
 \emph{F1000Research} 5, 1438.

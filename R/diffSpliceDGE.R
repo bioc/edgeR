@@ -1,7 +1,7 @@
 diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL, prior.count=0.125, robust=NULL, verbose=TRUE)
 # Identify exons and genes with splice variants using negative binomial GLMs
 # Yunshun Chen, Lizhong Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 30 Oct 2023.
+# Created 29 March 2014.  Last modified 5 May 2024.
 {
 #	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
@@ -105,34 +105,33 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 	ngenes <- sum(gene.keep)
 	if(ngenes==0) stop("No genes with more than one exon")
 
-	exon.keep <- rep(gene.keep, gene.nexons)
-	geneid <- geneid[exon.keep]
-	exon.genes <- exon.genes[exon.keep, , drop=FALSE]
-	beta <- beta[exon.keep]
+	exon.keep   <- rep(gene.keep, gene.nexons)
+	geneid      <- geneid[exon.keep]
+	exon.genes  <- exon.genes[exon.keep, , drop=FALSE]
+	beta        <- beta[exon.keep]
 	gene.nexons <- gene.nexons[gene.keep]
 	
 #	Gene level information
 	g <- rep(1:ngenes, times=gene.nexons)
 	glmfit <- glmfit[exon.keep, ]
-	gene.counts <- rowsum(glmfit$counts, geneid, reorder=FALSE)
-	fit.gene <- glmFit(gene.counts, design, dispersion=0.05, offset=as.vector(glmfit$offset[1,]), prior.count=prior.count)
+	gene.counts  <- rowsum(glmfit$counts, geneid, reorder=FALSE)
+	fit.gene     <- glmFit(gene.counts, design, dispersion=0.05, offset=as.vector(glmfit$offset[1,]), prior.count=prior.count)
 	gene.betabar <- fit.gene$coefficients[g, coef, drop=FALSE]
 
 #	New offset
-	offset.new <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE) + 
-                  makeCompressedMatrix(tcrossprod(gene.betabar, design[,coef,drop=FALSE]))
+	offset.new   <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE) + 
+                    makeCompressedMatrix(tcrossprod(gene.betabar, design[,coef,drop=FALSE]))
 	coefficients <- beta - gene.betabar
 
 #	adjust dispersion for new QL method scaled by average QL dispersion
 	if(is.null(glmfit$average.ql.dispersion)){
 		dispersion <- glmfit$dispersion
-	}
-	else{
+	} else {
 		dispersion <- glmfit$dispersion/glmfit$average.ql.dispersion
 	}
 
 #	Testing: Null model
-	fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, dispersion=dispersion)
+	fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, dispersion=dispersion, weights=glmfit$weights)
 
 #	Prepare statistics summary
 	exon.LR <- fit0$deviance - glmfit$deviance
@@ -163,7 +162,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 		squeeze <- squeezeVar(var=gene.s2, df=gene.df.residual, robust=robust)
 		gene.df.total <- gene.df.residual + squeeze$df.prior
 		gene.df.total <- pmin(gene.df.total, sum(gene.df.residual))
-		gene.s2.post <- squeeze$var.post
+		gene.s2.post  <- squeeze$var.post
 
 		exon.F <- exon.LR / exon.df.test / gene.s2.post[g]
 		gene.F <- rowsum(exon.LR, geneid, reorder=FALSE) / gene.df.test / gene.s2.post
@@ -173,7 +172,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 #		Ensure is not more significant than chisquare test for previous QL method
 		i <- gene.s2.post[g] < 1
 		if(any(i) & !is.null(glmfit$df.residual.zeros)) {
-			chisq.pvalue <- pchisq(exon.LR[i], df=exon.df.test[i], lower.tail=FALSE, log.p=FALSE)
+			chisq.pvalue    <- pchisq(exon.LR[i], df=exon.df.test[i], lower.tail=FALSE, log.p=FALSE)
 			exon.p.value[i] <- pmax(exon.p.value[i], chisq.pvalue)
 		}
 	}

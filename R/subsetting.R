@@ -23,7 +23,7 @@ function(object, i, j, keep.lib.sizes=TRUE)
 assign("[.DGEGLM",
 function(object, i, j)
 #  Subsetting for DGEGLM objects
-#  Created 11 May 2011.  Last modified 20 Oct 2023.
+#  Created 11 May 2011.  Last modified 5 Aug 2024.
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(j)) stop("Subsetting columns not allowed for DGEGLM object.",call.=FALSE)
@@ -31,7 +31,7 @@ function(object, i, j)
 #	Recognized components
 	IJ <- character(0)
 	IX <- c("counts","offset","weights","genes","coefficients","fitted.values","unshrunk.coefficients","leverage","unit.deviance.adj","unit.df.adj")
-	I  <- c("AveLogCPM","dispersion","prior.n","prior.df","var.post","var.prior","df.prior","df.residual","df.residual.zeros","df.residual.adj","deviance","deviance.adj","iter","failed")
+	I  <- c("AveLogCPM","dispersion","prior.n","prior.df","s2.post","s2.prior","df.prior","df.residual","df.residual.zeros","df.residual.adj","deviance","deviance.adj","iter","failed")
 	JX <- character(0)
 
 	subsetListOfArrays(object,i,j,IJ=IJ,IX=IX,I=I,JX=JX)
@@ -65,7 +65,7 @@ function(object, i, j)
 #	Recognized components
 	IJ <- character(0)
 	IX <- c("counts","offset","weights","genes","coefficients","fitted.values","table","unshrunk.coefficients","leverage","unit.deviance.adj","unit.df.adj")
-	I  <- c("AveLogCPM","dispersion","prior.n","prior.df","var.post","var.prior","df.prior","df.residual","df.residual.zeros","df.residual.adj","deviance","deviance.adj","iter","failed","df.test","df.total")
+	I  <- c("AveLogCPM","dispersion","prior.n","prior.df","s2.post","s2.prior","df.prior","df.residual","df.residual.zeros","df.residual.adj","deviance","deviance.adj","iter","failed","df.test","df.total")
 	JX <- character(0)
 
 	subsetListOfArrays(object,i,j,IJ=IJ,IX=IX,I=I,JX=JX)

@@ -595,9 +595,9 @@ $n0
 > fit <- glmQLFit(y,design,legacy=FALSE)
 > fit$dispersion
 [1] 0.2111012
-> summary(fit$var.post)
+> summary(fit$s2.post)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-0.06012 0.60736 0.80020 0.90554 1.20592 2.26596 
+ 0.3004  0.6743  0.9769  1.1150  1.5037  3.0700 
 > fit$unit.deviance.adj[1:10,]
    Sample1      Sample2      Sample3
 1        0 0.000000e+00 0.000000e+00
@@ -631,4 +631,4 @@ $n0
 > 
 > proc.time()
    user  system elapsed 
-   1.15    0.03    1.84 
+   1.18    0.09    1.76 

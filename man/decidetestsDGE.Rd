@@ -18,7 +18,7 @@ Identify which genes are significantly differentially expressed from an edgeR te
   \item{\dots}{other arguments are not used.}
 }
 \value{
-An object of class \code{\link[limma:TestResults]{TestResults}}.
+An object of class \code{\link[=TestResults-class]{TestResults}}.
 This is essentially a single-column integer matrix with elements \code{-1}, \code{0}
 or \code{1} indicating whether each gene is classified as
 significantly down-regulated, not significant or
@@ -42,7 +42,7 @@ Unless the fold changes and p-values are very highly correlated, the addition of
 Users wanting to use fold change thresholding should considering using \code{glmTreat} instead and leaving \code{lfc} at the default value when using \code{decideTests}.
 }
 \seealso{
-\code{\link[limma:decideTests]{decideTests}} and \code{\link[limma:TestResults]{TestResults}} in the limma package.
+\code{\link{decideTests}} and \code{\link[=TestResults-class]{TestResults}} in the limma package.
 }
 \author{Davis McCarthy, Gordon Smyth and the edgeR team}
 \examples{

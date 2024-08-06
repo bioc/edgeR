@@ -1,7 +1,7 @@
 glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval")
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
 #	Yunshun Chen, Lizhong Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 29 Apr 2024.
+#	Created on 05 May 2014. Last modified on 5 May 2024.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 
@@ -82,10 +82,9 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	offset.adj <- makeCompressedMatrix(lfc*log(2) * design[, coef], dim(glmfit$counts), byrow=TRUE)
 
 #	adjust dispersion for new QL method scaled by average QL dispersion
-	if(is.null(glmfit$average.ql.dispersion)){
+	if(is.null(glmfit$average.ql.dispersion)) {
 		dispersion <- glmfit$dispersion
-	}
-	else{
+	} else {
 		dispersion <- glmfit$dispersion/glmfit$average.ql.dispersion
 	}
 
@@ -121,8 +120,8 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 		df.total <- glmfit$df.prior + df.residual
 		max.df.residual <- ncol(glmfit$counts)-ncol(glmfit$design)
 		df.total <- pmin(df.total, nrow(glmfit)*max.df.residual)
-		z.left <- limma::zscoreT(z.left/sqrt(glmfit$var.post), df=df.total)
-		z.right <- limma::zscoreT(z.right/sqrt(glmfit$var.post), df=df.total)
+		z.left <- zscoreT(z.left/sqrt(glmfit$s2.post), df=df.total)
+		z.right <- zscoreT(z.right/sqrt(glmfit$s2.post), df=df.total)
 	}
 
 	within <- abs(unshrunk.logFC) <= lfc

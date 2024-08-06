@@ -4,6 +4,7 @@ glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
 glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.1, ...)
+# 	Fit NB GLMs and estimate QL dispersions with empirical Bayes moderation.
 # 	Yunshun Chen, Aaron Lun, Lizhong Chen, Gordon Smyth
 #	Created 5 November 2014. Last modified 8 Apr 2024.
 {
@@ -52,7 +53,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
-#	Last modified 14 Jul 2024.
+#	Last modified 5 Aug 2024.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -73,7 +74,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 			stop("No dispersion values provided.")
 		} else {
 			if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
-			i <- (AveLogCPM >= quantile(AveLogCPM, 1-top.proportion))
+			i <- (AveLogCPM >= quantile(AveLogCPM, probs=1-top.proportion))
 		    dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, weights=weights[i,,drop=FALSE])
 		}
 	}	
@@ -164,18 +165,18 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 
 #	Storing results
 	fit$df.prior <- s2.fit$df.prior
-	fit$var.post <- s2.fit$var.post
-	fit$var.prior <- s2.fit$var.prior
+	fit$s2.post <- s2.fit$var.post
+	fit$s2.prior <- s2.fit$var.prior
 	fit
 }
 
 glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.bound=TRUE)
 #	Quasi-likelihood F-tests for DGE glms.
 #	Davis McCarthy, Gordon Smyth, Aaron Lun.
-#	Created 18 Feb 2011. Last modified 2 Oct 2023.
+#	Created 18 Feb 2011. Last modified 5 Aug 2024.
 {
 	if(!is(glmfit,"DGEGLM")) stop("glmfit must be an DGEGLM object produced by glmQLFit") 
-	if(is.null(glmfit$var.post)) stop("need to run glmQLFit before glmQLFTest")
+	if(is.null(glmfit$s2.post)) stop("need to run glmQLFit before glmQLFTest")
 
 #	add check in glmLRT function for new QL method
 #	fitting null model using working dispersion
@@ -191,7 +192,7 @@ glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.
 	}
 
 #	Compute the QL F-statistic
-	F.stat <- out$table$LR / out$df.test / glmfit$var.post
+	F.stat <- out$table$LR / out$df.test / glmfit$s2.post
 	df.total <- glmfit$df.prior + df.residual
 	max.df.residual <- ncol(glmfit$counts)-ncol(glmfit$design)
 	df.total <- pmin(df.total, nrow(glmfit)*max.df.residual)
@@ -223,7 +224,7 @@ glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.
 # A convenience function to avoid generating temporary matrices.
 {
     disp <- makeCompressedMatrix(glmfit$dispersion, dim(glmfit$counts), byrow=FALSE)
-    s2 <- makeCompressedMatrix(glmfit$var.post, dim(glmfit$counts), byrow=FALSE)
+    s2 <- makeCompressedMatrix(glmfit$s2.post, dim(glmfit$counts), byrow=FALSE)
     out <- .Call(.cxx_check_poisson_bound, glmfit$fitted.values, disp, s2)
     return(out)
 }
@@ -236,7 +237,7 @@ plotQLDisp <- function(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean 
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
 #	Last modified 22 Jan 2023.
 {
-	if(is.null(glmfit$var.post)) stop("need to run glmQLFit before plotQLDisp")
+	if(is.null(glmfit$s2.post)) stop("need to run glmQLFit before plotQLDisp")
 
 #	Make sure average logCPM is available
 	A <- glmfit$AveLogCPM
@@ -255,12 +256,12 @@ plotQLDisp <- function(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean 
 	s2[df.residual < 1e-8] <- 0
 
 	plot(A, sqrt(sqrt(s2)),xlab=xlab, ylab=ylab, pch=pch, cex=cex, col=col.raw, ...)
-	points(A, sqrt(sqrt(glmfit$var.post)), pch=pch, cex=cex, col=col.shrunk)
-	if(identical(length(glmfit$var.prior),1L)) { 
-		abline(h=sqrt(sqrt(glmfit$var.prior)), col=col.trend)
+	points(A, sqrt(sqrt(glmfit$s2.post)), pch=pch, cex=cex, col=col.shrunk)
+	if(identical(length(glmfit$s2.prior),1L)) { 
+		abline(h=sqrt(sqrt(glmfit$s2.prior)), col=col.trend)
 	} else {
 		o <- order(A)
-		lines(A[o], sqrt(sqrt(glmfit$var.prior[o])), col=col.trend, lwd=2)
+		lines(A[o], sqrt(sqrt(glmfit$s2.prior[o])), col=col.trend, lwd=2)
 	}
 	legend("topright", lty=c(-1,-1,1), pch=c(pch,pch,-1), col=c(col.raw,col.shrunk,col.trend), pt.cex=0.7, lwd=2, legend=c("Raw","Squeezed", "Trend"))
 
