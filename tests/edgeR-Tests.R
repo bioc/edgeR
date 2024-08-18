@@ -181,3 +181,6 @@ fit$unit.deviance.adj[1:10,]
 fit$unit.df.adj[1:10,]
 summary(fit$deviance.adj)
 summary(fit$df.residual.adj)
+fit <- glmQLFit(y,design,legacy=TRUE)
+summary(fit$dispersion)
+summary(fit$s2.post)

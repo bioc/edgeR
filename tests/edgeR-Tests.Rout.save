@@ -628,7 +628,14 @@ $n0
 > summary(fit$df.residual.adj)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.0000  0.9760  0.9821  0.9364  0.9879  1.1028 
+> fit <- glmQLFit(y,design,legacy=TRUE)
+> summary(fit$dispersion)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.1928  0.1932  0.2086  0.2226  0.2515  0.2728 
+> summary(fit$s2.post)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.06246 0.59974 0.79811 0.91038 1.17237 2.64122 
 > 
 > proc.time()
    user  system elapsed 
-   1.18    0.09    1.76 
+   1.03    0.07    1.89 

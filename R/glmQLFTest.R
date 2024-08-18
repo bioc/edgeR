@@ -161,7 +161,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	Empirical Bayes moderation of quasi-likelihood dispersions
 #	Correction of extremely small degree of freedom (could be risky to choose 0.99)
 	df.residual[df.residual < min(-diff(dim(design))/2, 0.99)] <- 0
-	s2.fit <- squeezeVar(s2,df=df.residual,covariate=AveLogCPM,robust=robust,winsor.tail.p=winsor.tail.p)
+	s2.fit <- squeezeVar(s2,df=df.residual,covariate=AveLogCPM,robust=robust,winsor.tail.p=winsor.tail.p,legacy=legacy)
 
 #	Storing results
 	fit$df.prior <- s2.fit$df.prior
