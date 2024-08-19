@@ -39,8 +39,8 @@ cpm.DGELRT <- cpm.DGEGLM <- function(y, log=FALSE, shrunk=TRUE, ...)
 
 cpm.default <- function(y, lib.size=NULL, offset=NULL, log=FALSE, prior.count=2, ...)
 #	Counts per million for a matrix
-#	Davis McCarthy and Gordon Smyth. C version by Aaron Lun.
-#	Created 20 June 2011. Last modified 10 May 2024.
+#	Davis McCarthy and Gordon Smyth. C++ version by Aaron Lun. C version by Lizhong Chen.
+#	Created 20 June 2011. Last modified 13 Jul 2024.
 {
 #	Check y
 	ymin <- min(y)
@@ -68,12 +68,12 @@ cpm.default <- function(y, lib.size=NULL, offset=NULL, log=FALSE, prior.count=2,
 		storage.mode(lib.size) <- "double"
 	}
 
-	lib.size <- makeCompressedMatrix(lib.size, dim(y), byrow=TRUE)
+#	Check lib.size
+	minlibsize <- min(lib.size)
+	if(is.na(minlibsize)) stop("NA library sizes not allowed")
+	if(minlibsize <= 0) stop("library sizes should be greater than zero")
 
-	check.range <- suppressWarnings(range(lib.size))
-	if (any(is.na(check.range)) || check.range[1] <= 0) {
-		stop("library sizes should be finite and non-negative")
-	}
+	lib.size <- makeCompressedMatrix(lib.size, dim(y), byrow=TRUE)
 
 #	Calculating in C++ for max efficiency
 	if(log) {
@@ -83,7 +83,5 @@ cpm.default <- function(y, lib.size=NULL, offset=NULL, log=FALSE, prior.count=2,
 		out <- .Call(.cxx_calculate_cpm_raw, y, lib.size)
 	}
 
-#	Cleaning up
-	dimnames(out) <- dimnames(y)
 	out
 }

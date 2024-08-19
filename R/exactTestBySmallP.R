@@ -7,13 +7,13 @@ exactTestBySmallP <- function(y1,y2,dispersion=0)
 #	all values with probability equal or less than that observed.
 
 #	Mark Robinson, Davis McCarthy, Gordon Smyth.
-#	Created 17 June 2009.  Last modified 9 Dec 2013.
+#	Created 17 June 2009.  Last modified 13 Jul 2024.
 {
 	y1 <- as.matrix(y1)
 	y2 <- as.matrix(y2)
 	ntags <- nrow(y1)
 	if(ntags!=nrow(y2)) stop("Number of rows of y1 not equal to number of rows of y2")
-	if(any(is.na(y1)) || any(is.na(y2))) stop("NAs not allowed")
+	if(anyNA(y1) || anyNA(y2)) stop("NAs not allowed")
 	n1 <- ncol(y1)
 	n2 <- ncol(y2)
 

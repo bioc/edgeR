@@ -56,7 +56,7 @@
  *	third derivatives of these cubics at the end-points.
  */
 
-void fmm_spline(int n, const double *x, const double *y, double *b, double *c, double *d)
+void fmm_spline(int n, double *x, double *y, double *b, double *c, double *d)
 {
     int nm1, i;
     double t;

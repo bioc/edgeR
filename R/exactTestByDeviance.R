@@ -6,15 +6,16 @@ exactTestByDeviance <-  function(y1,y2,dispersion=0)
 #	Rejection region is defined by large deviance statistics,
 #	so this is a conditional likelihood ratio test.
 
-#	R version by Davis McCarthy, Gordon Smyth, created 8 August 2011.
-#	C++ version by Aaron Lun, created 26 July 2012.
-#	Last modified 9 Dec 2013.
+#	R version by Davis McCarthy and Gordon Smyth, 8 August 2011.
+#	C++ version by Aaron Lun, 26 July 2012.
+#	C version by Lizhong Chen, 13 May 2024.
+#	Last modified 13 Jul 2024.
 {
 	y1 <- as.matrix(y1)
 	y2 <- as.matrix(y2)
 	ntags <- nrow(y1)
 	if(ntags!=nrow(y2)) stop("Number of rows of y1 not equal to number of rows of y2")
-	if(any(is.na(y1)) || any(is.na(y2))) stop("NAs not allowed")
+	if(anyNA(y1) || anyNA(y2)) stop("NAs not allowed")
 	n1 <- ncol(y1)
 	n2 <- ncol(y2)
 
@@ -25,6 +26,7 @@ exactTestByDeviance <-  function(y1,y2,dispersion=0)
 	if(all(dispersion==0)) return(binomTest(sum1,sum2,p=n1/(n1+n2)))
 	if(any(dispersion==0)) stop("dispersion must be either all zero or all positive")
 	if(length(dispersion)==1) dispersion <- rep(dispersion,ntags)
+	if(length(dispersion)!=ntags) stop("dispersion does not match the number of rows")
 
 	pvals <- rep(1,ntags)
 	if(ntags==0) return(pvals)
@@ -37,7 +39,6 @@ exactTestByDeviance <-  function(y1,y2,dispersion=0)
 	}
 
 #	Checking the dispersion type.
-	dispersion<-as.double(dispersion)
 	pvals<-.Call(.cxx_exact_test_by_deviance, sum1, sum2, n1, n2, dispersion)
 	pmin(pvals, 1)
 }

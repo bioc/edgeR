@@ -21,9 +21,8 @@ addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1)
 
 #	Adding the prior count.
 	out <- .Call(.cxx_add_prior_count, y, offset, prior.count)
-	names(out) <- c("y", "offset")
-	dimnames(out$y) <- dimnames(y)
 	out$offset <- makeCompressedMatrix(out$offset, dim(y), byrow=TRUE)
+	
 	return(out)
 }
 

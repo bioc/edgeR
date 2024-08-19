@@ -1,18 +1,51 @@
-makeCompressedMatrix <- function(x, dims, byrow=TRUE) 
+makeCompressedMatrix <- function(x, dims=NULL, byrow=TRUE) 
 # Coerces a NULL, scalar, vector or matrix to a compressed matrix,
 # Determines whether the rows or columns are intended to be 
 # repeated, and stores this in the attributes.
 #
-# written by Aaron Lun
-# created 24 September 2016
-# last modified 9 July 2017
+# C++ version by Aaron Lun, 24 September 2016.
+# C version by Lizhong Chen, 9 May 2024.
 {
     repeat.row <- repeat.col <- FALSE
 	if (is.matrix(x)) {
 		if (inherits(x, "CompressedMatrix")) {
 			return(x)
 		}
-        dims <- dim(x)
+        if (!is.null(dims)){
+            xdim <- dim(x)
+            if(xdim[1]==1L && xdim[2]==1L){
+                repeat.row <- repeat.col <- TRUE
+		        x <- matrix(x)               
+            }
+            else if(xdim[1]==1L && xdim[2]>=2L){
+                if(xdim[2]!=dims[2]){
+                    stop("'dims[2]' should equal length of row vector 'x'")
+                }
+                if(byrow){
+                    repeat.row <- TRUE
+                }
+                else{
+                    dims <- xdim    
+                }
+            }
+            else if(xdim[1]>=2L && xdim[2]==1L){
+                if(xdim[1]!=dims[1]){
+                    stop("'dims[1]' should equal length of column vector 'x'")
+                }
+                if(!byrow){
+                    repeat.col <- TRUE
+                }
+                else{
+                    dims <- xdim
+                }
+            }
+            else{
+                dims <- xdim
+            }
+        }
+        else{
+            dims <- dim(x)
+        }
 	} else if (length(x)==1L) {
         repeat.row <- repeat.col <- TRUE
 		x <- matrix(x)
@@ -24,10 +57,10 @@ makeCompressedMatrix <- function(x, dims, byrow=TRUE)
 			x <- cbind(x)
             repeat.col <- TRUE
 		} else {
-			x <- rbind(x)
             if (dims[2]!=length(x)) { 
                 stop("'dims[2]' should equal length of 'x'")
             }
+			x <- rbind(x)
             repeat.row <- TRUE
 		}
 	}
@@ -343,6 +376,7 @@ Ops.CompressedMatrix <- function(e1, e2)
 # A prefunctory check for finite, positive values is performed in the C++ code.
 # If 'weights' is already a CompressedMatrix, then we assume it's 
 # already gone through this and don't do it again.
+# Last modified 13 Jul 2024.
 {
 	if (inherits(weights, "CompressedMatrix")) {
 		return(weights)
@@ -353,7 +387,7 @@ Ops.CompressedMatrix <- function(e1, e2)
 	weights <- makeCompressedMatrix(weights, dim(y), byrow=TRUE)
 
 	check.range <- suppressWarnings(range(weights))
-    if (any(is.na(check.range)) || check.range[1] <= 0) {
+    if (anyNA(check.range) || check.range[1] <= 0) {
         stop("weights must be finite positive values")
     }
 	return(weights)
@@ -362,6 +396,7 @@ Ops.CompressedMatrix <- function(e1, e2)
 .compressPrior <- function(y, prior.count) 
 # Again for the prior counts, checking for non-negative finite values.
 # Skipping the check if it's already a CompressedMatrix object.
+# Last modified 13 Jul 2024.
 {
 	if (inherits(prior.count, "CompressedMatrix")) {
 		return(prior.count)
@@ -371,7 +406,7 @@ Ops.CompressedMatrix <- function(e1, e2)
 	prior.count <- makeCompressedMatrix(prior.count, dim(y), byrow=FALSE)
 
     check.range <- suppressWarnings(range(prior.count))
-    if (any(is.na(check.range)) || check.range[1] < 0) { 
+    if (anyNA(check.range) || check.range[1] < 0) { 
         stop("prior counts must be finite non-negative values")
     }
 	return(prior.count)
@@ -380,6 +415,7 @@ Ops.CompressedMatrix <- function(e1, e2)
 .compressDispersions <- function(y, dispersion) 
 # Again for the dispersions, checking for non-negative finite values.
 # Skipping the check if it's already a CompressedMatrix object.
+# Last modified 13 Jul 2024.
 {
 	if (inherits(dispersion, "CompressedMatrix")) {
 		return(dispersion)
@@ -389,7 +425,7 @@ Ops.CompressedMatrix <- function(e1, e2)
 	dispersion <- makeCompressedMatrix(dispersion, dim(y), byrow=FALSE)
 
     check.range <- suppressWarnings(range(dispersion))
-    if (any(is.na(check.range)) || check.range[1] < 0) { 
+    if (anyNA(check.range) || check.range[1] < 0) { 
         stop("dispersions must be finite non-negative values")
     }
 	return(dispersion)

@@ -1,5 +1,5 @@
 Package: edgeR
-Version: 4.3.10
+Version: 4.3.11
 Date: 2024-08-18
 Title: Empirical Analysis of Digital Gene Expression Data in R
 Description: Differential expression analysis of RNA-seq expression profiles with biological replication. Implements a range of statistical methodology based on the negative binomial distributions, including empirical Bayes estimation, exact tests, generalized linear models and quasi-likelihood tests. As well as RNA-seq, it be applied to differential signal analysis of other types of genomic data that produce read counts, including ChIP-seq, ATAC-seq, Bisulfite-seq, SAGE and CAGE.
@@ -7,9 +7,8 @@ Author: Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Pedro Baldon
 Maintainer: Yunshun Chen <yuchen@wehi.edu.au>, Gordon Smyth <smyth@wehi.edu.au>, Aaron Lun <infinite.monkeys.with.keyboards@gmail.com>, Mark Robinson <mark.robinson@imls.uzh.ch>
 License: GPL (>=2)
 Depends: R (>= 3.6.0), limma (>= 3.61.9)
-Imports: methods, graphics, stats, utils, locfit, Rcpp
+Imports: methods, graphics, stats, utils, locfit
 Suggests: jsonlite, readr, rhdf5, splines, knitr, AnnotationDbi, Biobase, BiocStyle, SummarizedExperiment, org.Hs.eg.db, Matrix, SeuratObject
-LinkingTo: Rcpp
 VignetteBuilder: knitr
 URL: https://bioinf.wehi.edu.au/edgeR/, https://bioconductor.org/packages/edgeR
 biocViews: GeneExpression, Transcription, AlternativeSplicing,

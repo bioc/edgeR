@@ -2,7 +2,7 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 # Identify genes with splice variants using a negative binomial model
 # We assume that the data come in a matrix (possibly and/or a DGEList), counts summarized at exon level, with gene information available
 # Davis McCarthy and Gordon Smyth
-# Created 4 February 2011.  Last modified 3 Oct 2016. 
+# Created 4 February 2011.  Last modified 13 Jul 2024. 
 {
 	if( is(y, "DGEList") ) {
 		y.mat <- y$counts
@@ -43,7 +43,7 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 			if(is.null(names(dispersion)))
 				stop("names(dispersion) is NULL. All names of dispersion must be unique geneID.\n")
 			matches <- match(uniqIDs, names(dispersion))
-			if( any(is.na(matches)) | any(duplicated(matches)))
+			if( anyNA(matches) | any(duplicated(matches)))
 			   stop("names(dispersion) of dispersion do not have a one-to-one mapping to unique geneID. All names of dispersion must be unique geneID.\n")
 			dispersion <- dispersion[matches]
 			genewise.disp <- TRUE

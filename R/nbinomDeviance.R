@@ -4,10 +4,9 @@ nbinomDeviance <- function(y,mean,dispersion=0,weights=NULL)
 #	A vector y is taken to be a matrix with one row; in this case mean and dispersion must also be vectors.
 #	Original version (deviances.function) 23 November 2010.
 #	Renamed to nbinomDeviance 9 Dec 2013.
-#	Last modified 21 June 2017.
+#	Last modified 10 May 2024.
 {
 	out <- .compute_nbdeviance(y=y, mean=mean, dispersion=dispersion, weights=weights, dosum=TRUE)
-	names(out) <- rownames(y)
 	out
 }
 
@@ -51,7 +50,6 @@ nbinomUnitDeviance <- function(y,mean,dispersion=0)
 
 #	Check mean
 	if(!identical(dim(y),dim(mean))) stop("mean should have same dimensions as y")
-	if(!is.double(mean)) storage.mode(mean) <- "double"
 
 #	Check dispersion (can be tagwise (rowwise) or observation-wise).
 	dispersion <- .compressDispersions(y, dispersion)

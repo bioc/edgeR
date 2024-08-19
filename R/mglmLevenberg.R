@@ -4,7 +4,8 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 
 #	R version by Gordon Smyth and Yunshun Chen
 #	C++ version by Aaron Lun
-#	Created 3 March 2011.  Last modified 21 June 2017
+#	C version by Lizhong Chen
+#	Created 3 March 2011.  Last modified 22 May 2024
 {
 #	Check arguments
 	y <- as.matrix(y)
@@ -39,9 +40,7 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 	output <- .Call(.cxx_fit_levenberg, y, offset, dispersion, weights, design, beta, tol, maxit)
 
 #	Naming the output and returning it.  
-	names(output) <- c("coefficients", "fitted.values", "deviance", "iter", "failed")
 	colnames(output$coefficients) <- colnames(design)
 	rownames(output$coefficients) <- rownames(y)
-	dimnames(output$fitted.values) <- dimnames(y)
 	output
 }

@@ -1,41 +1,27 @@
 loessByCol <- function(y, x=NULL, span=0.5)
-# Calls a C++ function to do the dirty work of fitting a degree-0,
-# non-robustified loess curve through each column of a matrix.
-
-# C++ version by Aaron Lun, 26 June 2012.  Last modified 6 July 2012.
-# Replaces:
-# Rcode version by Davis McCarthy, May 2010.
-# simpleLoess version by Yunshun Chen, 08 May 2012.
+# Fit a lowess curve of degree 0 by least squares to each column of a matrix.
+#
+# R version called locallyWeightedMean() using simpleLoess() by Yunshun Chen, 08 May 2012.
+# Converted to C++ and renamed to loessByCol() by Aaron Lun, 26 June 2012.
+# Pure C version by Lizhong Chen, 11 May 2024.
 {
+#	Check y
 	y <- as.matrix(y)
 	ntags <- nrow(y)
+
+#	Check x
 	if(is.null(x)) x <- 1:ntags
+	if(!identical(length(x),ntags)) stop("Length of `x` must match row dimension of 'y'")
+	names(x) <- rownames(y)
 
-	# Sort by x-values.
-	x.order <- order(x)
-	y <- y[x.order,,drop=FALSE]
-	x <- x[x.order]
-
+#	If span window is less than one observation, return y without smoothing
 	nspan <- min(floor(span*ntags), ntags)
 	if(nspan<=1) {
-	   fitted <- list(fitted.values=y,leverages=rep(1,ntags))
-	   names(fitted$leverages) <- rownames(y)
-	   return(fitted)
+		fitted <- list(fitted.values=y,leverages=rep(1,ntags))
+		names(fitted$leverages) <- rownames(y)
+		return(fitted)
 	}
 
-	# Passing to the compiled code. Note type checking, otherwise the code will complain.
-	if (!is.double(y)) storage.mode(y) <- "double"
-	if (!is.double(x)) x <- as.double(x)
-	fitted <- .Call(.cxx_loess_by_col, x, y, ncol(y), nspan)
-   
-	# Recover the original order.	
-	fitted[[1]][x.order,] <- fitted[[1]]
-	fitted[[2]][x.order] <- fitted[[2]]
-
-	# Beautifying.
-	names(fitted) <- c("fitted.values", "leverages")
-	dimnames(fitted$fitted.values) <- dimnames(y)
-	names(fitted$leverages) <- rownames(y)
-
-	fitted
+#	Call C code
+	.Call(.cxx_loess_by_col, x, y, nspan)
 }

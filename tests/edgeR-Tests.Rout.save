@@ -592,7 +592,7 @@ $n0
 0.09719 0.13460 0.19422 0.22321 0.27176 0.61463 
 > 
 > # glmQLFit
-> fit <- glmQLFit(y,design,legacy=FALSE)
+> fit <- glmQLFit(y,design,legacy=FALSE,keep.unit.mat=TRUE)
 > fit$dispersion
 [1] 0.2111012
 > summary(fit$s2.post)

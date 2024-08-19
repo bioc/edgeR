@@ -13,13 +13,13 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 \method{glmQLFit}{default}(y, design = NULL, dispersion = NULL, offset = NULL, lib.size = NULL,
         weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL,
         covariate.trend = NULL, robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.1, \dots)
+        legacy = FALSE, top.proportion = 0.1, keep.unit.mat=FALSE, \dots)
 \method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.1, \dots)
+        legacy = FALSE, top.proportion = 0.1, keep.unit.mat=FALSE, \dots)
 \method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, top.proportion = 0.1, \dots)
+        legacy = FALSE, top.proportion = 0.1, keep.unit.mat=FALSE, \dots)
 }
 
 \arguments{
@@ -48,6 +48,8 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 \item{legacy}{logical, if \code{TRUE} then produce legacy results as for Bioconductor 3.16 and earlier. If \code{FALSE}, then use the new QL-dispersion estimation method with adjusted deviances.}
 
 \item{top.proportion}{the proportion of top highly expressed genes used to get an initial estimate of the NB dispersion. Only used when \code{legacy=TRUE} and \code{dispersion=NULL}.}
+
+\item{keep.unit.mat}{logical, whether to compute the matrice of adjusted unit deviances, degrees of freedom and leverage.}
 
 \item{\dots}{other arguments are passed to \code{\link{glmFit}}.}
 }
@@ -91,9 +93,9 @@ It is not correct to supply genewise dispersions because \code{glmQLFit} estimat
 \item{s2.post}{numeric vector of posterior genewise QL-dispersions.} 
 
 \code{glmQLFit} with \code{legacy=FALSE} produces an object of class \code{DGEGLM} with the same components as produced by \code{\link{glmFit}}, plus:
-\item{leverage}{numeric matrix of leverages for the genewise glms.}
-\item{unit.deviance.adj}{numeric matrix of adjusted unit deviances for the genewise glms.}
-\item{unit.df.adj}{numeric matrix of adjusted degrees of freedom for the unit deviances.}
+\item{leverage}{numeric matrix of leverages for the genewise glms when \code{keep.unit.mat=TRUE}.}
+\item{unit.deviance.adj}{numeric matrix of adjusted unit deviances for the genewise glms when \code{keep.unit.mat=TRUE}.}
+\item{unit.df.adj}{numeric matrix of adjusted degrees of freedom for the unit deviances when \code{keep.unit.mat=TRUE}.}
 \item{df.residual.adj}{numeric vector of adjusted residual degrees of freedom for each gene.}
 \item{df.prior}{numeric vector of prior degrees of freedom for the QL-dispersions. Has length \code{nrow(y)} if \code{robust=TRUE}, otherwise length 1.}
 \item{s2.prior}{numeric vector giving prior value the QL-dispersions. Has length \code{nrow(y)} is \code{abundance.trend=TRUE}, otherwise length 1.}

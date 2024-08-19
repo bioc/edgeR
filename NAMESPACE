@@ -30,7 +30,6 @@ importFrom("limma",arrayWeights, asMatrixWeights, camera, cameraPR, chooseLowess
            weightedLowess, zscoreGamma, zscoreT)
 importClassesFrom("limma","LargeDataObject","Roast","MDS","TestResults")
 importFrom("locfit", locfit)
-importFrom("Rcpp", sourceCpp)
 
 S3method(Ops,CompressedMatrix)
 S3method("[",CompressedMatrix)

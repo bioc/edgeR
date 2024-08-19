@@ -1,32 +1,9 @@
-#ifndef UTILS_H
-#define UTILS_H
-//#define DEBUG
+#ifndef REXPORT_H
+#define REXPORT_H
 
-#ifdef DEBUG
-#include <iostream>
-#endif
-
-#ifndef USE_FC_LEN_T
-#define USE_FC_LEN_T
-#endif
-#include <Rconfig.h>
-#include "R_ext/BLAS.h"
-#include "R_ext/Lapack.h"
-#ifndef FCONE
-#define FCONE
-#endif
-
-#include "Rcpp.h"
-
-#include <vector>
-#include <cmath>
-#include <stdexcept>
-#include <sstream>
-#include <algorithm>
+#include "edgeR.h"
 
 /* Defining all R-accessible functions. */
-
-extern "C" {
 
 SEXP compute_nbdev(SEXP, SEXP, SEXP, SEXP, SEXP);
 
@@ -38,7 +15,7 @@ SEXP fit_levenberg (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 SEXP get_levenberg_start (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
-SEXP loess_by_col(SEXP, SEXP, SEXP, SEXP);
+SEXP loess_by_col(SEXP, SEXP, SEXP);
 
 SEXP maximize_interpolant(SEXP, SEXP);
 
@@ -58,19 +35,15 @@ SEXP ave_log_cpm(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 SEXP check_poisson_bound (SEXP, SEXP, SEXP);
 
-SEXP compute_adjust_s2 (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP compute_adj_vec (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
+SEXP compute_adj_mat (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
+SEXP compute_ave_qd (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 void processHairpinReads(int *, int *, char**, char**, int*,
 		char**, char**, int*, int*, int*, int*, int*, int*,
 		int*, int*, int*, int*, int*, int*, int *,
 		int *, char**, int*);
-
-}
-
-/* Other utility functions and values */
-
-const double low_value=std::pow(10.0, -10.0), log_low_value=std::log(low_value);
-
-const double LNtwo=std::log(2), one_million=1000000, LNmillion=std::log(one_million);
 
 #endif
