@@ -124,7 +124,7 @@ int check_row_scalar (cmx *cmat, int k, double y)
 
     switch (cmat->type)
     {
-    case 0:
+    case 0:;
         /*
         for(int i=0;i<n;++i){
             R_xlen_t ii = (R_xlen_t)(m) * i+k;
