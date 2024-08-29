@@ -3,18 +3,56 @@
 \encoding{UTF-8}
 
 
-\section{version 4.3.5 (2024-07-14}{\itemize{
-\item
-The new (edgeR v4) QL pipeline produces gene-specific residual degrees of freedom (df.residual), which may be greater or less than the nominal residual degrees of freedom, which are equal to the number of observations minus the number of estimated coefficients, i.e., `nrow(design) - ncol(design)`.
-glmQLFit() sets very small values of df.residual to zero for the empirical Bayes dispersion moderation.
-Previously any df.residual < 0.99 was floored in this way.
-Now the flooring cutoff is df.residual < 0.5 if the nominal df.residual is 1 or df.residual < 0.99 if the nominal df.residual is 2 or more.
+\section{version 4.3.11 (2024-08-19}{\itemize{
 
 \item
-New function catchRSEM() analogous to catchKallisto() and catchSalmon().
+New function catchRSEM() to read transcript-level quantifications from RSEM output.
+If the RSEM output includes resampling replicates, then catchRSEM() uses them to estimate the over-dispersion arising from read-to-transcript-ambuity for each transcript.
+Similar to catchSalmon() and catchKallisto() but for RSEM output.
 
 \item
-Add checks for negative or NA counts to cpm, cpmByGroup, normLibSizes.
+New function normalizeBetweenArrays.DGEList() to apply microarray-style normalization to a DGEList by setting the offset matrix appropriately.
+
+\item
+New argument `keep.unit.mat` for glmQLFit().
+The unit matrices produced when 'legacy=FALSE` are not required for routine downstream analysis, so they are now not returned by glmQFit() unless `keep.unit.mat=TRUE`.
+This reduces the size of the glmQLFit fitted model object.
+
+\item
+Output components var.prior and var.post from glmQLFit() have been renamed to s2.prior and s2.post.
+
+\item
+glmQLFit() with `legacy=FALSE` now uses the improved empirical Bayes hyperparameter estimation in limma 3.61.9, which is designed especially for scenarios when the residual degrees of freedom are unequal between genes.
+Now that unequal residual df are better accounted for, very small df.residual values are no longer floored to zero before performing empirical Bayes estimation.
+
+\item
+makeCompressedMatrix() now allows `x` to optionally be a row vector (matrix with one row) or a column vector (matrix with one column) or an ordinary vector.
+Previously, matrix values for `x` were simply returned as output.
+
+\item
+diffSpliceDGE() now passes weights to glmFit.default(), if they exist.
+
+\item
+A major revision has been undertaken to the C source code.
+C++ has been removed in favor of pure C and, instead, the C functions are now wrapped into R in modern style.
+edgeR no longer depends on the Rcpp package.
+The new C code includes careful memory management and a simplified file structure.
+
+\item
+Various edits to help pages.
+The edgeR publications in edgeR-package.Rd are now listed in reverse chronological order.
+Some help page cross-references have been fixed.
+The term "scalar" to indicate a numeric vector of length one has been replaced with "single value" in several places.
+The DGEGLM and glmFit help pages now clarify that the output `coefficients` component is on the natural log scale.
+
+\item
+Add checks for negative or NA counts to cpm(), cpmByGroup() and normLibSizes().
+
+\item
+Minor R code improvements that do not change the user interface to various functions, for example replacing any(is.na()) with anyNA() and using identical() when testing conditions within if() statements.
+
+\item
+Remove decidetestsDGE(), whose functionality is now provided by the generic function decideTests().
 }}
 
 
