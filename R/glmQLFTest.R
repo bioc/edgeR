@@ -80,7 +80,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 		} else {
 			if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
 			i <- (AveLogCPM >= quantile(AveLogCPM, probs=1-top.proportion))
-		    dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, weights=weights[i,,drop=FALSE])
+			dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, weights=weights[i,,drop=FALSE])
 		}
 	}	
 
@@ -132,15 +132,15 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 		out <- .Call(.cxx_compute_adj_vec,y,fit$fitted.values,design,dispersion.mat,ave.ql.disp,weights)
 		s2  <- out$s2
 		fit$df.residual.adj <- df.residual <- out$df
-		fit$deviance.adj    <- out$deviance
-		fit$average.ql.dispersion          <- ave.ql.disp
+		fit$deviance.adj	<- out$deviance
+		fit$average.ql.dispersion		  <- ave.ql.disp
 
 #		Second the adjusted unit deviance, df and leverage matrix
 		if(keep.unit.mat){
 			out <- .Call(.cxx_compute_adj_mat,y,fit$fitted.values,design,dispersion.mat,ave.ql.disp,weights)
-			fit$leverage          <- out$leverage
+			fit$leverage		  <- out$leverage
 			fit$unit.deviance.adj <- out$unit.deviance
-			fit$unit.df.adj       <- out$unit.df
+			fit$unit.df.adj	   <- out$unit.df
 		}
 	}
 
@@ -207,10 +207,10 @@ glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, poisson.
 .isBelowPoissonBound <- function(glmfit) 
 # A convenience function to avoid generating temporary matrices.
 {
-    disp <- makeCompressedMatrix(glmfit$dispersion, dim(glmfit$counts), byrow=FALSE)
-    s2 <- makeCompressedMatrix(glmfit$s2.post, dim(glmfit$counts), byrow=FALSE)
-    out <- .Call(.cxx_check_poisson_bound, glmfit$fitted.values, disp, s2)
-    return(out)
+	disp <- makeCompressedMatrix(glmfit$dispersion, dim(glmfit$counts), byrow=FALSE)
+	s2 <- makeCompressedMatrix(glmfit$s2.post, dim(glmfit$counts), byrow=FALSE)
+	out <- .Call(.cxx_check_poisson_bound, glmfit$fitted.values, disp, s2)
+	return(out)
 }
 
 plotQLDisp <- function(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean Deviance", pch=16, cex=0.2, col.shrunk="red", col.trend="blue", col.raw="black", ...)

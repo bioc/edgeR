@@ -22,13 +22,13 @@
 Must be of full column rank.
 Defaults to a single column of ones, equivalent to treating the columns as replicate libraries.}
 
-\item{dispersion}{numeric scalar, vector or matrix of negative binomial dispersions. Can be a common value for all genes, a vector of dispersion values with one for each gene, or a matrix of dispersion values with one for each observation. If \code{NULL} will be extracted from \code{y}, with order of precedence: genewise dispersion, trended dispersions, common dispersion.}
+\item{dispersion}{negative binomial dispersions. Can be a single value, or a vector of length \code{nrow(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, will be extracted from \code{y} in this order of precedence: genewise dispersion, trended dispersions, common dispersion.}
 
-\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a scalar or a vector of length \code{ncol(y)}, in which case it is expanded out to a matrix.}
-
-\item{weights}{optional numeric matrix giving prior weights for the observations (for each library and gene) to be used in the GLM calculations.}
+\item{offset}{offsets for the log-linear models containing log effective library sizes.  Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, then will be computed by \code{getOffset(y)}.}
 
 \item{lib.size}{numeric vector of length \code{ncol(y)} giving library sizes. Only used if \code{offset=NULL}, in which case \code{offset} is set to \code{log(lib.size)}. Defaults to \code{colSums(y)}.}
+
+\item{weights}{positive prior weights for the GLM fits. Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, will be set to unity for all observations.}
 
 \item{prior.count}{average prior count to be added to observation to shrink the estimated log-fold-changes towards zero.}
 

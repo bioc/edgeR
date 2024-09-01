@@ -1,4 +1,3 @@
-\title{makeCompressedMatrix}
 \name{makeCompressedMatrix}
 \alias{makeCompressedMatrix}
 \alias{CompressedMatrix}
@@ -12,12 +11,14 @@
 \alias{dim.CompressedMatrix}
 \alias{CompressedMatrix-class}
 
+\title{Make a CompressedMatrix}
+
 \description{
 Construct a CompressedMatrix object from a scalar, vector or matrix.
 }
 
 \usage{
-makeCompressedMatrix(x, dims, byrow=TRUE)
+makeCompressedMatrix(x, dims = NULL, byrow = TRUE)
 
 \method{dim}{CompressedMatrix}(x)
 \method{length}{CompressedMatrix}(x)
@@ -36,7 +37,7 @@ makeCompressedMatrix(x, dims, byrow=TRUE)
 \arguments{
   \item{x}{For \code{makeCompressedMatrix}, a scalar, vector, matrix or CompressedMatrix object.
         For the S3 methods, a CompressedMatrix object.}
-  \item{dims}{an integer vector indicating the matrix dimensions, ignored if \code{x} is already a matrix}
+  \item{dims}{integer vector of length 2 giving matrix dimensions, ignored if \code{x} is already a matrix}
   \item{byrow}{logical. If \code{x} is a vector, should it be repeated across rows (default) or across columns?}
   \item{i, j}{subset indices to apply to \code{x}, which behave the same as indices for \code{matrix} subsetting}
   \item{drop}{logical, indicating whether or not to drop dimensions when subsetting to a single row/column}
@@ -47,7 +48,7 @@ makeCompressedMatrix(x, dims, byrow=TRUE)
 }
 
 \details{
-The CompressedMatrix is used throughout edgeR to save space in storing offsets and (to a lesser extent) weights.
+CompressedMatrix objects are used throughout edgeR to save space in storing offsets and (to a lesser extent) weights.
 This is because, for routine analyses, offsets are the same for all genes so it makes little sense to expand it to the full dimensions of the count matrix.
 Most functions will accept a CompressedMatrix as input to \code{offset} or \code{weights} arguments.
 }

@@ -25,15 +25,17 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 \arguments{
 \item{y}{a matrix of counts or a \code{DGEList} object or a \code{SummarizedExperiment} containing counts. Rows represent genes and columns represent samples.}
 
-\item{design}{numeric matrix giving the design matrix for the genewise linear models.}
+\item{design}{numeric matrix giving the design matrix for the genewise linear models.
+Must be of full column rank.
+Defaults to a single column of ones, equivalent to treating the columns as replicate libraries.}
 
 \item{dispersion}{negative binomial dispersions. Can be a single value, or a vector of length \code{nrow(y)}, or a matrix of the same size as \code{y}. If \code{NULL} and \code{legacy=TRUE}, then will be extracted from the \code{DGEList} object \code{y}. The trended dispersions will be extracted if present, otherwise common dispersion, or will be set to 0.05 if neither is present. If \code{NULL} and \code{legacy=FALSE}, then will be estimated using the \code{top.proportion} of most highly expressed genes.} 
 
-\item{offset}{numeric matrix of same size as \code{y} giving offsets for the log-linear models.  Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, then will be computed by \code{getOffset(y)}.}
+\item{offset}{offsets for the log-linear models containing log effective library sizes.  Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, then will be computed by \code{getOffset(y)}.}
 
 \item{lib.size}{numeric vector of length \code{ncol(y)} giving library sizes. Only used if \code{offset=NULL}, in which case \code{offset} is set to \code{log(lib.size)}. Defaults to \code{colSums(y)}.}
 
-\item{weights}{numeric matrix of same size as \code{y} giving glm weights. If \code{NULL}, will be set to unity for all observations.}
+\item{weights}{positive prior weights for the GLM fits. Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, will be set to unity for all observations.}
 
 \item{abundance.trend}{logical, whether to allow an abundance trend for the QL-dispersion prior.}
 
