@@ -5,17 +5,20 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 #	R version by Gordon Smyth and Yunshun Chen
 #	C++ version by Aaron Lun
 #	C version by Lizhong Chen
-#	Created 3 March 2011.  Last modified 22 May 2024
+#	Created 3 March 2011.  Last modified 16 Sep 2024
 {
 #	Check arguments
 	y <- as.matrix(y)
 	if(!is.numeric(y)) stop("y is non-numeric")
 	nlibs <- ncol(y)
 	ngenes <- nrow(y)
-	if(nlibs==0 || ngenes==0) stop("no data")
+	if(identical(nlibs,0L) || identical(ngenes,0L)) stop("no data")
 
-#	Checks for negative, NA or non-finite values in the count matrix.
-	.isAllZero(y)
+#	Check for NA, negative or infinite counts
+	m <- min(y)
+	if(is.na(m)) stop("NA counts not allowed")
+	if(m < 0) stop("Negative counts not allowed")
+	if(!is.finite(max(y))) stop("Infinite counts not allowed")
 
 #	Checking the design matrix
 	design <- as.matrix(design)
@@ -26,6 +29,22 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 	offset <- .compressOffsets(y, offset=offset)
     dispersion <- .compressDispersions(y, dispersion)
 	weights <- .compressWeights(y, weights)
+
+#	Checking empty design matrix
+	if(identical(ncol(design),0L)){
+		output <- list()
+		output$coefficients  <- matrix(0,ngenes,0)
+		output$fitted.values <- exp(as.matrix(offset))
+		output$deviance      <- nbinomDeviance(y=y,mean=output$fitted.values,dispersion=dispersion,weights=weights)
+		output$iter          <- rep_len(0L,ngenes)
+		output$failed        <- rep_len(FALSE,ngenes) 
+
+		colnames(output$coefficients)  <- colnames(design)
+		rownames(output$coefficients)  <- rownames(y)
+		dimnames(output$fitted.values) <- dimnames(y)
+		
+		return(output)
+	}
 
 #	Initializing values for the coefficients at reasonable best guess with linear models.
 	if(is.null(coef.start)) {
