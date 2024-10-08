@@ -17,11 +17,11 @@
 
 \arguments{ 
 \item{y}{matrix of counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object.}
-\item{design}{design matrix. Ignored if \code{group} is not \code{NULL}.}
-\item{group}{vector or factor giving group membership for a oneway layout, if appropriate.}
-\item{lib.size}{library size, defaults to \code{colSums(y)}.}
+\item{design}{design matrix. Ignored if \code{group} is not \code{NULL}. Defaults to \code{y$design} if \code{y} is a DGEList.}
+\item{group}{vector or factor giving group membership for a oneway layout, if appropriate. Defaults to \code{y$samples$group} if \code{y} is a DGEList.}
+\item{lib.size}{library size.  Defaults to \code{colSums(y)} if \code{y} is a matrix or to \code{normLibSizes(y)} if \code{y} is a DGEList.}
 \item{min.count}{numeric. Minimum count required for at least some samples.}
-\item{min.total.count}{numeric. Minimum total count required.}
+\item{min.total.count}{numeric. Minimum total count required across all samples.}
 \item{large.n}{integer. Number of samples per group that is considered to be \dQuote{large}.}
 \item{min.prop}{numeric. In large sample situations, the minimum proportion of samples in a group that a gene needs to be expressed in. See Details below for the exact formula.}
 \item{\dots}{any other arguments.

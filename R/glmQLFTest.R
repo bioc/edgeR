@@ -55,7 +55,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
 #	C++ replaced with pure C by Lizhong Chen, 6 May 2024.
 #	legacy=FALSE argument passed to squeezeVar(), 1 Aug 2024.
-#	Last modified 18 Aug 2024.
+#	Last modified 8 Oct 2024.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -73,6 +73,9 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	Check weights
 	weights <- .compressWeights(y,weights)
 
+#	Check offsets
+	offset <- .compressOffsets(y,offset,lib.size)
+
 #	Check dispersion
 	if(is.null(dispersion)) {
 		if(legacy){
@@ -80,7 +83,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 		} else {
 			if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
 			i <- (AveLogCPM >= quantile(AveLogCPM, probs=1-top.proportion))
-			dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, weights=weights[i,,drop=FALSE])
+			dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, offset=offset[i,,drop=FALSE], weights=weights[i,,drop=FALSE])
 		}
 	}	
 
