@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 
 
-\section{version 4.3.11 (2024-08-19}{\itemize{
+\section{version 4.3.18 (2024-10-10}{\itemize{
 
 \item
 New function catchRSEM() to read transcript-level quantifications from RSEM output.
@@ -24,6 +24,9 @@ Output components var.prior and var.post from glmQLFit() have been renamed to s2
 \item
 glmQLFit() with `legacy=FALSE` now uses the improved empirical Bayes hyperparameter estimation in limma 3.61.9, which is designed especially for scenarios when the residual degrees of freedom are unequal between genes.
 Now that unequal residual df are better accounted for, very small df.residual values are no longer floored to zero before performing empirical Bayes estimation.
+
+\item
+The default value of `top.proportion` in glmQLFit() with `legacy=FALSE` now depends on the number of genes and on the residual degrees of freedom, with more genes and more df giving smaller values.
 
 \item
 makeCompressedMatrix() now allows `x` to optionally be a row vector (matrix with one row) or a column vector (matrix with one column) or an ordinary vector.

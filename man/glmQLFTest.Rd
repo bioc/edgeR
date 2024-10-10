@@ -17,7 +17,7 @@ glmQLFTest(glmfit, coef = ncol(glmfit$design), contrast = NULL,
 
 \item{contrast}{numeric vector or matrix specifying one or more contrasts of the linear model coefficients to be tested equal to zero.}
 
-\item{poisson.bound}{logical, if \code{TRUE} then the p-value returned will never be less than would be obtained for a likelihood ratio test with NB-dispersion equal to 0 and QL-dispersion equal to 1. Only uses when \code{legacy=TRUE}.}
+\item{poisson.bound}{logical, if \code{TRUE} then the p-value returned will never be less than would be obtained for a likelihood ratio test with NB-dispersion equal to 0 and quasi-dispersion equal to 1. Only uses when \code{legacy=TRUE}.}
 }
 
 \details{
@@ -71,7 +71,7 @@ Robust hyperparameter estimation protects against hypervariable genes and improv
 
 \code{\link{topTags}} displays results from \code{glmQLFTest}.
 
-\code{\link{plotQLDisp}} can be used to visualize the distribution of QL dispersions after EB shrinkage from \code{glmQLFit}.
+\code{\link{plotQLDisp}} can be used to visualize the distribution of quasi-dispersions after EB shrinkage from \code{glmQLFit}.
 
 The \code{QuasiSeq} package gives an alternative implementation of the Lund et al (2012) methods.
 }

@@ -3,7 +3,7 @@
 glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
-glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.1, keep.unit.mat=FALSE,...)
+glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=NULL, keep.unit.mat=FALSE,...)
 # 	Fit NB GLMs and estimate QL dispersions with empirical Bayes moderation.
 # 	Yunshun Chen, Aaron Lun, Lizhong Chen, Gordon Smyth
 #	Created 5 November 2014. Last modified 8 Apr 2024.
@@ -37,7 +37,7 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 	fit
 }
 
-glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=0.1,keep.unit.mat=FALSE,...)
+glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=NULL,keep.unit.mat=FALSE,...)
 #	Created 3 April 2020. Last modified 8 April 2023.
 {
 	y <- SE2DGEList(y)
@@ -47,7 +47,7 @@ glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abund
 glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, 
 	abundance.trend=TRUE, AveLogCPM=NULL, covariate.trend=NULL,
 	robust=FALSE, winsor.tail.p=c(0.05, 0.1),
-	legacy=FALSE, top.proportion=0.1, keep.unit.mat=FALSE, ...)
+	legacy=FALSE, top.proportion=NULL, keep.unit.mat=FALSE, ...)
 # 	Fits genewise GLMs and estimates quasi-likelihood dispersions with empirical Bayes moderation.
 # 	Originally part of glmQLFTest created by Davis McCarthy and Gordon Smyth, 13 Jan 2012.
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
@@ -55,10 +55,11 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
 #	C++ replaced with pure C by Lizhong Chen, 6 May 2024.
 #	legacy=FALSE argument passed to squeezeVar(), 1 Aug 2024.
-#	Last modified 8 Oct 2024.
+#	Last modified 10 Oct 2024.
 {
 #	Check y
 	y <- as.matrix(y)
+	ngenes <- nrow(y)
 
 #	Check design
 	if(is.null(design)) {
@@ -81,8 +82,14 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 		if(legacy){
 			stop("No dispersion values provided.")
 		} else {
-			if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
-			i <- (AveLogCPM >= quantile(AveLogCPM, probs=1-top.proportion))
+			if(is.null(top.proportion)) {
+				df.residual <- ncol(y) - ncol(design)
+				top.proportion <- chooseLowessSpan(ngenes*sqrt(df.residual),small.n=20,min.span=0.02)
+			} else {
+				if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
+			}
+			ntop <- ceiling(top.proportion * ngenes)
+			i <- order(AveLogCPM,decreasing=TRUE)[1:ntop]
 			dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, offset=offset[i,,drop=FALSE], weights=weights[i,,drop=FALSE])
 		}
 	}	
@@ -154,6 +161,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 	fit$df.prior <- s2.fit$df.prior
 	fit$s2.post  <- s2.fit$var.post
 	fit$s2.prior <- s2.fit$var.prior
+	if(!legacy) fit$top.proportion <- top.proportion
 	fit
 }
 
