@@ -27,6 +27,7 @@ Now that unequal residual df are better accounted for, very small df.residual va
 
 \item
 The default value of `top.proportion` in glmQLFit() with `legacy=FALSE` now depends on the number of genes and on the residual degrees of freedom, with more genes and more df giving smaller values.
+Also, the `DGEList` method for glmQLFit() with `legacy=FALSE` will take the dispersion from the mean of the right tail values of the trended dispersions, instead of re-estimating, if these are found in the `DGEList` object.
 
 \item
 makeCompressedMatrix() now allows `x` to optionally be a row vector (matrix with one row) or a column vector (matrix with one column) or an ordinary vector.
