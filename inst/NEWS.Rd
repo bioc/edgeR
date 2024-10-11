@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 
 
-\section{version 4.3.18 (2024-10-10}{\itemize{
+\section{version 4.4.0 (2024-10-30}{\itemize{
 
 \item
 New function catchRSEM() to read transcript-level quantifications from RSEM output.
