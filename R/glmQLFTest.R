@@ -52,7 +52,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
-#	Last modified 14 Jul 2024.
+#	Last modified 11 Oct 2024.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -67,14 +67,17 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	Check AveLogCPM
 	if(is.null(AveLogCPM)) AveLogCPM <- aveLogCPM(y, offset=offset, lib.size=lib.size, weights=weights, dispersion=dispersion)
 
+#	Check offsets
+	offset <- .compressOffsets(y,offset,lib.size)
+
 #	Check dispersion
 	if(is.null(dispersion)) {
 		if(legacy){
 			stop("No dispersion values provided.")
 		} else {
 			if(top.proportion < 0 || top.proportion > 1) stop("top.proportion should be between 0 and 1.")
-			i <- (AveLogCPM >= quantile(AveLogCPM, 1-top.proportion))
-		    dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, weights=weights[i,,drop=FALSE])
+			i <- (AveLogCPM >= quantile(AveLogCPM, probs=1-top.proportion))
+			dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, offset=offset[i,,drop=FALSE], weights=weights[i,,drop=FALSE])
 		}
 	}	
 
