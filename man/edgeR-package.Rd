@@ -24,9 +24,14 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Pedro Baldoni, Matth
 }
 
 \references{
+  Baldoni PL, Chen L, Smyth GK (2024).
+  Faster and more accurate assessment of differential transcript expression with Gibbs sampling and edgeR v4.
+  \emph{NAR Genomics and Bioinformatics}.
+  \doi{10.1101/2024.06.25.600555}.
+
   Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024).
   edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
-  \emph{bioRxiv} 2024.01.21.576131.
+  \emph{bioRxiv} 2024/576131.
   \doi{10.1101/2024.01.21.576131}
 
   Baldoni PL#, Chen Y#, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024).

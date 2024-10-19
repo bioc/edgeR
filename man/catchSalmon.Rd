@@ -61,8 +61,8 @@ Dividing out quantification uncertainty allows efficient assessment of different
 \doi{10.1093/nar/gkad1167}.
 
 Baldoni PL, Chen L, Smyth GK (2024b).
-Faster and more accurate assessment of differential transcript expression with Gibbs sampling and edgeR 4.0.
-\emph{bioRxiv}
+Faster and more accurate assessment of differential transcript expression with Gibbs sampling and edgeR v4.
+\emph{NAR Genomics and Bioinformatics}.
 \doi{10.1101/2024.06.25.600555}.
 
 Bray NL, Pimentel H, Melsted P, Pachter L (2016).

@@ -8,7 +8,7 @@ voomLmFit <- function(
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 23 Apr 2024.
+#	Created 21 Jan 2020.  Last modified 19 Oct 2024.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -239,12 +239,17 @@ voomLmFit <- function(
 		}
 		if(Block) {
 			if(AnyZeroRows) {
-				dc <- suppressWarnings(duplicateCorrelation(yNAfull,design,block=block,weights=weights))
+#				dc <- suppressWarnings(duplicateCorrelation(yNAfull,design,block=block,weights=weights))
+				dc <- duplicateCorrelation(yNAfull,design,block=block,weights=weights)
 			} else {
-				dc <- suppressWarnings(duplicateCorrelation(y,design,block=block,weights=weights))
+#				dc <- suppressWarnings(duplicateCorrelation(y,design,block=block,weights=weights))
+				dc <- duplicateCorrelation(y,design,block=block,weights=weights)
 			}
 			correlation <- dc$consensus.correlation
-			if(is.na(correlation)) correlation <- 0
+			if(is.na(correlation)) {
+				warning("Intra-block correlation not estimable, setting to zero.")
+				correlation <- 0
+			}
 			message("Final intra-block correlation  ",format(correlation))
 		}
 	}
