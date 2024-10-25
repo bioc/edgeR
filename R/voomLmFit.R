@@ -8,7 +8,7 @@ voomLmFit <- function(
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 19 Oct 2024.
+#	Created 21 Jan 2020.  Last modified 25 Oct 2024.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -178,13 +178,21 @@ voomLmFit <- function(
 #	Estimate correlation?
 	if(Block) {
 		if(AnyZeroRows) {
-			dc <- suppressWarnings(duplicateCorrelation(yNAfull,design,block=block,weights=weights))
+			dc <- duplicateCorrelation(yNAfull,design,block=block,weights=weights)
 		} else {
-			dc <- suppressWarnings(duplicateCorrelation(y,design,block=block,weights=weights))
+			dc <- duplicateCorrelation(y,design,block=block,weights=weights)
 		}
 		correlation <- dc$consensus.correlation
-		if(is.na(correlation)) correlation <- 0
-		message("First intra-block correlation  ",format(correlation))
+		if(is.na(correlation)) {
+			warning("Intra-block correlation not estimable, setting to zero.", call. = FALSE)
+			correlation <- 0
+		}
+		if(identical(correlation,0)) {
+			Block <- FALSE
+			if(plot) lines(l,col="red",lty=1)
+		} else {
+			message("First intra-block correlation  ",format(correlation))
+		}
 	} else {
 		correlation <- NULL
 	}
@@ -239,11 +247,9 @@ voomLmFit <- function(
 		}
 		if(Block) {
 			if(AnyZeroRows) {
-#				dc <- suppressWarnings(duplicateCorrelation(yNAfull,design,block=block,weights=weights))
-				dc <- duplicateCorrelation(yNAfull,design,block=block,weights=weights)
+				dc <- suppressWarnings(duplicateCorrelation(yNAfull,design,block=block,weights=weights))
 			} else {
-#				dc <- suppressWarnings(duplicateCorrelation(y,design,block=block,weights=weights))
-				dc <- duplicateCorrelation(y,design,block=block,weights=weights)
+				dc <- suppressWarnings(duplicateCorrelation(y,design,block=block,weights=weights))
 			}
 			correlation <- dc$consensus.correlation
 			if(is.na(correlation)) {
