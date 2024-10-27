@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 
 
-\section{version 4.4.0 (2024-10-30}{\itemize{
+\section{version 4.4.0 (2024-10-30)}{\itemize{
 
 \item
 New function catchRSEM() to read transcript-level quantifications from RSEM output.
@@ -60,7 +60,7 @@ Remove decidetestsDGE(), whose functionality is now provided by the generic func
 }}
 
 
-\section{version 4.2.0 (2024-04-28}{\itemize{
+\section{version 4.2.0 (2024-04-28)}{\itemize{
 \item
 The new QL pipeline becomes the default for glmQLFit() by setting `legacy=FALSE`.
 
@@ -87,7 +87,7 @@ decideTestsDGE() deprecated in favor of decideTests().
 }}
 
 
-\section{version 4.0.0 (2023-10-25}{\itemize{
+\section{version 4.0.0 (2023-10-25)}{\itemize{
 \item
 New statistical methods implemented in glmQLFit() to ensure accurate estimation of the quasi-dispersion for data with small counts.
 The new method computes adjusted residual deviances with adjusted degrees of freedom to improve the chisquare approximation to the residual deviance.
