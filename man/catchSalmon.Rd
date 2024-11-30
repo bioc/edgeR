@@ -38,9 +38,9 @@ The overdispersion represents the variance inflation that occurs from ambiguity 
 Transcripts that overlap other transcripts and have greater quantification uncertainty will have larger RTA overdispersions.
 The RTA overdispersions are greater than or equal to 1, with 1 representing no variance inflation.
 
-To assess differential transcript expression, the transcript counts can be divided by the overdisperson parameters, after which the scaled counts can be input into standard differential expression pipelines designed for gene-level counts (Baldoni et al 2024a).
-The edgeR quasi pipeline has been found to perform well with the scaled counts (Baldoni et al 2024ab).
-The scaled counts behave much like negative binomial counts and show the same mean-variance trends as for gene-level RNA-seq counts.
+To assess differential transcript expression, the transcript counts can be divided by the overdisperson parameters, after which the divided-counts can be input into standard differential expression pipelines designed for gene-level counts (Baldoni et al 2024a).
+The edgeR quasi pipeline has been found to perform well with the divided-counts (Baldoni et al 2024ab).
+The divided-counts behave much like negative binomial counts and show the same mean-variance trends as for gene-level RNA-seq counts.
 While bootstrap and Gibbs resamples both perform well, Baldoni et al (2024b) show that Gibbs resamples are computationally faster than bootstrap resamples and give slightly better performance in the downstream differential expression analyses.
 }
 
@@ -62,8 +62,8 @@ Dividing out quantification uncertainty allows efficient assessment of different
 
 Baldoni PL, Chen L, Smyth GK (2024b).
 Faster and more accurate assessment of differential transcript expression with Gibbs sampling and edgeR v4.
-\emph{NAR Genomics and Bioinformatics}.
-\doi{10.1101/2024.06.25.600555}.
+\emph{NAR Genomics and Bioinformatics} 6(4), lqae151.
+\doi{10.1093/nargab/lqae151}.
 
 Bray NL, Pimentel H, Melsted P, Pachter L (2016).
 Near-optimal probabilistic RNA-seq quantification.
@@ -87,7 +87,7 @@ Improved data-driven likelihood factorizations for transcript abundance estimati
 # Read Salmon ouput and estimate overdispersion for each transcript
 s <- catchSalmon(paths)
 
-# Scale the transcript counts ready for a standard edgeR DE analysis
+# Divide the transcript counts by the overdispersions ready for a standard edgeR DE analysis
 dge <- DGEList(counts=s$counts/s$annotation$Overdispersion, genes=s$annotation)
 }}
 
