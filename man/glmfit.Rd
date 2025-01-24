@@ -68,16 +68,17 @@ Differential expression analysis of multifactor RNA-Seq experiments with respect
 \doi{10.1093/nar/gks042}
 
 Phipson B (2013).
-Empirical bayes modelling of expression profiles and their associations.
+Empirical Bayes modelling of expression profiles and their associations.
 Ph.D. thesis, Department of Mathematics and Statistics, The University of Melbourne.
 \url{http://hdl.handle.net/11343/38162}.
 
-Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024). edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
-\emph{bioRxiv} 2024.01.21.576131.
-\doi{10.1101/2024.01.21.576131}
+  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025).
+  edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
+  \emph{Nucleic Acids Research} 53(2), gkaf018.
+  \doi{10.1093/nar/gkaf018}
 }
 
-\author{Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun}
+\author{Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun, Lizhong Chen}
 
 \examples{
 nlibs <- 3
