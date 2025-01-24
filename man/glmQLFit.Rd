@@ -110,10 +110,10 @@ It is not correct to supply genewise dispersions because \code{glmQLFit} estimat
 }
 
 \references{
-  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024).
-  edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
-  \emph{bioRxiv} 2024.01.21.576131.
-  \doi{10.1101/2024.01.21.576131}
+  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025).
+  edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
+  \emph{Nucleic Acids Research} 53(2), gkaf018.
+  \doi{10.1093/nar/gkaf018}
 
 Chen Y, Lun ATL, Smyth GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
