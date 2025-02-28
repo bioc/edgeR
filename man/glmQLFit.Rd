@@ -166,7 +166,6 @@ d <- DGEList(y)
 d <- normLibSizes(d)
 
 # Fit the NB GLMs with QL methods
-d <- estimateDisp(d, design)
 fit <- glmQLFit(d, design)
 results <- glmQLFTest(fit)
 topTags(results)
