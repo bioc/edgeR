@@ -1,23 +1,24 @@
 Package: edgeR
-Version: 4.5.3
+Version: 4.5.4
 Date: 2025-03-01
 Title: Empirical Analysis of Digital Gene Expression Data in R
-Description: Differential expression analysis of RNA-seq expression profiles with biological replication. Implements a range of statistical methodology based on the negative binomial distributions, including empirical Bayes estimation, exact tests, generalized linear models and quasi-likelihood tests. As well as RNA-seq, it be applied to differential signal analysis of other types of genomic data that produce read counts, including ChIP-seq, ATAC-seq, Bisulfite-seq, SAGE and CAGE.
-Author: Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Pedro Baldoni, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
-Maintainer: Yunshun Chen <yuchen@wehi.edu.au>, Gordon Smyth <smyth@wehi.edu.au>, Aaron Lun <infinite.monkeys.with.keyboards@gmail.com>, Mark Robinson <mark.robinson@imls.uzh.ch>
+Description: Differential expression analysis of sequence count data. Implements a range of statistical methodology based on the negative binomial distributions, including empirical Bayes estimation, exact tests, generalized linear models, quasi-likelihood, and gene set enrichment. Can perform differential analyses of any type of omics data that produces read counts, including RNA-seq, ChIP-seq, ATAC-seq, Bisulfite-seq, SAGE, CAGE, metabolomics, or proteomics spectral counts. RNA-seq analyses can be conducted at the gene or isoform level, and tests can be conducted for differential exon or transcript usage.
+Author: Yunshun Chen, Lizhong Chen, Aaron TL Lun, Davis J McCarthy, Pedro Baldoni, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth
+Maintainer: Yunshun Chen <yuchen@wehi.edu.au>, Gordon Smyth <smyth@wehi.edu.au>,
+            Aaron Lun <infinite.monkeys.with.keyboards@gmail.com>,
+            Mark Robinson <mark.robinson@imls.uzh.ch>
 License: GPL (>=2)
 Depends: R (>= 3.6.0), limma (>= 3.61.9)
 Imports: methods, graphics, stats, utils, locfit
-Suggests: jsonlite, readr, rhdf5, splines, knitr, AnnotationDbi, Biobase, BiocStyle, SummarizedExperiment, org.Hs.eg.db, Matrix, SeuratObject
+Suggests: jsonlite, knitr, Matrix, readr, rhdf5, SeuratObject, splines,
+          AnnotationDbi, Biobase, BiocStyle, org.Hs.eg.db, SummarizedExperiment
 VignetteBuilder: knitr
 URL: https://bioinf.wehi.edu.au/edgeR/, https://bioconductor.org/packages/edgeR
-biocViews: GeneExpression, Transcription, AlternativeSplicing,
-        Coverage, DifferentialExpression, DifferentialSplicing,
-        DifferentialMethylation, GeneSetEnrichment, Pathways,
-        Genetics, DNAMethylation, Bayesian, Clustering, ChIPSeq,
-        Regression, TimeCourse, Sequencing, RNASeq, BatchEffect, 
-        SAGE, Normalization, QualityControl, MultipleComparison,
-        BiomedicalInformatics, CellBiology, FunctionalGenomics, 
-        Epigenetics, Genetics, ImmunoOncology, SystemsBiology, 
-        Transcriptomics, SingleCell
+biocViews: AlternativeSplicing, BatchEffect, Bayesian, BiomedicalInformatics, 
+           CellBiology, ChIPSeq, Clustering, Coverage, 
+           DifferentialExpression, DifferentialMethylation, DifferentialSplicing, DNAMethylation, 
+           Epigenetics, FunctionalGenomics, GeneExpression, GeneSetEnrichment, Genetics, Genetics,
+           ImmunoOncology, MultipleComparison, Normalization, Pathways, Proteomics,
+           QualityControl, Regression, RNASeq, SAGE, Sequencing, 
+           SingleCell, SystemsBiology, TimeCourse, Transcription, Transcriptomics
 NeedsCompilation: yes
