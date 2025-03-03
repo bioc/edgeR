@@ -164,6 +164,19 @@ fit$unit.df.adj[1:10,]
 summary(fit$deviance.adj)
 summary(fit$df.residual.adj)
 
+# diffSplice
+GeneID <- rep(1:10,each=10)
+ds <- diffSplice(fit,geneid=GeneID)
+topSplice(ds,test="F")
+topSplice(ds,test="simes")
+topSplice(ds,test="t")
+
+vfit <- voomLmFit(y,design)
+ds <- diffSplice(vfit,geneid=GeneID)
+topSplice(ds,test="F")
+topSplice(ds,test="simes")
+topSplice(ds,test="t")
+
 y <- estimateCommonDisp(y)
 y$common.dispersion
 y <- estimateGLMCommonDisp(y,design)

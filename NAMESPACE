@@ -23,7 +23,7 @@ importFrom("utils", getFromNamespace, head, packageVersion, read.delim, read.tab
 if( tools:::.OStype() == "windows" ) importFrom("utils", "winMenuAddItem")
 
 importFrom("limma",arrayWeights, asMatrixWeights, camera, cameraPR, chooseLowessSpan, contrastAsCoef,
-           decideTests, duplicateCorrelation, fry, goana, kegga, is.fullrank,
+           decideTests, diffSplice, duplicateCorrelation, fry, goana, kegga, is.fullrank,
            logsumexp, lmFit, loessFit, mroast, nonEstimable,
            normalizeBetweenArrays, plotMD, plotMDS, plotWithHighlights,
            removeExt, roast, romer, squeezeVar, subsetListOfArrays,
@@ -71,6 +71,7 @@ S3method(decideTests,DGEExact)
 S3method(decideTests,DGELRT)
 S3method(DGEList,default)
 S3method(DGEList,data.frame)
+S3method(diffSplice,DGEGLM)
 S3method(dim,DGEList)
 S3method(dim,CompressedMatrix)
 S3method(dim,DGEExact)
