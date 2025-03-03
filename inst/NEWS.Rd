@@ -3,6 +3,27 @@
 \encoding{UTF-8}
 
 
+\section{version 4.6.0 (2025-04-25)}{\itemize{
+
+\item
+edgeR now depends on limma >= 3.63.6.
+
+\item
+New diffSplice() method for DGEGLM objects.
+The output object has the same format as that from the diffSplice() method in the limma
+package for MArrayLM objects. The new method is intended to replace diffSpliceDGE(),
+although the latter is kept for the current release for backward compatibility.
+The new diffSplice() method is somewhat slower than the older
+diffSpliceDGE() function but has more rigorous error rate control.
+
+\item
+getOffset() now gives an error if the data object doesn't contain library sizes.
+
+\item
+The entries in the package DESCRIPTION file have been revised and reformated.
+}}
+
+
 \section{version 4.4.0 (2024-10-30)}{\itemize{
 
 \item
