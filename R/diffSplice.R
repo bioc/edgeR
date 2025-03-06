@@ -136,6 +136,7 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
   # Testing null model on gene level
   gene.lastexon  <- cumsum(gene.nexons)
   gene.firstexon <- gene.lastexon-gene.nexons+1
+  names(gene.lastexon) <- names(gene.firstexon) <- geneid[gene.firstexon]
 
   gene.dev <- rowsum(fit$deviance, geneid, reorder=FALSE)
   exon.LR <- exon.coef <- matrix(0,nexons,1)
@@ -263,7 +264,7 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
   p <- exon.p.value[o]
   q <- rep(1, sum(gene.nexons))
   r <- cumsum(q) - rep(cumsum(q)[gene.lastexon]-gene.nexons, gene.nexons)
-  pp <- p*pmax(rep(gene.nexons-1, gene.nexons)/r,1)
+  pp <- p*rep(gene.nexons, gene.nexons)/r
   oo <- order(-g, pmin(pp,1), decreasing=TRUE)
 
   gene.simes.p.value <- gene.bonferroni.p.value <- gene.F
