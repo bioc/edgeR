@@ -3,7 +3,8 @@
 \title{Test for Differential Splicing Using edgeR Fitted Model}
 \description{Given a linear model fit at the exon (transcript) level, test for differences in exon (transcript) usage between experimental conditions.}
 \usage{
-\method{diffSplice}{DGEGLM}(fit, coef=ncol(fit$design), contrast=NULL, geneid, exonid = NULL, robust = FALSE, nexons.approx = 10, verbose = TRUE, \dots)
+\method{diffSplice}{DGEGLM}(fit, coef=ncol(fit$design), contrast=NULL, geneid, exonid = NULL,
+     robust = FALSE, nexons.approx = 10, verbose = TRUE, \dots)
 }
 \arguments{
   \item{fit}{an \code{DGEGLM} fitted model object produced by \code{glmQLFit}. Rows should correspond to exons.}
@@ -40,7 +41,6 @@ The first is an F-test for differences between the log-fold-changes.
 The other is a series of t-tests in which each exon is compared to the average of all other exons for the same gene.
 The exon-level t-tests are converted into genewise tests by adjusting the p-values for the same gene by Simes method.
 Alternatively, the exon-level t-tests are also converted into genewise tests by adjusting the smallest p-value for each gene by Bonferroni's method.
-The minimum adjusted p-value is then used for each gene.
 
 The \code{diffSplice} function is S3 generic and will accept a linear model fit from limma or a glm QL fit from edgeR.
 The output object is the same in either case.
@@ -48,7 +48,7 @@ The output object is the same in either case.
 \seealso{
 \code{\link{diffSplice}}, \code{\link{topSplice}}, \code{\link{plotSplice}}
 }
-\author{Gordon Smyth and Charity Law}
+\author{Lizhong Chen and Gordon Smyth}
 
 \examples{
 \dontrun{

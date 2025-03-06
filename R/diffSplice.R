@@ -204,7 +204,11 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
   exon.df.test <- rep(1, nexons)
   gene.df.test <- gene.nexons - 1
   
-  exon.stat <- cbind(fit$df.residual.adj,fit$deviance.adj)
+  if(is.null(fit$average.ql.dispersion)){
+    exon.stat <- cbind(fit$df.residual.zeros,fit$deviance)
+  } else {
+    exon.stat <- cbind(fit$df.residual.adj,fit$deviance.adj)
+  }
   gene.sum  <- rowsum(exon.stat, geneid, reorder=FALSE)
   gene.df.residual <- gene.sum[,1]
   gene.s2          <- gene.sum[,2] / gene.sum[,1]
@@ -265,11 +269,11 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
   q <- rep(1, sum(gene.nexons))
   r <- cumsum(q) - rep(cumsum(q)[gene.lastexon]-gene.nexons, gene.nexons)
   pp <- p*rep(gene.nexons, gene.nexons)/r
-  oo <- order(-g, pmin(pp,1), decreasing=TRUE)
+  oo <- order(-g, pp, decreasing=TRUE)
 
   gene.simes.p.value <- gene.bonferroni.p.value <- gene.F
   
-  gene.simes.p.value[,1] <- pmin(pp[oo][gene.lastexon],1)
+  gene.simes.p.value[,1] <- pp[oo][gene.lastexon]
   gene.bonferroni.p.value[,1] <- pmin(p[gene.firstexon]*(gene.nexons-1),1)
   
   out$gene.simes.p.value <- gene.simes.p.value
@@ -305,7 +309,7 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
   }
   
   # fit null model
-  fit <- mglmLevenberg(y, design0, dispersion=dispersion, offset=offset, weights=weights, coef.start=beta, maxit=20, tol=1e-05)
+  fit <- mglmLevenberg(y, design0, dispersion=dispersion, offset=offset, weights=weights, coef.start=beta)
   
   # return deviance and average log fold change
   list(deviance = fit$deviance, beta = fit$coefficients[,1], fitted.values=fit$fitted.values)
