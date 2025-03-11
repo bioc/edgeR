@@ -92,4 +92,4 @@ dge <- DGEList(counts=s$counts/s$annotation$Overdispersion, genes=s$annotation)
 }}
 
 \concept{Transcript expression}
-
+\concept{Reading data files}

@@ -58,6 +58,10 @@ The other is using exon-level test statistics to conduct gene-level tests.
 
 \author{Yunshun Chen, Lizhong Chen and Gordon Smyth}
 
+\seealso{
+\code{\link{diffSplice.DGEGLM}} is a newer function with the same purpose.
+}
+
 \examples{
 # Gene exon annotation
 Gene <- paste("Gene", 1:100, sep="")
