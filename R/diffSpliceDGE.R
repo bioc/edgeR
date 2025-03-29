@@ -1,7 +1,7 @@
 diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL, prior.count=0.125, robust=NULL, verbose=TRUE)
 # Identify exons and genes with splice variants using negative binomial GLMs
 # Yunshun Chen, Lizhong Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 5 May 2024.
+# Created 29 March 2014.  Last modified 12 Mar 2025.
 {
 #	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
@@ -69,7 +69,6 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 		else
 			coef.name <- coef.names[coef]
 		beta <- coefficients[, coef, drop=FALSE]
-#		g.ind <- rowSums(design[,-coef,drop=FALSE]) == 1L
 	} else {
 		contrast <- as.matrix(contrast)
 		if(ncol(contrast) > 1L) {
@@ -83,7 +82,6 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 		i <- contrast!=0
 		coef.name <- paste(paste(contrast[i],coef.names[i],sep="*"),collapse=" ")
 		design <- reform$design
-#		g.ind <- abs(design[,1]) > 0
 	}
 	beta <- as.vector(beta)	
 	
@@ -137,7 +135,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 	exon.LR <- fit0$deviance - glmfit$deviance
 	gene.LR <- rowsum(exon.LR, geneid, reorder=FALSE)
 	exon.df.test <- fit0$df.residual - glmfit$df.residual
-	gene.df.test <- rowsum(exon.df.test, geneid, reorder=FALSE) - 1
+	gene.df.test <- rowsum(exon.df.test, geneid, reorder=FALSE)
 
 #	degree of freedom and deviance for QL methods
 	if(!is.null(glmfit$df.residual.zeros)){
@@ -157,7 +155,6 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 	} else {
 		gene.df.residual <- rowsum(exon.df.residual, geneid, reorder=FALSE)
 		gene.s2 <- rowsum(exon.deviance, geneid, reorder=FALSE) / gene.df.residual
-		gene.df.residual[gene.df.residual < 0.99] <- 0
 
 		squeeze <- squeezeVar(var=gene.s2, df=gene.df.residual, robust=robust)
 		gene.df.total <- gene.df.residual + squeeze$df.prior
@@ -178,14 +175,12 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 	}
 
 #	Gene Simes' p-values
-#	exon.zeros <- rowSums(glmfit$counts[,g.ind]) > 0
 	o <- order(g, exon.p.value, decreasing=FALSE)
 	p <- exon.p.value[o]
 	q <- rep(1, sum(gene.nexons))
 	r <- cumsum(q) - rep(cumsum(q)[cumsum(gene.nexons)]-gene.nexons, gene.nexons)
-#	pp <- p*rep(gene.nexons, gene.nexons)/r
-	pp <- p*pmax(rep(gene.nexons-1, gene.nexons)/r,1)
-	oo <- order(-g, pmin(pp,1), decreasing=TRUE)
+	pp <- p*rep(gene.nexons, gene.nexons)/r
+	oo <- order(-g, pp, decreasing=TRUE)
 	gene.Simes.p.value <- pp[oo][cumsum(gene.nexons)]
 
 #	Output

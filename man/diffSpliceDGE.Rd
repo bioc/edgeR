@@ -2,7 +2,7 @@
 \alias{diffSpliceDGE}
 
 \title{Test for Differential Exon Usage}
-\description{Given a negative binomial generalized log-linear model fit at the exon level, test for differential exon usage between experimental conditions.}
+\description{Given a negative binomial generalized log-linear model fit at the exon (or transcript) level, test for differential exon (or transcript) usage between experimental conditions.}
 \usage{
 diffSpliceDGE(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL,
               prior.count=0.125, robust=NULL, verbose=TRUE)
@@ -56,10 +56,19 @@ At gene-level, two different tests are provided. One is converting exon-level p-
 The other is using exon-level test statistics to conduct gene-level tests.
 }
 
-\author{Yunshun Chen, Lizhong Chen and Gordon Smyth}
+\note{
+This function was updated in edgeR 4.6.0 to provide more rigorous control of the FDR.
+The output \code{gene.df.test} is increased compared to the previous version, and full Simes adjustment is used instead a modified version.
+
+Despite the improvement to this function, the new function \code{\link{diffSplice.DGEGLM}} is now recommended over \code{diffSpliceDGE}, and \code{diffSpliceDGE} is scheduled for removal in a future version of edgeR.
+The newer function has better statistical power and receiver operating curve (ROC) while still controlling the FDR.
+In terms of speed, the new function is slightly slower but the difference should not be enough to have a material effect on analyses.
+}
+
+\author{Lizhong Chen, Yunshun Chen, Gordon Smyth}
 
 \seealso{
-\code{\link{diffSplice.DGEGLM}} is a newer function with the same purpose.
+\code{\link{diffSplice.DGEGLM}} is a newer function with better performance for the same purpose.
 }
 
 \examples{

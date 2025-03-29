@@ -4,7 +4,7 @@
 \description{Given a linear model fit at the exon (transcript) level, test for differences in exon (transcript) usage between experimental conditions.}
 \usage{
 \method{diffSplice}{DGEGLM}(fit, coef=ncol(fit$design), contrast=NULL, geneid, exonid = NULL,
-     robust = FALSE, nexons.approx = 10, verbose = TRUE, \dots)
+     robust = NULL, nexons.approx = 10, verbose = TRUE, \dots)
 }
 \arguments{
   \item{fit}{an \code{DGEGLM} fitted model object produced by \code{glmQLFit}. Rows should correspond to low-level genomic features such as exons, exon-exon junctions or transcripts.}
@@ -12,7 +12,7 @@
   \item{contrast}{numeric vector specifying the contrast of the linear model coefficients to be tested for differential exon usage. Length must equal to the number of columns of \code{design}. If specified, then takes precedence over \code{coef}.}
   \item{geneid}{gene identifiers. Either a vector of length \code{nrow(fit)} or the name of the column of \code{fit$genes} containing the gene identifiers. Rows with the same ID are assumed to belong to the same gene.}
   \item{exonid}{exon identifiers. Either a vector of length \code{nrow(fit)} or the name of the column of \code{fit$genes} containing the exon identifiers.}
-  \item{robust}{logical, should the estimation of the empirical Bayes prior parameters be robustified against outlier sample variances?}
+  \item{robust}{logical, should the estimation of the empirical Bayes prior parameters be robustified against outlier sample variances? By default, the same setting will be used as for the \code{glmQLFit} call used to create \code{fit}.}
   \item{nexons.approx}{exact test statistics are computed for all genes with up to this number of exons. For genes with more exons, a more computationally fast approximation is used.}
   \item{verbose}{logical, if \code{TRUE} some diagnostic information about the number of genes and exons is output.}
   \item{\dots}{other arguments are not currently used.}
@@ -22,11 +22,11 @@
 An object of class \code{MArrayLM} containing both exon level and gene level tests.
 Results are sorted by geneid and by exonid within gene.
   \item{coefficients}{numeric matrix of coefficients of same dimensions as \code{fit}. Each coefficient is the difference between the log-fold-change for that exon versus the average log-fold-change for all other exons for the same gene.}
-  \item{t}{numeric matrix of moderated t-statistics, of same dimensions as \code{fit}.}
+  \item{t}{numeric matrix of quasi t-statistics, of same dimensions as \code{fit}.}
   \item{p.value}{numeric vector of p-values corresponding to the t-statistics}
   \item{genes}{data.frame of exon annotation}
   \item{genecolname}{character string giving the name of the column of \code{genes} containing gene IDs}
-  \item{gene.F}{numeric matrix of moderated F-statistics, one row for each gene.}
+  \item{gene.F}{numeric matrix of quasi F-statistics, one row for each gene.}
   \item{gene.F.p.value}{numeric matrix of p-values corresponding to \code{gene.F}}
   \item{gene.simes.p.value}{numeric matrix of Simes adjusted p-values, one row for each gene.}
   \item{gene.bonferroni.p.value}{numeric matrix of Bonferroni adjusted p-values, one row for each gene.}
@@ -46,10 +46,11 @@ The null hypothesis is that all the exons have the same log-fold-change and the 
 The exon-level tests compare each exon to the other exons for the same gene.
 Each exon-level test compares the model in which all the exons have the same log-fold-change vs the alternative model that just the specified exon has a different log-fold-change.
 The null hypothesis is that the log-fold-change for the specified exon is equal to the consensus log-fold-change for the other exons, and the alternative is that it is not.
-This produces one F-statistic for each exon, where the numerator df is equal to one and the denominator is the same as for the gene-level test.
+This produces one quasi F-statistic for each exon, where the numerator df is equal to one and the denominator is the same as for the gene-level test.
 The exon-level F-statistics are then converted into t-tests by taking square-roots and multiplying by the sign of log-fold-change difference.
 
-For genes with more than \code{nexons.approx} exons, a fast approximation is used for the exon-level test by assuming that the consensus log-fold-change for the other exons is the same as the consensus log-fold-change for all exons for that gene.
+For genes with more than \code{nexons.approx} exons, a fast approximation is used for the exon-level test, assuming that the consensus log-fold-change for the other exons should be close to the consensus log-fold-change for all exons for that gene.
+The null hypothesis for these genes is that the log-fold-change for the specified exon is equal to the consensus log-fold-change for all other exons, and the alternative is that it is not.
 The approximation should be very slightly conservative.
 
 The \code{fit} object should be created using \code{glmQLFit}.
@@ -59,7 +60,13 @@ The exon-level tests are converted into genewise tests by adjusting the p-values
 Alternatively, the exon-level tests are also converted into genewise tests by adjusting the smallest p-value for each gene by Bonferroni's method.
 
 The \code{diffSplice} function is an S3 generic and will accept either a linear model fit from limma or a glm QL fit from edgeR.
-The output object is the same in either case.
+The output object has the same format in either case.
+}
+
+\note{
+\code{\link{diffSpliceDGE}} is a legacy function for the same purpose as \code{diffSplice.DGEGLM}, and \code{diffSplice.DGEGLM} is intended to replace it.
+\code{diffSplice.DGEGLM} has better statistical power and receiver operating curve (ROC), while still controlling the FDR.
+In terms of speed, the new function is slightly slower but the difference should not be enough to have a material effect on analyses.
 }
 
 \seealso{

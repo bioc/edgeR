@@ -1,11 +1,11 @@
-diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid, exonid=NULL, robust=FALSE, nexons.approx=10L, verbose=TRUE, ...)
+diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid, exonid=NULL, robust=NULL, nexons.approx=10L, verbose=TRUE, ...)
   # Identify exons and genes with splice variants using negative binomial GLMs
   # Lizhong Chen, Yunshun Chen and Gordon Smyth
-  # Created 12 Feb 2025.  Last modified 3 Mar 2025.
+  # Created 12 Feb 2025.  Last modified 29 Mar 2025.
 {
   if(is.null(fit$s2.post)) stop("need to run glmQLFit before diffSplice")
   
-  # keep robust consistent with fit object
+  # By defautl, keep robust consistent with fit object
   if(is.null(robust)){
     robust <- length(fit$df.prior) > 1L
   }
