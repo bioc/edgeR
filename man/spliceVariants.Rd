@@ -1,7 +1,7 @@
 \name{spliceVariants}
 \alias{spliceVariants}
 
-\title{Identify Genes with Splice Variants}
+\title{Identify Genes with Splice Variants (Classic Pipeline)}
 
 \description{Identify genes exhibiting evidence for splice variants (alternative exon usage/transcript isoforms) from exon-level count data using negative binomial generalized linear models.}
 
@@ -34,14 +34,16 @@ This function can be used to identify genes showing evidence  of splice variatio
 
 \examples{
 # generate exon counts from NB, create list object
-y<-matrix(rnbinom(40,size=1,mu=10),nrow=10)
-d<-DGEList(counts=y,group=rep(1:2,each=2))
+y <- matrix(rnbinom(40,size=1,mu=10),nrow=10)
+d <- DGEList(counts=y,group=rep(1:2,each=2))
 genes <- rep(c("gene.1","gene.2"), each=5)
 disp <- 0.2
 spliceVariants(d, genes, disp)
 }
 
 \seealso{
+The newer function \code{\link{diffSplice.DGEGLM}} is now recommended.
+
 \code{\link{estimateExonGenewiseDisp}} for more information about estimating genewise dispersion values from exon-level counts. \code{\link{DGEList}} for more information about the \code{DGEList} class. \code{\link{topTags}} for more information on displaying ranked results from \code{spliceVariants}. \code{\link{estimateCommonDisp}} and related functions for estimating the dispersion parameter for the negative binomial model.
 }
 
