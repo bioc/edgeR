@@ -1,17 +1,18 @@
-catchRSEM <- function(files=NULL,ngibbs=100,verbose=TRUE)
-  # Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output
-  # Use Gibbs samples to estimate overdispersion of transcriptwise counts
-  # Pedro Baldoni and Gordon Smyth
-  # Created 24 April 2024. Last modified 12 May 2024.
+catchRSEM <- function(files=NULL,path=".",ngibbs=100,verbose=TRUE)
+# Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
+# Use Gibbs samples to estimate overdispersion of transcriptwise counts.
+# Pedro Baldoni and Gordon Smyth
+# Created 24 April 2024. Last modified 5 July 2025.
 {
   # Check files
   if(is.null(files)) {
-    files <- dir(pattern="*.isoforms.results")
+    files <- dir(path=path,pattern="*\\.isoforms\\.results$")
   } else {
     files <- as.character(files)
   }
   NSamples <- length(files)
   if(NSamples < 1L) stop("No isoforms.results files", call.=FALSE)
+  files <- file.path(path,files)
 
   # Check ngibbs
   ngibbs <- rep_len(ngibbs,NSamples)
