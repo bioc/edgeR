@@ -1,6 +1,7 @@
 \name{catchSalmon}
 \alias{catchSalmon}
 \alias{catchKallisto}
+\alias{catchOarfish}
 \alias{catchRSEM}
 
 \title{Process Salmon, kallisto or RSEM Transcript Output}
@@ -10,13 +11,16 @@
 \usage{
 catchSalmon(paths, verbose = TRUE)
 catchKallisto(paths, verbose = TRUE)
-catchRSEM(files = NULL, ngibbs = 100, verbose = TRUE)
+catchOarfish(prefixes = NULL, path = ".", verbose = TRUE)
+catchRSEM(files = NULL, path = ".", ngibbs = 100, verbose = TRUE)
 }
 
 \arguments{
-\item{paths}{character vector giving paths to the directories created by a pseudoaligner (either kallisto or Salmon). Each entry corresponds to one RNA-seq sample.}
+\item{paths}{character vector giving paths to the sample-specific directories created by a kallisto or Salmon. Each entry corresponds to one RNA-seq sample.}
 \item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
-\item{files}{character vector specifying the \code{isoforms.results} files output by RSEM. Each entry corresponds to one RNA-seq sample. By default, all files in the current working directory with names ending in \code{isoforms.results} will be read.}
+\item{prefixes}{character vector giving the sample-specific file prefixes created by Oarfish. Each entry corresponds to one RNA-seq sample. Can contain a directory separator. By default, will read all files with names ending in \code{.quant}, \code{.infreps.pq} and \code{.meta_info.json} in the \code{path} directory.}
+\item{path}{directory path to find files in.}
+\item{files}{character vector specifying the \code{isoforms.results} files output by RSEM. Each entry corresponds to one RNA-seq sample. By default, all files in the \code{path} directory with names ending in \code{isoforms.results} will be read.}
 \item{ngibbs}{number of Gibbs samples used to generate the RSEM results files.}
 }
 
@@ -32,6 +36,8 @@ The number of bootstrap resamples does not need to be the same for each RNA samp
 \code{catchRSEM} reads \code{*.isoforms.results} files created by RSEM (Li and Dewey, 2011), which should contain means and standard deviations from Gibbs posterior samples as well as the estimated transcript counts.
 \code{catchRSEM} cannot detect the number of Gibbs samples performed for each RNA sample, so this must be specified via the \code{ngibbs} argument.
 The number of Gibbs samples is assumed to be the same for each RNA sample.
+
+\code{catchOarfish} assumes that Oarfish (Jousheghani & Patro 2024) has been run to estimate transcript counts for one or more RNA samples and that bootstrap resamples are included in the output.
 
 These functions read the transcript counts and use the technical (bootstrap or Gibbs) resamples to estimate an overdispersion parameter for each transcript.
 The overdispersion represents the variance inflation that occurs from ambiguity in assigning sequence reads to transcripts, a phenomenon that is called \emph{read to transcript ambiguity} (RTA) overdispersion by Baldoni et al (2024ab).
@@ -65,9 +71,19 @@ Faster and more accurate assessment of differential transcript expression with G
 \emph{NAR Genomics and Bioinformatics} 6(4), lqae151.
 \doi{10.1093/nargab/lqae151}.
 
+Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
+Dividing out quantification uncertainty enables assessment of differential transcript usage with diffSplice.
+\emph{bioRxiv}
+\doi{10.1101/2025.04.07.647659}.
+
 Bray NL, Pimentel H, Melsted P, Pachter L (2016).
 Near-optimal probabilistic RNA-seq quantification.
 \emph{Nature Biotechnology}, 34(5), 525-527.
+
+Jousheghani ZZ, Patro R (2024).
+Oarfish: Enhanced probabilistic modeling leads to improved accuracy in long read transcriptome quantification.
+\emph{bioRxiv}
+\doi{10.1101/2024.02.28.582591}.
 
 Li B, Dewey CN (2011).
 RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome.

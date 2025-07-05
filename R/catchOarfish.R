@@ -1,0 +1,93 @@
+catchOarfish <- function(prefixes=NULL,path=".",verbose=TRUE)
+#	Read transcriptwise counts and bootstrap samples from Oarfish output
+#	Use bootstrap samples to estimate overdispersion of transcriptwise counts
+#	Gordon Smyth
+#	Created 4 July 2025. Last modified 5 July 2025.
+{
+#	Check prefixes
+	if(is.null(prefixes)) {
+		QuantFiles <- dir(path=path,pattern="*\\.quant$")
+		n <- nchar(QuantFiles)
+		prefixes <- substring(QuantFiles,1,n-6L) 
+	} else {
+		prefixes <- as.character(prefixes)
+	}
+	NSamples <- length(prefixes)
+	if(NSamples < 1L) stop("No oarfish output files", call.=FALSE)
+	prefixes <- file.path(path,prefixes)
+
+#	Use jsonlite and arrow packages for reading
+	OK <- requireNamespace("jsonlite",quietly=TRUE)
+	if(!OK) stop("jsonlite package required but is not installed (or can't be loaded)")
+	OK <- requireNamespace("readr",quietly=TRUE)
+	if(!OK) stop("readr package required but is not installed (or can't be loaded)")
+	OK <- requireNamespace("arrow",quietly=TRUE)
+	if(!OK) stop("arrow package required but is not installed (or can't be loaded)")
+
+#	Initialize vector of inferential sample types
+	ResampleType <- rep_len("bootstrap",NSamples)
+
+#	Accumulate counts and CV^2 of bootstrap counts for each sample
+	for (j in 1L:NSamples) {
+		if(verbose) cat("Reading ",prefixes[j],", ", sep="")
+
+#		File locations
+		MetaFile <- paste0(prefixes[j],".meta_info.json")
+		QuantFile <- paste0(prefixes[j],".quant")
+		BootFile <- paste0(prefixes[j],".infreps.pq")
+		if(!file.exists(QuantFile)) stop("quant file not found at specified path")
+
+#		Meta information
+		Meta <- jsonlite::fromJSON(MetaFile)
+		NBoot <- Meta$num_bootstraps
+		if(is.null(NBoot)) stop("Can't find number of bootstraps")
+		if(verbose) cat(NBoot,"bootstraps\n")
+
+#		Read counts
+		if(j == 1L) {
+			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="cdd",progress=FALSE))
+			NTx <- nrow(Quant)
+			Counts <- matrix(0,NTx,NSamples)
+			DF <- rep_len(0L,NTx)
+			OverDisp <- rep_len(0,NTx)
+			Counts[,1L] <- Quant$num_reads
+			Ann <- data.frame(len=Quant$len)
+			row.names(Ann) <- Quant$tname
+		} else {
+			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="__d",progress=FALSE))
+			Counts[,j] <- Quant$num_reads
+		}
+
+#		Bootstrap samples
+		if(NBoot > 0L) {
+			Boot <- as.matrix(arrow::read_parquet(BootFile))
+			M <- rowMeans(Boot)
+			i <- (M > 0)
+			OverDisp[i] <- OverDisp[i] + rowSums((Boot[i,]-M[i])^2) / M[i]
+			DF[i] <- DF[i]+NBoot-1L
+		}
+	}
+
+#	Estimate overdispersion for each transcript
+	i <- (DF > 0L)
+	if(sum(i) > 0L) {
+		OverDisp[i] <- OverDisp[i] / DF[i]
+#		Apply a limited amount of moderation
+		DFMedian <- median(DF[i])
+		DFPrior <- 3
+		OverDispPrior <- median(OverDisp[i]) / qf(0.5,df1=DFMedian,df2=DFPrior)
+		if(OverDispPrior < 1) OverDispPrior <- 1
+		OverDisp[i] <- (DFPrior * OverDispPrior + DF[i]*OverDisp[i]) / (DFPrior + DF[i])
+		OverDisp <- pmax(OverDisp,1)
+		OverDisp[!i] <- OverDispPrior
+	} else {
+		OverDisp[] <- NA_real_
+		OverDispPrior <- NA_real_
+	}
+
+#	Prepare output
+	dimnames(Counts) <- list(row.names(Ann),prefixes)
+	Ann$Overdispersion <- OverDisp
+
+	list(counts=Counts,annotation=Ann,overdispersion.prior=OverDispPrior,resample.type=ResampleType)
+}

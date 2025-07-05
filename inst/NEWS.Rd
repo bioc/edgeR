@@ -3,6 +3,16 @@
 \encoding{UTF-8}
 
 
+\section{version 4.8.0 (2025-10-01)}{\itemize{
+
+\item
+New function catchOarfish().
+
+\item
+New argument `path` for catchRSEM().
+}}
+
+
 \section{version 4.6.0 (2025-04-16)}{\itemize{
 
 \item
