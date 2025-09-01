@@ -3,9 +3,9 @@
 estimateDisp <- function(y, ...)
 UseMethod("estimateDisp")
 
-estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
+estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, legacy.span=FALSE, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 #  Yunshun Chen.
-#  Created 16 March 2016. Last modified 16 Oct 2019.
+#  Created 16 March 2016. Last modified 24 Aug 2025.
 {
 	y <- validDGEList(y)
 	group <- y$samples$group
@@ -17,7 +17,7 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 		y$design <- design
 	}
 
-	d <- estimateDisp(y=y$counts, design=design, group=group, lib.size=lib.size, offset=getOffset(y), prior.df=prior.df, trend.method=trend.method, tagwise=tagwise, span=span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, weights=y$weights, ...)
+	d <- estimateDisp(y=y$counts, design=design, group=group, lib.size=lib.size, offset=getOffset(y), prior.df=prior.df, trend.method=trend.method, tagwise=tagwise, span=span, legacy.span=legacy.span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, weights=y$weights, ...)
 
 	y$common.dispersion <- d$common.dispersion
 	y$trended.dispersion <- d$trended.dispersion
@@ -30,22 +30,22 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 	y
 }
 
-estimateDisp.SummarizedExperiment <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
+estimateDisp.SummarizedExperiment <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, legacy.span=FALSE, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 #  Yunshun Chen.
-#  Created 19 March 2020. Last modified 19 March 2020.
+#  Created 19 March 2020. Last modified 24 Aug 2025.
 {
 	y <- SE2DGEList(y)
-	y <- estimateDisp.DGEList(y, design=design, prior.df=prior.df, trend.method=trend.method, tagwise=tagwise, span=span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, ...)
+	y <- estimateDisp.DGEList(y, design=design, prior.df=prior.df, trend.method=trend.method, tagwise=tagwise, span=span, legacy.span=legacy.span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, ...)
 	y
 }
 
-estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
+estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, legacy.span=FALSE, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
 #  Estimate common, trended and tagwise dispersions
 #  Use GLM approach if design matrix is given and classic approach otherwise.
 #  A matrix of likelihoods is computed for each gene at a set of dispersion grid points
 #  and WLEB() is called for weighted likelihood empirical Bayes.
 #  Yunshun Chen, Aaron Lun, Gordon Smyth.
-#  Created July 2012. Last modified 16 Oct 2019.
+#  Created July 2012. Last modified 24 Aug 2025.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -160,7 +160,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	if(trend.method!="none"){
 		AveLogCPM <- aveLogCPM(y, lib.size=lib.size, dispersion=common.dispersion, weights=weights)
 		out.1 <- WLEB(theta=spline.pts, loglik=l0, covariate=AveLogCPM[sel], trend.method=trend.method, 
-			span=span, overall=FALSE, individual=FALSE, m0.out=TRUE)
+			span=span, legacy.span=legacy.span, overall=FALSE, individual=FALSE, m0.out=TRUE)
 		span <- out.1$span
 		m0 <- out.1$shared.loglik
 		disp.trend <- 0.1 * 2^out.1$trend
@@ -213,7 +213,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 
 		# Estimating tagwise dispersions
 		out.2 <- WLEB(theta=spline.pts, loglik=l0, prior.n=temp.n, covariate=AveLogCPM[sel], 
-			trend.method=trend.method, span=span, overall=FALSE, trend=FALSE, m0=m0)
+			trend.method=trend.method, span=span, legacy.span=FALSE, overall=FALSE, trend=FALSE, m0=m0)
 
 		if (!robust) { 
 			tagwise.dispersion[sel] <- 0.1 * 2^out.2$individual
@@ -234,12 +234,12 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 }
 
 
-WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit", span=NULL, 
+WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit", span=NULL, legacy.span=FALSE,
 	overall=TRUE, trend=TRUE, individual=TRUE, m0=NULL, m0.out=FALSE)
 #  Weighted likelihood empirical Bayes for estimating a parameter vector theta
 #  given log-likelihood values on a grid of theta values
 #  Yunshun Chen, Gordon Smyth
-#	Created July 2012. Last modified 16 Oct 2019.
+#	Created July 2012. Last modified 24 Aug 2025.
 {
 #	Check loglik
 	loglik <- as.matrix(loglik)
@@ -253,7 +253,11 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 		trend.method <- match.arg(trend.method, c("none", "loess", "locfit", "movingave", "locfit.mixed"))
 
 #	Set span
-	if(is.null(span)) if(ntags<=50) span <- 1 else span <- 0.25+0.75*(50/ntags)^0.5
+	if(is.null(span))
+		if(legacy.span) {
+			span <- chooseLowessSpan(ntags, small.n=50, min.span=0.25, power=0.5)
+		} else
+			span <- chooseLowessSpan(ntags)
 
 #	Output	
 	out <- list()

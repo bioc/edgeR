@@ -6,10 +6,20 @@
 \section{version 4.8.0 (2025-10-01)}{\itemize{
 
 \item
+The `adaptive.span` argument of voomLmFit() is now set to `TRUE` by default,
+meaning that the span is chosen by chooseLowessSpan().
+
+\item
+The default value of `span` for estimateDisp() and WLEB() is now chosen by chooseLowessSpan().
+
+\item
 New function catchOarfish().
 
 \item
 New argument `path` for catchRSEM().
+
+\item
+Revise help page for diffSplice.DGEGLM().
 }}
 
 

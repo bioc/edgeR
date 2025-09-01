@@ -9,7 +9,7 @@ Transform count data to log2-counts per million (logCPM), estimate voom precisio
 voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
      sample.weights = FALSE, var.design = NULL, var.group = NULL, prior.n = 10,
      lib.size = NULL, normalize.method = "none",
-     span = 0.5, adaptive.span = FALSE, plot = FALSE, save.plot = FALSE, keep.EList = TRUE)
+     span = 0.5, adaptive.span = TRUE, plot = FALSE, save.plot = FALSE, keep.EList = TRUE)
 }
 \arguments{
   \item{counts}{
@@ -75,7 +75,7 @@ voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
 }
 
 \details{
-This function adapts the limma voom method (Law et al, 2014) to allow for loss of residual degrees of freedom due to exact zero counts (Lun and Smyth, 2017).
+This function adapts the limma voom method (Law et al, 2014) to allow for loss of residual degrees of freedom due to exact zero counts (Lun and Smyth, 2017), as described by Baldoni et al (2025).
 The loss residual df occurs when all the counts in a group are zero or when there are blocking factors that can fit zero counts exactly.
 The function transforms the counts to the log2-CPM scale, computes voom precision weights and fits limma linear models.
 Residual df are computed similarly as far \code{\link{glmQLFit}}.
@@ -93,6 +93,9 @@ In that case, \code{voomLmFit} is analogous to running \code{voomWithQualityWeig
 \code{voomLmFit} is usually followed by running \code{\link{eBayes}} on the fitted model object.
 
 If \code{adaptive.span=TRUE}, then an optimal value for \code{span} is chosen by \code{chooseLowessSpan} with \code{n=nrow(counts)}.
+This behavior become in the default in edgeR 4.7.4.
+
+This function is a general replacement for the older functions \code{voom} and \code{voomWithQualityWeights}.
 }
 
 \value{
@@ -109,6 +112,11 @@ If \code{keep.EList=TRUE} then the output object includes component \code{EList}
 \author{Gordon Smyth}
 
 \references{
+Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
+Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
+\emph{bioRxiv}
+\doi{10.1101/2025.04.07.647659}.
+
 Law CW, Chen Y, Shi W, Smyth GK (2014).
 Voom: precision weights unlock linear model analysis tools for RNA-seq read counts.
 \emph{Genome Biology} 15, R29.
@@ -132,7 +140,8 @@ Why weight? Modelling sample and observational level variability improves power 
 \code{\link{voomWithQualityWeights}},
 \code{\link{duplicateCorrelation}},
 \code{\link{arrayWeights}},
-\code{\link{MArrayLM-class}}.
+\code{\link{MArrayLM-class}}
+\code{\link{chooseLowessSpan}}.
 }
 
 \concept{Model fit}

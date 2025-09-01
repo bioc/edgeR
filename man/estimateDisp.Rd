@@ -12,13 +12,13 @@ Maximizes the negative binomial likelihood to give the estimate of the common, t
 
 \usage{
 \S3method{estimateDisp}{DGEList}(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE,
-          span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10),
+          span=NULL, legacy.span=FALSE, min.row.sum=5, grid.length=21, grid.range=c(-10,10),
           robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 \S3method{estimateDisp}{SummarizedExperiment}(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE,
-          span=NULL, min.row.sum=5, grid.length=21, grid.range=c(-10,10),
+          span=NULL, legacy.span=FALSE, min.row.sum=5, grid.length=21, grid.range=c(-10,10),
           robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 \S3method{estimateDisp}{default}(y, design=NULL, group=NULL, lib.size=NULL, offset=NULL,
-          prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL,
+          prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, legacy.span=FALSE,
           min.row.sum=5, grid.length=21, grid.range=c(-10,10),
           robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, weights=NULL, ...)
 }
@@ -29,7 +29,8 @@ Maximizes the negative binomial likelihood to give the estimate of the common, t
 \item{prior.df}{prior degrees of freedom. It is used in calculating \code{prior.n}.}
 \item{trend.method}{method for estimating dispersion trend. Possible values are \code{"locfit"} (default), \code{"none"}, \code{"movingave"}, \code{"loess"} and \code{"locfit.mixed"}, which uses a polynomial of degree 1 for lowly expressed genes.}
 \item{tagwise}{logical, should the tagwise dispersions be estimated?}
-\item{span}{width of the smoothing window, as a proportion of the data set.}
+\item{span}{width of the smoothing window, as a proportion of the data set. Defaults to value chosen by \code{chooseLowessSpan()}.}
+\item{legacy.span}{logical, if \code{TRUE} the old default for \code{span} will be used.}
 \item{min.row.sum}{numeric scalar giving a value for the filtering out of low abundance tags. Only tags with total sum of counts above this value are used. Low abundance tags can adversely affect the dispersion estimation, so this argument allows the user to select an appropriate filter threshold for the tag abundance.}
 \item{grid.length}{the number of points on which the interpolation is applied for each tag.}
 \item{grid.range}{the range of the grid points around the trend on a log2 scale.}
@@ -67,8 +68,13 @@ Note that the terms `tag' and `gene' are synonymous here.
 }
 
 \note{
-The \code{estimateDisp} function doesn't give exactly the same estimates as the traditional calling sequences.
+The default value of \code{span} was changed in August 2025 from
+\code{chooseLowessSpan(length(theta), small.n=50, min.span=0.25, power=0.5)}
+to
+\code{chooseLowessSpan(length(theta), small.n=50, min.span=0.3, power=1/3)}.
+Setting \code{legacy=TRUE} will cause the old default to be used instead of the new, for backward compatibility.
 }
+
 
 \references{
 Chen, Y, Lun, ATL, and Smyth, GK (2014).

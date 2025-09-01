@@ -9,7 +9,7 @@ Compute empirical Bayes moderated parameter estimators using a weighted likeliho
 
 \usage{
 WLEB(theta, loglik, prior.n = 5, covariate = NULL, trend.method = "locfit", span = NULL, 
-     overall = TRUE, trend = TRUE, individual = TRUE, m0 = NULL, m0.out = FALSE)
+     legacy.span = FALSE, overall = TRUE, trend = TRUE, individual = TRUE, m0 = NULL, m0.out = FALSE)
 }
 
 \arguments{
@@ -18,7 +18,8 @@ WLEB(theta, loglik, prior.n = 5, covariate = NULL, trend.method = "locfit", span
 \item{prior.n}{numeric scaler, estimate of the prior weight, i.e. the smoothing parameter that indicates the weight to put on the common likelihood compared to the individual's likelihood.}
 \item{covariate}{numeric vector of values across which a parameter trend is fitted}
 \item{trend.method}{method for estimating the parameter trend. Possible values are \code{"none"}, \code{"movingave"}, \code{"loess"}, \code{"locfit"} or \code{"locfit.mixed"}. The latter options cause \code{movingAverageByCol()}, \code{loessBycol()} and \code{locfitByCol()} respectively to be called to smooth \code{loglik} by the covariate values. The \code{"locfit.mixed"} method is the same as \code{"locfit"} but uses a polynomial of degree 1 for lowly expressed genes.}
-\item{span}{width of the smoothing window, as a proportion of the data set.}
+\item{span}{width of the smoothing window, as a proportion of the data set. By default, is chosen by \code{chooseLowessSpan()}.}
+\item{legacy.span}{logical, if \code{TRUE} the old default for \code{span} will be used.}
 \item{overall}{logical, should a single value of the parameter which maximizes the sum of all the log-likelihoods be estimated?}
 \item{trend}{logical, should a parameter trend (against the covariate) which maximizes the local shared log-likelihoods be estimated?}
 \item{individual}{logical, should individual estimates of all the candidates after applying empirical Bayes method along the trend be estimated?}
@@ -41,6 +42,14 @@ Each case is associated with a covariate value that might affect theta.
 The "overall" parameter estimate is the maximum likelihood estimator of theta that arises if the likelihood is averaged over cases and then maximized over theta.
 The "trend" parameter estimates are estimates for theta that arise if each column of \code{loglik} is replaced by a smooth trend with respect to the covariate.
 The "individual" parameter estimate for each case is a compromise between the maximum likelihood estimate for that case alone and a global parameter estimate computed from all the cases, the latter being either the overall estimate (if \code{trend.method="none"} or the trend estimate (otherwise).
+}
+
+\note{
+The default value of \code{span} was changed in August 2025 from
+\code{chooseLowessSpan(length(theta), small.n=50, min.span=0.25, power=0.5)}
+to
+\code{chooseLowessSpan(length(theta), small.n=50, min.span=0.3, power=1/3)}.
+Setting \code{legacy=TRUE} will cause the old default to be used instead of the new, for backward compatibility.
 }
 
 \value{
