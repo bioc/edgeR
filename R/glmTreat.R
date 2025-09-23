@@ -1,7 +1,7 @@
 glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval")
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
 #	Yunshun Chen, Lizhong Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 5 May 2024.
+#	Created on 05 May 2014. Last modified on 18 Sep 2025.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 
@@ -12,7 +12,7 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 #	Switch to glmLRT() or glmQLFTest() if lfc is zero
 	if(lfc==0) {
 		fun <- ifelse(isLRT, "glmLRT", "glmQLFTest")
-		cat( paste0("Zero log2-FC threshold detected. Switch to ", fun, "() instead."), "\n" )
+#		message( paste0("Zero log2-FC threshold detected. Switch to ", fun, "() instead.") )
 		return( do.call(fun, args=list(glmfit, coef, contrast)) )
 	}
 

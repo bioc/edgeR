@@ -19,7 +19,13 @@ New function catchOarfish().
 New argument `path` for catchRSEM().
 
 \item
+glmTreat() no longer writes a message about switching to glmLRT() when `lfc=0`.
+
+\item
 Revise help page for diffSplice.DGEGLM().
+
+\item
+Revise help page for filterByExpr().
 }}
 
 
