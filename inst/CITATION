@@ -1,8 +1,10 @@
-citHeader("See Section 1.2 in the User's Guide for more detail about how to cite specific edgeR pipelines.")
-
-citEntry(
-  entry = "article",
-  author = "Yunshun Chen and Lizhong Chen and Aaron T L Lun and Pedro Baldoni and Gordon K Smyth",
+bibentry(
+  bibtype = "article",
+  author = c(person("Yunshun","Chen"),
+             person("Lizhong","Chen"),
+             person(c("Aaron","T","L"),"Lun"),
+             person("Pedro","Baldoni"),
+             person(c("Gordon","K"),"Smyth")),
   title = "{edgeR} v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets",
   year = 2025,
   journal = "Nucleic Acids Research",
