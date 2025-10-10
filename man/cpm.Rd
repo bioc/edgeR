@@ -4,12 +4,14 @@
 \alias{cpm.SummarizedExperiment}
 \alias{cpm.DGEGLM}
 \alias{cpm.DGELRT}
+\alias{cpm.MArrayLM}
 \alias{cpm.default}
 \alias{rpkm}
 \alias{rpkm.DGEList}
 \alias{rpkm.SummarizedExperiment}
 \alias{rpkm.DGEGLM}
 \alias{rpkm.DGELRT}
+\alias{rpkm.MArrayLM}
 \alias{rpkm.default}
 \alias{cpmByGroup}
 \alias{cpmByGroup.DGEList}
@@ -53,7 +55,7 @@
 \item{y}{
   a matrix-like object containing counts.
   Can be a numeric matrix, a \code{DGEList} object, a \code{SummarizedExperiment} object with a \code{"counts"} assay, or any object that can be coerced to a matrix by \code{as.matrix}.
-  For \code{cpm} and \code{rpkm}, it can also be a \code{DGEGLM} or \code{DGELRT} object.
+  For \code{cpm} and \code{rpkm}, it can also be a limma or edgeR fitted model object (\code{MArrayLM}, \code{DGEGLM}, or \code{DGELRT}).
 }
 \item{normalized.lib.sizes}{logical, use normalized library sizes?}
 \item{lib.size}{library size, defaults to \code{colSums(y)}. Ignored if \code{offset} is specified.}
