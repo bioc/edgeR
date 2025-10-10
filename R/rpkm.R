@@ -43,10 +43,10 @@ rpkm.SummarizedExperiment <- function(y, gene.length=NULL, normalized.lib.sizes=
 	rpkm.DGEList(y, gene.length=gene.length, normalized.lib.sizes=normalized.lib.sizes, log=log, prior.count=prior.count, ...)
 }
 
-rpkm.DGELRT <- rpkm.DGEGLM <- function(y, gene.length, log=FALSE, shrunk = TRUE, ...)
-#	Fitted RPKM from a DGEGLM fitted model object.
+rpkm.DGELRT <- rpkm.DGEGLM <- rpkm.MArrayLM <- function(y, gene.length, log=FALSE, shrunk = TRUE, ...)
+#	Fitted RPKM from a limma or edgeR fitted model object.
 #	Gordon Smyth
-#	Created 1 Apr 2020. Last modified 20 Apr 2020.
+#	Created 1 Apr 2020. Last modified 9 Oct 2025.
 {
 #	Try to find gene lengths
 #	If column name containing gene lengths isn't specified,
