@@ -1,11 +1,13 @@
 
-R version 4.5.0 (2025-04-11 ucrt) -- "How About a Twenty-Six"
+R version 4.5.1 (2025-06-13 ucrt) -- "Great Square Root"
 Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -765,4 +767,4 @@ Max number of exons in a gene:  10
 > 
 > proc.time()
    user  system elapsed 
-   1.34    0.23    1.68 
+   1.37    0.28    1.71 
