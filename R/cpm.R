@@ -27,14 +27,31 @@ cpm.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, log=FALSE, pr
 
 cpm.DGELRT <- cpm.DGEGLM <- function(y, log=FALSE, shrunk=TRUE, ...)
 #	Fitted counts per million from a fitted model object.
-#	Created 19 April 2020.  Last modified 19 April 2020.
+#	Created 19 April 2020.  Last modified 30 Sep 2025.
 {
 	if(shrunk) {
 		eta <- y$coefficients %*% t(y$design)
 	} else {
 		eta <- y$unshrunk.coefficients %*% t(y$design)
 	}
-	(eta + log(1e6)) / log(2)
+
+	if(log) {
+		(eta + log(1e6)) / log(2)
+	} else {
+		exp(eta + log(1e6))
+	}
+}
+
+cpm.MArrayLM <- function(y, log=FALSE, ...)
+#	Fitted counts per million from a limma fitted model object.
+#	Created 9 Oct 2025.  Last modified 9 Oct 2025.
+{
+	eta <- fitted(y)
+	if(log) {
+		eta
+	} else {
+		2^eta
+	}
 }
 
 cpm.default <- function(y, lib.size=NULL, offset=NULL, log=FALSE, prior.count=2, ...)
