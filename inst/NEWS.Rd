@@ -3,6 +3,13 @@
 \encoding{UTF-8}
 
 
+\section{version 4.8.1 (2025-12-07)}{\itemize{
+
+\item
+New function sampleWeights() to estimate sample weights from a matrix of adjusted unit deviances.
+}}
+
+
 \section{version 4.8.0 (2025-10-01)}{\itemize{
 
 \item
