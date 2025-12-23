@@ -1,13 +1,11 @@
 
-R version 4.5.1 (2025-06-13 ucrt) -- "Great Square Root"
+R version 4.5.2 (2025-10-31 ucrt) -- "[Not] Part in a Rumble"
 Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -723,22 +721,22 @@ Max number of exons in a gene:  10
 > # glmQLFit
 > fit <- glmQLFit(y,design,legacy=FALSE,keep.unit.mat=TRUE)
 > fit$dispersion
-[1] 0.1963021
+[1] 0.1913324
 > summary(fit$s2.post)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.3180  0.7118  1.0289  1.1702  1.5765  3.1867 
+ 0.3243  0.7254  1.0476  1.1898  1.6023  3.2270 
 > fit$unit.deviance.adj[1:10,]
    Sample1      Sample2      Sample3
-1        0 0.0000000000 0.000000e+00
-2        0 0.0000000000 0.000000e+00
-3        0 0.0000000000 0.000000e+00
-4        0 0.0000000000 0.000000e+00
-5        0 0.0000000000 0.000000e+00
-6        0 0.0800369771 9.682457e-02
-7        0 0.3016851330 2.165283e-01
-8        0 0.0171385659 1.587435e-02
-9        0 1.0794653385 6.116829e-01
-10       0 0.0000711943 7.095954e-05
+1        0 0.000000e+00 0.000000e+00
+2        0 0.000000e+00 0.000000e+00
+3        0 0.000000e+00 0.000000e+00
+4        0 0.000000e+00 0.000000e+00
+5        0 0.000000e+00 0.000000e+00
+6        0 8.141239e-02 9.842350e-02
+7        0 3.047603e-01 2.190646e-01
+8        0 1.749020e-02 1.620417e-02
+9        0 1.098493e+00 6.237134e-01
+10       0 7.266233e-05 7.242688e-05
 > fit$unit.df.adj[1:10,]
    Sample1   Sample2   Sample3
 1        0 0.0000000 0.0000000
@@ -746,17 +744,17 @@ Max number of exons in a gene:  10
 3        0 0.0000000 0.0000000
 4        0 0.0000000 0.0000000
 5        0 0.0000000 0.0000000
-6        0 0.4865584 0.4880837
-7        0 0.4973603 0.5002482
-8        0 0.4944987 0.4954588
-9        0 0.4904124 0.4916184
-10       0 0.4944965 0.4954567
+6        0 0.4865169 0.4880617
+7        0 0.4965337 0.4994319
+8        0 0.4945979 0.4955795
+9        0 0.4905011 0.4917294
+10       0 0.4945957 0.4955775
 > summary(fit$deviance.adj)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-0.00000 0.08084 0.53006 1.07828 1.69219 5.39198 
+0.00000 0.08228 0.53816 1.09592 1.72337 5.48746 
 > summary(fit$df.residual.adj)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.0000  0.9757  0.9814  0.9358  0.9880  1.0941 
+ 0.0000  0.9756  0.9816  0.9356  0.9882  1.0912 
 > fit <- glmQLFit(y,design,legacy=TRUE)
 > summary(fit$dispersion)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -767,4 +765,4 @@ Max number of exons in a gene:  10
 > 
 > proc.time()
    user  system elapsed 
-   1.37    0.28    1.71 
+   4.03    0.65    5.03 

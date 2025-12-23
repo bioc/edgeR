@@ -6,7 +6,7 @@ UseMethod("glmQLFit")
 glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, top.proportion=NULL, keep.unit.mat=FALSE,...)
 # 	Fit NB GLMs and estimate QL dispersions with empirical Bayes moderation.
 # 	Yunshun Chen, Aaron Lun, Lizhong Chen, Gordon Smyth
-#	Created 5 November 2014. Last modified 11 October 2024.
+#	Created 5 November 2014. Last modified 23 December 2025.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -21,19 +21,10 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 
 	if(is.null(y$AveLogCPM)) y$AveLogCPM <- aveLogCPM(y)
 
-	if(is.null(dispersion)) {
-		if(legacy) {
-			dispersion <- y$trended.dispersion
-			if(is.null(dispersion)) dispersion <- y$common.dispersion
-			if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
-		} else {
-			if(!is.null(y$trended.dispersion)) {
-				# Set dispersion to mean of upper 10% tail of trended dispersions
-				ntop <- ceiling(0.1 * nrow(y))
-				i <- order(y$AveLogCPM,decreasing=TRUE)[1:ntop]
-				dispersion <- mean(y$trended.dispersion[i])
-			}
-		}
+	if(is.null(dispersion) && legacy) {
+		dispersion <- y$trended.dispersion
+		if(is.null(dispersion)) dispersion <- y$common.dispersion
+		if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
 	}
 
 	offset <- getOffset(y)
@@ -101,7 +92,13 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 			i <- order(AveLogCPM,decreasing=TRUE)[1:ntop]
 			dispersion <- estimateGLMCommonDisp(y[i,,drop=FALSE], design=design, offset=offset[i,,drop=FALSE], weights=weights[i,,drop=FALSE])
 		}
-	}	
+	} else {
+#		The adjusted deviance algorithms used when legacy=FALSE assume that the NB dispersion is no greater than 4
+		if((!legacy) && (max(dispersion) > 4)) { 
+			message("Capping the NB dispersion(s) to be no larger than 4.")
+			dispersion <- pmin(dispersion, 4)
+		}
+	}
 
 	fit <- glmFit.default(y, design=design, dispersion=dispersion, offset=offset, lib.size=lib.size, weights=weights, ...)
 

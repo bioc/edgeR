@@ -6,7 +6,7 @@
 
 \title{Genewise Negative Binomial Generalized Linear Models with Quasi-Dispersion Estimation}
 
-\description{Fit a negative binomial generalized log-linear model to the read counts for each gene
+\description{Fit a negative binomial generalized log-linear model to the read counts for each gene.
 Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 
 \usage{
@@ -25,11 +25,17 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 \arguments{
 \item{y}{a matrix of counts or a \code{DGEList} object or a \code{SummarizedExperiment} containing counts. Rows represent genes and columns represent samples.}
 
-\item{design}{numeric matrix giving the design matrix for the genewise linear models.
-Must be of full column rank.
-Defaults to a single column of ones, equivalent to treating the columns as replicate libraries.}
+\item{design}{
+  numeric matrix giving the design matrix for the genewise linear models.
+  Must be of full column rank.
+  Defaults to a single column of ones, equivalent to treating the columns as replicate libraries.
+}
 
-\item{dispersion}{negative binomial dispersions. Can be a single value, or a vector of length \code{nrow(y)}, or a matrix of the same size as \code{y}. If \code{NULL} and \code{legacy=TRUE}, then will be extracted from the \code{DGEList} object \code{y}. The trended dispersions will be extracted if present, otherwise common dispersion, or will be set to 0.05 if neither is present. If \code{NULL} and \code{legacy=FALSE}, then will be estimated using the \code{top.proportion} of most highly expressed genes.} 
+\item{dispersion}{
+  negative binomial dispersions. Can be a single value, or a vector of length \code{nrow(y)}, or a matrix of the same size as \code{y}.
+  In the new edgeR v4 pipeline (\code{legacy=FALSE}), is usually left \code{NULL}. Only preset \code{dispersion} if you know what you are doing! In this pipeline, any dispersion values greater than 4 will be capped at 4.
+  In the older edgeR v3 pipeline (\code{legacy=TRUE}), will be extracted from the \code{DGEList} object \code{y}. The trended dispersions will be extracted if present, otherwise common dispersion, or will be set to 0.05 if neither is present.
+} 
 
 \item{offset}{offsets for the log-linear models containing log effective library sizes.  Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, then will be computed by \code{getOffset(y)}.}
 
@@ -65,7 +71,7 @@ Another case study using \code{glmQLFit} and \code{glmQLFTest} is given in Secti
 It calls the limma function \code{\link{squeezeVar}} to conduct empirical Bayes moderation of the genewise quasi-dispersions.
 If \code{robust=TRUE}, then the robust hyperparameter estimation features of \code{squeezeVar} are used (Phipson et al, 2016).
 If \code{abundance.trend=TRUE}, then a prior trend is estimated based on the average logCPMs.
-If \code{covariate.trend=TRUE} is not \code{NULL}, then a prior trend is estimated using the \code{covariate.trend} values as predictors.
+If \code{covariate.trend} is not \code{NULL}, then a prior trend is estimated using the \code{covariate.trend} values as predictors.
 
 \code{glmQLFit} gives special attention to handling of small counts and zero counts.
 When \code{legacy=TRUE}, the function uses the method of Lun and Smyth (2017) to adjust the residual degrees of freedom when fitted values of zero provide no useful residual degrees of freedom for estimating the quasi-dispersion.

@@ -33,7 +33,10 @@ The \code{voomWithQualityWeights} and \code{voomLmFit} functions also estimate s
 # Sample 2 has higher dispersion and lower weight
 y <- matrix(rpois(1000*5,lambda=8),1000,5)
 y[,2] <- 2 * y[,2]
-fit <- glmQLFit(y, keep.unit.mat=TRUE)
+
+# Usually the NB dispersion is estimated by glmQLFit(),
+# but here we set it to the true value for Poisson counts to illustrate the weights in pure form
+fit <- glmQLFit(y, dispersion=0, keep.unit.mat=TRUE)
 w <- sampleWeights(fit$unit.deviance.adj, fit$unit.df.adj)
 barplot(w, main="Sample weights")
 }

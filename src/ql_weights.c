@@ -268,7 +268,7 @@ void compute_weight(double u, double phi, double prior, double *wpt)
     wpt[0]=anbinomdevc_1(mu, phi);
     wpt[1]=knbinomdevc_1(mu, phi);
   }
-  else if(phi < 4.0){
+  else if(phi < 4.001){
     wpt[0]=anbinomdevc_2(mu, phi);
     wpt[1]=knbinomdevc_2(mu, phi);    
   }

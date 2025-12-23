@@ -1,6 +1,6 @@
 ---
 title: A brief introduction to edgeR
-date: "10 October 2012 (last revised 21 June 2023)"
+date: "10 October 2012 (last revised 29 November 2025)"
 output:
   BiocStyle::html_document:
     toc: FALSE
@@ -38,19 +38,29 @@ The edgeR User's Guide is available by
 library(edgeR)
 edgeRUsersGuide()
 ```
-or alternatively from the [edgeR landing page](https://bioconductor.org/packages/edgeR).
+or alternatively from the [edgeR landing page](https://doi.org/doi:10.18129/B9.bioc.edgeR).
 
 Documentation for specific functions is available through the usual R help system, e.g., `?glmFit`.
 Further questions about the package should be directed to the [Bioconductor support site](https://support.bioconductor.org).
 
 # Further reading
+	
+Baldoni PL\#, Chen L\#, Li M, Chen Y, Smyth GK (2025).
+Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
+*Nucleic Acids Research*.
+[doi:10.1093/nar/gkaf1305](https://doi.org/10.1093/nar/gkaf1305)
 
-Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2024). edgeR 4.0: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets. *bioRxiv* doi: [10.1101/2024.01.21.576131](https://doi.org/10.1101/2024.01.21.576131).
+Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025). edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets. *Nucleic Acids Research* 53(2), gkaf018. [doi:10.1093/nar/gkaf018](https://doi.org/10.1093/nar/gkaf018).
 
-Chen, Y, Pal, B, Visvader, JE, Smyth, GK (2017). Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR. *F1000Research* 6, 2055. [doi:10.12688/f1000research.13196.2](https://doi.org/10.12688/f1000research.13196.2)
+Baldoni PL\#, Chen Y\#, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024).
+Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
+*Nucleic Acids Research* 52(3), e13.
+[doi:10.1093/nar/gkad1167](https://doi.org/10.1093/nar/gkad1167)
+
+Chen Y, Pal B, Visvader JE, Smyth GK (2017). Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR. *F1000Research* 6, 2055. [doi:10.12688/f1000research.13196.2](https://doi.org/10.12688/f1000research.13196.2)
 
 Chen Y, Lun ATL, Smyth GK (2016). From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline. *F1000Research* 5, 1438. [doi:10.12688/f1000research.8987.2](https://doi.org/10.12688/f1000research.8987.2)
 
-McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation. *Nucleic Acids Research* 40, 4288-4297. [doi:10.1093/nar/gks042](https://doi.org/10.1093/nar/gks042)
+McCarthy DJ\#, Chen Y\#, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation. *Nucleic Acids Research* 40, 4288-4297. [doi:10.1093/nar/gks042](https://doi.org/10.1093/nar/gks042)
 
-Robinson, MD, McCarthy, DJ, Smyth, GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. *Bioinformatics* 26, 139-140. [doi:10.1093/bioinformatics/btp616](https://doi.org/10.1093/bioinformatics/btp616)
+Robinson MD\#, McCarthy DJ\#, Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. *Bioinformatics* 26, 139-140. [doi:10.1093/bioinformatics/btp616](https://doi.org/10.1093/bioinformatics/btp616)
