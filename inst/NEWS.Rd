@@ -3,6 +3,19 @@
 \encoding{UTF-8}
 
 
+\section{version 4.8.2 (2025-12-23)}{\itemize{
+
+\item
+glmQLFit() with `legacy=FALSE` now caps any preset dispersions to be <= 4. Previously, large preset dispersions could lead to a segmentation error.
+
+\item
+Updates to intro.Rmd.
+
+\item
+Minor example code revision for sampleWeights.Rd.
+}}
+
+
 \section{version 4.8.1 (2025-12-07)}{\itemize{
 
 \item
