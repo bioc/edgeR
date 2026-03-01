@@ -4,14 +4,14 @@ UseMethod("getNormLibSizes")
 getNormLibSizes.DGEList <- function(y, log=FALSE, ...)
 #	Effective (normalized) library size
 #	Gordon Smyth.
-#	Created 19 Apr 2020. Last modified 7 Nov 2022.
+#	Created 19 Apr 2020. Last modified 2 Feb 2026.
 {
-	if(is.null(y$offset)) {
-		els <- y$samples$lib.size*y$samples$norm.factors
-		if(log) els <- log(els)
-	} else {
+	if(hasName(y,"offset")) {
 		els <- y$offset[1,]
 		if(!log) els <- exp(els)
+	} else {
+		els <- y$samples$lib.size*y$samples$norm.factors
+		if(log) els <- log(els)
 	}
 	els
 }

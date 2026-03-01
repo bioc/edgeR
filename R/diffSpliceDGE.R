@@ -118,7 +118,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 
 #	New offset
 	offset.new   <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE) + 
-                    makeCompressedMatrix(tcrossprod(gene.betabar, design[,coef,drop=FALSE]))
+					makeCompressedMatrix(tcrossprod(gene.betabar, design[,coef,drop=FALSE]))
 	coefficients <- beta - gene.betabar
 
 #	adjust dispersion for new QL method scaled by average QL dispersion

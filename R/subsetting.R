@@ -3,12 +3,12 @@
 assign("[.DGEList",
 function(object, i, j, keep.lib.sizes=TRUE)
 #  Subsetting for DGEList objects
-#  Created 24 September 2009.  Last modified 8 Feb 2015.
+#  Created 24 September 2009.  Last modified 2 Feb 2026.
 {  
 	if(nargs() < 3) stop("Two subscripts required",call.=FALSE)
 
 #	Recognized components
-	IJ <- c("counts","pseudo.counts","offset","weights")
+	IJ <- c("counts","pseudo.counts","offset","offset.prior","weights")
 	IX <- c("genes")
 	JX <- c("samples")
 	I  <- c("AveLogCPM","trended.dispersion","tagwise.dispersion","prior.n","prior.df")

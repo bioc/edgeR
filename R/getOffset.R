@@ -3,10 +3,10 @@ getOffset <- function(y)
 #	By default, offset is constructed from the lib.size and norm.factors
 #	but offset supplied explicitly takes precedence.
 #	Gordon Smyth
-#	Created 26 Jan 2011. Last modified 3 Mar 2025.
+#	Created 26 Jan 2011. Last modified 3 Feb 2026.
 {
 #	Return offset if available
-	if(!is.null(y$offset)) return(y$offset)
+	if(hasName(y,"offset")) return(y$offset)
 
 #	Otherwise, get library sizes
 	lib.size <- y$samples$lib.size
@@ -16,5 +16,12 @@ getOffset <- function(y)
 	norm.factors <- y$samples$norm.factors
 	if(!is.null(norm.factors)) lib.size <- lib.size*norm.factors
 
-	log(lib.size)
+#	Optional prior offset defining non-count normalization
+	if(hasName(y,"offset.prior")) {
+		m <- rowMeans(y$offset.prior)
+		if(max(abs(m)) > 1e-4) y$offset.prior <- y$offset - m
+		t( t(y$offset.prior) + log(lib.size) )
+	} else {
+		log(lib.size)
+	}
 }

@@ -3,6 +3,13 @@
 \encoding{UTF-8}
 
 
+\section{version 4.9.3 (2026-03-01)}{\itemize{
+
+\item
+New function DGEListFromTximport().
+}}
+
+
 \section{version 4.9.2 (2025-12-23)}{\itemize{
 
 \item

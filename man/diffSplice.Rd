@@ -1,8 +1,8 @@
 \name{diffSplice.DGEGLM}
 \alias{diffSplice.DGEGLM}
-\title{Test for Differential Transcript Usage (with edgeR Fitted Model Object)}
-\description{Given an glm fit at the transcript (or exon) level, test for differential transcript (or exon) usage within genes between experimental conditions.
-More generally, test for differential usage within genes of any set of splice-events or isoform-identifying features.}
+\title{Differential Transcript or Exon Usage}
+\description{Given an edgeR fit object with multiple features per gene, test for differential usage of those features within genes between experimental conditions.
+The features may be any set of isoform-identifying features such as transcripts, exons or exon-junctions.}
 \usage{
 \method{diffSplice}{DGEGLM}(fit, coef=ncol(fit$design), contrast=NULL, geneid, exonid = NULL,
      robust = NULL, nexons.approx = 10, verbose = TRUE, \dots)
@@ -12,9 +12,9 @@ More generally, test for differential usage within genes of any set of splice-ev
   \item{coef}{subscript indicating which coefficient of the generalized linear model is to be tested for differential usage. Defaults to the last coefficient. Can be an integer or a coefficient name.}
   \item{contrast}{numeric vector specifying the contrast of the linear model coefficients to be tested for differential usage. Length must equal to the number of columns of \code{design}. If specified, then takes precedence over \code{coef}.}
   \item{geneid}{gene identifiers. Either a vector of length \code{nrow(fit)} or the name of the column of \code{fit$genes} containing the gene identifiers. Rows with the same ID are assumed to belong to the same gene.}
-  \item{exonid}{exon identifiers. Either a vector of length \code{nrow(fit)} or the name of the column of \code{fit$genes} containing the exon identifiers.}
-  \item{robust}{logical, should the estimation of the empirical Bayes prior parameters be robustified against outlier sample variances? By default, the same setting will be used as for the \code{glmQLFit} call used to create \code{fit}.}
-  \item{nexons.approx}{exact test statistics are computed for all genes with up to this number of transcripts (or exons). For genes with more exons, a more computationally fast approximation is used.}
+  \item{exonid}{feature or exon identifiers. Either a vector of length \code{nrow(fit)} or the name of the column of \code{fit$genes} containing the feature identifiers.}
+  \item{robust}{logical, should the estimation of the empirical Bayes prior parameters be robustified against outlier sample variances? By default, the same setting will be used as for the \code{glmQLFit} call as used to create \code{fit}.}
+  \item{nexons.approx}{exact test statistics are computed for all genes with up to this number of features (or exons). For genes with more features, a more computationally fast approximation is used.}
   \item{verbose}{logical, if \code{TRUE} some diagnostic information about the number of genes and exons is output.}
   \item{\dots}{other arguments are not currently used.}
 }
@@ -35,37 +35,39 @@ Results are sorted by geneid and by exonid within gene.
 }
 
 \details{
+Given an edgeR fit QL object with multiple features per gene, test for differential usage of those features within genes between experimental conditions.
+The features may be any set of isoform-identifying features such as transcripts, exons or exon-junctions.
+The features can be transcripts for a differential transcript usage (DTU) analysis (Baldoni et al 2025), or can be a combination of exons and exon-exon junctions for a differential exon usage (DEU) analysis.
+Another possibility is for the features to be transcript-overlap equivalence classes (Cmero et al 2019).
+
 \code{diffSplice} is an S3 generic function defined in the limma package.
 This help page describes the \code{diffSplice} method for \code{DGEGLM} fitted model objects as produced by \code{glmQLFit} in edgeR.
 The output object can be further explored using the \code{topSplice} and \code{plotSplice} functions of the limma package.
 
-The function tests for differential usage of the row-wise isoform features contained in \code{fit} for each gene across the comparison specified by the model coefficient or contrast.
-The isoform features can be transcripts for a differential transcript usage (DTU) analysis, or can be a combination of exons and exon-exon junctions for a differential exon usage (DEU) analysis.
-
-Testing for differential usage is equivalent to testing whether the log-fold-changes in the \code{fit} differ between exons for the same gene.
-Two different tests are provided, one at the gene level and one at the transcript (exon) level.
+Testing for differential usage is equivalent to testing whether the log-fold-changes in the \code{fit} differ between features for the same gene.
+Two different tests are provided, one at the gene level and one at the feature level.
 In both cases, the tests are conducted using quasi-F test statistics based on deviance differences.
 The gene-level test is a quasi-F-test for differences between the log-fold-changes, equivalent to testing for interaction between the contrast comparison and the transcripts for each gene.
 This produces one F-statistic for each gene, where the numerator df is one less than the number of exons and the denominator is the residual df pooled over all exons for that gene.
 The null hypothesis is that all the exons have the same log-fold-change and the alternative is that the log-fold-changes are not all equal.
-The exon-level tests compare each exon to the other exons for the same gene.
-Each exon-level test compares the model in which all the exons have the same log-fold-change vs the alternative model that just the specified exon has a different log-fold-change.
-The null hypothesis is that the log-fold-change for the specified exon is equal to the consensus log-fold-change for the other exons, and the alternative is that it is not.
-This produces one quasi F-statistic for each exon, where the numerator df is equal to one and the denominator is the same as for the gene-level test.
-The exon-level F-statistics are then converted into t-tests by taking square-roots and multiplying by the sign of log-fold-change difference.
+The feature-level tests compare each feature to the other features for the same gene.
+Each feature-level test compares the model in which all the features have the same log-fold-change vs the alternative model that just the specified feature has a different log-fold-change.
+The null hypothesis is that the log-fold-change for the specified feature is equal to the consensus log-fold-change for the other features, and the alternative is that it is not.
+This produces one quasi F-statistic for each feature, where the numerator df is equal to one and the denominator is the same as for the gene-level test.
+The feature-level F-statistics are then converted into t-tests by taking square-roots and multiplying by the sign of log-fold-change difference.
 
-For genes with more than \code{nexons.approx} exons, a fast approximation is used for the exon-level test, assuming that the consensus log-fold-change for the other exons should be close to the consensus log-fold-change for all exons for that gene.
-The null hypothesis for these genes is that the log-fold-change for the specified exon is equal to the consensus log-fold-change for all other exons, and the alternative is that it is not.
+For genes with more than \code{nexons.approx} features, a fast approximation is used for the feature-level test, assuming that the consensus log-fold-change for the other features should be close to the consensus log-fold-change for all features for that gene.
+The null hypothesis for these genes is that the log-fold-change for the specified feature is equal to the consensus log-fold-change for all other features, and the alternative is that it is not.
 The approximation should be very slightly conservative.
 
 The \code{fit} object should be created using \code{glmQLFit}.
 \code{diffSplice} will automatically detect whether \code{glmQLFit} was run with edgeR v4 bias-adjusted deviances (\code{legacy=FALSE}, recommended) or with ordinary deviances (\code{legacy=TRUE}).
 
-The exon-level tests are converted into genewise tests by adjusting the p-values for the same gene by Simes method.
-Alternatively, the exon-level tests are also converted into genewise tests by adjusting the smallest p-value for each gene by Bonferroni's method.
+The feature-level tests are converted into genewise tests by adjusting the p-values for the same gene by Simes method.
+As an alternative, the feature-level tests are also converted into genewise tests by adjusting the smallest p-value for each gene by Bonferroni's method.
 
-This function can be used on transcript level RNA-seq counts from Salmon or kallisto, after using catchSalmon() or catchKallisto() and glmQLFit(), as described by Baldoni et al (2025).
-It can also be used on equivalence-class counts from Salmon or kallisto, after using glmQLFit(), as described by Cmero et al (2019).
+This function can be used on transcript level RNA-seq counts from Salmon or kallisto, after pre-processing by \code{catchSalmon()} (or \code{catchKallisto} or \code{catchRSEM}) and \code{voomLmFit()}, as described by Baldoni et al (2025).
+It can also be used on equivalence-class counts from Salmon or kallisto, after pre-processing by voomLmFit(), as described by Cmero et al (2019).
 It can also be used on exon-level read counts.
 }
 
@@ -76,8 +78,10 @@ In terms of speed, the new function is slightly slower but the difference should
 }
 
 \seealso{
-\code{\link{diffSpliceDGE}} is an older function with a similar purpose.
-See \code{\link{diffSplice}}, \code{\link{topSplice}}, and \code{\link{plotSplice}} in the limma package.
+\code{\link{topSplice}} and \code{\link{plotSplice}} are downstream functions that operate on the output from \code{diffSplice}.
+
+\code{\link{diffSplice}} is the generic function in the limma package.
+\code{\link{spliceVariants}} and \code{\link{diffSpliceDGE}} are older edgeR functions with a similar purpose, both replaced by this function.
 }
 
 \author{Lizhong Chen, Yunshun Chen and Gordon Smyth}
@@ -85,8 +89,8 @@ See \code{\link{diffSplice}}, \code{\link{topSplice}}, and \code{\link{plotSplic
 \references{
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
-\emph{bioRxiv}
-\doi{10.1101/2025.04.07.647659}.
+\emph{Nucleic Acids Research} 53(22), gkaf1305.
+\doi{10.1093/nar/gkaf1305}
 
 Cmero M, Davidson NM, Oshlack A (2019).
 Using equivalence class counts for fast and accurate testing of differential transcript usage.
@@ -122,6 +126,5 @@ topSplice(ds)
 plotSplice(ds)
 }
 
-\keyword{rna-seq}
 \concept{Differential transcript usage}
 \concept{Differential usage}

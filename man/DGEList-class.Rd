@@ -24,6 +24,7 @@ Optional components include:
   \item{\code{trended.dispersion}:}{ numeric vector giving trended dispersion estimates for each gene.}
   \item{\code{tagwise.dispersion}:}{ numeric vector giving tagwise dispersion estimates for each gene (note that `tag' and `gene' are synonymous here).}
   \item{\code{offset}:}{ numeric matrix of same size as \code{counts} giving offsets for use in log-linear models.}
+  \item{\code{offset.prior}:}{ numeric matrix of same size as \code{counts} giving prior offsets arising from observation-specific normalization not related to library size.}
 }
 }
 
@@ -38,7 +39,7 @@ However they can also be treated as if they were matrices for the purposes of su
 
 The dimensions, row names and column names of a \code{DGEList} object are defined by those of \code{counts}, see \code{\link{dim.DGEList}} or \code{\link{dimnames.DGEList}}.
 
-\code{DGEList} objects can be subsetted, see \code{\link[edgeR:subsetting]{subsetting}}.
+\code{DGEList} objects can be subsetted analogously to matrices, see \code{\link[edgeR:subsetting]{subsetting}}.
 
 \code{DGEList} objects also have a \code{show} method so that printing produces a compact summary of their contents.
 }

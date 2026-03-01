@@ -4,10 +4,10 @@ UseMethod("cpm")
 cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	Counts per million for a DGEList
 #	Davis McCarthy and Gordon Smyth.
-#	Created 20 June 2011. Last modified 22 October 2020.
+#	Created 20 June 2011. Last modified 2 Feb 2026.
 {
 	lib.size <- y$samples$lib.size
-	if(!is.null(y$offset)){
+	if(hasName(y,"offset")){
 		if( min(y$offset) > max(log(lib.size)) || min(log(lib.size)) > max(y$offset) ) warning("Offset may not reflect library sizes. Scaling offset may be required.")
 		lib.size <- NULL
 	} else {
@@ -92,7 +92,7 @@ cpm.default <- function(y, lib.size=NULL, offset=NULL, log=FALSE, prior.count=2,
 
 	lib.size <- makeCompressedMatrix(lib.size, dim(y), byrow=TRUE)
 
-#	Calculating in C++ for max efficiency
+#	Calculating in C for max efficiency
 	if(log) {
 		prior.count <- .compressPrior(y, prior.count)
 		out <- .Call(.cxx_calculate_cpm_log, y, lib.size, prior.count)

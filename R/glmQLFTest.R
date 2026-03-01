@@ -138,7 +138,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #		Compute average quasi dispersion
 		ave.ql.disp  <- .Call(.cxx_compute_ave_qd,y,fit$fitted.values,design,dispersion.mat,AveLogCPM2,weights)
 
-# 		Refit using the scaled dispersion by average quasi dispersion 
+#		Refit using the scaled dispersion by average quasi dispersion
 		fit <- glmFit(y, design=design, dispersion=dispersion/ave.ql.disp, offset=offset, lib.size=lib.size, weights=weights, ...)
 		fit$dispersion <- dispersion
 

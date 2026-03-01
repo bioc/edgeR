@@ -30,8 +30,8 @@ mglmOneGroup <- function(y,dispersion=0,offset=0,weights=NULL,coef.start=NULL,ma
 
 #	Convergence achieved for all tags?
 	if (verbose && any(!output$convergence)) { 
-        warning(paste("max iteractions exceeded for", sum(!output$convergence), "tags", sep=" "))
-    }
+		warning(paste("max iteractions exceeded for", sum(!output$convergence), "tags", sep=" "))
+	}
 
 	output$coef
 }

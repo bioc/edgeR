@@ -23,7 +23,10 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 #	Scale normalization of RNA-Seq data, for count matrices
 #	Mark Robinson, Gordon Smyth and edgeR team
 #	Created 22 October 2009. Last modified 29 Dec 2023.
+#	Deprecation message added 3 Feb 2026.
 {
+	message("calcNormFactors has been renamed to normLibSizes")
+
 #	Check object
 	x <- as.matrix(object)
 	if(anyNA(x)) stop("NA counts not permitted")

@@ -66,25 +66,26 @@ dimnames.DGEExact <- dimnames.DGELRT <- dimnames.TopTags <- function(x) dimnames
 assign("dimnames<-.DGEList",function(x,value)
 {
 	dimnames(x$counts) <- value
-	if(!is.null(x$samples)) row.names(x$samples) <- value[[2]]
-	if(!is.null(x$genes)) row.names(x$genes) <- value[[1]]
+	if(hasName(x,"samples")) row.names(x$samples) <- value[[2]]
+	if(hasName(x,"genes")) row.names(x$genes) <- value[[1]]
+	if(hasName(x,"offset.prior")) row.names(x$offset.prior) <- value[[1]]
 	x
 })
 
 assign("dimnames<-.DGEExact",function(x,value)
 {
 	dimnames(x$table) <- value
-	if(!is.null(x$genes)) row.names(x$genes) <- value[[1]]
+	if(hasName(x,"genes")) row.names(x$genes) <- value[[1]]
 	x
 })
 
 assign("dimnames<-.DGEGLM",function(x,value)
 {
 	dimnames(x$coefficients) <- value
-	if(!is.null(x$unshrunk.coefficients)) dimnames(x$unshrunk.coefficients) <- value
-	if(!is.null(x$fitted.values)) rownames(x$fitted.values) <- value[[1]]
-	if(!is.null(x$counts)) rownames(x$fitted.values) <- value[[1]]
-	if(!is.null(x$genes)) row.names(x$genes) <- value[[1]]
+	if(hasName(x,"unshrunk.coefficients")) dimnames(x$unshrunk.coefficients) <- value
+	if(hasName(x,"fitted.values")) rownames(x$fitted.values) <- value[[1]]
+	if(hasName(x,"counts")) rownames(x$fitted.values) <- value[[1]]
+	if(hasName(x,"genes")) row.names(x$genes) <- value[[1]]
 	x
 })
 
@@ -92,11 +93,11 @@ assign("dimnames<-.DGELRT",function(x,value)
 #	4 June 2015
 {
 	dimnames(x$table) <- value
-	if(!is.null(x$coefficients)) rownames(x$coefficients) <- value[[1]]
-	if(!is.null(x$unshrunk.coefficients)) rownames(x$unshrunk.coefficients) <- value[[1]]
-	if(!is.null(x$fitted.values)) rownames(x$fitted.values) <- value[[1]]
-	if(!is.null(x$counts)) rownames(x$fitted.values) <- value[[1]]
-	if(!is.null(x$genes)) row.names(x$genes) <- value[[1]]
+	if(hasName(x,"coefficients")) rownames(x$coefficients) <- value[[1]]
+	if(hasName(x,"unshrunk.coefficients")) rownames(x$unshrunk.coefficients) <- value[[1]]
+	if(hasName(x,"fitted.values")) rownames(x$fitted.values) <- value[[1]]
+	if(hasName(x,"counts")) rownames(x$fitted.values) <- value[[1]]
+	if(hasName(x,"genes")) row.names(x$genes) <- value[[1]]
 	x
 })
 

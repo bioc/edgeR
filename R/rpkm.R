@@ -25,7 +25,7 @@ rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FAL
 	}
 
 	lib.size <- y$samples$lib.size
-	if(!is.null(y$offset)){
+	if(hasName(y,"offset")){
 		if( min(y$offset) > max(log(lib.size)) || min(log(lib.size)) > max(y$offset) ) warning("Offset may not reflect library sizes. Scaling offset may be required.")
 		lib.size <- NULL
 	} else {

@@ -3,7 +3,7 @@
 \alias{getOffset}
 \alias{getDispersion}
 
-\title{Extract Specified Component of a DGEList Object}
+\title{Extract Components of a DGEList Object}
 
 \usage{
 getCounts(y) 
@@ -19,14 +19,15 @@ getDispersion(y)
 \code{getCounts(y)} returns the matrix of read counts \code{y$counts}.
 
 \code{getOffset(y)} returns offsets for the log-linear predictor account for sequencing depth and possibly other normalization factors.
-Specifically it returns the matrix \code{y$offset} if it is non-null, otherwise it returns the log product of \code{lib.size} and \code{norm.factors} from \code{y$samples}.
+Specifically it returns the matrix \code{y$offset} if that is non-null.
+Otherwise, it returns the log effective library sizes (\code{log(lib.size*norm.factors)}), added columnwise to the prior offset matrix \code{y$offset.prior} if that exists..
 
 \code{getDispersion(y)} returns the most complex dispersion estimates (common, trended or genewise) found in \code{y}.
 }
 
 \value{\code{getCounts} returns the matrix of counts.
-\code{getOffset} returns a numeric matrix or vector.
-\code{getDispersion} returns vector of dispersion values.
+\code{getOffset} returns a numeric matrix, if an offset matrix was found, otherwise a vector of length \code{ncol(y)}.
+\code{getDispersion} returns vector of dispersion values, either of length 1 or of length \code{nrow(y)}.
 }
 
 \author{Mark Robinson, Davis McCarthy, Gordon Smyth}

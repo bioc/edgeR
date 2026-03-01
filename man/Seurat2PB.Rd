@@ -6,13 +6,14 @@
 \description{Given a \code{Seurat} or \code{SeuratObject} data object, create pseudo-bulk samples using the sample and cluster information and return a \code{DGEList} object.}
 
 \usage{
-Seurat2PB(object, sample, cluster="seurat_clusters")
+Seurat2PB(object, sample, cluster="seurat_clusters", assay="RNA")
 }
 
 \arguments{
-\item{object}{a \code{Seurat} or \code{SeuratObject} class data object. Must have \code{counts} in its \code{RNA} assay.}
+\item{object}{a \code{Seurat} or \code{SeuratObject} class data object. Must have \code{counts} in its \code{assay}.}
 \item{sample}{character specifying the column of \code{object@meta.data} that contains sample information of the single cell data. Must be one of the column names of \code{object@meta.data}.}
 \item{cluster}{character specifying the column of \code{object@meta.data} that contains single cell cluster information. Must be one of the column names of \code{object@meta.data}. Default to \code{seurat_clusters}.}
+\item{assay}{character specifying which \code{assay} of the \code{object} the counts are extracted from. Default to \code{RNA}.}
 }
 
 \details{

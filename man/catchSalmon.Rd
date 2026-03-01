@@ -72,9 +72,9 @@ Faster and more accurate assessment of differential transcript expression with G
 \doi{10.1093/nargab/lqae151}.
 
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
-Dividing out quantification uncertainty enables assessment of differential transcript usage with diffSplice.
-\emph{bioRxiv}
-\doi{10.1101/2025.04.07.647659}.
+Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
+\emph{Nucleic Acids Research} 53(22), gkaf1305.
+\doi{10.1093/nar/gkaf1305}
 
 Bray NL, Pimentel H, Melsted P, Pachter L (2016).
 Near-optimal probabilistic RNA-seq quantification.

@@ -1,73 +1,73 @@
 makeCompressedMatrix <- function(x, dims=NULL, byrow=TRUE) 
-# Construct a CompressedMatrix from a scalar, vector or matrix.
+# 	Construct a CompressedMatrix from a scalar, vector or matrix.
 #
-# Created by Aaron Lun, 24 Sep 2016.
-# Revised by Lizhong Chen, 9 May 2024.
+#	Created by Aaron Lun, 24 Sep 2016.
+#	Revised by Lizhong Chen, 9 May 2024.
 {
-    repeat.row <- repeat.col <- FALSE
+	repeat.row <- repeat.col <- FALSE
 	if (is.matrix(x)) {
 		if (inherits(x, "CompressedMatrix")) {
 			return(x)
 		}
-        if (!is.null(dims)){
-            xdim <- dim(x)
-            if(xdim[1]==1L && xdim[2]==1L){
-                repeat.row <- repeat.col <- TRUE
-		        x <- matrix(x)               
-            }
-            else if(xdim[1]==1L && xdim[2]>=2L){
-                if(xdim[2]!=dims[2]){
-                    stop("'dims[2]' should equal length of row vector 'x'")
-                }
-                if(byrow){
-                    repeat.row <- TRUE
-                }
-                else{
-                    dims <- xdim    
-                }
-            }
-            else if(xdim[1]>=2L && xdim[2]==1L){
-                if(xdim[1]!=dims[1]){
-                    stop("'dims[1]' should equal length of column vector 'x'")
-                }
-                if(!byrow){
-                    repeat.col <- TRUE
-                }
-                else{
-                    dims <- xdim
-                }
-            }
-            else{
-                dims <- xdim
-            }
-        }
-        else{
-            dims <- dim(x)
-        }
+		if (!is.null(dims)){
+			xdim <- dim(x)
+			if(xdim[1]==1L && xdim[2]==1L){
+				repeat.row <- repeat.col <- TRUE
+				x <- matrix(x)               
+			}
+			else if(xdim[1]==1L && xdim[2]>=2L){
+				if(xdim[2]!=dims[2]){
+					stop("'dims[2]' should equal length of row vector 'x'")
+				}
+				if(byrow){
+					repeat.row <- TRUE
+				}
+				else{
+					dims <- xdim    
+				}
+			}
+			else if(xdim[1]>=2L && xdim[2]==1L){
+				if(xdim[1]!=dims[1]){
+					stop("'dims[1]' should equal length of column vector 'x'")
+				}
+				if(!byrow){
+					repeat.col <- TRUE
+				}
+				else{
+					dims <- xdim
+				}
+			}
+			else{
+				dims <- xdim
+			}
+		}
+		else{
+			dims <- dim(x)
+		}
 	} else if (length(x)==1L) {
-        repeat.row <- repeat.col <- TRUE
+		repeat.row <- repeat.col <- TRUE
 		x <- matrix(x)
 	} else {
 		if (!byrow) {
-            if (dims[1]!=length(x)) { 
-                stop("'dims[1]' should equal length of 'x'")
-            }
+			if (dims[1]!=length(x)) { 
+				stop("'dims[1]' should equal length of 'x'")
+			}
 			x <- cbind(x)
-            repeat.col <- TRUE
+			repeat.col <- TRUE
 		} else {
-            if (dims[2]!=length(x)) { 
-                stop("'dims[2]' should equal length of 'x'")
-            }
+			if (dims[2]!=length(x)) { 
+				stop("'dims[2]' should equal length of 'x'")
+			}
 			x <- rbind(x)
-            repeat.row <- TRUE
+			repeat.row <- TRUE
 		}
 	}
 
-    dimnames(x) <- NULL
-    class(x) <- "CompressedMatrix"
+	dimnames(x) <- NULL
+	class(x) <- "CompressedMatrix"
 	attr(x, "Dims") <- as.integer(dims)
-    attr(x, "repeat.row") <- repeat.row
-    attr(x, "repeat.col") <- repeat.col
+	attr(x, "repeat.row") <- repeat.row
+	attr(x, "repeat.col") <- repeat.col
 	return(x)
 }
 

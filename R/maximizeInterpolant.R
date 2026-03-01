@@ -7,17 +7,17 @@ maximizeInterpolant <- function( x, y )
 # C by Lizhong Chen.
 # Last modified 13 May 2024.
 {
-    if (is.vector(y)) {
-        y<-rbind(y)
-        warning("coverting vector of likelihoods to matrix format for interpolation")
-    }
-    if (length(x)!=ncol(y)) { 
-        stop("number of columns must equal number of spline points")
-    } else if (is.unsorted(x) || anyDuplicated(x)) {
-        stop("spline points must be unique and sorted")
-    }
+	if (is.vector(y)) {
+		y<-rbind(y)
+		warning("coverting vector of likelihoods to matrix format for interpolation")
+	}
+	if (length(x)!=ncol(y)) { 
+		stop("number of columns must equal number of spline points")
+	} else if (is.unsorted(x) || anyDuplicated(x)) {
+		stop("spline points must be unique and sorted")
+	}
 
 #	Performing some type checking.
-    out<-.Call(.cxx_maximize_interpolant, x, y)
-    return(out)
+	out<-.Call(.cxx_maximize_interpolant, x, y)
+	return(out)
 }
