@@ -3,6 +3,13 @@
 \encoding{UTF-8}
 
 
+\section{version 4.9.4 (2026-03-02)}{\itemize{
+
+\item
+catchOarfish() now uses nanoparquet::read_parquet() instead of arrow::read_parquet().
+}}
+
+
 \section{version 4.9.3 (2026-03-01)}{\itemize{
 
 \item

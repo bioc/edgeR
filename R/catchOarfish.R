@@ -2,7 +2,7 @@ catchOarfish <- function(prefixes=NULL,path=".",verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Oarfish output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Gordon Smyth
-#	Created 4 July 2025. Last modified 5 July 2025.
+#	Created 4 July 2025. Last modified 2 Mar 2026.
 {
 #	Check prefixes
 	if(is.null(prefixes)) {
@@ -21,8 +21,8 @@ catchOarfish <- function(prefixes=NULL,path=".",verbose=TRUE)
 	if(!OK) stop("jsonlite package required but is not installed (or can't be loaded)")
 	OK <- requireNamespace("readr",quietly=TRUE)
 	if(!OK) stop("readr package required but is not installed (or can't be loaded)")
-	OK <- requireNamespace("arrow",quietly=TRUE)
-	if(!OK) stop("arrow package required but is not installed (or can't be loaded)")
+	OK <- requireNamespace("nanoparquet",quietly=TRUE)
+	if(!OK) stop("nanoparquet package required but is not installed (or can't be loaded)")
 
 #	Initialize vector of inferential sample types
 	ResampleType <- rep_len("bootstrap",NSamples)
@@ -60,7 +60,7 @@ catchOarfish <- function(prefixes=NULL,path=".",verbose=TRUE)
 
 #		Bootstrap samples
 		if(NBoot > 0L) {
-			Boot <- as.matrix(arrow::read_parquet(BootFile))
+			Boot <- as.matrix(nanoparquet::read_parquet(BootFile))
 			M <- rowMeans(Boot)
 			i <- (M > 0)
 			OverDisp[i] <- OverDisp[i] + rowSums((Boot[i,]-M[i])^2) / M[i]
