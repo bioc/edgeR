@@ -43,9 +43,9 @@ Rotation gene set testing for Negative Binomial generalized linear models.
 }
 
 \value{
-\code{roast} produces an object of class \code{\link[limma:roast]{Roast}}. See \code{\link{roast}} for details.
+\code{roast} produces an object of class \code{\link[limma:roast]{Roast}}. See \code{\link[limma]{roast}} for details.
 
-\code{mroast} and \code{fry} produce a data.frame. See \code{\link{mroast}} for details.
+\code{mroast} and \code{fry} produce a data.frame. See \code{\link[limma]{mroast}} for details.
 }
 
 \details{
@@ -54,8 +54,8 @@ These functions perform self-contained gene set tests against the null hypothesi
 
 The roast gene set test was proposed by Wu et al (2010) for microarray data and the \code{roast} and \code{mroast} methods documented here extend the test to digital gene expression data.
 The roast method uses residual space rotations instead of permutations to obtain p-values, a technique that take advantage of the full generality of linear models.
-The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero, and the normal deviates are then passed to the limma \code{\link{roast}} function.
-See \code{\link{roast}} for more description of the test and for a complete list of possible arguments.
+The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero, and the normal deviates are then passed to the limma \code{\link[limma]{roast}} function.
+See \code{\link[limma]{roast}} for more description of the test and for a complete list of possible arguments.
 \code{mroast} is similar but performs \code{roast} tests for multiple of gene sets instead of just one.
 
 The \code{fry} method documented here similarly generalizes the fry gene set test for microarray data.
@@ -63,7 +63,7 @@ The \code{fry} method documented here similarly generalizes the fry gene set tes
 }
 
 \seealso{
-\code{\link{roast}}, \code{\link{camera.DGEGLM}}
+\code{\link[limma]{roast}}, \code{\link{camera.DGEGLM}}
 }
 
 \author{Yunshun Chen and Gordon Smyth}

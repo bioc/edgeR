@@ -1,52 +1,58 @@
 \name{DGEListFromTximport}
 \alias{DGEListFromTximport}
+\alias{DGEListFromTximeta}
 
 \title{
-Create a DGEList Object From tximport Output
+Create a DGEList Object From tximport or tximeta Output
 }
 
 \description{
-Assembles a \code{DGEList} object from the list object created by \code{tximport::tximport}.
+Assembles a \code{DGEList} object from the list object created by either \code{tximport::tximport} or \code{tximeta::tximeta}.
 }
 
 \usage{
 DGEListFromTximport(txi, samples = NULL, group = NULL, genes = NULL,
-    remove.zeros = FALSE, norm.method = "none")
+    remove.zeros = FALSE, divide = FALSE)
+DGEListFromTximeta(txm, samples = NULL, group = NULL,
+    remove.zeros = FALSE, divide = FALSE)
 }
 
 \arguments{
-  \item{txi}{list output from \code{tximport}.}
+  \item{txi}{list output from \code{tximport()}.}
+  \item{txm}{SummarizedExperiment data object from \code{tximeta()}.}
   \item{samples}{data.frame containing sample information, with a row for each sample. This data.frame will be appended to the \code{samples} component of the DGEList object.}
   \item{group}{vector or factor giving the experimental group or treatment condition for each sample. Defaults to a single group.}
   \item{genes}{data.frame containing gene annotation.}
   \item{remove.zeros}{logical, whether to remove rows that have 0 total count.}
-  \item{norm.method}{library size normalization method, if desired. See \code{normLibSizes} for options.}
+  \item{divide}{logical, whether to divide the counts by the RAA overdispersions.}
 }
 
 \details{
-This function imports the output \code{txi} from the \code{tximport::tximport} function to the edgeR package.
-In most use cases, \code{tximport}, will have been run with \code{txOut=FALSE} to aggregate counts at the level of genes, and the transcript length matrix \code{txi$length} will contain the average transcript length for each gene in each sample.
-Alternatively, \code{txi} will contain results at the original transcript level, if \code{tximport} was run with \code{txOut=TRUE}, in which case \code{txi$length} will contain effective transcript lengths for the individual transcripts in each sample. 
+The functions \code{DGEListFromTximport} and \code{DGEListFromTximeta} import the output \code{txi} from the \code{tximport::tximport} and \code{tximeta::tximeta} functions, respectively, to the edgeR package.
+In most use cases, \code{tximport} and \code{tximeta} will have been run with \code{txOut=FALSE} to aggregate counts at the level of genes, and the transcript length matrix, \code{txi$length} for \code{tximport} and \code{assay(txi,"length")} for \code{tximeta}, will contain the average transcript length for each gene in each sample.
+Alternatively, \code{txi} will contain results at the original transcript level, if \code{tximport} and \code{tximeta} were run with \code{txOut=TRUE}, in which case the transcript length matrix will contain effective transcript lengths for the individual transcripts in each sample. 
 
-The count matrix \code{txi$counts} becomes the count matrix for the DGEList object.
-If \code{txi$countsFromAbundance=="no"}, then a prior offset matrix is formed from the average transcript lengths found in \code{txi$length}.
+The count matrix, \code{txi$counts} for \code{tximport} and \code{assay(txi,"counts")} for \code{tximeta}, becomes the count matrix for the DGEList object.
+If either \code{tximport} or \code{tximeta} were run with the option \code{countsFromAbundance="no"}, then a prior offset matrix is formed from the average transcript lengths found in the respective transcript length matrix.
 This implements the "original counts and offset" method described by the tximport documentation.
-If \code{txi$countsFromAbundance} has some other value, then the counts have already be bias corrected and no offset matrix will be formed.
+If \code{countsFromAbundance} has been set to any other value, then the counts have already be bias corrected and no offset matrix will be formed.
 This implements the "bias corrected counts without an offset" method described by the tximport documentation.
 
-If \code{txi$infReps} exists and contains technical replicates (boostrap or Gibbs samples) for each column, then an read-assignment-ambiguity overdispersion is estimated for each row of data.
-
-Library size normalization will be done if \code{norm.method} specifies a method offered by \code{normLibSizes}, but performing library size normalization as part of the import is not necessary.
-We generally recommend leaving \code{norm.method="none"} and running \code{normLibSizes} on the DGEList later in the analysis pipeline, typically after filtering.
+If inferential replicates (bootstrap or Gibbs resampling) exist in the \code{txi} or \code{txm} data objects then an read-assignment-ambiguity (RAA) overdispersion is estimated for each row of data, using the approach described by Baldoni et al (2024a).
+If \code{divid=TRUE}, then divided counts will be formed by dividing the original counts by the RAA overdispersions.
 }
 
 \value{
 A \code{\link[edgeR:DGEList-class]{DGEList}} object.
-If \code{txi$counts} contains raw counts, then the a prior offset matrix \code{offset.prior} will be included to account for variation in average transcript length between samples.
+
+If \code{txi} or \code{txm} contains raw counts, then the a prior offset matrix \code{offset.prior} will be included to account for variation in average transcript length between samples.
+
 The \code{genes} component of the object will contain the following columns:
-  \item{TxLengthAve}{average transcript length, over all samples and all transcripts.}
-  \item{TxLengthRange}{ratio of largest to smallest transcript length for different samples. If counts are at the gene level, then the transcript lengths are averages over transcripts for each sample.}
-  \item{Overdispersion}{quasi-dispersion arising from read assignment ambiguity. Equal to 1 for rows with no ambiguity.}
+  \item{AveLength}{average transcript or gene length, over all samples and all transcripts.}
+  \item{Max2MinLength}{ratio of largest to smallest length for different samples. If counts are at the gene level, then the lengths are averages over transcripts for each sample, as computed by tximport.}
+  \item{Overdispersion}{quasi-dispersion arising from read assignment ambiguity. Equal to 1 for rows with no ambiguity. Larger values indicate more ambiguity.}
+
+As well as standard DGEList components, the output components \code{divided.counts} indicates whether the counts have been divided and the component \code{txi.counts} indicates whether the tximported counts were direct from the quantifier or whether they were scaled by TPMs.
 }
 
 \references{
@@ -54,6 +60,11 @@ Baldoni PL, Chen Y, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK
 Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
 \emph{Nucleic Acids Research} 52(3), e13.
 \doi{10.1093/nar/gkad1167}.
+
+Baldoni PL, Chen L, Smyth GK (2024b).
+Faster and more accurate assessment of differential transcript expression with Gibbs sampling and edgeR v4.
+\emph{NAR Genomics and Bioinformatics} 6(4), lqae151.
+\doi{10.1093/nargab/lqae151}.
 
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
@@ -64,7 +75,7 @@ Dividing out quantification uncertainty enables assessment of differential trans
 \seealso{
 \code{\link{catchSalmon}}, \code{\link[edgeR:DGEList-class]{DGEList-class}}.
 
-The input object \code{txi} is created by \code{tximport} in the tximport package.
+The input objects \code{txi} or \code{txm} are created by either \code{tximport} or \code{tximeta} in the tximport and tximeta packages, respectively.
 }
 
 \concept{edgeR classes}

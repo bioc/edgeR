@@ -18,7 +18,7 @@ Test for over-representation of gene ontology (GO) terms or KEGG pathways in the
   \item{trend}{adjust analysis for gene length or abundance?
   Can be logical, or a numeric vector of covariate values, or the name of the column of \code{de$genes} containing the covariate values.
   If \code{TRUE}, then \code{de$AveLogCPM} is used as the covariate.}
-  \item{\dots}{any other arguments are passed to \code{\link{goana.default}} or \code{\link{kegga.default}}.}
+  \item{\dots}{any other arguments are passed to \code{\link[limma]{goana.default}} or \code{\link[limma]{kegga.default}}.}
 }
 \details{
 \code{goana} performs Gene Ontology enrichment analyses for the up and down differentially expressed genes from a linear model analysis.
@@ -32,7 +32,7 @@ In the latter case, the column name containing the Entrez IDs is given by \code{
 Alternatively, if the Entrez IDs are not part of the \code{de} object, then they can be supplied as a vector argument to \code{geneid}.
 
 For \code{kegga}, gene IDs other than Entrez Gene IDs are supported for some species.
-See \code{\link{kegga.default}} for more information.
+See \code{\link[limma]{kegga.default}} for more information.
 
 If \code{trend=FALSE}, the function computes one-sided hypergeometric tests equivalent to Fisher's exact test.
 
@@ -69,7 +69,7 @@ Chen Y, Lun ATL, and Smyth, GK (2016). From reads to genes to pathways: differen
 }
 
 \seealso{
-\code{\link{goana}}, \code{\link{topGO}}, \code{\link{kegga}}, \code{\link{topKEGG}}
+\code{\link[limma]{goana}}, \code{\link[limma]{topGO}}, \code{\link[limma]{kegga}}, \code{\link[limma]{topKEGG}}
 }
 
 \author{Yunshun Chen and Gordon Smyth}

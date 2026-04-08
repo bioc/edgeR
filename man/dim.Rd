@@ -26,9 +26,7 @@ The first element is the number of rows (genes) and the second is the number of 
 }
 \author{Gordon Smyth, Davis McCarthy}
 \seealso{
-  \code{\link[base]{dim}} in the base package.
-  
-  \link{02.Classes} gives an overview of data classes used in LIMMA.
+  \code{\link{dim}} in the base package.
 }
 \examples{
 M <- A <- matrix(11:14,4,2)

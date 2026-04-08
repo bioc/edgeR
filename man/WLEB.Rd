@@ -8,14 +8,15 @@ Compute empirical Bayes moderated parameter estimators using a weighted likeliho
 }
 
 \usage{
-WLEB(theta, loglik, prior.n = 5, covariate = NULL, trend.method = "locfit", span = NULL, 
-     legacy.span = FALSE, overall = TRUE, trend = TRUE, individual = TRUE, m0 = NULL, m0.out = FALSE)
+WLEB(theta, loglik, prior.n = 5,
+     covariate = NULL, trend.method = "locfit", span = NULL, legacy.span = FALSE,
+     overall = TRUE, trend = TRUE, individual = TRUE, m0 = NULL, m0.out = FALSE)
 }
 
 \arguments{
 \item{theta}{numeric vector of values of the parameter at which the log-likelihoods are calculated.}
 \item{loglik}{numeric matrix of log-likelihood of all the candidates at those values of parameter.}
-\item{prior.n}{numeric scaler, estimate of the prior weight, i.e. the smoothing parameter that indicates the weight to put on the common likelihood compared to the individual's likelihood.}
+\item{prior.n}{the weight put on the common likelihood compared to the individual's likelihood, expressed in terms of the number of observations in a notional prior dataset.}
 \item{covariate}{numeric vector of values across which a parameter trend is fitted}
 \item{trend.method}{method for estimating the parameter trend. Possible values are \code{"none"}, \code{"movingave"}, \code{"loess"}, \code{"locfit"} or \code{"locfit.mixed"}. The latter options cause \code{movingAverageByCol()}, \code{loessBycol()} and \code{locfitByCol()} respectively to be called to smooth \code{loglik} by the covariate values. The \code{"locfit.mixed"} method is the same as \code{"locfit"} but uses a polynomial of degree 1 for lowly expressed genes.}
 \item{span}{width of the smoothing window, as a proportion of the data set. By default, is chosen by \code{chooseLowessSpan()}.}

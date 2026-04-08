@@ -42,7 +42,7 @@ An object like \code{x} but generally with fewer rows.
 \author{Gordon Smyth}
 
 \seealso{
-  \code{\link{head}} in the utils package or \code{\link{head.EList}} in the limma package.
+  \code{\link{head}} in the utils package or \code{\link[limma]{head.EList}} in the limma package.
 }
 
 \examples{

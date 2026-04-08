@@ -17,7 +17,7 @@ Test whether a set of genes is highly ranked relative to other genes in terms of
 
 \arguments{
   \item{y}{a \code{DGEList} object containing dispersion estimates or a \code{DGEGLM} object.}
-  \item{index}{an index vector or a list of index vectors.  Can be any vector such that \code{y[index,]} selects the rows corresponding to the test set.  The list can be made using \code{\link{ids2indices}}.}
+  \item{index}{an index vector or a list of index vectors.  Can be any vector such that \code{y[index,]} selects the rows corresponding to the test set.  The list can be made using \code{\link[limma]{ids2indices}}.}
   \item{design}{design matrix. Defaults to \code{y$design} or, if that is NULL, to \code{model.matrix(~y$samples$group)}.}
   \item{contrast}{contrast of the linear model coefficients for which the test is required. Can be an integer specifying a column of \code{design}, or else a numeric vector of same length as the number of columns of \code{design}.}
   \item{weights}{numeric matrix of observation weights of same size as \code{y}, or a numeric vector of array weights with length equal to \code{ncol(y)}, or a numeric vector of gene weights with length equal to \code{nrow(y)}.}
@@ -42,7 +42,7 @@ We provide here a \code{cameraPR} method for DGELRT objects.
 \value{
 A data.frame giving the gene set results, with a row for each gene set defined by \code{index}.
 If \code{sort=TRUE} then results are sorted in decreasing order of significance.
-See \code{\link{camera}} for details.
+See \code{\link[limma]{camera}} for details.
 }
 
 \author{Yunshun Chen, Gordon Smyth}
@@ -64,7 +64,7 @@ Wu D, Smyth GK (2012). Camera: a competitive gene set test accounting for inter-
 }
 
 \seealso{
-\code{\link{camera}}.
+\code{\link[limma]{camera}}.
 }
 
 \examples{

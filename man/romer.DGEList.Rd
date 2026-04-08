@@ -11,17 +11,17 @@ Romer gene set enrichment tests for Negative Binomial generalized linear models.
 
 \arguments{
   \item{y}{\code{DGEList} object.}
-  \item{index}{list of indices specifying the rows of \code{y} in the gene sets. The list can be made using \link{ids2indices}.}
+  \item{index}{list of indices specifying the rows of \code{y} in the gene sets. The list can be made using \link[limma]{ids2indices}.}
   \item{design}{design matrix. Defaults to \code{y$design} or, failing that, to \code{model.matrix(~y$samples$group)}.}
   \item{contrast}{contrast for which the test is required. Can be an integer specifying a column of \code{design}, or the name of a column of \code{design}, or else a contrast vector of length equal to the number of columns of \code{design}.}
-  \item{\dots}{other arguments are passed to \code{\link{romer.default}}. For example, the number of rotations \code{nrot} can be increased from the default of \code{9999} to increase the resolution of the p-values.}
+  \item{\dots}{other arguments are passed to \code{\link[limma]{romer.default}}. For example, the number of rotations \code{nrot} can be increased from the default of \code{9999} to increase the resolution of the p-values.}
 }
 
 \value{
 Numeric matrix giving p-values and the number of matched genes in each gene set.
 Rows correspond to gene sets.
 There are four columns giving the number of genes in the set and p-values for the alternative hypotheses up, down or mixed.
-See \code{\link{romer}} for details.
+See \code{\link[limma]{romer}} for details.
 }
 
 \details{
@@ -29,11 +29,11 @@ The ROMER procedure described by Majewski et al (2010) is implemented in \code{r
 This \code{romer} method for \code{DGEList} objects makes the romer procedure available for count data such as RNA-seq data.
 The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero.
 The normal deviates are then passed to the \code{romer} function in limma.
-See \code{\link{romer}} for more description of the test and for a complete list of possible arguments.
+See \code{\link[limma]{romer}} for more description of the test and for a complete list of possible arguments.
 }
 
 \seealso{
-\code{\link{romer}}
+\code{\link[limma]{romer}}
 }
 
 \author{Yunshun Chen and Gordon Smyth}

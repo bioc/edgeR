@@ -78,9 +78,9 @@ In terms of speed, the new function is slightly slower but the difference should
 }
 
 \seealso{
-\code{\link{topSplice}} and \code{\link{plotSplice}} are downstream functions that operate on the output from \code{diffSplice}.
+\code{\link[limma]{topSplice}} and \code{\link[limma]{plotSplice}} are downstream functions that operate on the output from \code{diffSplice}.
 
-\code{\link{diffSplice}} is the generic function in the limma package.
+\code{\link[limma]{diffSplice}} is the generic function in the limma package.
 \code{\link{spliceVariants}} and \code{\link{diffSpliceDGE}} are older edgeR functions with a similar purpose, both replaced by this function.
 }
 

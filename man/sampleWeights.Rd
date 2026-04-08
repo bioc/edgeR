@@ -26,8 +26,8 @@ Numeric vector of length \code{ncol(fit)} containing the sample weights.
 }
 \author{Gordon Smyth}
 \seealso{
-This function uses output from \code{\link{glmQLFit}} and is analogous to \code{\link{arrayWeights}} in the limma package.
-The \code{voomWithQualityWeights} and \code{voomLmFit} functions also estimate sample weights for count data.
+This function uses output from \code{\link{glmQLFit}} and is analogous to \code{\link[limma]{arrayWeights}} in the limma package.
+The \code{\link[limma]{voomWithQualityWeights}} and \code{\link{voomLmFit}} functions also estimate sample weights for count data.
 }
 \examples{
 # Sample 2 has higher dispersion and lower weight

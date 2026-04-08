@@ -90,7 +90,7 @@ In that case, the voom weights and the intra-block correlation are each estimate
 Empirical sample quality weights will be estimated if \code{sample.weights=TRUE} or if \code{var.design} or \code{var.group} are non-NULL (Liu et al 2015).
 In that case, \code{voomLmFit} is analogous to running \code{voomWithQualityWeights} followed by \code{lmFit}.
 
-\code{voomLmFit} is usually followed by running \code{\link{eBayes}} on the fitted model object.
+\code{voomLmFit} is usually followed by running \code{\link[limma]{eBayes}} on the fitted model object.
 
 If \code{adaptive.span=TRUE}, then an optimal value for \code{span} is chosen by \code{chooseLowessSpan} with \code{n=nrow(counts)}.
 This behavior become in the default in edgeR 4.7.4.
@@ -135,13 +135,13 @@ Why weight? Modelling sample and observational level variability improves power 
 }
 
 \seealso{
-\code{\link{voom}},
-\code{\link{lmFit}},
-\code{\link{voomWithQualityWeights}},
-\code{\link{duplicateCorrelation}},
-\code{\link{arrayWeights}},
-\code{\link{MArrayLM-class}}
-\code{\link{chooseLowessSpan}}.
+\code{\link[limma]{voom}},
+\code{\link[limma]{lmFit}},
+\code{\link[limma]{voomWithQualityWeights}},
+\code{\link[limma]{duplicateCorrelation}},
+\code{\link[limma]{arrayWeights}},
+\code{\link[limma]{MArrayLM-class}}
+\code{\link[limma]{chooseLowessSpan}}.
 }
 
 \concept{Model fit}

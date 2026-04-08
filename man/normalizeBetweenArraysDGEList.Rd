@@ -7,14 +7,15 @@ Applies microrray-style normalization to a DGEList by modifying the offset matri
 }
 
 \usage{
-normalizeBetweenArrays.DGEList(object, method = "cyclicloess", cyclic.method = "affy", \dots)
+normalizeBetweenArrays.DGEList(object,
+     method = "cyclicloess", cyclic.method = "affy", \dots)
 }
 
 \arguments{
   \item{object}{\code{DGEList} object.}
   \item{method}{character string specifying the normalization method to be used.
   Choices are \code{"none"}, \code{"scale"}, \code{"quantile"} or \code{"cyclicloess"}.}
-  \item{cyclic.method}{character string indicating the variant of \code{normalizeCyclicLoess} to be used if \code{method=="cyclicloess"}, see \code{\link{normalizeCyclicLoess}} for possible values.}
+  \item{cyclic.method}{character string indicating the variant of \code{normalizeCyclicLoess} to be used if \code{method=="cyclicloess"}, see \code{\link[limma]{normalizeCyclicLoess}} for possible values.}
   \item{\dots}{other arguments are passed to \code{normalizeQuantiles} or \code{normalizeCyclicLoess}}
 }
 
@@ -36,7 +37,7 @@ The input \code{object} is returned with an appropriately normalized \code{offse
 \author{Gordon Smyth}
 
 \seealso{
-\code{\link{normalizeBetweenArrays}}.
+\code{\link[limma]{normalizeBetweenArrays}}.
 }
 
 \examples{

@@ -25,7 +25,7 @@ Usually created by \code{exactTest}, \code{glmLRT}, \code{glmTreat} or \code{glm
 }
 
 \details{
-This function is closely analogous to the \code{\link{topTable}} function in the limma package.
+This function is closely analogous to the \code{\link[limma]{topTable}} function in the limma package.
 It accepts a test statistic object created by any of the edgeR functions \code{exactTest}, \code{glmLRT}, \code{glmTreat} or \code{glmQLFTest} and extracts a readable data.frame of the most differentially expressed genes.
 The data.frame collates the annotation and differential expression statistics for the top genes.
 The data.frame is wrapped in a \code{TopTags} output object that records the test statistic used and the multiple testing  adjustment method.

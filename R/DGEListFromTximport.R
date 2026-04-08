@@ -1,36 +1,36 @@
-DGEListFromTximport <- function(txi, samples = NULL, group = NULL, genes = NULL, remove.zeros = FALSE, norm.method = "none")
-# Create a DGEList object from genewise output from tximport().
-# Created 2 Feb 2026. Last modified 3 Feb 2026.
+DGEListFromTximport <- function(txi, samples = NULL, group = NULL, genes = NULL, remove.zeros = FALSE, divide = FALSE)
+# Create DGEList from tximport() output.
+# Created 2 Feb 2026. Last modified 8 Apr 2026.
 {
+#	Check input
+	ExpectedCols <- c("counts","length","countsFromAbundance")
+	k <- hasName(txi, ExpectedCols)
+	if(!all(k))
+		stop("Component(s) ",paste(ExpectedCols[!k],collapse=",")," not found in txi")
+
 #	Count matrix
 	NSamples <- ncol(txi$counts)
 	NGenes <- nrow(txi$counts)
 
 #	Add tx length annotation
 	LTxL <- log(txi$length)
-	AveTxLength <- exp(rowMeans(LTxL))
+	AveLength <- exp(rowMeans(LTxL))
 	MinLLen <- apply(LTxL,1,min)
 	MaxLLen <- apply(LTxL,1,max)
-	RangeTxLength <- exp(MaxLLen - MinLLen)
-	if(!is.null(genes)) {
+	Max2MinLength <- exp(MaxLLen - MinLLen)
+	if(is.null(genes)) {
+		genes <- data.frame(AveLength,Max2MinLength)
+	} else {
 		genes <- as.data.frame(genes)
 		if(!identical(nrow(genes),NGenes)) stop("nrow(genes) is different from nrow(txi$counts)")
-		genes$TxLengthAve <- AveTxLength
-		genes$TxLengthRange <- RangeTxLength
-	} else {
-		genes <- data.frame(AveTxLength,RangeTxLength)
+		genes$AveLength <- AveLength
+		genes$Max2MinLength <- Max2MinLength
 	}
 
-#	Raw library sizes
-	LibSize <- colSums(txi$counts)
-
-#	Normalize library sizes
-	NormFactors <- normLibSizes(txi$counts, method=norm.method)
-
 #	RTA overdispersion
-	if(!is.null(txi$infReps)) {
-#		Accumulate genewise CVs
-		OverDisp <- rep_len(1,NGenes)
+	if(hasName(txi,"infReps")) {
+#		Accumulate genewise overdispersions
+		OverDisp <- rep_len(0,NGenes)
 		DF <- rep_len(0,NGenes)
 		for (j in 1L:NSamples) {
 			Boot <- txi$infReps[[j]]
@@ -59,13 +59,26 @@ DGEListFromTximport <- function(txi, samples = NULL, group = NULL, genes = NULL,
 		genes$Overdispersion <- OverDisp
 	}
 
+#	Divided counts
+	if(divide) {
+		if(hasName(genes,"Overdispersion")) {
+			txi$counts <- txi$counts / genes$Overdispersion
+		} else {
+			divide <- FALSE
+		}
+	}
+
 #	Construct DGEList
-	y <- DGEList(counts=txi$counts,samples=samples,norm.factors=NormFactors,group=group,genes=genes,remove.zeros=FALSE)
+	y <- DGEList(counts=txi$counts,samples=samples,group=group,genes=genes,remove.zeros=FALSE)
+	y$divided.counts <- divide
 
 #	Offset matrix
 	if(identical(txi$countsFromAbundance,"no")) {
+		y$tximport.counts <- "raw"
 		PriorOffset <- LTxL - rowMeans(LTxL)
 		y$offset.prior <- PriorOffset
+	} else {
+		y$tximport.counts <- txi$countsFromAbundance
 	}
 
 	if(remove.zeros) {

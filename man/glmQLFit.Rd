@@ -68,7 +68,7 @@ See Lun et al (2016) or Chen et al (2016) for tutorials describing the use of \c
 Another case study using \code{glmQLFit} and \code{glmQLFTest} is given in Section 4.7 of the edgeR User's Guide.
 
 \code{glmQLFit} is similar to \code{glmFit} except that it also estimates a quasi-dispersion (quasi-dispersion) for each gene.
-It calls the limma function \code{\link{squeezeVar}} to conduct empirical Bayes moderation of the genewise quasi-dispersions.
+It calls the limma function \code{\link[limma]{squeezeVar}} to conduct empirical Bayes moderation of the genewise quasi-dispersions.
 If \code{robust=TRUE}, then the robust hyperparameter estimation features of \code{squeezeVar} are used (Phipson et al, 2016).
 If \code{abundance.trend=TRUE}, then a prior trend is estimated based on the average logCPMs.
 If \code{covariate.trend} is not \code{NULL}, then a prior trend is estimated using the \code{covariate.trend} values as predictors.

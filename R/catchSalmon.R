@@ -1,8 +1,8 @@
 catchSalmon <- function(paths,verbose=TRUE)
-#	Read transcriptwise counts and bootstrap samples from Salmon output
-#	Use bootstrap samples to estimate overdispersion of transcriptwise counts
+#	Read transcriptwise counts and bootstrap samples from Salmon output.
+#	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
 #	Gordon Smyth
-#	Created 1 April 2018. Last modified 19 Nov 2023.
+#	Created 1 April 2018. Last modified 31 Nov 2026.
 {
 	NSamples <- length(paths)
 
@@ -23,7 +23,13 @@ catchSalmon <- function(paths,verbose=TRUE)
 		MetaFile <- file.path(paths[j],"aux_info","meta_info.json")
 		QuantFile <- file.path(paths[j],"quant.sf")
 		BootFile <- file.path(paths[j],"aux_info","bootstrap","bootstraps.gz")
-		if(!file.exists(QuantFile)) stop("quant.sf file not found at specified path")
+		if(!file.exists(QuantFile)) {
+			QuantFile <- dir(paths[j],pattern="^quant.sf",full.names=TRUE)
+			if(length(QuantFile)) QuantFile <- QuantFile[1]
+			if(!file.exists(QuantFile)) {
+				stop("quant.sf file not found at specified path")
+			}
+		}
 
 #		Meta information
 		Meta <- jsonlite::fromJSON(MetaFile)

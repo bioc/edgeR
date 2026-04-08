@@ -41,9 +41,9 @@ Creates a mean-difference plot (aka MA plot) with color coding for highlighted p
   \item{zero.weights}{logical, should spots with zero or negative weights be plotted?}
   \item{prior.count}{the average prior count to be added to each observation. Larger values produce more shrinkage.}
   \item{contrast}{integer specifying which log-fold-change to be plotted in the case of testing multiple contrasts. Only used for the \code{DGELRT} method with multiple contrasts.}
-  \item{adjust.method}{character string passed to \code{\link{decideTests}} specifying p-value adjustment method. Only used when \code{status} is \code{NULL}. See \code{\link{decideTests}} for details.}
-  \item{p.value}{numeric value between 0 and 1 giving the desired size of the test. Only used and passed to \code{\link{decideTests}} when \code{status} is \code{NULL}.}
-  \item{\dots}{other arguments are passed to \code{\link{plotWithHighlights}}.}
+  \item{adjust.method}{character string passed to \code{\link[limma]{decideTests}} specifying p-value adjustment method. Only used when \code{status} is \code{NULL}. See \code{\link[limma]{decideTests}} for details.}
+  \item{p.value}{numeric value between 0 and 1 giving the desired size of the test. Only used and passed to \code{\link[limma]{decideTests}} when \code{status} is \code{NULL}.}
+  \item{\dots}{other arguments are passed to \code{\link[limma]{plotWithHighlights}}.}
 }
 
 \details{
@@ -64,7 +64,7 @@ If \code{object} is a fitted model object, then \code{status} vector is often us
 
 The \code{status} can be included as the component \code{object$genes$Status} instead of being passed as an argument to \code{plotMD}.
 
-See \code{\link{plotWithHighlights}} for how to set colors and graphics parameters for the highlighted and non-highlighted points.
+See \code{\link[limma]{plotWithHighlights}} for how to set colors and graphics parameters for the highlighted and non-highlighted points.
 }
 
 \value{A plot is created on the current graphics device.}
@@ -81,7 +81,7 @@ limma powers differential expression analyses for RNA-sequencing and microarray 
 \seealso{
 \code{plotSmear}
 
-The driver function for \code{plotMD} is \code{\link{plotWithHighlights}}.
+The driver function for \code{plotMD} is \code{\link[limma]{plotWithHighlights}}.
 }
 
 \concept{Model fit}

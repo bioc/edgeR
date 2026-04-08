@@ -3,9 +3,9 @@ UseMethod("calcNormFactors")
 
 calcNormFactors.DGEList <- function(object, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for DGEList objects
-#	Created 2 October 2014.  Last modified 2 June 2020.
+#	Created 2 October 2014.  Last modified 8 Apr 2026.
 {
-	if(!is.null(object$offset)) warning("object contains offsets, which take precedence over library\nsizes and norm factors (and which will not be recomputed).")
+	if(hasName(object,"offset")) warning("object contains offsets, which take precedence over library\nsizes and norm factors (and which will not be recomputed).")
 	object$samples$norm.factors <- calcNormFactors(object=object$counts, lib.size=object$samples$lib.size, method=method, refColumn=refColumn, logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff, p=p)
 	object
 }

@@ -75,7 +75,7 @@ If \code{contrast} is a matrix with multiple columns, then only the first column
 \seealso{
 \code{\link{topTags}} displays results from \code{glmTreat}.
 
-\code{\link{treat}} is the corresponding function in the limma package, designed for use with normally distributed log-expression data rather than for negative binomial counts.
+\code{\link[limma]{treat}} is the corresponding function in the limma package, designed for use with normally distributed log-expression data rather than for negative binomial counts.
 }
 
 \references{
