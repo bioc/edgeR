@@ -32,14 +32,14 @@
 \method{cpm}{SummarizedExperiment}(y, normalized.lib.sizes = TRUE,
        log = FALSE, prior.count = 2, \dots)
 \method{cpm}{DGEGLM}(y, log = FALSE, shrunk = TRUE, \dots)
-\method{cpm}{default}(y, lib.size = NULL, offset=NULL,
+\method{cpm}{default}(y, lib.size = NULL, offset = NULL, offset.prior = NULL,
        log = FALSE, prior.count = 2, \dots)
 \method{rpkm}{DGEList}(y, gene.length = NULL, normalized.lib.sizes = TRUE,
        log = FALSE, prior.count = 2, \dots)
 \method{rpkm}{SummarizedExperiment}(y, gene.length = NULL, normalized.lib.sizes = TRUE,
        log = FALSE, prior.count = 2, \dots)
 \method{rpkm}{DGEGLM}(y, gene.length, log = FALSE, shrunk = TRUE, \dots)
-\method{rpkm}{default}(y, gene.length, lib.size = NULL, offset=NULL,
+\method{rpkm}{default}(y, gene.length, lib.size = NULL, offset = NULL, offset.prior = NULL,
        log = FALSE, prior.count = 2, \dots)
 \method{cpmByGroup}{DGEList}(y, group = NULL, dispersion = NULL, \ldots)
 \method{cpmByGroup}{SummarizedExperiment}(y, group = NULL, dispersion = NULL, \ldots)
@@ -52,34 +52,51 @@
 }
 
 \arguments{ 
-\item{y}{
-  a matrix-like object containing counts.
-  Can be a numeric matrix, a \code{DGEList} object, a \code{SummarizedExperiment} object with a \code{"counts"} assay, or any object that can be coerced to a matrix by \code{as.matrix}.
-  For \code{cpm} and \code{rpkm}, it can also be a limma or edgeR fitted model object (\code{MArrayLM}, \code{DGEGLM}, or \code{DGELRT}).
-}
-\item{normalized.lib.sizes}{logical, use normalized library sizes?}
-\item{lib.size}{library size, defaults to \code{colSums(y)}. Ignored if \code{offset} is specified.}
-\item{offset}{numeric matrix of same size as \code{y}, or a vector of length \code{ncol(y)}, representing library sizes on the log scale. Can also be a scalar for \code{cpmByGroup.default} and \code{rpkmByGroup.default}. If specified, then takes precedence over \code{lib.size}.}
-\item{log}{logical, if \code{TRUE} then \code{log2} values are returned.}
-\item{prior.count}{average count to be added to each observation to avoid taking log of zero. Used only if \code{log=TRUE}.}
-\item{shrunk}{
-  logical, if \code{TRUE} then the usual coefficients from the fitted object will be used, if \code{FALSE} then the unshrunk coefficients will be used.
-}
-\item{gene.length}{vector of length \code{nrow(y)} giving gene length in bases, or the name of the column \code{y$genes} containing the gene lengths.}
-\item{group}{factor giving group membership for columns of \code{y}. Defaults to \code{y$sample$group} for the \code{DGEList} method and to a single level factor for the default method.}
-\item{dispersion}{numeric vector of negative binomial dispersions.}
-\item{weights}{numeric vector or matrix of non-negative quantitative weights.
-Can be a vector of length equal to the number of libraries, or a matrix of the same size as \code{y}.}
-\item{\dots}{other arguments are not used.}
-}
-
-\value{
-A numeric matrix of CPM or RPKM values, on the log2 scale if \code{log=TRUE}.
-\code{cpm} and \code{rpkm} produce matrices of the same size as \code{y}.
-If \code{y} was a data object, then observed values are returned.
-If \code{y} was a fitted model object, then fitted values are returned.
-
-\code{cpmByGroup} and \code{rpkmByGroup} produce matrices with a column for each level of \code{group}.
+  \item{y}{
+    a matrix-like object containing counts.
+    Can be a numeric matrix, a \code{DGEList} object, a \code{SummarizedExperiment} object with a \code{"counts"} assay, or any object that can be coerced to a matrix by \code{as.matrix}.
+    For \code{cpm} and \code{rpkm}, it can also be a limma or edgeR fitted model object (\code{MArrayLM}, \code{DGEGLM}, or \code{DGELRT}).
+  }
+  \item{normalized.lib.sizes}{
+    logical, use normalized library sizes?
+  }
+  \item{lib.size}{
+    library size, defaults to \code{colSums(y)}. Ignored if \code{offset} is specified.
+  }
+  \item{offset}{
+    alternative name for \code{offset.prior} for compatibility with older code.
+  }
+  \item{offset.prior}{
+    offset matrix of same dimensions as \code{y} with row means equal to zero, containing observation-specific normalization factors for the library sizes on the log-scale.
+    Used to implement observation-specific normalization strategies based on effective transcript lengths or GC content.
+    This type of normalization is independent of library size normalization based on count distributions as done by \code{normLibSizes()}, and the two are treated cumulatively in edgeR.
+  }
+  \item{log}{
+    logical, if \code{TRUE} then \code{log2} values are returned.
+  }
+  \item{prior.count}{
+    average count to be added to each observation to avoid taking log of zero. Used only if \code{log=TRUE}.
+  }
+  \item{shrunk}{
+    logical, when to use shrunk coefficients.
+    If \code{TRUE} then the usual coefficients from the fitted object will be used.
+    If \code{FALSE} then the unshrunk coefficients will be used.
+  }
+  \item{gene.length}{
+    vector of length \code{nrow(y)} giving gene length in bases, or the name of the column \code{y$genes} containing the gene lengths.
+  }
+  \item{group}{
+    factor giving group membership for columns of \code{y}.
+    Defaults to \code{y$sample$group} for the \code{DGEList} method and to a single level factor for the default method.
+  }
+  \item{dispersion}{
+    numeric vector of negative binomial dispersions.
+  }
+  \item{weights}{
+    numeric vector or matrix of non-negative quantitative weights.
+    Can be a vector of length equal to the number of libraries, or a matrix of the same size as \code{y}.
+  }
+  \item{\dots}{other arguments are not currently used.}
 }
 
 \details{
@@ -96,11 +113,23 @@ If \code{shrunk=TRUE}, then the CPM or RPKM values will reflect the \code{prior.
 If \code{shrunk=FALSE}, then the CPM or RPKM values will be computed with \code{prior.count=0}.
 Note that the latter could result in taking the log of near-zero values if \code{log=TRUE}.
 
+If a prior offset matrix is supplied, either as an argument or as a component of the DGEList, then obervation-specific effective library sizes will be obtained by adding \code{offset.prior} to the log library sizes.
+If an ordinary offset matrix is supplied (\code{offset}), either as an argument or in the DGEList, then it will be row-mean corrected and treated as a prior offset matrix.
+
 \code{cpmByGroup} and \code{rpkmByGroup} compute group average values on the unlogged scale.
 }
 
 \note{
 \code{aveLogCPM(y)}, \code{rowMeans(cpm(y,log=TRUE))} and \code{log2(rowMeans(cpm(y))} all give slightly different results.
+}
+
+\value{
+A numeric matrix of CPM or RPKM values, on the log2 scale if \code{log=TRUE}.
+\code{cpm} and \code{rpkm} produce matrices of the same size as \code{y}.
+If \code{y} was a data object, then observed values are returned.
+If \code{y} was a fitted model object, then fitted values are returned.
+
+\code{cpmByGroup} and \code{rpkmByGroup} produce matrices with a column for each level of \code{group}.
 }
 
 \author{Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun}

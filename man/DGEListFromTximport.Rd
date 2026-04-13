@@ -28,9 +28,10 @@ DGEListFromTximeta(txm, samples = NULL, group = NULL,
 }
 
 \details{
-The functions \code{DGEListFromTximport} and \code{DGEListFromTximeta} import the output \code{txi} from the \code{tximport::tximport} and \code{tximeta::tximeta} functions, respectively, to the edgeR package.
-In most use cases, \code{tximport} and \code{tximeta} will have been run with \code{txOut=FALSE} to aggregate counts at the level of genes, and the transcript length matrix, \code{txi$length} for \code{tximport} and \code{assay(txi,"length")} for \code{tximeta}, will contain the average transcript length for each gene in each sample.
-Alternatively, \code{txi} will contain results at the original transcript level, if \code{tximport} and \code{tximeta} were run with \code{txOut=TRUE}, in which case the transcript length matrix will contain effective transcript lengths for the individual transcripts in each sample. 
+The functions \code{DGEListFromTximport} and \code{DGEListFromTximeta} import output from the \code{tximport::tximport} and \code{tximeta::tximeta} functions, respectively, to the edgeR package.
+In many cases, \code{tximport} and \code{tximeta} will have been run with \code{txOut=FALSE} to aggregate counts at the gene level.
+In that case, the length matrix (\code{txi$length} for \code{tximport} and \code{assay(txi,"length")} for \code{tximeta}) will contain the average transcript length for each gene in each sample.
+Alternatively, \code{txi} or \code{txm} will contain results at the original transcript level, if \code{tximport} and \code{tximeta} were run with \code{txOut=TRUE}, in which case the length matrix will contain effective transcript lengths for the individual transcripts in each sample. 
 
 The count matrix, \code{txi$counts} for \code{tximport} and \code{assay(txi,"counts")} for \code{tximeta}, becomes the count matrix for the DGEList object.
 If either \code{tximport} or \code{tximeta} were run with the option \code{countsFromAbundance="no"}, then a prior offset matrix is formed from the average transcript lengths found in the respective transcript length matrix.

@@ -4,7 +4,7 @@ UseMethod("rpkm")
 rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	RPKM for a DGEList.
 #	Gordon Smyth.
-#	Created 18 March 2013. Last modified 22 Oct 2020.
+#	Created 18 March 2013. Last modified 13 Apr 2026.
 {
 #	Try to find gene lengths
 #	If column name containing gene lengths isn't specified,
@@ -15,6 +15,7 @@ rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FAL
 	} else {
 		if(is.null(gene.length)) gene.length <- y$genes$Length
 		if(is.null(gene.length)) gene.length <- y$genes$length
+		if(is.null(gene.length)) gene.length <- y$genes$AveLength
 		if(is.null(gene.length)) {
 			j <- grep("length",tolower(names(y$genes)))
 			if(length(j)==1)
@@ -32,7 +33,7 @@ rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FAL
 		if(normalized.lib.sizes) lib.size <- lib.size*y$samples$norm.factors
 	}
 
-	rpkm.default(y=y$counts, gene.length=gene.length, lib.size=lib.size, offset=y$offset, log=log, prior.count=prior.count, ...)
+	rpkm.default(y=y$counts, gene.length=gene.length, lib.size=lib.size, offset=y[["offset"]], offset.prior=y[["offset.prior"]], log=log, prior.count=prior.count, ...)
 }
 
 rpkm.SummarizedExperiment <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
@@ -74,12 +75,12 @@ rpkm.DGELRT <- rpkm.DGEGLM <- rpkm.MArrayLM <- function(y, gene.length, log=FALS
 		y/gene.length.kb
 }
 
-rpkm.default <- function(y, gene.length, lib.size=NULL, offset=NULL, log=FALSE, prior.count=2, ...)
+rpkm.default <- function(y, gene.length, lib.size=NULL, offset=NULL, offset.prior=NULL, log=FALSE, prior.count=2, ...)
 #	Reads per kilobase of gene length per million reads of sequencing (RPKM)
 #	Gordon Smyth
-#	Created 1 November 2012. Last modified 14 Oct 2020.
+#	Created 1 November 2012. Last modified 12 Apr 2026.
 {
-	y <- cpm.default(y=y, lib.size=lib.size, offset=offset, log=log, prior.count=prior.count, ...)
+	y <- cpm.default(y=y, lib.size=lib.size, offset=offset, offset.prior=offset.prior, log=log, prior.count=prior.count, ...)
 	gene.length.kb <- gene.length/1000
 	if(log)
 		y-log2(gene.length.kb)
