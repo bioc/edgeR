@@ -1,14 +1,14 @@
 voomLmFit <- function(
 	counts, design=NULL, block=NULL, prior.weights=NULL,
 	sample.weights=FALSE, var.design=NULL, var.group=NULL, prior.n=10,
-	lib.size=NULL, normalize.method="none",
+	lib.size=NULL, offset=NULL, offset.prior=NULL, normalize.method="none",
 	span=0.5, adaptive.span=TRUE, plot=FALSE, save.plot=FALSE, keep.EList=TRUE
 )
 #	limma+lmFit pipeline for counts taking into account of structural zeros
 #	Creates an MArrayLM object for entry to eBayes() etc in the limma pipeline.
 #	Depends on edgeR as well as limma
 #	Gordon Smyth
-#	Created 21 Jan 2020.  Last modified 31 Aug 2025.
+#	Created 21 Jan 2020.  Last modified 13 Apr 2026.
 {
 	Block <- !is.null(block)
 	PriorWeights <- !is.null(prior.weights)
@@ -27,6 +27,8 @@ voomLmFit <- function(
 		out$targets <- counts$samples
 		if(is.null(design) && diff(range(as.numeric(counts$sample$group)))>0) design <- model.matrix(~group,data=counts$samples)
 		if(is.null(lib.size)) lib.size <- getNormLibSizes(counts)
+		if(is.null(offset)) offset <- counts[["offset"]]
+		if(is.null(offset.prior)) offset.prior <- counts[["offset.prior"]]
 		counts <- counts$counts
 	} else {
 		if(is(counts,"eSet")) {
@@ -61,6 +63,22 @@ voomLmFit <- function(
 
 #	Check lib.size
 	if(is.null(lib.size)) lib.size <- colSums(counts)
+	lib.size.matrix <- matrix(lib.size,nrow(counts),ncol(counts),byrow=TRUE)
+
+#	Combine library sizes with offsets
+	if(!is.null(offset)) {
+		if(is.null(offset.prior)) {
+			if(!identical(dim(counts),dim(offset))) stop("counts and offset must have equal dimensions.")
+			offset.prior <- offset - rowMeans(offset)
+		} else {
+			message("Ignoring offset in favor of offset.prior. Should not set both.")
+			offset <- NULL
+		}
+	}
+	if(!is.null(offset.prior)) {
+		if(!identical(dim(counts),dim(offset.prior))) stop("counts and offset.prior must have equal dimensions.")
+		lib.size.matrix <- exp(log(lib.size.matrix)+offset.prior)
+	}
 
 #	Expand prior.weights if necessary
 	if(!is.null(prior.weights)) prior.weights <- asMatrixWeights(prior.weights,dim(counts))
@@ -69,7 +87,7 @@ voomLmFit <- function(
 	if(adaptive.span) span <- chooseLowessSpan(nrow(counts), small.n=50, min.span=0.3, power=1/3)
 
 #	log2-counts-per-million
-	y <- t(log2(t(counts+0.5)/(lib.size+1)*1e6))
+	y <- log2((counts+0.5)/(lib.size.matrix+1)*1e6)
 
 #	Microarray-style normalization
 	y <- normalizeBetweenArrays(y,method=normalize.method)
@@ -150,7 +168,7 @@ voomLmFit <- function(
 		fitted.values <- fit$coefficients %*% t(fit$design)
 	}
 	fitted.cpm <- 2^fitted.values
-	fitted.count <- 1e-6 * t(t(fitted.cpm)*(lib.size+1))
+	fitted.count <- 1e-6 * fitted.cpm * (lib.size.matrix+1)
 	fitted.logcount <- log2(fitted.count)
 
 #	Apply trend to individual observations to get voom weights
@@ -227,7 +245,7 @@ voomLmFit <- function(
 			fitted.values <- fit$coefficients %*% t(fit$design)
 		}
 		fitted.cpm <- 2^fitted.values
-		fitted.count <- 1e-6 * t(t(fitted.cpm)*(lib.size+1))
+		fitted.count <- 1e-6 * fitted.cpm * (lib.size.matrix+1)
 		fitted.logcount <- log2(fitted.count)
 		w <- 1/f(fitted.logcount)^4
 		dim(w) <- dim(fitted.logcount)

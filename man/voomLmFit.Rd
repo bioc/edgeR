@@ -8,7 +8,7 @@ Transform count data to log2-counts per million (logCPM), estimate voom precisio
 \usage{
 voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
      sample.weights = FALSE, var.design = NULL, var.group = NULL, prior.n = 10,
-     lib.size = NULL, normalize.method = "none",
+     lib.size = NULL, offset = NULL, offset.prior = NULL, normalize.method = "none",
      span = 0.5, adaptive.span = TRUE, plot = FALSE, save.plot = FALSE, keep.EList = TRUE)
 }
 \arguments{
@@ -49,6 +49,13 @@ voomLmFit(counts, design = NULL, block = NULL, prior.weights = NULL,
   \item{lib.size}{
     numeric vector containing total library sizes for each sample.
     Defaults to the normalized (effective) library sizes in \code{counts} if \code{counts} is a \code{DGEList} or to the columnwise count totals if \code{counts} is a matrix.
+  }
+  \item{offset}{
+    alternative name for \code{offset.prior} for compatibility with older code.
+   }
+  \item{offset.prior}{
+    offset matrix of same dimensions as \code{counts} with row means equal to zero.
+    Used to modify the log effective library size for each individual count, in order to implement observation-wise normalization schemes.
   }
   \item{normalize.method}{
     the microarray-style normalization method to be applied to the logCPM values (if any).
@@ -112,10 +119,11 @@ If \code{keep.EList=TRUE} then the output object includes component \code{EList}
 \author{Gordon Smyth}
 
 \references{
+
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
-\emph{bioRxiv}
-\doi{10.1101/2025.04.07.647659}.
+\emph{Nucleic Acids Research} 53(22), gkaf1305.
+\doi{10.1093/nar/gkaf1305}
 
 Law CW, Chen Y, Shi W, Smyth GK (2014).
 Voom: precision weights unlock linear model analysis tools for RNA-seq read counts.
