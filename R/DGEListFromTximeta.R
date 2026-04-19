@@ -1,7 +1,7 @@
 DGEListFromTximeta <- function(txm, samples = NULL, group = NULL, remove.zeros = FALSE, divide = FALSE)
 # Create DGEList from tximeta() output.
 # Pedro Baldoni and Gordon Smyth
-# Created 5 Mar 2026. Last modified 8 Apr 2026.
+# Created 5 Mar 2026. Last modified 17 Apr 2026.
 {
 	if(!requireNamespace("SummarizedExperiment", quietly = TRUE))
 		stop("SummarizedExperiment package required but is not installed (or can't be loaded)")
@@ -32,7 +32,7 @@ DGEListFromTximeta <- function(txm, samples = NULL, group = NULL, remove.zeros =
 	} else {
 		genes <- as.data.frame(SummarizedExperiment::rowData(txm))
 	}
-	genes$gene_id <- as.character(genes$gene_id)
+	if(hasName(genes,'gene_id')) genes$gene_id <- as.character(genes$gene_id)
 	
 #	Add tx length annotation
 	if(!("length" %in% SummarizedExperiment::assayNames(txm)))
