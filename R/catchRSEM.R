@@ -1,8 +1,8 @@
-catchRSEM <- function(files=NULL,path=".",ngibbs=100,verbose=TRUE)
+catchRSEM <- function(files=NULL,path=".",ngibbs=100,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 # Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
 # Use Gibbs samples to estimate overdispersion of transcriptwise counts.
 # Pedro Baldoni and Gordon Smyth
-# Created 24 April 2024. Last modified 5 July 2025.
+# Created 24 April 2024. Last modified 21 Apr 2026.
 {
 #	Check files
 	if(is.null(files)) {
@@ -16,6 +16,9 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,verbose=TRUE)
 
 #	Check ngibbs
 	ngibbs <- rep_len(ngibbs,NSamples)
+	
+#	Initialize vector of inferential sample types
+	ResampleType <- rep_len("gibbs",NSamples)
 
 #	Check for readr package  
 	OK <- requireNamespace("readr",quietly=TRUE)
@@ -33,17 +36,19 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,verbose=TRUE)
 		if(j == 1L) {
 			Quant1 <- suppressWarnings(readr::read_tsv(QuantFile,col_types="c_ddd___dd___",progress=FALSE))
 			NTx <- nrow(Quant1)
-			Counts <- matrix(0,NTx,NSamples)
+			Counts <- Length <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NTx)
 			OverDisp <- rep_len(0,NTx)
 			if(is.null(Quant1$expected_count)) stop("File doesn't contain expected_count column", call.=FALSE)
 			Counts[,1L] <- Quant1$expected_count
+			Length[,1L] <- Quant1$effective_length
 			M <- Quant1$posterior_mean_count
 			S <- Quant1$posterior_standard_deviation_of_count
 		} else {
-			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="____d___dd___",progress=FALSE))
+			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="___dd___dd___",progress=FALSE))
 			if(is.null(Quant$expected_count)) stop("File doesn't contain expected_count column", call.=FALSE)
 			Counts[,j] <- Quant$expected_count
+			Length[,j] <- Quant1$effective_length
 			M <- Quant$posterior_mean_count
 			S <- Quant$posterior_standard_deviation_of_count
 		}
@@ -61,6 +66,14 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,verbose=TRUE)
 		}
 	}
 	
+# Compute length statistics
+	LTxL <- log(Length)
+	LTxL[is.infinite(LTxL)] <- log(1e-8)
+	AveTxLength <- exp(rowMeans(LTxL))
+	MinLLen <- apply(LTxL, 1, min)
+	MaxLLen <- apply(LTxL, 1, max)
+	RangeTxLength <- exp(MaxLLen - MinLLen)
+
 #	Estimate overdispersion for each transcript
 	i <- (DF > 0L)
 	if(sum(i) > 0L) {
@@ -83,10 +96,24 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,verbose=TRUE)
 	Quant1 <- as.data.frame(Quant1,stringsAsFactors=FALSE)
 	dimnames(Counts) <- list(Quant1$transcript_id,SampleNames)
 	row.names(Quant1) <- Quant1$transcript_id
-	Quant1$transcript_id <- Quant1$expected_count <- NULL
+	Quant1$transcript_id <- Quant1$effective_length <- Quant1$expected_count <- NULL
 	Quant1$posterior_mean_count <- Quant1$posterior_standard_deviation_of_count<- NULL
-	colnames(Quant1) <- c("Length","EffectiveLength")
+	colnames(Quant1) <- c("Length")
+	Quant1$AveLength <- AveTxLength
+	Quant1$Max2MinLength <- RangeTxLength
 	Quant1$Overdispersion <- OverDisp
+
+#	Divided counts
+	if(divide) Counts <- Counts / Quant1$Overdispersion
 	
-	list(counts=Counts,annotation=Quant1,overdispersion.prior=OverDispPrior)
+	if(DGEList) {
+	  y  <- DGEList(count=Counts,genes=Quant1)
+	  y$overdispersion.prior <- OverDispPrior
+	  y$resample.type <- ResampleType
+	  y$divided.counts <- divide
+	} else {
+	  y <- list(counts=Counts,annotation=Quant1,overdispersion.prior=OverDispPrior,resample.type=ResampleType,divided.counts=divide)
+	}
+	
+	y
 }

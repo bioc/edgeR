@@ -40,7 +40,12 @@ If \code{countsFromAbundance} has been set to any other value, then the counts h
 This implements the "bias corrected counts without an offset" method described by the tximport documentation.
 
 If inferential replicates (bootstrap or Gibbs resampling) exist in the \code{txi} or \code{txm} data objects then an read-assignment-ambiguity (RAA) overdispersion is estimated for each row of data, using the approach described by Baldoni et al (2024a).
-If \code{divid=TRUE}, then divided counts will be formed by dividing the original counts by the RAA overdispersions.
+If \code{divide=TRUE}, then divided counts will be formed by dividing the original counts by the RAA overdispersions.
+
+Note that transcript level counts from various quantification tools can also be read directly by the native edgeR functions
+\code{\link{catchSalmon}}, \code{\link{catchKallisto}}, \code{\link{catchRSEM}}, or \code{\link{catchOarfish}}, without the need for \code{tximport} as an intermediary, and these will generally give the same results as \code{DGEListFromTximport} at the transcript level.
+In the case of RSEM, using \code{catchRSEM} is preferable, because RSEM does not output inference replicates but \code{catchRSEM} can nevertheless estimate the assignment over-dispersion from the inferential replicate means and variances.
+At the gene level, \code{tximport} and \code{DGEListFromTximport} implement transcript length normalization, which the direct edgeR functions do not.
 }
 
 \value{
@@ -74,7 +79,7 @@ Dividing out quantification uncertainty enables assessment of differential trans
 }
 
 \seealso{
-\code{\link{catchSalmon}}, \code{\link[edgeR:DGEList-class]{DGEList-class}}.
+\code{\link{catchSalmon}}, \code{\link{catchKallisto}}, \code{\link{catchRSEM}}, \code{\link{catchOarfish}}, \code{\link[edgeR:DGEList-class]{DGEList-class}}.
 
 The input objects \code{txi} or \code{txm} are created by either \code{tximport} or \code{tximeta} in the tximport and tximeta packages, respectively.
 }

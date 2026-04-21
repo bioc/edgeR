@@ -1,8 +1,8 @@
-catchOarfish <- function(prefixes=NULL,path=".",verbose=TRUE)
+catchOarfish <- function(prefixes=NULL,path=".",DGEList=FALSE,divide=FALSE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Oarfish output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
-#	Gordon Smyth
-#	Created 4 July 2025. Last modified 2 Mar 2026.
+#	Gordon Smyth and Pedro Baldoni
+#	Created 4 July 2025. Last modified 21 Apr 2026.
 {
 #	Check prefixes
 	if(is.null(prefixes)) {
@@ -51,7 +51,7 @@ catchOarfish <- function(prefixes=NULL,path=".",verbose=TRUE)
 			DF <- rep_len(0L,NTx)
 			OverDisp <- rep_len(0,NTx)
 			Counts[,1L] <- Quant$num_reads
-			Ann <- data.frame(len=Quant$len)
+			Ann <- data.frame(Length=Quant$len)
 			row.names(Ann) <- Quant$tname
 		} else {
 			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="__d",progress=FALSE))
@@ -88,6 +88,19 @@ catchOarfish <- function(prefixes=NULL,path=".",verbose=TRUE)
 #	Prepare output
 	dimnames(Counts) <- list(row.names(Ann),prefixes)
 	Ann$Overdispersion <- OverDisp
+	
+	#	Divided counts
+	if(divide) Counts <- Counts / Ann$Overdispersion
+	
+	if(DGEList) {
+	  y  <- DGEList(count=Counts,genes=Ann)
+	  y$overdispersion.prior <- OverDispPrior
+	  y$resample.type <- ResampleType
+	  y$divided.counts <- divide
+	} else {
+	  y <- list(counts=Counts,annotation=Ann,overdispersion.prior=OverDispPrior,resample.type=ResampleType,divided.counts=divide)
+	}
+	
+	y
 
-	list(counts=Counts,annotation=Ann,overdispersion.prior=OverDispPrior,resample.type=ResampleType)
 }

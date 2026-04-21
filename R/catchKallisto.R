@@ -1,14 +1,17 @@
-catchKallisto <- function(paths,verbose=TRUE)
+catchKallisto <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
-#	Gordon Smyth
-#	Created 2 April 2018. Last modified 7 Aug 2019.
+#	Gordon Smyth and Pedro Baldoni
+#	Created 2 April 2018. Last modified 21 Apr 2026.
 {
 	NSamples <- length(paths)
 
 #	Use rhdf5 package for reading
 	suppressPackageStartupMessages(OK <- requireNamespace("rhdf5",quietly=TRUE))
 	if(!OK) stop("rhdf5 package required but is not installed (or can't be loaded)")
+	
+#	Initialize vector of inferential sample types
+	ResampleType <- rep_len("bootstrap",NSamples)
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {
@@ -27,11 +30,12 @@ catchKallisto <- function(paths,verbose=TRUE)
 
 #		Store counts
 		if(j == 1L) {
-			Counts <- matrix(0,NTx,NSamples)
+			Counts <- Length <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NTx)
 			OverDisp <- rep_len(0,NTx)
 		}
 		Counts[,j] <- h5$est_counts
+		Length[,j] <- aux$eff_lengths
 
 #		Bootstraps
 		if(NBoot > 0L) Boot <- do.call(cbind,h5$bootstrap)
@@ -47,6 +51,13 @@ catchKallisto <- function(paths,verbose=TRUE)
 			DF[i] <- DF[i]+NBoot-1L
 		}
 	}
+	
+# Compute length statistics
+	LTxL <- log(Length)
+	AveTxLength <- exp(rowMeans(LTxL))
+	MinLLen <- apply(LTxL, 1, min)
+	MaxLLen <- apply(LTxL, 1, max)
+	RangeTxLength <- exp(MaxLLen - MinLLen)
 
 #	Estimate overdispersion for each transcript
 	i <- (DF > 0L)
@@ -68,11 +79,25 @@ catchKallisto <- function(paths,verbose=TRUE)
 #	Prepare output
 	Ann <- data.frame(
 	    Length=as.integer(aux$lengths),
-	    EffectiveLength=aux$eff_lengths,
+	    AveTxLength=AveTxLength,
+	    Max2MinLength=RangeTxLength,
 	    Overdispersion=OverDisp,
 	    row.names=aux$ids,
 	    stringsAsFactors=FALSE)
+	
 	dimnames(Counts) <- list(aux$ids,paths)
-
-	list(counts=Counts,annotation=Ann,overdispersion.prior=OverDispPrior)
+	
+#	Divided counts
+	if(divide) Counts <- Counts / Ann$Overdispersion
+	
+	if(DGEList) {
+	  y  <- DGEList(count=Counts,genes=Ann)
+	  y$overdispersion.prior <- OverDispPrior
+	  y$resample.type <- ResampleType
+	  y$divided.counts <- divide
+	} else {
+	  y <- list(counts=Counts,annotation=Ann,overdispersion.prior=OverDispPrior,resample.type=ResampleType,divided.counts=divide)
+	}
+	
+	y
 }

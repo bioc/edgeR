@@ -1,8 +1,8 @@
-catchSalmon <- function(paths,verbose=TRUE)
+catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
-#	Gordon Smyth
-#	Created 1 April 2018. Last modified 31 Nov 2026.
+#	Gordon Smyth and Pedro Baldoni
+#	Created 1 April 2018. Last modified 20 Apr 2026.
 {
 	NSamples <- length(paths)
 
@@ -42,16 +42,18 @@ catchSalmon <- function(paths,verbose=TRUE)
 		if(is.null(ResampleType)) Type <- "bootstrap" else ResampleType[j] <- Type
 		if(verbose) cat(NTx,"transcripts,",NBoot,Type,"samples\n")
 
-#		Read counts
+#		Read counts and lengths
 		if(j == 1L) {
-			Counts <- matrix(0,NTx,NSamples)
+			Counts <- Length <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NTx)
 			OverDisp <- rep_len(0,NTx)
 			Quant1 <- suppressWarnings(readr::read_tsv(QuantFile,col_types="cdd_d",progress=FALSE))
 			Counts[,1L] <- Quant1$NumReads	
+			Length[,1L] <- Quant1$EffectiveLength
 		} else {
-			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="____d",progress=FALSE))
+			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="__d_d",progress=FALSE))
 			Counts[,j] <- Quant$NumReads
+			Length[,j] <- Quant$EffectiveLength
 		}
 
 #		Bootstrap samples
@@ -66,6 +68,13 @@ catchSalmon <- function(paths,verbose=TRUE)
 			DF[i] <- DF[i]+NBoot-1L
 		}
 	}
+	
+# Compute length statistics
+	LTxL <- log(Length)
+	AveTxLength <- exp(rowMeans(LTxL))
+	MinLLen <- apply(LTxL, 1, min)
+	MaxLLen <- apply(LTxL, 1, max)
+	RangeTxLength <- exp(MaxLLen - MinLLen)
 
 #	Estimate overdispersion for each transcript
 	i <- (DF > 0L)
@@ -88,9 +97,22 @@ catchSalmon <- function(paths,verbose=TRUE)
 	Quant1 <- as.data.frame(Quant1,stringsAsFactors=FALSE)
 	dimnames(Counts) <- list(Quant1$Name,paths)
 	row.names(Quant1) <- Quant1$Name
-	Quant1$Name <- NULL
-	Quant1$TPM <- Quant1$NumReads <- NULL
+	Quant1$Name <- Quant1$EffectiveLength <- Quant1$NumReads <- NULL
+	Quant1$AveLength <- AveTxLength
+	Quant1$Max2MinLength <- RangeTxLength
 	Quant1$Overdispersion <- OverDisp
 
-	list(counts=Counts,annotation=Quant1,overdispersion.prior=OverDispPrior,resample.type=ResampleType)
+#	Divided counts
+	if(divide) Counts <- Counts / Quant1$Overdispersion
+
+	if(DGEList) {
+	  y  <- DGEList(count=Counts,genes=Quant1)
+	  y$overdispersion.prior <- OverDispPrior
+	  y$resample.type <- ResampleType
+	  y$divided.counts <- divide
+	} else {
+	  y <- list(counts=Counts,annotation=Quant1,overdispersion.prior=OverDispPrior,resample.type=ResampleType,divided.counts=divide)
+	}
+	
+	y
 }
