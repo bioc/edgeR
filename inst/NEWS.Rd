@@ -3,37 +3,22 @@
 \encoding{UTF-8}
 
 
-\section{version 4.9.4 (2026-03-02)}{\itemize{
+\section{version 4.10.0 (2026-04-25)}{\itemize{
 
 \item
 catchOarfish() now uses nanoparquet::read_parquet() instead of arrow::read_parquet().
-}}
-
-
-\section{version 4.9.3 (2026-03-01)}{\itemize{
 
 \item
-New function DGEListFromTximport().
-}}
+New function DGEListFromTximport() to assemble a \code{DGEList} object from the list object created by \code{tximport::tximport}.
 
-
-\section{version 4.9.2 (2025-12-23)}{\itemize{
+\item
+New function DGEListFromTximeta() to assemble a \code{DGEList} object from the list object created by \code{tximeta::tximeta}.
 
 \item
 glmQLFit() with `legacy=FALSE` now caps any preset dispersions to be <= 4. Previously, large preset dispersions could lead to a segmentation error.
 
 \item
 glmQLFit() with `legacy=FALSE` no longer automatically estimates the NB dispersion from trended values found in the DGEList object, if present. The results will now be the same whether the DGEList contains dispersion estimates or not.
-
-\item
-Updates to intro.Rmd.
-
-\item
-Minor example code revision for sampleWeights.Rd.
-}}
-
-
-\section{version 4.9.1 (2025-12-07)}{\itemize{
 
 \item
 New function sampleWeights() to estimate sample weights from a matrix of adjusted unit deviances.
