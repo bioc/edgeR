@@ -1,7 +1,7 @@
-featureCounts2DGEList <- function(x)
+featureCounts2DGEList <- function(x, verbose=TRUE)
 #	Convert featureCounts output to DGEList
 #	Gordon Smyth
-#	Created 7 Jan 2021. Last modified 26 Jan 2021.
+#	Created 7 Jan 2021. Last modified 23 May 2026.
 {
 #	Check for featureCounts output
 	if(!is.list(x) || !all(c("counts","annotation","targets","stat") %in% names(x)))
@@ -103,15 +103,17 @@ featureCounts2DGEList <- function(x)
 #	JGenes$Exon <- rep_len(0L,nrow(JGenes))
 
 	JCounts <- x$counts_junction
-    JCounts <- JCounts[!is.na(JCounts$PrimaryGene),]
-    JGenes <- JCounts[,c("PrimaryGene","Site1_chr","Site1_location","Site2_location","Site1_strand")]
+	JunctionsWithAssignableGene <- which(!is.na(JCounts$Gene_SP1) & !is.na(JCounts$Gene_SP2) & (JCounts$Gene_SP1==JCounts$Gene_SP2))
+	if(verbose) message(length(JunctionsWithAssignableGene)," out of ",nrow(JCounts)," junctions can be assigned to a gene.")
+    JCounts <- JCounts[JunctionsWithAssignableGene,]
+    JGenes <- JCounts[,c("Gene_SP1","Chr_SP1","Location_SP1","Location_SP2","Strand_SP1")]
     names(JGenes) <- c("GeneID","Chr","Start","End","Strand")
 	JGenes$GeneID <- as.character(JGenes$GeneID)
 	JGenes$Start <- as.integer(JGenes$Start)
 	JGenes$End <- as.integer(JGenes$End)
 	JGenes$Strand <- as.character(JGenes$Strand)
     JGenes$Length <- 1L
-    JCounts <- as.matrix(JCounts[,-seq_len(8)])
+    JCounts <- as.matrix(JCounts[,-seq_len(14)])
     o <- order(JGenes$GeneID,JGenes$Chr,JGenes$Start)
     JCounts <- JCounts[o,]
     JGenes <- JGenes[o,]
