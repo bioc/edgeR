@@ -19,7 +19,6 @@ catchRSEM(files = NULL, path = ".", ngibbs = 100, DGEList = FALSE, divide = FALS
 \item{paths}{character vector giving paths to the sample-specific directories created by a kallisto or Salmon. Each entry corresponds to one RNA-seq sample.}
 \item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
 \item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
-\item{gencode}{logical. If \code{TRUE}, and Gencode-style transcript names are detected, then the names will be split into separate annotation columns.}
 \item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
 \item{prefixes}{character vector giving the sample-specific file prefixes created by Oarfish. Each entry corresponds to one RNA-seq sample. Can contain a directory separator. By default, will read all files with names ending in \code{.quant}, \code{.infreps.pq} and \code{.meta_info.json} in the \code{path} directory.}
 \item{path}{directory path to find files in.}
@@ -52,6 +51,8 @@ To assess differential transcript expression, the transcript counts can be divid
 The edgeR quasi pipeline has been found to perform well with the divided counts (Baldoni et al 2024ab).
 The divided-counts behave much like negative binomial counts and show the same mean-variance trends as for gene-level RNA-seq counts.
 While bootstrap and Gibbs resamples both perform well, Baldoni et al (2024b) show that Gibbs resamples are computationally faster than bootstrap resamples and give slightly better performance in the downstream differential expression analyses.
+
+All the functions will detect Gencode-style transcript names, if present, which will be unpacked into separate annotation columns using \code{splitGencodeTxNames}.
 }
 
 \value{
