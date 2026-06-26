@@ -2,7 +2,7 @@ catchKallisto <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Gordon Smyth and Pedro Baldoni
-#	Created 2 April 2018. Last modified 21 Apr 2026.
+#	Created 2 April 2018. Last modified 26 Jun 2026.
 {
 	NSamples <- length(paths)
 
@@ -84,9 +84,17 @@ catchKallisto <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 	    Overdispersion=OverDisp,
 	    row.names=aux$ids,
 	    stringsAsFactors=FALSE)
-	
 	dimnames(Counts) <- list(aux$ids,paths)
-	
+
+#	Detect and unpack Gencode tx names
+	x <- row.names(Ann)[1]
+	gencode <- (nchar(x)-nchar(gsub("|","",x,fixed=TRUE)) >= 8L)
+	if(gencode) {
+		A <- splitGencodeTxNames(row.names(Ann))
+		Ann <- data.frame(Ann,A[,-1])
+		row.names(Ann) <- row.names(Counts) <- A[,1]
+	}
+
 #	Divided counts
 	if(divide) Counts <- Counts / Ann$Overdispersion
 	

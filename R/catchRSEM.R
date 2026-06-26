@@ -2,7 +2,7 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,DGEList=FALSE,divide=FALSE,
 # Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
 # Use Gibbs samples to estimate overdispersion of transcriptwise counts.
 # Pedro Baldoni and Gordon Smyth
-# Created 24 April 2024. Last modified 21 Apr 2026.
+# Created 24 April 2024. Last modified 26 Jun 2026.
 {
 #	Check files
 	if(is.null(files)) {
@@ -102,6 +102,15 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,DGEList=FALSE,divide=FALSE,
 	Quant1$AveLength <- AveTxLength
 	Quant1$Max2MinLength <- RangeTxLength
 	Quant1$Overdispersion <- OverDisp
+
+#	Detect and unpack Gencode tx names
+	x <- row.names(Quant1)[1]
+	gencode <- (nchar(x)-nchar(gsub("|","",x,fixed=TRUE)) >= 8L)
+	if(gencode) {
+		A <- splitGencodeTxNames(row.names(Quant1))
+		Quant1 <- data.frame(Quant1,A[,-1])
+		row.names(Quant1) <- row.names(Counts) <- A[,1]
+	}
 
 #	Divided counts
 	if(divide) Counts <- Counts / Quant1$Overdispersion

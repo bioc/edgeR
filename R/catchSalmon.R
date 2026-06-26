@@ -2,7 +2,7 @@ catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 April 2018. Last modified 20 Apr 2026.
+#	Created 1 April 2018. Last modified 26 Jun 2026.
 {
 	NSamples <- length(paths)
 
@@ -101,6 +101,15 @@ catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 	Quant1$AveLength <- AveTxLength
 	Quant1$Max2MinLength <- RangeTxLength
 	Quant1$Overdispersion <- OverDisp
+
+#	Detect and unpack Gencode tx names
+	x <- row.names(Quant1)[1]
+	gencode <- (nchar(x)-nchar(gsub("|","",x,fixed=TRUE)) >= 8L)
+	if(gencode) {
+		A <- splitGencodeTxNames(row.names(Quant1))
+		Quant1 <- data.frame(Quant1,A[,-1])
+		row.names(Quant1) <- row.names(Counts) <- A[,1]
+	}
 
 #	Divided counts
 	if(divide) Counts <- Counts / Quant1$Overdispersion

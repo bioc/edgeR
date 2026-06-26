@@ -19,6 +19,7 @@ catchRSEM(files = NULL, path = ".", ngibbs = 100, DGEList = FALSE, divide = FALS
 \item{paths}{character vector giving paths to the sample-specific directories created by a kallisto or Salmon. Each entry corresponds to one RNA-seq sample.}
 \item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
 \item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
+\item{gencode}{logical. If \code{TRUE}, and Gencode-style transcript names are detected, then the names will be split into separate annotation columns.}
 \item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
 \item{prefixes}{character vector giving the sample-specific file prefixes created by Oarfish. Each entry corresponds to one RNA-seq sample. Can contain a directory separator. By default, will read all files with names ending in \code{.quant}, \code{.infreps.pq} and \code{.meta_info.json} in the \code{path} directory.}
 \item{path}{directory path to find files in.}
@@ -34,6 +35,7 @@ We recommend that at least 200 bootstrap or Gibbs resamples are generated in tot
 
 \code{catchKallisto} assumes that kallisto (Bray et al 2016) has been run to estimate transcript counts for one or more RNA samples and that bootstrap samples have also been generated.
 The number of bootstrap resamples does not need to be the same for each RNA sample.
+\code{catchKallisto} uses the rhdf5 package to read the HDF5 format files output by kallisto.
 
 \code{catchRSEM} reads \code{*.isoforms.results} files created by RSEM (Li and Dewey, 2011), which should contain means and standard deviations from Gibbs posterior samples as well as the estimated transcript counts.
 \code{catchRSEM} cannot detect the number of Gibbs samples performed for each RNA sample, so this must be specified via the \code{ngibbs} argument.
@@ -65,6 +67,16 @@ For \code{catchOarfish}, the \code{annotation} data.frame does not contain the \
 If \code{DGEList=TRUE}, a \code{\link[edgeR:DGEList-class]{DGEList}} object as the output.
 In this case, the \code{genes} component of the object will contain the same columns as in the \code{annotation} data.frame from the plain list output.
 As well as standard DGEList components, the output DGEList will contain components \code{overdispersion.prior}, \code{resample.type}, and \code{divided.counts} equivalent to those from the plain list output.
+
+If Gencode-style composite rownames are detected, then the rownames will be reset to plain Ensembl transcript IDs and the \code{annotation} and \code{genes} data.frames will include columns:
+  \item{EnsT}{Ensembl transcript ID, without version number suffix.}
+  \item{EnsG}{Ensembl gene ID, without version number suffix.}
+  \item{HavG}{Havana gene ID.}
+  \item{HavT}{Havana transcript ID.}
+  \item{TxName}{Transcript name.}
+  \item{GeneName}{Gene name.}
+  \item{AnnLength}{Transcript length.}
+  \item{Type}{Type of transcript.}
 }
 
 \author{Gordon Smyth and Pedro Baldoni}

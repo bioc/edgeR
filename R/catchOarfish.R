@@ -2,7 +2,7 @@ catchOarfish <- function(prefixes=NULL,path=".",DGEList=FALSE,divide=FALSE,verbo
 #	Read transcriptwise counts and bootstrap samples from Oarfish output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Gordon Smyth and Pedro Baldoni
-#	Created 4 July 2025. Last modified 21 Apr 2026.
+#	Created 4 July 2025. Last modified 26 Jun 2026.
 {
 #	Check prefixes
 	if(is.null(prefixes)) {
@@ -88,7 +88,16 @@ catchOarfish <- function(prefixes=NULL,path=".",DGEList=FALSE,divide=FALSE,verbo
 #	Prepare output
 	dimnames(Counts) <- list(row.names(Ann),prefixes)
 	Ann$Overdispersion <- OverDisp
-	
+
+#	Detect and unpack Gencode tx names
+	x <- row.names(Ann)[1]
+	gencode <- (nchar(x)-nchar(gsub("|","",x,fixed=TRUE)) >= 8L)
+	if(gencode) {
+		A <- splitGencodeTxNames(row.names(Ann))
+		Ann <- data.frame(Ann,A[,-1])
+		row.names(Ann) <- row.names(Counts) <- A[,1]
+	}
+
 	#	Divided counts
 	if(divide) Counts <- Counts / Ann$Overdispersion
 	
