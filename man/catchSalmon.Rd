@@ -10,7 +10,7 @@
 
 \usage{
 catchKallisto(paths, DGEList = FALSE, divide = FALSE, verbose = TRUE)
-catchSalmon(paths, DGEList = FALSE, divide = FALSE, verbose = TRUE)
+catchSalmon(paths, DGEList = FALSE, divide = FALSE, offset.prior = FALSE, verbose = TRUE)
 catchOarfish(prefixes = NULL, path = ".", DGEList = FALSE, divide = FALSE, verbose = TRUE)
 catchRSEM(files = NULL, path = ".", ngibbs = 100, DGEList = FALSE, divide = FALSE, verbose = TRUE)
 }
@@ -20,6 +20,7 @@ catchRSEM(files = NULL, path = ".", ngibbs = 100, DGEList = FALSE, divide = FALS
 \item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
 \item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
 \item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
+\item{offset.prior}{logical. If \code{TRUE}, a prior offset matrix representing differences in effective transcript length will be included in the DGEList.}
 \item{prefixes}{character vector giving the sample-specific file prefixes created by Oarfish. Each entry corresponds to one RNA-seq sample. Can contain a directory separator. By default, will read all files with names ending in \code{.quant}, \code{.infreps.pq} and \code{.meta_info.json} in the \code{path} directory.}
 \item{path}{directory path to find files in.}
 \item{files}{character vector specifying the \code{isoforms.results} files output by RSEM. Each entry corresponds to one RNA-seq sample. By default, all files in the \code{path} directory with names ending in \code{isoforms.results} will be read.}
@@ -58,6 +59,7 @@ All the functions will detect Gencode-style transcript names, if present, which 
 \value{
 If \code{DGEList=FALSE}, a plain list containing components
 \item{counts}{matrix of transcript counts, with rows for transcripts and columns for RNA samples.}
+\item{length}{matrix of effective transcript lengths, with rows for transcripts and columns for RNA samples.}
 \item{annotation}{data.frame of transcript information with columns \code{Length}, \code{AveLength}, \code{Max2MinLength}, and \code{Overdispersion} corresponding to transcript length, effective transcript length averaged over samples, ratio of largest to smallest length for different samples, and RTA overdispersion respectively.}
 \item{overdispersion.prior}{median overdispersion, used to moderate the transcript-wise overdispersion values.}
 \item{resample.type}{character vector giving type of resampling (\code{"bootstrap"} or \code{"gibbs"}) for each sample.}
@@ -67,6 +69,7 @@ For \code{catchOarfish}, the \code{annotation} data.frame does not contain the \
 
 If \code{DGEList=TRUE}, a \code{\link[edgeR:DGEList-class]{DGEList}} object as the output.
 In this case, the \code{genes} component of the object will contain the same columns as in the \code{annotation} data.frame from the plain list output.
+If \code{offset.prior=TRUE}, then the \code{offset.prior} component will contain prior offsets representing sample-wise differences in effective transcript lengths.
 As well as standard DGEList components, the output DGEList will contain components \code{overdispersion.prior}, \code{resample.type}, and \code{divided.counts} equivalent to those from the plain list output.
 
 If Gencode-style composite rownames are detected, then the rownames will be reset to plain Ensembl transcript IDs and the \code{annotation} and \code{genes} data.frames will include columns:
@@ -86,12 +89,12 @@ If Gencode-style composite rownames are detected, then the rownames will be rese
 Baldoni PL, Chen Y, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024a).
 Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
 \emph{Nucleic Acids Research} 52(3), e13.
-\doi{10.1093/nar/gkad1167}.
+\doi{10.1093/nar/gkad1167}
 
 Baldoni PL, Chen L, Smyth GK (2024b).
 Faster and more accurate assessment of differential transcript expression with Gibbs sampling and edgeR v4.
 \emph{NAR Genomics and Bioinformatics} 6(4), lqae151.
-\doi{10.1093/nargab/lqae151}.
+\doi{10.1093/nargab/lqae151}
 
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
@@ -109,7 +112,7 @@ Oarfish: enhanced probabilistic modeling leads to improved accuracy in long read
 
 Li B, Dewey CN (2011).
 RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome.
-\emph{BMC bioinformatics} 12, 323.
+\emph{BMC Bioinformatics} 12, 323.
 
 Patro R, Duggal G, Love MI, Irizarry RA, Kingsford C (2017).
 Salmon provides fast and bias-aware quantification of transcript expression.

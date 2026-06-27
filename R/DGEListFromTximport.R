@@ -1,6 +1,6 @@
 DGEListFromTximport <- function(txi, samples = NULL, group = NULL, genes = NULL, remove.zeros = FALSE, divide = FALSE)
 # Create DGEList from tximport() output.
-# Created 2 Feb 2026. Last modified 8 Apr 2026.
+# Created 2 Feb 2026. Last modified 11 May 2026.
 {
 #	Check input
 	ExpectedCols <- c("counts","length","countsFromAbundance")
@@ -75,8 +75,7 @@ DGEListFromTximport <- function(txi, samples = NULL, group = NULL, genes = NULL,
 #	Offset matrix
 	if(identical(txi$countsFromAbundance,"no")) {
 		y$tximport.counts <- "raw"
-		PriorOffset <- LTxL - rowMeans(LTxL)
-		y$offset.prior <- PriorOffset
+		y$offset.prior <- LTxL - rowMeans(LTxL)
 	} else {
 		y$tximport.counts <- txi$countsFromAbundance
 	}

@@ -1,4 +1,4 @@
-catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
+catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,offset.prior=FALSE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
 #	Gordon Smyth and Pedro Baldoni
@@ -69,7 +69,7 @@ catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 		}
 	}
 	
-# Compute length statistics
+#	Compute length statistics
 	LTxL <- log(Length)
 	AveTxLength <- exp(rowMeans(LTxL))
 	MinLLen <- apply(LTxL, 1, min)
@@ -115,12 +115,18 @@ catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 	if(divide) Counts <- Counts / Quant1$Overdispersion
 
 	if(DGEList) {
-	  y  <- DGEList(count=Counts,genes=Quant1)
-	  y$overdispersion.prior <- OverDispPrior
-	  y$resample.type <- ResampleType
-	  y$divided.counts <- divide
+		y <- DGEList(count=Counts,genes=Quant1)
+		y$overdispersion.prior <- OverDispPrior
+		y$resample.type <- ResampleType
+		y$divided.counts <- divide
+		if(offset.prior) y$offset.prior <- LTxL - rowMeans(LTxL)
 	} else {
-	  y <- list(counts=Counts,annotation=Quant1,overdispersion.prior=OverDispPrior,resample.type=ResampleType,divided.counts=divide)
+		y <- list(counts=Counts,
+			length=Length,
+			annotation=Quant1,
+			overdispersion.prior=OverDispPrior,
+			resample.type=ResampleType,
+			divided.counts=divide)
 	}
 	
 	y
