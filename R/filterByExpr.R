@@ -4,6 +4,9 @@ filterByExpr <- function(y, ...)
 UseMethod("filterByExpr")
 
 filterByExpr.DGEList <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
+#	Filter low expressed genes given count matrix
+#	Gordon Smyth
+#	Created 13 Nov 2017. Last revised 9 Aug 2026.
 {
 #	Order of precedence:
 #	1. group as argument
@@ -14,7 +17,7 @@ filterByExpr.DGEList <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
 		design <- y$design
 		if(is.null(design)) {
 			group <- y$samples$group
-			if(length(levels(group))==1L) warning("All samples appear to belong to the same group.")
+			if(length(levels(group))==1L) message("Treating all samples as belonging to one group.")
 		}
 	}
 	if(is.null(lib.size)) lib.size <- y$samples$lib.size * y$samples$norm.factors
