@@ -89,17 +89,17 @@ If Gencode-style composite rownames are detected, then the rownames will be rese
 Baldoni PL, Chen Y, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024a).
 Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
 \emph{Nucleic Acids Research} 52(3), e13.
-\doi{10.1093/nar/gkad1167}
+\doi{10.1093/nar/gkad1167}.
 
 Baldoni PL, Chen L, Smyth GK (2024b).
 Faster and more accurate assessment of differential transcript expression with Gibbs sampling and edgeR v4.
 \emph{NAR Genomics and Bioinformatics} 6(4), lqae151.
-\doi{10.1093/nargab/lqae151}
+\doi{10.1093/nargab/lqae151}.
 
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
 \emph{Nucleic Acids Research} 53(22), gkaf1305.
-\doi{10.1093/nar/gkaf1305}
+\doi{10.1093/nar/gkaf1305}.
 
 Bray NL, Pimentel H, Melsted P, Pachter L (2016).
 Near-optimal probabilistic RNA-seq quantification.
@@ -108,7 +108,7 @@ Near-optimal probabilistic RNA-seq quantification.
 Jousheghani ZZ, Singh NP, Patro R (2025).
 Oarfish: enhanced probabilistic modeling leads to improved accuracy in long read transcriptome quantification.
 \emph{Bioinformatics} 41, i304-i313.
-\doi{10.1093/bioinformatics/btaf240}
+\doi{10.1093/bioinformatics/btaf240}.
 
 Li B, Dewey CN (2011).
 RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome.
