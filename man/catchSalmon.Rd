@@ -83,7 +83,7 @@ Faster and more accurate assessment of differential transcript expression with G
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
 \emph{Nucleic Acids Research} 53(22), gkaf1305.
-\doi{10.1093/nar/gkaf1305}
+\doi{10.1093/nar/gkaf1305}.
 
 Bray NL, Pimentel H, Melsted P, Pachter L (2016).
 Near-optimal probabilistic RNA-seq quantification.
@@ -92,7 +92,7 @@ Near-optimal probabilistic RNA-seq quantification.
 Jousheghani ZZ, Singh NP, Patro R (2025).
 Oarfish: enhanced probabilistic modeling leads to improved accuracy in long read transcriptome quantification.
 \emph{Bioinformatics} 41, i304-i313.
-\doi{10.1093/bioinformatics/btaf240}
+\doi{10.1093/bioinformatics/btaf240}.
 
 Li B, Dewey CN (2011).
 RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome.
