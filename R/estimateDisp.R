@@ -45,7 +45,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 #	A matrix of likelihoods is computed for each gene at a set of dispersion grid points
 #	and WLEB() is called for weighted likelihood empirical Bayes.
 #	Yunshun Chen, Aaron Lun, Gordon Smyth.
-#	Created July 2012. Last modified 24 Aug 2025.
+#	Created July 2012. Last modified 17 Jul 2026.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -64,7 +64,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 #	Check lib.size
 	if(is.null(lib.size)) lib.size <- colSums(y)
 	if(length(lib.size)!=nlibs) stop("Incorrect length of lib.size.")
-	
+
 #	Check offset
 	offset <- .compressOffsets(y, lib.size=lib.size, offset=offset)
 
@@ -84,7 +84,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	l0 <- matrix(0, sum(sel), grid.length)
 
 #	Classic edgeR
-	if(is.null(design)){
+	if(is.null(design) && attr(offset,"repeat.row")){
 		# One way
 		message("Using classic mode.")
 		if(length(levels(group))==1)
