@@ -55,7 +55,7 @@ cpm.default <- function(y, lib.size=NULL, offset=NULL, offset.prior=NULL, log=FA
 #	Counts per million for a matrix
 #	Davis McCarthy, Yunshun Chen, Gordon Smyth.
 #   C++ version by Aaron Lun. C version by Lizhong Chen.
-#	Created 20 June 2011. Last modified 9 Aug 2026.
+#	Created 20 June 2011. Last modified 15 Aug 2026.
 {
 #	Coerce to matrix
 	y <- as.matrix(y)
@@ -79,7 +79,7 @@ cpm.default <- function(y, lib.size=NULL, offset=NULL, offset.prior=NULL, log=FA
 	} else {
 #		Offset can be a matrix or a row vector.
 		if(is.matrix(offset)) {
-			if(any(dim(offset)!=dim(y))) stop("counts and offset must have equal dimensions")
+			if(!identical(dim(offset),dim(y))) stop("counts and offset must have equal dimensions")
 		} else {
 			if(length(offset)!=ncol(y)) stop("if offset is a vector, its length must be the number of samples")
 		}
