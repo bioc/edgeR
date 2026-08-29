@@ -46,7 +46,7 @@ aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersi
 #	This measure is designed to be used as the x-axis for all abundance-dependent trend analyses in edgeR.
 #	It is generally held fixed through an edgeR analysis.
 #	Original author: Gordon Smyth
-#	Created 25 Aug 2012. Last modified 19 Nov 2018.
+#	Created 25 Aug 2012. Last modified 19 Nov 2018. C code modified 29 Aug 2026.
 {
 	y <- as.matrix(y)
 	if(nrow(y)==0L) return(numeric(0))
@@ -80,7 +80,7 @@ aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersi
 	maxit <- formals(mglmOneGroup)$maxit
 	tol <- formals(mglmOneGroup)$tol
 
-#   Calling the C++ code
+#   Calling the C code
 	ab <- .Call(.cxx_ave_log_cpm, y, offset, prior.count, dispersion, weights, maxit, tol)
 	return(ab)
 }

@@ -142,7 +142,7 @@ void average_log_cpm(cmx *y, cmx *offsets, cmx *priors, cmx *disp, cmx *weights,
     for (int tag=0; tag<ntag; ++tag) {
         get_row3(y,disp,weights,tag,yptr,dptr,wptr);
 
-        if((tag >= 1) && (!repeat_row)){
+        if(!repeat_row){
             compute_offsets(priors,offsets,tag,log_in,log_out,pptr,optr);
         }
            

@@ -25,7 +25,7 @@ Compute average log2 counts-per-million for each row of counts.
 \item{prior.count}{numeric scalar or vector of length \code{nrow(y)}, containing the average value(s) to be added to each count to avoid infinite values on the log-scale.}
 \item{dispersion}{numeric scalar or vector of negative-binomial dispersions. Defaults to 0.05.}
 \item{lib.size}{numeric vector of library sizes. Defaults to \code{colSums(y)}. Ignored if \code{offset} is not \code{NULL}.}
-\item{offset}{numeric matrix of offsets for the log-linear models.}
+\item{offset}{numeric matrix of offsets for the log-linear models. Alternatively can be a vector of length equal to the number of samples.}
 \item{weights}{optional numeric matrix of observation weights.}
 \item{\dots}{other arguments are not currently used.}
 }
@@ -47,7 +47,7 @@ The two versions will agree for large values of the dispersion.
 Numeric vector giving log2(AveCPM) for each row of \code{y}. 
 }
 
-\author{Gordon Smyth}
+\author{Gordon Smyth. C++ version by Aaron Lun. C version by Lizhong Chen.}
 
 \examples{
 y <- matrix(c(0,100,30,40),2,2)
