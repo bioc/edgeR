@@ -2,9 +2,9 @@
 \alias{loessByCol}
 \alias{locfitByCol}
 
-\title{Locally Weighted Mean By Column}
+\title{Locally Weighted Mean by Column}
 
-\description{Smooth columns of matrix by non-robust loess curves of degree 0.}
+\description{Smooth columns of a matrix by non-robust loess curves of degree 0.}
 
 \usage{
 loessByCol(y, x=NULL, span=0.5)
@@ -20,7 +20,7 @@ locfitByCol(y, x=NULL, weights=1, span=0.5, degree=0)
 
 \item{weights}{relative weights of each observation, one for each covariate value.}
 
-\item{degree}{degree of local polynomial fit}
+\item{degree}{degree of local polynomial fit.}
 }
 
 \value{A list containing a numeric matrix with smoothed columns and a vector of leverages for each covariate value.

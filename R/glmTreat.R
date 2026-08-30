@@ -1,21 +1,21 @@
-glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval")
+glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1.2), null="interval", legacy=FALSE)
 #	Likelihood ratio test or quasi-likelihood F-test with a threshold
+#	Z-score approach added by Lizhong 13 Nov 2025
 #	Yunshun Chen, Lizhong Chen and Gordon Smyth
-#	Created on 05 May 2014. Last modified on 18 Sep 2025.
+#	Created on 05 May 2014. Last modified on 17 Nov 2025.
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
-
-#	Check if glmfit is from glmFit() or glmQLFit()
+	
+#  	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
-#	Fit <- ifelse(isLRT, glmFit, glmQLFit)
-
+	
 #	Switch to glmLRT() or glmQLFTest() if lfc is zero
 	if(lfc==0) {
 		fun <- ifelse(isLRT, "glmLRT", "glmQLFTest")
 #		message( paste0("Zero log2-FC threshold detected. Switch to ", fun, "() instead.") )
 		return( do.call(fun, args=list(glmfit, coef, contrast)) )
 	}
-
+	
 #	Check if there is any log-FC shrinkage
 	shrunk <- glmfit$prior.count!=0
 	
@@ -28,13 +28,13 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	}
 	if(is.null(glmfit$AveLogCPM)) glmfit$AveLogCPM <- aveLogCPM(glmfit)
 	ngenes <- nrow(glmfit)
-
+	
 #	Check design matrix
 	design <- as.matrix(glmfit$design)
 	nbeta <- ncol(design)
 	if(nbeta < 2) stop("Need at least two columns for design, usually the first is the intercept column")
 	coef.names <- colnames(design)
-
+	
 #	Evaluate logFC for coef to be tested
 #	Note that contrast takes precedence over coef: if contrast is given
 #	then reform design matrix so that contrast of interest is the first column
@@ -73,75 +73,114 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 		design <- reform$design
 	}
 	unshrunk.logFC <- as.vector(unshrunk.logFC)
-
+	
 #	Null design matrix
 	design0 <- design[, -coef, drop=FALSE]
-
+	
 #	Offset adjustment
 	offset.old <- makeCompressedMatrix(glmfit$offset, dim(glmfit$counts), byrow=TRUE)
 	offset.adj <- makeCompressedMatrix(lfc*log(2) * design[, coef], dim(glmfit$counts), byrow=TRUE)
-
+	
 #	adjust dispersion for new QL method scaled by average QL dispersion
 	if(is.null(glmfit$average.ql.dispersion)) {
 		dispersion <- glmfit$dispersion
 	} else {
 		dispersion <- glmfit$dispersion/glmfit$average.ql.dispersion
 	}
-
+	
 #	Test statistics at beta_0 = tau
-	offset.new <- offset.old + offset.adj
-	fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
-	fit1 <- glmFit(glmfit$counts, design=design,  offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
-	z.left <- sqrt( pmax(0, fit0$deviance - fit1$deviance) )
-
+	fit1 <- glmFit(glmfit$counts, design=design0, offset=offset.old+offset.adj, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
+	
 #	Test statistics at beta_0 = -tau
-	offset.new <- offset.old - offset.adj
-	fit0 <- glmFit(glmfit$counts, design=design0, offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
-	fit1 <- glmFit(glmfit$counts, design=design,  offset=offset.new, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
-	z.right <- sqrt( pmax(0, fit0$deviance - fit1$deviance) )
-
-#	Make sure z.left < z.right
-	i <- z.left > z.right
-	if(any(i)) {
-		tmp <- z.left[i]
-		z.left[i] <- z.right[i]
-		z.right[i] <- tmp
-	}
-
+	fit2 <- glmFit(glmfit$counts, design=design0, offset=offset.old-offset.adj, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
+	
+#   likelihood ratio statistics
+	LRleft  <- pmax(0, fit1$deviance - glmfit$deviance)
+	LRright <- pmax(0, fit2$deviance - glmfit$deviance)
+	
 #	Convert t to z under the QL pipeline
 	if(!isLRT){
+#		degree of freedom
 		if(is.null(glmfit$df.residual.zeros)) {
 			df.residual <- glmfit$df.residual.adj
 			poisson.bound <- FALSE
 		} else {
 			df.residual <- glmfit$df.residual.zeros
-			poisson.bound <- TRUE
-		}
+		}        
 		df.total <- glmfit$df.prior + df.residual
-		max.df.residual <- ncol(glmfit$counts)-ncol(glmfit$design)
-		df.total <- pmin(df.total, nrow(glmfit)*max.df.residual)
-		z.left <- zscoreT(z.left/sqrt(glmfit$s2.post), df=df.total)
-		z.right <- zscoreT(z.right/sqrt(glmfit$s2.post), df=df.total)
-	}
+		df.residual.total <- sum(glmfit$df.residual)
+		df.total <- pmin(df.total, df.residual.total)
 
-	within <- abs(unshrunk.logFC) <= lfc
-	sgn <- 2*within - 1
-	z.left <- z.left*sgn
+		if(legacy){
+#			Make sure z.left < z.right
+			i <- LRleft > LRright
+			if(any(i)) {
+				tmp        <- LRleft[i]
+				LRleft[i]  <- LRright[i]
+				LRright[i] <- tmp
+			}
+			z.left  <- zscoreT(sqrt(LRleft)/sqrt(glmfit$s2.post),  df=df.total)
+			z.right <- zscoreT(sqrt(LRright)/sqrt(glmfit$s2.post), df=df.total)
+
+#			correct sign
+			within  <- abs(unshrunk.logFC) <= lfc
+			sgn     <- 2*within - 1
+			z.left  <- z.left*sgn
+			z.right <- -z.right
+		} else {
+#			F-statistics
+			Fstat.left    <- LRleft  / glmfit$s2.post
+			Fstat.right   <- LRright / glmfit$s2.post
+
+#			p-values
+			p.value.left  <- pf(Fstat.left,  df1=1, df2=df.total, lower.tail=FALSE, log.p=FALSE)
+			p.value.right <- pf(Fstat.right, df1=1, df2=df.total, lower.tail=FALSE, log.p=FALSE)
+		
+#			z-scores
+			ind     <- sign(unshrunk.logFC)
+			z.left  <- ind*sign(unshrunk.logFC-lfc) * qnorm(p.value.left/2)
+			z.right <- ind*sign(unshrunk.logFC+lfc) * qnorm(p.value.right/2)
+		}
+	} else {
+		if(legacy){
+#			Make sure z.left < z.right
+			i <- LRleft > LRright
+			if(any(i)) {
+				tmp        <- LRleft[i]
+				LRleft[i]  <- LRright[i]
+				LRright[i] <- tmp
+			}
+			z.left  <- sqrt(LRleft)
+			z.right <- sqrt(LRright)
+
+#			correct sign
+			within  <- abs(unshrunk.logFC) <= lfc
+			sgn     <- 2*within - 1
+			z.left  <- z.left*sgn
+			z.right <- -z.right
+		} else {
+#			left side (negative) z-scores 
+			ind     <- sign(unshrunk.logFC)
+			z.left  <- ind*sign(unshrunk.logFC-lfc) * (-sqrt(LRleft))
+			z.right <- ind*sign(unshrunk.logFC+lfc) * (-sqrt(LRright))        
+		}    
+	}
 
 	null <- match.arg(null, c("interval", "worst.case"))
 	if(null=="interval") {
-#		Interval threshold
-		c <- 1.470402
-		j <- z.right + z.left > c
-		p.value <- rep_len(1L, ngenes)
-		j <- j[!is.na(j)]
-		p.value[j] <- .integratepnorm(-z.right[j], -z.right[j] + c) + .integratepnorm(z.left[j] - c, z.left[j])
-		p.value[!j] <- 2*.integratepnorm(-z.right[!j], z.left[!j])
+		p.value <- 2*.integratepnorm(z.right, z.left)
+		if(legacy){
+#			Interval threshold
+			c <- 1.470402
+			j <- (-z.right + z.left) > c
+			j <- j[!is.na(j)]
+			p.value[j]  <- .integratepnorm(z.right[j], z.right[j]+c) + .integratepnorm(z.left[j]-c, z.left[j])            
+		} 
 	} else {
-		p.value <- pnorm(-z.right) + pnorm(z.left)
+		p.value <- pnorm(z.right) + pnorm(z.left)
 	}
 	
-#	Ensure it is not more significant than chisquare test with Poisson variance		
+	#	Ensure it is not more significant than chisquare test with Poisson variance		
 	if(!isLRT){
 		if(poisson.bound) {
 			i <- .isBelowPoissonBound(glmfit)
@@ -153,8 +192,8 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 			}
 		}
 	}
-
-#	Table output
+	
+	#	Table output
 	tab <- data.frame(
 		logCPM=glmfit$AveLogCPM,
 		PValue=p.value,
@@ -165,13 +204,12 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 	} else {
 		tab <- cbind(logFC=unshrunk.logFC, tab)
 	}
-
+	
 	glmfit$lfc <- lfc
 	glmfit$counts <- NULL
 	glmfit$table <- tab
 	glmfit$comparison <- coef.name
 	new("DGELRT",unclass(glmfit))
 }
-
 
 .integratepnorm <- function(a, b) ifelse(a==b, pnorm(a), ( b*pnorm(b)+dnorm(b) - (a*pnorm(a)+dnorm(a)) )/(b-a) )

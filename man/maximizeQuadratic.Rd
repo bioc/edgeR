@@ -1,7 +1,7 @@
 \name{maximizeQuadratic}
 \alias{maximizeQuadratic}
 
-\title{Maximize a function given a table of values by quadratic interpolation.}
+\title{Maximize a Function given a Table of Values by Quadratic Interpolation}
 
 \description{
 Maximize a function given a table of values by quadratic interpolation.
@@ -14,12 +14,12 @@ maximizeQuadratic(y, x=1:ncol(y))
 \arguments{ 
 \item{y}{numeric matrix of response values.}
 
-\item{x}{numeric matrix of inputs of the function of same dimension as \code{y}.  If a vector, must be a row vector of length equal to \code{ncol(y)}.}
+\item{x}{numeric matrix of inputs of the function of the same dimension as \code{y}.  If a vector, must be a row vector of length equal to \code{ncol(y)}.}
 }
 
 \details{
-For each row of \code{y}, finds the three \code{x} values bracketing the maximum of \code{y}, interpolates a quadatric
-polyonomial through these \code{y} for these three values and solves for the location of the maximum of the polynomial.
+For each row of \code{y}, finds the three \code{x} values bracketing the maximum of \code{y}, interpolates a quadratic
+polynomial through these \code{y} values for these three \code{x} values and solves for the location of the maximum of the polynomial.
 }
 
 \value{

@@ -1,11 +1,12 @@
 \name{aveLogCPM}
 \alias{aveLogCPM}
 \alias{aveLogCPM.DGEList}
+\alias{aveLogCPM.PCList}
 \alias{aveLogCPM.DGEGLM}
 \alias{aveLogCPM.SummarizedExperiment}
 \alias{aveLogCPM.default}
 
-\title{Average Log Counts Per Million}
+\title{Average Log Counts per Million}
 
 \description{
 Compute average log2 counts-per-million for each row of counts.
@@ -13,20 +14,22 @@ Compute average log2 counts-per-million for each row of counts.
 
 \usage{
 \method{aveLogCPM}{DGEList}(y, normalized.lib.sizes=TRUE, prior.count=2, dispersion=NULL, \dots)
+\method{aveLogCPM}{PCList}(y, prior.count=2, \dots)
 \method{aveLogCPM}{SummarizedExperiment}(y, normalized.lib.sizes=TRUE, prior.count=2, 
           dispersion=NULL, \dots)
 \method{aveLogCPM}{default}(y, lib.size=NULL, offset=NULL, prior.count=2, dispersion=NULL,
-          weights=NULL, \dots)
+          weights=NULL, nthreads=1L, \dots)
 }
 
 \arguments{
-\item{y}{numeric matrix containing counts. Rows for genes and columns for libraries.}
+\item{y}{numeric matrix containing counts, or a \code{DGEList} or \code{PCList} object. Rows for genes and columns for libraries.}
 \item{normalized.lib.sizes}{logical, use normalized library sizes?}
 \item{prior.count}{numeric scalar or vector of length \code{nrow(y)}, containing the average value(s) to be added to each count to avoid infinite values on the log-scale.}
 \item{dispersion}{numeric scalar or vector of negative-binomial dispersions. Defaults to 0.05.}
 \item{lib.size}{numeric vector of library sizes. Defaults to \code{colSums(y)}. Ignored if \code{offset} is not \code{NULL}.}
-\item{offset}{numeric matrix of offsets for the log-linear models.}
+\item{offset}{numeric matrix of offsets for the log-linear models. Alternatively can be a vector of length equal to the number of samples.}
 \item{weights}{optional numeric matrix of observation weights.}
+\item{nthreads}{integer giving the number of OpenMP threads to use for the genewise computations. Defaults to 1 (serial).}
 \item{\dots}{other arguments are not currently used.}
 }
 
@@ -47,7 +50,7 @@ The two versions will agree for large values of the dispersion.
 Numeric vector giving log2(AveCPM) for each row of \code{y}. 
 }
 
-\author{Gordon Smyth}
+\author{Gordon Smyth. C++ version by Aaron Lun. C version by Lizhong Chen.}
 
 \examples{
 y <- matrix(c(0,100,30,40),2,2)

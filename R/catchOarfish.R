@@ -1,12 +1,17 @@
-catchOarfish <- function(prefixes=NULL,path=".",DGEList=FALSE,divide=FALSE,verbose=TRUE)
+catchOarfish <- function(parent.dir=NULL,prefixes=NULL,DGEList=TRUE,divide=FALSE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Oarfish output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
+#	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 4 July 2025. Last modified 26 Jun 2026.
+#	Created 4 July 2025. Last modified 29 Aug 2026.
 {
 #	Check prefixes
 	if(is.null(prefixes)) {
-		QuantFiles <- dir(path=path,pattern="*\\.quant$")
+		if(is.null(parent.dir)) {
+			QuantFiles <- dir(pattern="*\\.quant$")
+		} else {
+			QuantFiles <- dir(path=parent.dir,pattern="*\\.quant$")
+		}
 		n <- nchar(QuantFiles)
 		prefixes <- substring(QuantFiles,1,n-6L) 
 	} else {
@@ -14,7 +19,7 @@ catchOarfish <- function(prefixes=NULL,path=".",DGEList=FALSE,divide=FALSE,verbo
 	}
 	NSamples <- length(prefixes)
 	if(NSamples < 1L) stop("No oarfish output files", call.=FALSE)
-	prefixes <- file.path(path,prefixes)
+	if(!is.null(parent.dir)) prefixes <- file.path(parent.dir,prefixes)
 
 #	Use jsonlite and arrow packages for reading
 	OK <- requireNamespace("jsonlite",quietly=TRUE)
@@ -86,7 +91,7 @@ catchOarfish <- function(prefixes=NULL,path=".",DGEList=FALSE,divide=FALSE,verbo
 	}
 
 #	Prepare output
-	dimnames(Counts) <- list(row.names(Ann),prefixes)
+	dimnames(Counts) <- list(row.names(Ann),basename(prefixes))
 	Ann$Overdispersion <- OverDisp
 
 #	Detect and unpack Gencode tx names

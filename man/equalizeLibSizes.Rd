@@ -31,11 +31,11 @@ By default, is extracted from \code{y} or, if \code{y} contains no dispersion in
 }
 
 \details{
-Thus function implements the quantile-quantile normalization method of Robinson and Smyth (2008).
+This function implements the quantile-quantile normalization method of Robinson and Smyth (2008).
 It computes normalized counts, or pseudo-counts, used by \code{exactTest} and \code{estimateCommonDisp}.
 
 The output pseudo-counts are the counts that would have theoretically arisen had the effective library sizes been equal for all samples.
-The pseudo-counts are computed in such as way as to preserve fold-change differences beween the groups defined by \code{y$samples$group} as well as biological variability within each group.
+The pseudo-counts are computed in such a way as to preserve fold-change differences between the groups defined by \code{y$samples$group} as well as biological variability within each group.
 Consequently, the results will depend on how the groups are defined.
 
 Note that the column sums of the \code{pseudo.counts} matrix will not generally be equal, because the effective library sizes are not necessarily the same as actual library sizes and because the normalized pseudo counts are not equal to expected counts.
@@ -49,10 +49,10 @@ It is not normally called directly by users.
 \author{Mark Robinson, Davis McCarthy, Gordon Smyth}
 
 \references{
-Robinson MD and Smyth GK (2008).
+Robinson MD, Smyth GK (2008).
 Small-sample estimation of negative binomial dispersion, with applications to SAGE data.
 \emph{Biostatistics}, 9, 321-332.
-\url{http://biostatistics.oxfordjournals.org/content/9/2/321}
+\doi{10.1093/biostatistics/kxm030}.
 }
 
 \seealso{

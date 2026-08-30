@@ -37,7 +37,7 @@ Rotation gene set testing for Negative Binomial generalized linear models.
         For \code{roast}, can be of length \code{nrow(y)} or of length equal to the number of genes in the test set.} 
   \item{nrot}{number of rotations used to compute the p-values.}
   \item{adjust.method}{method used to adjust the p-values for multiple testing. See \code{\link{p.adjust}} for possible values.}
-  \item{midp}{logical, should mid-p-values be used in instead of ordinary p-values when adjusting for multiple testing?}
+  \item{midp}{logical, should mid-p-values be used instead of ordinary p-values when adjusting for multiple testing?}
   \item{sort}{character, whether to sort output table by directional p-value (\code{"directional"}), non-directional p-value (\code{"mixed"}), or not at all (\code{"none"}).}
   \item{\dots}{other arguments are currently ignored.}
 }
@@ -53,10 +53,10 @@ These functions perform self-contained gene set tests against the null hypothesi
 \code{fry} is the recommended function in the edgeR context.
 
 The roast gene set test was proposed by Wu et al (2010) for microarray data and the \code{roast} and \code{mroast} methods documented here extend the test to digital gene expression data.
-The roast method uses residual space rotations instead of permutations to obtain p-values, a technique that take advantage of the full generality of linear models.
+The roast method uses residual space rotations instead of permutations to obtain p-values, a technique that takes advantage of the full generality of linear models.
 The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994) under the null hypothesis that the contrast is zero, and the normal deviates are then passed to the limma \code{\link[limma]{roast}} function.
 See \code{\link[limma]{roast}} for more description of the test and for a complete list of possible arguments.
-\code{mroast} is similar but performs \code{roast} tests for multiple of gene sets instead of just one.
+\code{mroast} is similar but performs \code{roast} tests for multiple gene sets instead of just one.
 
 The \code{fry} method documented here similarly generalizes the fry gene set test for microarray data.
 \code{fry} is recommended over \code{roast} or \code{mroast} for count data because, in this context, it is equivalent to \code{mroast} but with an infinite number of rotations.
@@ -69,18 +69,18 @@ The \code{fry} method documented here similarly generalizes the fry gene set tes
 \author{Yunshun Chen and Gordon Smyth}
 
 \references{
-Dunn, PK, and Smyth, GK (1996).
+Dunn PK, Smyth GK (1996).
 Randomized quantile residuals.
 \emph{J. Comput. Graph. Statist.}, 5, 236-244. 
-\url{https://gksmyth.github.io/pubs/residual.html}
+\url{https://gksmyth.github.io/pubs/residual.html}.
 
-Routledge, RD (1994).
+Routledge RD (1994).
 Practicing safe statistics with the mid-p.
 \emph{Canadian Journal of Statistics} 22, 103-110.
 
-Wu, D, Lim, E, Francois Vaillant, F, Asselin-Labat, M-L, Visvader, JE, and Smyth, GK (2010). ROAST: rotation gene set tests for complex microarray experiments.
+Wu D, Lim E, Vaillant F, Asselin-Labat ML, Visvader JE, Smyth GK (2010). ROAST: rotation gene set tests for complex microarray experiments.
 \emph{Bioinformatics} 26, 2176-2182.
-\url{http://bioinformatics.oxfordjournals.org/content/26/17/2176}
+\doi{10.1093/bioinformatics/btq401}.
 }
 
 \examples{

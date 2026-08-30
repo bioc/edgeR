@@ -9,7 +9,7 @@ diffSpliceDGE(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NU
 }
 
 \arguments{
-  \item{glmfit}{an \code{DGEGLM} fitted model object produced by \code{glmFit} or \code{glmQLFit}. Rows should correspond to exons.}
+  \item{glmfit}{a \code{DGEGLM} fitted model object produced by \code{glmFit} or \code{glmQLFit}. Rows should correspond to exons.}
   \item{coef}{integer indicating which coefficient of the generalized linear model is to be tested for differential exon usage. Defaults to the last coefficient.}
   \item{contrast}{numeric vector specifying the contrast of the linear model coefficients to be tested for differential exon usage. Length must equal to the number of columns of \code{design}. If specified, then takes precedence over \code{coef}.}
   \item{geneid}{gene identifiers. Either a vector of length \code{nrow(glmfit)} or the name of the column of \code{glmfit$genes} containing the gene identifiers. Rows with the same ID are assumed to belong to the same gene.}

@@ -3,7 +3,7 @@
 
 \title{Create a Plot of Exon Usage from Exon-Level Count Data}
 
-\description{Create a plot of exon usage for a given gene by plotting the (un)transformed counts for each exon, coloured by experimental group.}
+\description{Create a plot of exon usage for a given gene by plotting the (un)transformed counts for each exon, colored by experimental group.}
 
 \usage{
 plotExonUsage(y, geneID, group=NULL, transform="none", counts.per.million=TRUE,
@@ -15,7 +15,7 @@ plotExonUsage(y, geneID, group=NULL, transform="none", counts.per.million=TRUE,
 
 \item{geneID}{character string giving the name of the gene for which exon usage is to be plotted.} 
 
-\item{group}{factor supplying the experimental group/condition to which each sample (column of \code{y}) belongs. If \code{NULL} (default) the function will try to extract if from \code{y}, which only works if \code{y} is a \code{DGEList} object.}
+\item{group}{factor supplying the experimental group/condition to which each sample (column of \code{y}) belongs. If \code{NULL} (default) the function will try to extract it from \code{y}, which only works if \code{y} is a \code{DGEList} object.}
 
 \item{transform}{character, supplying the method of transformation to be applied to the exon counts, if any. Options are \code{"none"} (original counts are preserved), \code{"sqrt"} (square-root transformation) and \code{"log2"} (log2 transformation). Default is \code{"none"}.}
 
@@ -26,7 +26,7 @@ plotExonUsage(y, geneID, group=NULL, transform="none", counts.per.million=TRUE,
 \item{\dots}{optional further arguments to be passed on to \code{plot}.}
 }
 
-\value{\code{plotExonUsage} (invisibly) returns the transformed matrix of counts for the gene being plotted and produces a plot to the current device.}
+\value{\code{plotExonUsage} (invisibly) returns the transformed matrix of counts for the gene being plotted and produces a plot on the current device.}
 
 \details{
 This function produces a simple plot for comparing exon usage between different experimental conditions for a given gene.

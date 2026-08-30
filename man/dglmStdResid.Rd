@@ -13,15 +13,15 @@ plotMeanVar2(y, design = NULL, dispersion = 0, offset = 0, nbins = 100, make.plo
 }
 
 \arguments{ 
-  \item{y}{numeric matrix of counts, each row represents one genes, each column represents one DGE library.}
+  \item{y}{numeric matrix of counts, each row represents one gene, each column represents one DGE library.}
 
-  \item{design}{numeric matrix giving the design matrix of the GLM. Assumed to be full column rank. Defaults to a intercept column.}
+  \item{design}{numeric matrix giving the design matrix of the GLM. Assumed to be full column rank. Defaults to an intercept column.}
 
   \item{dispersion}{numeric scalar or vector giving the dispersion parameter for each GLM. Can be a scalar giving one value for all genes, or a vector of length equal to the number of genes giving genewise dispersions.}
 
-  \item{offset}{numeric vector or matrix giving the offset that is to be included in teh log-linear model predictor. Can be a vector of length equal to the number of libraries, or a matrix of the same size as \code{y}.}
+  \item{offset}{numeric vector or matrix giving the offset that is to be included in the log-linear model predictor. Can be a vector of length equal to the number of libraries, or a matrix of the same size as \code{y}.}
 
-  \item{nbins}{scalar giving the number of bins (formed by using the quantiles of the genewise mean expression levels) for  which to compute average means and variances for exploring the mean-variance relationship. Default is \code{100} bins}
+  \item{nbins}{scalar giving the number of bins (formed by using the quantiles of the genewise mean expression levels) for  which to compute average means and variances for exploring the mean-variance relationship. Default is \code{100} bins.}
 
   \item{make.plot}{logical, whether or not to plot the mean standardized residual for binned data (binned on expression level). Provides a visualization of the mean-variance relationship. Default is \code{TRUE}.}
 
@@ -29,7 +29,7 @@ plotMeanVar2(y, design = NULL, dispersion = 0, offset = 0, nbins = 100, make.plo
 
   \item{ylab}{character string giving the label for the y-axis. Standard graphical parameter. If left as the default, then the y-axis label will be set to "Ave. binned standardized residual".}
 
-  \item{\dots}{other arguments are passed to \code{plot}}
+  \item{\dots}{other arguments are passed to \code{plot}.}
 }
 
 \value{
@@ -42,7 +42,7 @@ Produces a mean-variance plot and returns a list with the following component:
 This function explores the mean-variance relationship in count data.
 The function fits a Poisson or NB GLM model to each gene using the appropriate design matrix and computes squared ordinary residuals.
 The residuals are standardized by the leverages but not by model variances.
-The fitted values are divided into \code{nbins} bins and the mean fitted value and mean squared residual is computed for each bin.
+The fitted values are divided into \code{nbins} bins and the mean fitted value and mean squared residual are computed for each bin.
 
 This function is similar in purpose to \code{plotMeanVar} but uses standardized residuals instead of pooled variances.
 }

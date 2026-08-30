@@ -1,18 +1,20 @@
 \name{dim}
 \alias{dim.DGEList}
+\alias{dim.PCList}
 \alias{dim.DGEExact}
 \alias{dim.TopTags}
 \alias{dim.DGEGLM}
+\alias{dim.DGEBIN}
 \alias{dim.DGELRT}
-\title{Retrieve the Dimensions of a DGEList, DGEExact, DGEGLM, DGELRT or TopTags Object}
+\title{Retrieve the Dimensions of a DGEList, PCList, DGEExact, DGEGLM, DGELRT or TopTags Object}
 \description{
-Retrieve the number of rows (genes) and columns (libraries) for an DGEList, DGEExact or TopTags Object.
+Retrieve the number of rows (genes) and columns (libraries) for a DGEList, PCList, DGEExact or TopTags Object.
 }
 \usage{
 \method{dim}{DGEList}(x)
 }
 \arguments{
-  \item{x}{an object of class \code{DGEList}, \code{DGEExact}, \code{TopTags}, \code{DGEGLM} or \code{DGELRT}}
+  \item{x}{an object of class \code{DGEList}, \code{PCList}, \code{DGEExact}, \code{TopTags}, \code{DGEGLM} or \code{DGELRT}.}
 }
 \details{
 Digital gene expression data objects share many analogies with ordinary matrices in which the rows correspond to genes and the columns to arrays.
@@ -26,16 +28,16 @@ The first element is the number of rows (genes) and the second is the number of 
 }
 \author{Gordon Smyth, Davis McCarthy}
 \seealso{
-  \code{\link{dim}} in the base package.
+  \code{\link[base]{dim}} in the base package.
+
+  \code{\link{DGEList-class}} and \code{\link{PCList-class}} describe the data classes used in edgeR.
 }
 \examples{
-M <- A <- matrix(11:14,4,2)
-rownames(M) <- rownames(A) <- c("a","b","c","d")
-colnames(M) <- colnames(A) <- c("A1","A2")
-MA <- new("MAList",list(M=M,A=A))
-dim(M)
-ncol(M)
-nrow(M)
+Counts <- matrix(rpois(40,lambda=10),20,2)
+y <- DGEList(Counts)
+dim(y)
+nrow(y)
+ncol(y)
 }
 
 \concept{edgeR classes}

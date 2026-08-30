@@ -2,10 +2,10 @@
 \docType{class}
 \alias{DGEExact-class}
 \alias{show,DGEExact-method}
-\title{differential expression of Digital Gene Expression data - class}
+\title{Differential Expression of Digital Gene Expression Data - Class}
 
 \description{
-A list-based S4 class for for storing results of a differential expression analysis for DGE data.
+A list-based S4 class for storing results of a differential expression analysis for DGE data.
 }
 
 \section{List Components}{

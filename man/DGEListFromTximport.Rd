@@ -2,9 +2,7 @@
 \alias{DGEListFromTximport}
 \alias{DGEListFromTximeta}
 
-\title{
-Create a DGEList Object From tximport or tximeta Output
-}
+\title{Create a DGEList Object from tximport or tximeta Output}
 
 \description{
 Assembles a \code{DGEList} object from the list object created by either \code{tximport::tximport} or \code{tximeta::tximeta}.
@@ -36,29 +34,29 @@ Alternatively, \code{txi} or \code{txm} will contain results at the original tra
 The count matrix, \code{txi$counts} for \code{tximport} and \code{assay(txi,"counts")} for \code{tximeta}, becomes the count matrix for the DGEList object.
 If either \code{tximport} or \code{tximeta} were run with the option \code{countsFromAbundance="no"}, then a prior offset matrix is formed from the average transcript lengths found in the respective transcript length matrix.
 This implements the "original counts and offset" method described by the tximport documentation.
-If \code{countsFromAbundance} has been set to any other value, then the counts have already be bias corrected and no offset matrix will be formed.
+If \code{countsFromAbundance} has been set to any other value, then the counts have already been bias corrected and no offset matrix will be formed.
 This implements the "bias corrected counts without an offset" method described by the tximport documentation.
 
-If inferential replicates (bootstrap or Gibbs resampling) exist in the \code{txi} or \code{txm} data objects then an read-assignment-ambiguity (RAA) overdispersion is estimated for each row of data, using the approach described by Baldoni et al (2024a).
+If inferential replicates (bootstrap or Gibbs resampling) exist in the \code{txi} or \code{txm} data objects then a read-assignment-ambiguity (RAA) overdispersion is estimated for each row of data, using the approach described by Baldoni et al (2024a).
 If \code{divide=TRUE}, then divided counts will be formed by dividing the original counts by the RAA overdispersions.
 
 Note that transcript level counts from various quantification tools can also be read directly by the native edgeR functions
 \code{\link{catchSalmon}}, \code{\link{catchKallisto}}, \code{\link{catchRSEM}}, or \code{\link{catchOarfish}}, without the need for \code{tximport} as an intermediary, and these will generally give the same results as \code{DGEListFromTximport} at the transcript level.
-In the case of RSEM, using \code{catchRSEM} is preferable, because RSEM does not output inference replicates but \code{catchRSEM} can nevertheless estimate the assignment over-dispersion from the inferential replicate means and variances.
+In the case of RSEM, using \code{catchRSEM} is preferable, because RSEM does not output inferential replicates but \code{catchRSEM} can nevertheless estimate the assignment over-dispersion from the inferential replicate means and variances.
 At the gene level, \code{tximport} and \code{DGEListFromTximport} implement transcript length normalization, which the direct edgeR functions do not.
 }
 
 \value{
 A \code{\link[edgeR:DGEList-class]{DGEList}} object.
 
-If \code{txi} or \code{txm} contains raw counts, then the a prior offset matrix \code{offset.prior} will be included to account for variation in average transcript length between samples.
+If \code{txi} or \code{txm} contains raw counts, then a prior offset matrix \code{offset.prior} will be included to account for variation in average transcript length between samples.
 
 The \code{genes} component of the object will contain the following columns:
   \item{AveLength}{average transcript or gene length, over all samples and all transcripts.}
   \item{Max2MinLength}{ratio of largest to smallest length for different samples. If counts are at the gene level, then the lengths are averages over transcripts for each sample, as computed by tximport.}
   \item{Overdispersion}{quasi-dispersion arising from read assignment ambiguity. Equal to 1 for rows with no ambiguity. Larger values indicate more ambiguity.}
 
-As well as standard DGEList components, the output components \code{divided.counts} indicates whether the counts have been divided and the component \code{txi.counts} indicates whether the tximported counts were direct from the quantifier or whether they were scaled by TPMs.
+As well as standard DGEList components, the output component \code{divided.counts} indicates whether the counts have been divided and the component \code{txi.counts} indicates whether the tximported counts were direct from the quantifier or whether they were scaled by TPMs.
 }
 
 \references{
@@ -75,7 +73,7 @@ Faster and more accurate assessment of differential transcript expression with G
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
 \emph{Nucleic Acids Research} 53(22), gkaf1305.
-\doi{10.1093/nar/gkaf1305}
+\doi{10.1093/nar/gkaf1305}.
 }
 
 \seealso{

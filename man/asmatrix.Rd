@@ -1,6 +1,7 @@
 \name{as.matrix}
 \alias{as.matrix.DGEList}
 \alias{as.matrix.DGEGLM}
+\alias{as.matrix.DGEBIN}
 \title{Collapse a DGEList or DGEGLM Object to a Matrix}
 \description{
 Coerce a digital gene expression object into a numeric matrix by extracting the count values.

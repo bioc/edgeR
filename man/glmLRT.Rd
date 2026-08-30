@@ -19,7 +19,7 @@ glmLRT(glmfit, coef=ncol(glmfit$design), contrast=NULL)
 
 \value{
 An object of class \code{DGELRT} with the same components as for \code{\link{glmFit}} plus the following:
-	\item{table}{data frame with the same rows as \code{y} containing the log2-fold-changes, likelhood ratio statistics and p-values, ready to be displayed by \code{topTags}.}
+	\item{table}{data frame with the same rows as \code{y} containing the log2-fold-changes, likelihood ratio statistics and p-values, ready to be displayed by \code{topTags}.}
 	\item{comparison}{character string describing the coefficient or the contrast being tested.}
 
 The data frame \code{table} contains the following columns:
@@ -40,7 +40,7 @@ If \code{contrast} is a matrix, then each column is a contrast and the null hypo
 \references{
 McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 }
 
 \author{Gordon Smyth, Davis McCarthy, Yunshun Chen}

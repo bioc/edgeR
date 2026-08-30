@@ -1,4 +1,4 @@
-adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adjust=TRUE, start=NULL, get.coef=FALSE)
+adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adjust=TRUE, start=NULL, get.coef=FALSE, nthreads=1L)
 #	Tagwise Cox-Reid adjusted profile log-likelihoods for the dispersion.
 #	dispersion can be a scalar or a tagwise vector.
 #	Computationally, dispersion can also be a matrix, but the apl is still computed tagwise.
@@ -17,6 +17,11 @@ adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adju
 	if (!is.numeric(y)) stop("counts must be numeric")
 	y <- as.matrix(y)
 
+#	Checking design (full rank); this guard was previously provided by glmFit
+	design <- as.matrix(design)
+	ne <- nonEstimable(design)
+	if(!is.null(ne)) stop(paste("Design matrix not of full rank. The following coefficients not estimable:\n", paste(ne, collapse=" ")))
+
 #	Checking offsets
 	offset <- .compressOffsets(y, offset=offset)
 
@@ -26,22 +31,19 @@ adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adju
 #	Checking weights
 	weights <- .compressWeights(y, weights)
 	  
-#	Fit tagwise linear models
-	fit <- glmFit(y,design=design,dispersion=dispersion,offset=offset,prior.count=0,weights=weights,start=start)
-	mu <- fit$fitted.values
-
-#	Check other inputs to C++ code
-	adjust <- as.logical(adjust)
-	if (!is.double(design)) storage.mode(design) <- "double"
-
-#	Compute adjusted log-likelihood
-	apl <- .Call(.cxx_compute_apl, y, mu, dispersion, weights, adjust, design)
+#	Fit tagwise GLMs and compute the adjusted profile likelihood in one C call.
+#	fit_glm_mat produces the fitted values internally and feeds them straight to
+#	the APL computation, so 'mu' never round-trips through R. The 250L/1e-6 match
+#	the maxit/tol that glmFit.default passes to .cxx_fit_glm.
+	fit <- .Call(.cxx_fit_apl, y, offset, dispersion, weights, design, 250L, 1e-6, start, adjust, nthreads)
 
 #	Deciding what to return.
-	if (get.coef) { 
-		return(list(apl=apl, beta=fit$coefficients))
+	if (get.coef) {
+		beta <- fit$coefficients
+		dimnames(beta) <- list(rownames(y), colnames(design))
+		return(list(apl=fit$apl, beta=beta))
 	} else {
-		return(apl)
+		return(fit$apl)
 	}
 }
 

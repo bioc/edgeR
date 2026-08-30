@@ -11,7 +11,7 @@ cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, 
 
 	lib.size <- y$samples$lib.size
 	if(normalized.lib.sizes) lib.size <- lib.size*y$samples$norm.factors
-	cpm(y$counts, lib.size=lib.size, offset.prior=y[["offset.prior"]], log=log, prior.count=prior.count)
+	cpm(y$counts, lib.size=lib.size, offset.prior=y[["offset.prior"]], log=log, prior.count=prior.count, ...)
 }
 
 cpm.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
@@ -51,11 +51,11 @@ cpm.MArrayLM <- function(y, log=FALSE, ...)
 	}
 }
 
-cpm.default <- function(y, lib.size=NULL, offset=NULL, offset.prior=NULL, log=FALSE, prior.count=2, ...)
+cpm.default <- function(y, lib.size=NULL, offset=NULL, offset.prior=NULL, log=FALSE, prior.count=2, nthreads=1L, ...)
 #	Counts per million for a matrix
 #	Davis McCarthy, Yunshun Chen, Gordon Smyth.
-#   C++ version by Aaron Lun. C version by Lizhong Chen.
-#	Created 20 June 2011. Last modified 15 Aug 2026.
+#	C++ version by Aaron Lun. C version by Lizhong Chen.
+#	Created 20 June 2011. Last modified 18 Aug 2026.
 {
 #	Coerce to matrix
 	y <- as.matrix(y)
@@ -105,9 +105,9 @@ cpm.default <- function(y, lib.size=NULL, offset=NULL, offset.prior=NULL, log=FA
 #	Calculating in C for max efficiency
 	if(log) {
 		prior.count <- .compressPrior(y, prior.count)
-		out <- .Call(.cxx_calculate_cpm_log, y, lib.size, prior.count)
+		out <- .Call(.cxx_calculate_cpm_log, y, lib.size, prior.count, nthreads)
 	} else {
-		out <- .Call(.cxx_calculate_cpm_raw, y, lib.size)
+		out <- .Call(.cxx_calculate_cpm_raw, y, lib.size, nthreads)
 	}
 
 	out

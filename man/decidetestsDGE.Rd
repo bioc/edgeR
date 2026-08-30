@@ -26,12 +26,12 @@ significant up-regulated for the comparison contained in \code{object}.
 To be considered significant, genes need to have adjusted p-value below \code{p.value} and log2-fold-change greater than \code{lfc}.
 
 If \code{object} contains F-tests or LRTs for multiple contrasts, then the genes are simply classified as significant (1) or not significant.
-In this case, the log2-fold-change theshold \code{lfc} has to be achieved by at least one of the contrasts for a gene to be significant.
+In this case, the log2-fold-change threshold \code{lfc} has to be achieved by at least one of the contrasts for a gene to be significant.
 }
 \details{
 This function applies a multiple testing procedure and significance level cutoff to the genewise tests contained in an edgeR test object and collates the results in a data.frame table.
 
-The function can apply optionally apply a logFC cutoff and well as a p-value or FDR cutoff (although logFCs cutoff are not recommended, see note below).
+The function can optionally apply a logFC cutoff as well as a p-value or FDR cutoff (although logFC cutoffs are not recommended, see note below).
 If the statistical tests are on 1 degree of freedom, then the logFC cutoff is applied to the absolute coefficient or contrast.
 If the statistical tests are on more than 1 degree of freedom, then the logFC cutoff will be satisfied if any of the coefficients or contrasts that define the test are greater than the cutoff.
 }
@@ -39,7 +39,7 @@ If the statistical tests are on more than 1 degree of freedom, then the logFC cu
 Although this function enables users to set p-value and logFC cutoffs simultaneously, this combination criterion is not recommended.
 logFC cutoffs tend to favor low expressed genes and thereby reduce rather than increase biological significance.
 Unless the fold changes and p-values are very highly correlated, the addition of a fold change cutoff can also increase the family-wise error rate or false discovery rate above the nominal level.
-Users wanting to use fold change thresholding should considering using \code{glmTreat} instead and leaving \code{lfc} at the default value when using \code{decideTests}.
+Users wanting to use fold change thresholding should consider using \code{glmTreat} instead and leaving \code{lfc} at the default value when using \code{decideTests}.
 }
 \seealso{
 \code{\link[limma]{decideTests}} and \code{\link[limma]{TestResults-class}} in the limma package.

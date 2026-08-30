@@ -10,7 +10,7 @@
 
 \usage{
 \method{glmFit}{default}(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL,
-       prior.count=0.125, start=NULL, \dots)
+       prior.count=0.125, start=NULL, nthreads=1L, \dots)
 \method{glmFit}{DGEList}(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, \dots)
 \method{glmFit}{SummarizedExperiment}(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, \dots)
 }
@@ -30,10 +30,11 @@ Defaults to a single column of ones, equivalent to treating the columns as repli
 
 \item{weights}{positive prior weights for the GLM fits. Can be a single value, or a vector of length \code{ncol(y)}, or a matrix of the same size as \code{y}. If \code{NULL}, will be set to unity for all observations.}
 
-\item{prior.count}{average prior count to be added to observation to shrink the estimated log-fold-changes towards zero.}
+\item{prior.count}{average prior count to be added to each observation to shrink the estimated log-fold-changes towards zero.}
 
 \item{start}{optional numeric matrix of initial estimates for the linear model coefficients.}
 
+\item{nthreads}{integer giving the number of OpenMP threads to use for the genewise GLM fitting. Defaults to 1 (serial).}
 \item{\dots}{other arguments are passed to lower level fitting functions.}
 }
 
@@ -48,12 +49,13 @@ An object of class \code{DGEGLM} containing components \code{counts}, \code{samp
 	\item{unshrunk.coefficients}{numeric matrix of estimated coefficients from the glm fits when no log-fold-changes shrinkage is applied, on the natural log scale, of size \code{nrow(y)} by \code{ncol(design)}. It exists only when \code{prior.count} is not 0.}
 	\item{fitted.values}{matrix of fitted values from glm fits, same number of rows and columns as \code{y}.}
 	\item{deviance}{numeric vector of deviances, one for each gene.}
+	\item{nthreads}{integer giving the number of OpenMP threads used for the fit, as specified by the \code{nthreads} argument. It is stored on the fitted object so that downstream tests reuse the same number of threads.}
 }
 
 \details{
 Implements generalized linear model (GLM) methods developed by McCarthy et al (2012).
 Specifically, \code{glmFit} fits genewise negative binomial GLMs, all with the same design matrix but possibly different dispersions, offsets and weights.
-When the design matrix defines a one-way layout, or can be re-parametrized to a one-way layout, the GLMs are fitting very quickly using \code{\link{mglmOneGroup}}.
+When the design matrix defines a one-way layout, or can be re-parametrized to a one-way layout, the GLMs are fitted very quickly using \code{\link{mglmOneGroup}}.
 Otherwise the default fitting method, implemented in \code{\link{mglmLevenberg}}, uses a Fisher scoring algorithm with Levenberg-style damping.
 
 Positive \code{prior.count} values cause the returned coefficients to be shrunk in such a way that fold-changes between the treatment conditions are decreased and infinite fold-changes are avoided (Phipson, 2013).
@@ -65,7 +67,7 @@ Coefficient shrinkage does not affect the likelihood ratio tests or p-values.
 McCarthy DJ, Chen Y, Smyth GK (2012).
 Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 
 Phipson B (2013).
 Empirical Bayes modelling of expression profiles and their associations.
@@ -75,7 +77,7 @@ Ph.D. thesis, Department of Mathematics and Statistics, The University of Melbou
   Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025).
   edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
   \emph{Nucleic Acids Research} 53(2), gkaf018.
-  \doi{10.1093/nar/gkaf018}
+  \doi{10.1093/nar/gkaf018}.
 }
 
 \author{Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun, Lizhong Chen}

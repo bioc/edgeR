@@ -1,4 +1,4 @@
-\title{Top table of differentially spliced genes or exons}
+\title{Top Table of Differentially Spliced Genes or Exons}
 \name{topSpliceDGE}
 \alias{topSpliceDGE}
 \description{
@@ -23,10 +23,10 @@ The exon-level tests test for differences between each exon and all the exons fo
 The gene-level tests test for any differences in exon usage between experimental conditions.
 
 The Simes method processes the exon-level p-values to give an overall call of differential splicing for each gene.
-It returns the minimum Simes-adjusted p-values for each gene.
+It returns the minimum Simes-adjusted p-value for each gene.
 
-The gene-level tests are likely to be powerful for genes in which several exons are differentially splices.
-The Simes p-values is likely to be more powerful when only a minority of the exons for a gene are differentially spliced.
+The gene-level tests are likely to be powerful for genes in which several exons are differentially spliced.
+The Simes p-values are likely to be more powerful when only a minority of the exons for a gene are differentially spliced.
 The exon-level tests are not recommended for formal error rate control.
 }
 

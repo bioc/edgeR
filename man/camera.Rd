@@ -26,16 +26,16 @@ Test whether a set of genes is highly ranked relative to other genes in terms of
   \item{inter.gene.cor}{numeric, optional preset value for the inter-gene correlation within tested sets.  If \code{NA} or \code{NULL}, then an inter-gene correlation will be estimated for each tested set.}
   \item{sort}{logical, should the results be sorted by p-value?}
   \item{statistic}{a \code{DGELRT} object.}
-  \item{\dots}{other arguments are not currently used}
+  \item{\dots}{other arguments are not currently used.}
 }
 
 \details{
-Camera is a competitive gene set test proposed by Wu and Smyth (2012) for microarray data and \code{camera} and implemented as an S3 generic function in the limma package.
+Camera is a competitive gene set test proposed by Wu and Smyth (2012) for microarray data and \code{camera} is implemented as an S3 generic function in the limma package.
 It is often used for gene set enrichment analyses (GSEA) together with a database of gene sets such as the MSigDB.
 Here we provide \code{camera} methods for DGEList and DGEGLM class objects.
 The negative binomial count data is converted to approximate normal deviates by computing mid-p quantile residuals (Dunn and Smyth, 1996; Routledge, 1994), under the null hypothesis that the contrast is zero, and the normal deviates are then passed to limma's camera function.
 
-The \code{cameraPR} function is a variation of the camera method for pre-ranked diffential expression statistics.
+The \code{cameraPR} function is a variation of the camera method for pre-ranked differential expression statistics.
 We provide here a \code{cameraPR} method for DGELRT objects.
 }
 
@@ -51,8 +51,8 @@ See \code{\link[limma]{camera}} for details.
 Dunn PK, Smyth GK (1996).
 Randomized quantile residuals.
 \emph{Journal of Computational and Graphical Statistics} 5, 236-244.
-\doi{10.1080/10618600.1996.10474708}
-\url{https://gksmyth.github.io/pubs/residual.html}
+\doi{10.1080/10618600.1996.10474708}.
+\url{https://gksmyth.github.io/pubs/residual.html}.
 
 Routledge RD (1994).
 Practicing safe statistics with the mid-p.
@@ -60,7 +60,7 @@ Practicing safe statistics with the mid-p.
 
 Wu D, Smyth GK (2012). Camera: a competitive gene set test accounting for inter-gene correlation.
 \emph{Nucleic Acids Research} 40, e133.
-\doi{10.1093/nar/gks461}
+\doi{10.1093/nar/gks461}.
 }
 
 \seealso{

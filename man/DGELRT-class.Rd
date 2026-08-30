@@ -2,7 +2,7 @@
 \docType{class}
 \alias{DGELRT-class}
 \alias{show,DGELRT-method}
-\title{Digital Gene Expression Likelihood Ratio Test data and results - class}
+\title{Digital Gene Expression Likelihood Ratio Test Data and Results - Class}
 
 \description{
 A list-based S4 class for storing results of a GLM-based differential expression analysis for DGE data.

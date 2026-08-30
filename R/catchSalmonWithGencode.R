@@ -1,9 +1,9 @@
-catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,verbose=TRUE)
+catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Unpack Gencode annotation and summarize to gene level.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of genewise counts.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 April 2018. Last modified 10 Aug 2026.
+#	Created 1 April 2018. Last modified 28 Aug 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -67,19 +67,25 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 			if(!IsGencode) stop("Row names do not appear to be fromm Gencode")
 			GenecodeAnn <- splitGencodeTxNames(Quant1$Name)
 			EnsG <- GenecodeAnn[,"EnsG"]
+			NTxPerGene <- drop(rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE))
 			d <- duplicated(EnsG)
-			GeneAnn <- data.frame(GenecodeAnn[!d,c("GeneName","Type")])
+			GeneAnn <- data.frame(GenecodeAnn[!d,"GeneName"],drop=FALSE)
 			NGene <- nrow(GeneAnn)
-			Counts <- Length <- matrix(0,NGene,NSamples)
+			Counts <- matrix(0,NGene,NSamples)
+			TPM <- EffLen <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NGene)
 			OverDisp <- rep_len(0,NGene)
 			Counts[,1L] <- drop(rowsum(Quant1$NumReads,EnsG,reorder=FALSE))
-			eps <- 1e-6
-			Length[,1L] <- rowsum(Quant1$EffectiveLength*(Quant1$TPM+eps),EnsG,reorder=FALSE)/rowsum(Quant1$TPM+eps,EnsG,reorder=FALSE)
+			TPM[,1L] <- Quant1$TPM
+			EffLen[,1L] <- Quant1$EffectiveLength
+#			eps <- 1e-6
+#			Length[,1L] <- rowsum(Quant1$EffectiveLength*(Quant1$TPM+eps),EnsG,reorder=FALSE)/rowsum(Quant1$TPM+eps,EnsG,reorder=FALSE)
 		} else {
 			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="__ddd",progress=FALSE))
 			Counts[,j] <- drop(rowsum(Quant$NumReads,EnsG,reorder=FALSE))
-			Length[,j] <- rowsum(Quant$EffectiveLength*(Quant$TPM+eps),EnsG,reorder=FALSE)/rowsum(Quant$TPM+eps,EnsG,reorder=FALSE)
+			TPM[,j] <- Quant$TPM
+			EffLen[,j] <- Quant$EffectiveLength
+#			Length[,j] <- rowsum(Quant$EffectiveLength*(Quant$TPM+eps),EnsG,reorder=FALSE)/rowsum(Quant$TPM+eps,EnsG,reorder=FALSE)
 		}
 
 #		Bootstrap samples
@@ -95,13 +101,38 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 			DF[i] <- DF[i]+NBoot-1L
 		}
 	}
-	
+
+#	Average gene length, with weak moderation towards genewise average and towards unweighted average
+	gene.length <- match.arg(gene.length,c("moderate","tximport","simple"))
+	if(identical(gene.length,"moderate")) {
+		eps <- 1e-6
+		m <- rowMeans(TPM)
+		TPM2 <- TPM + eps + m/1000
+		Length <- rowsum(TPM2*EffLen,EnsG,reorder=FALSE)/rowsum(TPM2,EnsG,reorder=FALSE)
+	}
+	if(identical(gene.length,"tximport")) {
+		GeneIsAllZero <- which(rowSums(Counts) == 0)
+		TxGeneIsAllZero <- which(EnsG %in% EnsG[!d][GeneIsAllZero])
+		Length <- Counts
+		Length[GeneIsAllZero,] <- rowsum(EffLen[TxGeneIsAllZero,],EnsG[TxGeneIsAllZero],reorder=FALSE) / NTxPerGene[GeneIsAllZero]
+		Length[-GeneIsAllZero,] <- rowsum(TPM[-TxGeneIsAllZero,]*EffLen[-TxGeneIsAllZero,],EnsG[-TxGeneIsAllZero],reorder=FALSE) / rowsum(TPM[-TxGeneIsAllZero,],EnsG[-TxGeneIsAllZero],reorder=FALSE) 
+		if(anyNA(Length)) {
+			m <- rowMeans(Length,na.rm=TRUE)
+			i <- which(is.na(Length))
+			Length[i] <- matrix(m,NGene,NSamples)[i]
+		}
+	}
+	if(identical(gene.length,"simple")) {
+		Length <- rowsum(EffLen,EnsG,reorder=FALSE)/ NTxPerGene
+	}
+
 #	Compute length statistics
-	LTxL <- log(Length)
-	AveTxLength <- exp(rowMeans(LTxL))
-	MinLLen <- apply(LTxL, 1, min)
-	MaxLLen <- apply(LTxL, 1, max)
-	RangeTxLength <- exp(MaxLLen - MinLLen)
+	LGL <- log(Length)
+	m <- rowMeans(LGL)
+	AveLength <- exp(m)
+	MinLLen <- apply(LGL, 1, min)
+	MaxLLen <- apply(LGL, 1, max)
+	RangeLength <- exp(MaxLLen - MinLLen)
 
 #	Estimate overdispersion for each transcript or gene
 	i <- (DF > 0L)
@@ -124,7 +155,7 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 	EnsGu <- EnsG[!d]
 	dimnames(Counts) <- list(EnsGu,basename(paths))
 	NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
-	Genes <- data.frame(GeneAnn,NTx=NTxPerGene,AveLength=AveTxLength,Max2MinLength=RangeTxLength,Overdispersion=OverDisp)
+	Genes <- data.frame(GeneAnn,NTx=NTxPerGene,AveLength=AveLength,Max2MinLength=RangeLength,Overdispersion=OverDisp)
 	row.names(Genes) <- EnsGu
 
 #	Divided counts
@@ -142,7 +173,7 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 		y$resample.type <- ResampleType
 		y$divided.counts <- divide
 		if(offset.prior) {
-			y$offset.prior <- LTxL - rowMeans(LTxL)
+			y$offset.prior <- LGL - m
 			dimnames(y$offset.prior) <- dimnames(Counts)
 		}
 	} else {

@@ -1,7 +1,7 @@
 \name{estimateGLMRobustDisp}
 \alias{estimateGLMRobustDisp}
 
-\title{Empirical Robust Bayes Tagwise Dispersions for Negative Binomial GLMs using Observation Weights}
+\title{Empirical Robust Bayes Tagwise Dispersions for Negative Binomial GLMs Using Observation Weights}
 
 \description{
 Compute a robust estimate of the negative binomial dispersion parameter for each gene, with expression levels specified by a log-linear model, using observation weights.  These observation weights will be stored and used later for estimating regression parameters.
@@ -19,10 +19,10 @@ estimateGLMRobustDisp(y, design = NULL, prior.df = 10, update.trend = TRUE,
 \item{design}{numeric design matrix, as for \code{\link{glmFit}}.}
 \item{prior.df}{prior degrees of freedom.}
 \item{update.trend}{logical. Should the trended dispersion be re-estimated at each iteration?} 
-\item{trend.method}{method (low-level function) used to estimated the trended dispersions. \code{\link{estimateGLMTrendedDisp}}}
+\item{trend.method}{method (low-level function) used to estimate the trended dispersions. \code{\link{estimateGLMTrendedDisp}}.}
 \item{maxit}{maximum number of iterations for weighted \code{\link{estimateGLMTagwiseDisp}}.}
 \item{k}{the tuning constant for Huber estimator. If the absolute value of residual (r) is less than k, its observation weight is 1, otherwise \code{k/abs(r)}.} 
-\item{residual.type}{type of residual (r) used for estimation observation weight}
+\item{residual.type}{type of residual (r) used for estimating the observation weight.}
 \item{verbose}{logical.  Should verbose comments be printed?}
 \item{record}{logical.  Should information for each iteration be recorded (and returned as a list)?}
 }
@@ -39,7 +39,7 @@ Moderation of dispersion estimates towards a trend can be sensitive to outliers,
 The robustly computed genewise estimates are reported in the \code{tagwise.dispersion} vector of the returned \code{DGEList}.
 The terms `tag' and `gene' are synonymous in this context.
 
-Note: it is not necessary to first calculate the common, trended and genewise dispersion estimates.  If these are not available, the function will first calculate this (in an unweighted) fashion.
+Note: it is not necessary to first calculate the common, trended and genewise dispersion estimates.  If these are not available, the function will first calculate these in an unweighted fashion.
 }
 
 \references{

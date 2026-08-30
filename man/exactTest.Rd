@@ -26,7 +26,7 @@ exactTestBetaApprox(y1, y2, dispersion=0)
 \item{dispersion}{either a numeric vector of dispersions or a character string indicating that dispersions should be taken from the data object.
 If a numeric vector, then can be either of length one or of length equal to the number of genes.
 Allowable character values are \code{"common"}, \code{"trended"}, \code{"tagwise"} or \code{"auto"}.
-Default behavior (\code{"auto"} is to use most complex dispersions found in data object.}
+Default behavior (\code{"auto"}) is to use the most complex dispersions found in the data object.}
 
 \item{rejection.region}{type of rejection region for two-sided exact test.  Possible values are \code{"doubletail"}, \code{"smallp"} or \code{"deviance"}.}
 
@@ -34,7 +34,7 @@ Default behavior (\code{"auto"} is to use most complex dispersions found in data
 
 \item{prior.count}{average prior count used to shrink log-fold-changes. Larger values produce more shrinkage.}
 
-\item{y1}{numeric matrix of counts for the first the two experimental groups to be tested for differences.
+\item{y1}{numeric matrix of counts for the first of the two experimental groups to be tested for differences.
 Rows correspond to genes and columns to libraries.
 Libraries are assumed to be equal in size - e.g. adjusted pseudocounts from the output of \code{\link{equalizeLibSizes}}.}
 
@@ -71,7 +71,7 @@ This method corresponds exactly to \code{binomTest} as the dispersion approaches
 \code{exactTestByDeviance} uses the deviance goodness of fit statistics to define the rejection region, and is therefore equivalent to a conditional likelihood ratio test.
 
 Note that \code{rejection.region="smallp"} is no longer recommended.
-It is preserved as an option only for backward compatiblity with early versions of edgeR.
+It is preserved as an option only for backward compatibility with early versions of edgeR.
 \code{rejection.region="deviance"} has good theoretical statistical properties but is relatively slow to compute.
 \code{rejection.region="doubletail"} is just slightly more conservative than \code{rejection.region="deviance"}, but is recommended because of its much greater speed.
 For general remarks on different types of rejection regions for exact tests see Gibbons and Pratt (1975).
@@ -81,10 +81,10 @@ It is called by the other functions for rows with both group counts greater than
 }
 
 \references{
-Robinson MD and Smyth GK (2008). Small-sample estimation of negative binomial dispersion, with applications to SAGE data.
+Robinson MD, Smyth GK (2008). Small-sample estimation of negative binomial dispersion, with applications to SAGE data.
 \emph{Biostatistics}, 9, 321-332.
 
-Gibbons, JD and Pratt, JW (1975).  P-values: interpretation and methodology.
+Gibbons JD, Pratt JW (1975).  P-values: interpretation and methodology.
 \emph{The American Statistician} 29, 20-25.
 }
 

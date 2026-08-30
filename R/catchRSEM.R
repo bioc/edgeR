@@ -1,18 +1,23 @@
-catchRSEM <- function(files=NULL,path=".",ngibbs=100,DGEList=FALSE,divide=FALSE,verbose=TRUE)
-# Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
-# Use Gibbs samples to estimate overdispersion of transcriptwise counts.
-# Pedro Baldoni and Gordon Smyth
-# Created 24 April 2024. Last modified 26 Jun 2026.
+catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=FALSE,verbose=TRUE)
+#	Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
+#	Use Gibbs samples to estimate overdispersion of transcriptwise counts.
+#	Will unpack Genecode Tx annotation if found in row.names.
+#	Pedro Baldoni and Gordon Smyth
+#	Created 24 April 2024. Last modified 29 Aug 2026.
 {
+#	Check parent.dir
+	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
+	if(is.null(parent.dir)) parent.dir <- "."
+
 #	Check files
 	if(is.null(files)) {
-		files <- dir(path=path,pattern="*\\.isoforms\\.results$")
+		files <- dir(path=parent.dir,pattern="*\\.isoforms\\.results$")
 	} else {
 		files <- as.character(files)
 	}
 	NSamples <- length(files)
 	if(NSamples < 1L) stop("No isoforms.results files", call.=FALSE)
-	files <- file.path(path,files)
+	files <- file.path(parent.dir,files)
 
 #	Check ngibbs
 	ngibbs <- rep_len(ngibbs,NSamples)
@@ -92,7 +97,7 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,DGEList=FALSE,divide=FALSE,
 	}
 	
 #	Prepare output
-	SampleNames <- removeExt(removeExt(files))
+	SampleNames <- removeExt(removeExt(basename(files)))
 	Quant1 <- as.data.frame(Quant1,stringsAsFactors=FALSE)
 	dimnames(Counts) <- list(Quant1$transcript_id,SampleNames)
 	row.names(Quant1) <- Quant1$transcript_id

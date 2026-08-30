@@ -13,11 +13,14 @@ Fit the same log-link negative binomial or Poisson generalized linear model (GLM
 
 \usage{
 mglmOneGroup(y, dispersion = 0, offset = 0, weights = NULL,
-             coef.start = NULL, maxit = 50, tol = 1e-10, verbose = FALSE)
+             coef.start = NULL, maxit = 50, tol = 1e-10, verbose = FALSE,
+             nthreads = 1L)
 mglmOneWay(y, design = NULL, group = NULL, dispersion = 0, offset = 0, weights = NULL,
-             coef.start = NULL, maxit = 50, tol = 1e-10)
+             coef.start = NULL, maxit = 50, tol = 1e-10,
+             nthreads = 1L)
 mglmLevenberg(y, design, dispersion = 0, offset = 0, weights = NULL,
-             coef.start = NULL, start.method = "null", maxit = 200, tol = 1e-06)
+             coef.start = NULL, start.method = "null", maxit = 200, tol = 1e-06,
+             nthreads = 1L)
 designAsFactor(design)
 }
 
@@ -26,12 +29,12 @@ designAsFactor(design)
 
 \item{design}{numeric matrix giving the design matrix of the GLM.
 Assumed to be full column rank.
-This is a required argument for \code{mglmLevernberg} and \code{code{designAsFactor}}.
+This is a required argument for \code{mglmLevenberg} and \code{designAsFactor}.
 For \code{mglmOneWay}, it defaults to \code{model.matrix(~0+group)} if \code{group} is specified and otherwise to \code{model.matrix( ~1)}.
 }
 
 \item{group}{factor giving group membership for oneway layout.
-If both \code{design} and \code{group} are both specified, then they must agree in terms of \code{designAsFactor}.
+If both \code{design} and \code{group} are specified, then they must agree in terms of \code{designAsFactor}.
 If \code{design=NULL}, then a group-means design matrix is implied.}
 
 \item{dispersion}{numeric scalar or vector giving the dispersion parameter for each GLM.
@@ -54,6 +57,8 @@ This argument does not usually need to be set as the automatic starting values p
 \item{maxit}{integer giving the maximum number of iterations for the Fisher scoring algorithm. The iteration will be stopped when this limit is reached even if the convergence criterion hasn't been satisfied.}
 
 \item{verbose}{logical. If \code{TRUE}, warnings will be issued when \code{maxit} iterations are exceeded before convergence is achieved.}
+
+\item{nthreads}{integer giving the number of OpenMP threads to use for the genewise fitting. Defaults to 1 (serial).}
 }
 
 \details{
@@ -61,13 +66,13 @@ These functions are low-level work-horses used by higher-level functions in the 
 Most users will not need to call these functions directly.
 
 The functions \code{mglmOneGroup}, \code{mglmOneWay} and \code{mglmLevenberg} all fit a negative binomial GLM to each row of \code{y}.
-The row-wise GLMS all have the same design matrix but possibly different dispersions, offsets and weights.
+The row-wise GLMs all have the same design matrix but possibly different dispersions, offsets and weights.
 These functions are all low-level in that they operate on atomic objects (numeric matrices and vectors).
 
 \code{mglmOneGroup} fits an intercept only model to each response vector.
 In other words, it treats all the libraries as belonging to one group.
 It implements Fisher scoring with a score-statistic stopping criterion for each gene.
-Excellent starting values are available for the null model so this function seldom has any problems with convergence.
+Excellent starting values are available for the null model, so this function seldom has any problems with convergence.
 It is used by other edgeR functions to compute the overall abundance for each gene.
 
 \code{mglmOneWay} fits a oneway layout to each response vector.
@@ -104,18 +109,18 @@ It determines how many distinct row values the design matrix is capable of compu
 McCarthy DJ, Chen Y, Smyth GK (2012).
 Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 
   Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025).
   edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
   \emph{Nucleic Acids Research} 53(2), gkaf018.
-  \doi{10.1093/nar/gkaf018}
+  \doi{10.1093/nar/gkaf018}.
 }
 
 \author{Gordon Smyth, Yunshun Chen, Davis McCarthy, Aaron Lun. C code by Aaron Lun.}
 
 \seealso{
-Most users will call either \code{\link{glmFit}}, the higher-level function offering more object-orientated GLM modelling of DGE data, or else \code{\link{exactTest}}, which is designed for oneway layouts.
+Most users will call either \code{\link{glmFit}}, the higher-level function offering more object-oriented GLM modeling of DGE data, or else \code{\link{exactTest}}, which is designed for oneway layouts.
 }
 
 \examples{

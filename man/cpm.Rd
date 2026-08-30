@@ -33,7 +33,7 @@
        log = FALSE, prior.count = 2, \dots)
 \method{cpm}{DGEGLM}(y, log = FALSE, shrunk = TRUE, \dots)
 \method{cpm}{default}(y, lib.size = NULL, offset = NULL, offset.prior = NULL,
-       log = FALSE, prior.count = 2, \dots)
+       log = FALSE, prior.count = 2, nthreads = 1L, \dots)
 \method{rpkm}{DGEList}(y, gene.length = NULL, normalized.lib.sizes = TRUE,
        log = FALSE, prior.count = 2, \dots)
 \method{rpkm}{SummarizedExperiment}(y, gene.length = NULL, normalized.lib.sizes = TRUE,
@@ -96,7 +96,10 @@
     numeric vector or matrix of non-negative quantitative weights.
     Can be a vector of length equal to the number of libraries, or a matrix of the same size as \code{y}.
   }
-  \item{\dots}{other arguments are not currently used.}
+  \item{nthreads}{
+    integer giving the number of OpenMP threads to use for the genewise computations. Defaults to 1 (serial).
+  }
+  \item{\dots}{other arguments can be passed down to \code{cpm.default} from other functions.}
 }
 
 \details{
@@ -113,7 +116,7 @@ If \code{shrunk=TRUE}, then the CPM or RPKM values will reflect the \code{prior.
 If \code{shrunk=FALSE}, then the CPM or RPKM values will be computed with \code{prior.count=0}.
 Note that the latter could result in taking the log of near-zero values if \code{log=TRUE}.
 
-If a prior offset matrix is supplied, either as an argument or as a component of the DGEList, then obervation-specific effective library sizes will be obtained by adding \code{offset.prior} to the log library sizes.
+If a prior offset matrix is supplied, either as an argument or as a component of the DGEList, then observation-specific effective library sizes will be obtained by adding \code{offset.prior} to the log library sizes.
 If an ordinary offset matrix is supplied (\code{offset}), either as an argument or in the DGEList, then it will be row-mean corrected and treated as a prior offset matrix.
 
 \code{cpmByGroup} and \code{rpkmByGroup} compute group average values on the unlogged scale.

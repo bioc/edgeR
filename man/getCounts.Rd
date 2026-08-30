@@ -12,22 +12,22 @@ getDispersion(y)
 }
 
 \arguments{ 
-\item{y}{\code{DGEList} object containing (at least) the elements \code{counts} (table of raw counts), \code{group} (factor indicating group) and \code{lib.size} (numeric vector of library sizes)}
+\item{y}{\code{DGEList} object containing (at least) the elements \code{counts} (table of raw counts), \code{group} (factor indicating group) and \code{lib.size} (numeric vector of library sizes).}
 }
 
 \description{
 \code{getCounts(y)} returns the matrix of read counts \code{y$counts}.
 
-\code{getOffset(y)} returns offsets for the log-linear predictor account for sequencing depth and possibly other normalization factors.
+\code{getOffset(y)} returns offsets for the log-linear predictor that account for sequencing depth and possibly other normalization factors.
 Specifically it returns the matrix \code{y$offset} if that is non-null.
-Otherwise, it returns the log effective library sizes (\code{log(lib.size*norm.factors)}), added columnwise to the prior offset matrix \code{y$offset.prior} if that exists..
+Otherwise, it returns the log effective library sizes (\code{log(lib.size*norm.factors)}), added columnwise to the prior offset matrix \code{y$offset.prior} if that exists.
 
 \code{getDispersion(y)} returns the most complex dispersion estimates (common, trended or genewise) found in \code{y}.
 }
 
 \value{\code{getCounts} returns the matrix of counts.
 \code{getOffset} returns a numeric matrix, if an offset matrix was found, otherwise a vector of length \code{ncol(y)}.
-\code{getDispersion} returns vector of dispersion values, either of length 1 or of length \code{nrow(y)}.
+\code{getDispersion} returns a vector of dispersion values, either of length 1 or of length \code{nrow(y)}.
 }
 
 \author{Mark Robinson, Davis McCarthy, Gordon Smyth}

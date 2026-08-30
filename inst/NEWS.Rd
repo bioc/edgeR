@@ -3,16 +3,76 @@
 \encoding{UTF-8}
 
 
-\section{version 4.10.0 (2026-04-25)}{\itemize{
+\section{version 5.0.0 (2026-10-30)}{\itemize{
+
+\item
+The genewise C kernels (GLM fitting, deviances, CPM, quasi-likelihood adjustment, exact test, diffSplice, etc.) are now parallelized with OpenMP. The number of threads is controlled by a new `nthreads` argument on the affected functions, or globally via `options(edgeR.nthreads=)`, and defaults to 1 (serial) so results are unchanged by default.
+
+\item
+The C backend for diffSplice() now exploits the bordered block-diagonal (arrowhead) structure of the splice design matrix, fitting the genewise null models in time linear, rather than cubic, in the number of exons per gene. Results are unchanged. diffSplice() also gains `maxit` and `tol` arguments controlling the genewise GLM fits.
+
+\item
+voomLmFit() has been removed from edgeR and is now provided by the limma package.
+
+\item
+New functions binQLFit() and binQLFTest() to fit quasi-binomial generalized linear models, to estimate bias-adjusted deviances, and to test hypotheses.
+These functions are closely analogous to glmQLFit() and glmQLFTest() but for paired counts and differential proportion analyses instead of regular counts and differential abundance analyses.
+
+\item
+New functions binFit(), mBinOneWay(), and mBinIWLS() to fit binomial generalized models.
+
+\item
+New class DGEBin to store quasi-binomial generalized linear model fits.
+
+\item
+New function readBismark2PC() to read Bismark output into an edgeR PCList object.
+
+\item
+New class PCList to store paired counts, for example methylated and unmethylated reads, for the same genomic regions.
+
+\item
+New function splitGencodeTxNames() to unpack gene and transcript annotation found in Gencode transcript IDs.
+
+\item
+catchSalmon(), catchKallisto(), catchOarfish() and catchRSEM() will now detect and unpack Gencode transcript IDs if they are present.
+This provides gene IDs and other annotation that is stored in the output object.
+
+\item
+New function catchSalmonWithGencode() that automatically extracts gene annotation from Gencode transcript names and uses the associated Ensembl gene IDs to collapse the quantifications to gene-level counts and RTA dispersions.
+
+\item
+New argument `parent.dir` for catchSalmon(), catchSalmonWithGencode(), catchKallisto(), catchOarfish() and catchRSEM() to more easily read all the samples available in a specified output directory.
+New argument `sample.dirs` for catchSalmon(), catchSalmonWithGencode(), and catchKallisto(), that replaces `paths` and allows individual samples to be specified.
+
+\item
+New argument `offset.prior` for cpm(), rpkm(), catchSalmon() and catchSalmonWithGencode() to allow the offset matrix to be specified relative to the log(library sizes).
+The `offset` argument still takes priority if it is set.
+
+\item
+sampleWeights() now accepts a DGEGLM fitted model object from glmQLFit() instead of a matrix of adjusted unit deviances.
+
+\item
+Update featureCounts2DGEList() to work with the current version of Rsubread.
+
+\item
+estimateDisp() now uses classic model only if the design and offset matrices are both absent.
+Previously it ignored the offset matrix if the design matrix was NULL.
+
+\item
+Revision of all the Rd help files to add DOIs, to fix typos, and to standardize formating and American spellings.
+}}
+
+
+\section{version 4.10.0 (2026-04-28)}{\itemize{
 
 \item
 catchOarfish() now uses nanoparquet::read_parquet() instead of arrow::read_parquet().
 
 \item
-New function DGEListFromTximport() to assemble a \code{DGEList} object from the list object created by \code{tximport::tximport}.
+New function DGEListFromTximport() to assemble a DGEList object from the list object created by tximport::tximport().
 
 \item
-New function DGEListFromTximeta() to assemble a \code{DGEList} object from the list object created by \code{tximeta::tximeta}.
+New function DGEListFromTximeta() to assemble a DGEList object from the list object created by tximeta::tximeta().
 
 \item
 glmQLFit() with `legacy=FALSE` now caps any preset dispersions to be <= 4. Previously, large preset dispersions could lead to a segmentation error.
@@ -88,7 +148,7 @@ New function normalizeBetweenArrays.DGEList() to apply microarray-style normaliz
 
 \item
 New argument `keep.unit.mat` for glmQLFit().
-The unit matrices produced when 'legacy=FALSE` are not required for routine downstream analysis, so they are now not returned by glmQFit() unless `keep.unit.mat=TRUE`.
+The unit matrices produced when `legacy=FALSE` are not required for routine downstream analysis, so they are now not returned by glmQLFit() unless `keep.unit.mat=TRUE`.
 This reduces the size of the glmQLFit fitted model object.
 
 \item

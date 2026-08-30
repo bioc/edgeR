@@ -5,38 +5,31 @@
 Estimate relative quality weights for each sample from the unit deviances and unit residual df output by glmQLFit.
 }
 \usage{
-sampleWeights(unit.deviance.adj, unit.df.adj, s2 = NULL, iter = 10, verbose = FALSE)
+sampleWeights(glmfit)
 }
 \arguments{
-  \item{unit.deviance.adj}{numeric matrix of (bias corrected) unit deviances. Rows correspond to genes and columns to samples.}
-  \item{unit.df.adj}{numeric matrix of (leverage and bias corrected) unit degrees of freedom.}
-  \item{s2}{numeric vector of genewise quasi-dispersions. Optional argument, usually left \code{NULL}.}
-  \item{iter}{number of iterations.}
-  \item{verbose}{logical, if \code{TRUE} then progress information is output for each iteration.}
+  \item{glmfit}{a \code{DGEGLM} object (from \code{glmQLFit}) or a \code{DGEBIN} object (from \code{binQLFit}). The number of OpenMP threads is taken from \code{glmfit$nthreads}.}
 }
 \details{
 Estimates an empirical quality weight for each sample from the matrix of adjusted unit deviances and adjusted unit df
-from \code{glmQLFit} with \code{legacy=FALSE} and \code{keep.unit.mat=TRUE}.
+from \code{glmQLFit} (a \code{DGEGLM} object) or \code{binQLFit} (a \code{DGEBIN} object), both with \code{legacy=FALSE}.
 The quasi-dispersion of each observation is assumed to be equal to \code{s2_g / w_i}.
 
-The vector of sample weights can be entered as the \code{weights} argument for subsequent \code{glmQLFit} fits.
+The returned sample weights can be entered directly as the \code{weights} argument for subsequent \code{glmQLFit} or \code{binQLFit} fits.
 }
 \value{
-Numeric vector of length \code{ncol(fit)} containing the sample weights.
+A \code{CompressedMatrix} with the same dimensions as \code{glmfit$counts} holding the per-sample weights, repeated across all genes (by row). The per-sample weights are the distinct column values.
 }
 \author{Gordon Smyth}
 \seealso{
 This function uses output from \code{\link{glmQLFit}} and is analogous to \code{\link[limma]{arrayWeights}} in the limma package.
-The \code{\link[limma]{voomWithQualityWeights}} and \code{\link{voomLmFit}} functions also estimate sample weights for count data.
+The \code{\link[limma]{voomWithQualityWeights}} and \code{\link[limma]{voomLmFit}} functions also estimate sample weights for count data.
 }
 \examples{
 # Sample 2 has higher dispersion and lower weight
 y <- matrix(rpois(1000*5,lambda=8),1000,5)
 y[,2] <- 2 * y[,2]
-
-# Usually the NB dispersion is estimated by glmQLFit(),
-# but here we set it to the true value for Poisson counts to illustrate the weights in pure form
-fit <- glmQLFit(y, dispersion=0, keep.unit.mat=TRUE)
-w <- sampleWeights(fit$unit.deviance.adj, fit$unit.df.adj)
-barplot(w, main="Sample weights")
+fit <- glmQLFit(y)
+w <- sampleWeights(fit)
+barplot(as.matrix(w)[1,], main="Sample weights")
 }

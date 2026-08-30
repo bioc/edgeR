@@ -1,15 +1,15 @@
 \name{DGEList-class}
 \alias{DGEList-class}
 \docType{class}
-\title{Digital Gene Expression data - class}
+\title{Digital Gene Expression Data - Class}
 
 \description{
-A list-based S4 class for storing read counts and associated information from digital gene expression or sequencing technologies.
+A list-based S4 class for storing read counts and associated information from sequencing technologies.
 }
 
 \section{List Components}{
 For objects of this class, rows correspond to genomic features and columns to samples.
-The genomic features are called genes, but in reality might correspond to transcripts, tags, exons etc.
+In the interests of brevity, the genomic features are called genes in the documentation below, but in reality the rows can correspond to any genomic feature for which read counts are meaningful such as transcripts, tags, exons, exon-junctions, or genomic intervals.
 Objects of this class contain the following essential list components:
 \describe{
   \item{\code{counts}:}{ numeric matrix of read counts, one row for each gene and one column for each sample.}

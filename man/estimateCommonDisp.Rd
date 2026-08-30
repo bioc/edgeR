@@ -45,10 +45,10 @@ The pseudo-counts are included in the output of the function, but are intended m
 }
 
 \references{
-Robinson MD and Smyth GK (2008).
+Robinson MD, Smyth GK (2008).
 Small-sample estimation of negative binomial dispersion, with applications to SAGE data.
 \emph{Biostatistics}, 9, 321-332.
-\url{http://biostatistics.oxfordjournals.org/content/9/2/321}
+\doi{10.1093/biostatistics/kxm030}.
 }
 
 \author{Mark Robinson, Davis McCarthy, Gordon Smyth}

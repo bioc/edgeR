@@ -4,7 +4,7 @@
 \alias{sumTechReps.DGEList}
 \alias{sumTechReps.SummarizedExperiment}
 
-\title{Sum Over Replicate Samples}
+\title{Sum over Replicate Samples}
 \description{
 Condense the columns of a matrix or DGEList object so that counts are summed over technical replicate samples.
 }

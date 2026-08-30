@@ -9,21 +9,39 @@
 \description{Read transcript counts from RSEM, kallisto or Salmon output for a series of biological samples and use bootstrap or posterior distribution samples to estimate the read-to-transcript-ambiguity for each transcript.}
 
 \usage{
-catchKallisto(paths, DGEList = FALSE, divide = FALSE, verbose = TRUE)
-catchSalmon(paths, DGEList = FALSE, divide = FALSE, offset.prior = FALSE, verbose = TRUE)
-catchOarfish(prefixes = NULL, path = ".", DGEList = FALSE, divide = FALSE, verbose = TRUE)
-catchRSEM(files = NULL, path = ".", ngibbs = 100, DGEList = FALSE, divide = FALSE, verbose = TRUE)
+catchKallisto(parent.dir = NULL, sample.dirs = NULL,
+          DGEList = TRUE, divide = FALSE, verbose = TRUE)
+catchSalmon(parent.dir = NULL, sample.dirs = NULL,
+          DGEList = TRUE, divide = FALSE, offset.prior = TRUE, verbose = TRUE)
+catchOarfish(parent.dir = NULL, prefixes = NULL,
+          DGEList = TRUE, divide = FALSE, verbose = TRUE)
+catchRSEM(parent.dir = NULL, files = NULL, ngibbs = 100,
+          DGEList = TRUE, divide = FALSE, verbose = TRUE)
 }
 
 \arguments{
-\item{paths}{character vector giving paths to the sample-specific directories created by a kallisto or Salmon. Each entry corresponds to one RNA-seq sample.}
+\item{parent.dir}{name of parent directory containing the output directories from kallisto or Salmon or the output files from Oarfish or RSEM.}
+\item{sample.dirs}{
+  character vector giving names of or paths to the sample directories created by kallisto or Salmon.
+  Each entry corresponds to one RNA-seq sample.
+  If \code{parent.dir} and \code{sample.dirs} are both provided, then the \code{sample.dirs} are relative to \code{parent.dir}.
+  If \code{sample.dirs} is \code{NULL}, then all the kallisto or Salmon directories found in \code{parent.dir} will be read.
+}
 \item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
 \item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
 \item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
 \item{offset.prior}{logical. If \code{TRUE}, a prior offset matrix representing differences in effective transcript length will be included in the DGEList.}
-\item{prefixes}{character vector giving the sample-specific file prefixes created by Oarfish. Each entry corresponds to one RNA-seq sample. Can contain a directory separator. By default, will read all files with names ending in \code{.quant}, \code{.infreps.pq} and \code{.meta_info.json} in the \code{path} directory.}
-\item{path}{directory path to find files in.}
-\item{files}{character vector specifying the \code{isoforms.results} files output by RSEM. Each entry corresponds to one RNA-seq sample. By default, all files in the \code{path} directory with names ending in \code{isoforms.results} will be read.}
+\item{prefixes}{
+  character vector giving the sample-specific file prefixes created by Oarfish.
+  Each entry corresponds to one RNA-seq sample.
+  Can contain a directory separator.
+  By default, all files in the \code{parent.dir} directory with names ending in \code{.quant}, \code{.infreps.pq} and \code{.meta_info.json} will be read.
+}
+\item{files}{
+  character vector specifying the \code{isoforms.results} files output by RSEM.
+  Each entry corresponds to one RNA-seq sample.
+  By default, all files in the \code{parent.dir} directory with names ending in \code{isoforms.results} will be read.
+}
 \item{ngibbs}{number of Gibbs samples used to generate the RSEM results files.}
 }
 
@@ -48,7 +66,7 @@ The overdispersion represents the variance inflation that occurs from ambiguity 
 Transcripts that overlap other transcripts and have greater quantification uncertainty will have larger RTA overdispersions.
 The RTA overdispersions are greater than or equal to 1, with 1 representing no variance inflation.
 
-To assess differential transcript expression, the transcript counts can be divided by the overdisperson parameters, after which the divided-counts can be input into standard differential expression pipelines designed for gene-level counts (Baldoni et al 2024a).
+To assess differential transcript expression, the transcript counts can be divided by the overdispersion parameters, after which the divided-counts can be input into standard differential expression pipelines designed for gene-level counts (Baldoni et al 2024a).
 The edgeR quasi pipeline has been found to perform well with the divided counts (Baldoni et al 2024ab).
 The divided-counts behave much like negative binomial counts and show the same mean-variance trends as for gene-level RNA-seq counts.
 While bootstrap and Gibbs resamples both perform well, Baldoni et al (2024b) show that Gibbs resamples are computationally faster than bootstrap resamples and give slightly better performance in the downstream differential expression analyses.
@@ -121,6 +139,10 @@ Salmon provides fast and bias-aware quantification of transcript expression.
 Zakeri M, Srivastava A, Almodaresi F, Patro R (2017).
 Improved data-driven likelihood factorizations for transcript abundance estimation.
 \emph{Bioinformatics} 33(14), i142-i151.
+}
+
+\seealso{
+\code{\link{catchSalmonWithGencode}} for gene-level summaries.
 }
 
 \examples{

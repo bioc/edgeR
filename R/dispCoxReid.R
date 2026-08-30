@@ -1,4 +1,4 @@
-dispCoxReid <- function(y, design=NULL, offset=NULL, weights=NULL, AveLogCPM=NULL, interval=c(0,4), tol=1e-5, min.row.sum=5, subset=10000)
+dispCoxReid <- function(y, design=NULL, offset=NULL, weights=NULL, AveLogCPM=NULL, interval=c(0,4), tol=1e-5, min.row.sum=5, subset=10000, nthreads=1L)
 #	Cox-Reid APL estimator of common dispersion
 #	Gordon Smyth, Davis McCarthy
 #	26 Jan 2011.  Last modified 9 Dec 2013.
@@ -39,11 +39,18 @@ dispCoxReid <- function(y, design=NULL, offset=NULL, weights=NULL, AveLogCPM=NUL
 		weights <- weights[i,,drop=FALSE]
 	}
 
-#	Function for optimizing
-	fun <- function(par,y,design,offset,weights) {
-		sum(adjustedProfileLik(par^4,y,design,offset,weights=weights))
-	}
+#	Validate the design and compress inputs once (these were previously repeated
+#	on every optimize() evaluation inside adjustedProfileLik/glmFit).
+	ne <- nonEstimable(design)
+	if(!is.null(ne)) stop(paste("Design matrix not of full rank. The following coefficients not estimable:\n", paste(ne, collapse=" ")))
+	offset  <- .compressOffsets(y, offset=offset)
+	weights <- .compressWeights(y, weights)
 
-	out <- optimize(f=fun,interval=interval^0.25,y=y,design=design,offset=offset,weights=weights,maximum=TRUE,tol=tol)
-	out$maximum^4
+#	Maximize the summed Cox-Reid adjusted profile likelihood over the dispersion
+#	in a single C call: a 1-D Brent search (in par = disp^0.25 space) whose
+#	objective fits all genes and sums the APL, warm-starting each fit from the
+#	previous dispersion. Returns the optimal dispersion (par^4) directly.
+	.Call(.cxx_coxreid_disp, y, offset, weights, design,
+	      min(interval)^0.25, max(interval)^0.25, tol, TRUE,
+	      nthreads)
 }

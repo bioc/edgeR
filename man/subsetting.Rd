@@ -1,29 +1,32 @@
 \name{subsetting}
 \alias{subsetting}
 \alias{[.DGEList}
+\alias{[.PCList}
 \alias{[.DGEExact}
 \alias{[.DGELRT}
 \alias{[.DGEGLM}
+\alias{[.DGEBIN}
 \alias{[.TopTags}
-\title{Subset DGEList, DGEGLM, DGEExact and DGELRT Objects}
+\title{Subset DGEList, PCList, DGEGLM, DGEExact and DGELRT Objects}
 \description{
-Extract a subset of a \code{DGEList}, \code{DGEGLM}, \code{DGEExact} or \code{DGELRT} object.
+Extract a subset of a \code{DGEList}, \code{PCList}, \code{DGEGLM}, \code{DGEExact} or \code{DGELRT} object.
 }
 \usage{
 \method{[}{DGEList}(object, i, j, keep.lib.sizes=TRUE)
+\method{[}{PCList}(object, i, j)
 \method{[}{DGEGLM}(object, i, j)
 \method{[}{DGEExact}(object, i, j)
 \method{[}{DGELRT}(object, i, j)
 \method{[}{TopTags}(object, i, j)
 }
 \arguments{
-  \item{object}{object of class \code{DGEList}, \code{DGEGLM}, \code{DGEExact} or \code{DGELRT}. For \code{subsetListOfArrays}, any list of conformal matrices and vectors.}
+  \item{object}{object of class \code{DGEList}, \code{PCList}, \code{DGEGLM}, \code{DGEExact} or \code{DGELRT}. For \code{subsetListOfArrays}, any list of conformal matrices and vectors.}
   \item{i,j}{elements to extract. \code{i} subsets the genes while \code{j} subsets the libraries.
   Note that columns of \code{DGEGLM}, \code{DGEExact} and \code{DGELRT} objects cannot be subsetted.}
   \item{keep.lib.sizes}{logical, if \code{TRUE} the lib.sizes will be kept unchanged on output, otherwise they will be recomputed as the column sums of the counts of the remaining rows.}
 }
 \details{
-\code{i,j} may take any values acceptable for the matrix components of \code{object} of class \code{DGEList}.
+\code{i,j} may take any values acceptable for the matrix components of \code{object} of class \code{DGEList} and \code{PCList}.
 See the \link{Extract} help entry for more details on subsetting matrices. For \code{DGEGLM}, \code{DGEExact} and \code{DGELRT} objects, only rows (i.e. \code{i}) may be subsetted.
 }
 \value{

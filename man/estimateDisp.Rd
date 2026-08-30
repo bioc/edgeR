@@ -4,7 +4,7 @@
 \alias{estimateDisp.SummarizedExperiment}
 \alias{estimateDisp.default}
 
-\title{Estimate Common, Trended and Tagwise Negative Binomial dispersions by weighted likelihood empirical Bayes}
+\title{Estimate Common, Trended and Tagwise Negative Binomial Dispersions by Weighted Likelihood Empirical Bayes}
 
 \description{
 Maximizes the negative binomial likelihood to give the estimate of the common, trended and tagwise dispersions across all tags.
@@ -36,11 +36,11 @@ Maximizes the negative binomial likelihood to give the estimate of the common, t
 \item{grid.range}{the range of the grid points around the trend on a log2 scale.}
 \item{robust}{logical, should the estimation of \code{prior.df} be robustified against hypervariable genes?}
 \item{winsor.tail.p}{numeric vector of length 1 or 2, giving left and right tail proportions of the deviances to Winsorize when estimating \code{prior.df}.}
-\item{tol}{the desired accuracy, passed to \code{\link{optimize}}}
+\item{tol}{the desired accuracy, passed to \code{\link{optimize}}.}
 \item{group}{vector or factor giving the experimental group/condition for each library. Defaults to a vector of ones with length equal to the number of libraries.}
 \item{lib.size}{numeric vector giving the total count (sequence depth) for each library.}
 \item{offset}{offset matrix for the log-linear model, as for \code{\link{glmFit}}. Defaults to the log-effective library sizes.}
-\item{weights}{optional numeric matrix giving observation weights}
+\item{weights}{optional numeric matrix giving observation weights.}
 \item{\dots}{other arguments that are not currently used.}
 }
 
@@ -72,21 +72,21 @@ The default value of \code{span} was changed in August 2025 from
 \code{chooseLowessSpan(length(theta), small.n=50, min.span=0.25, power=0.5)}
 to
 \code{chooseLowessSpan(length(theta), small.n=50, min.span=0.3, power=1/3)}.
-Setting \code{legacy=TRUE} will cause the old default to be used instead of the new, for backward compatibility.
+Setting \code{legacy.span=TRUE} will cause the old default to be used instead of the new, for backward compatibility.
 }
 
 
 \references{
-Chen, Y, Lun, ATL, and Smyth, GK (2014).
+Chen Y, Lun ATL, Smyth GK (2014).
 Differential expression analysis of complex RNA-seq experiments using edgeR.
 In: \emph{Statistical Analysis of Next Generation Sequence Data},
 Somnath Datta and Daniel S. Nettleton (eds), Springer, New York, pages 51-74.
-\url{https://gksmyth.github.io/pubs/edgeRChapterPreprint.pdf}
+\url{https://gksmyth.github.io/pubs/edgeRChapterPreprint.pdf}.
 
-Phipson, B, Lee, S, Majewski, IJ, Alexander, WS, and Smyth, GK (2016).
+Phipson B, Lee S, Majewski IJ, Alexander WS, Smyth GK (2016).
 Robust hyperparameter estimation protects against hypervariable genes and improves power to detect differential expression.
 \emph{Annals of Applied Statistics} 10, 946-963.
-\doi{10.1214/16-AOAS920}
+\doi{10.1214/16-AOAS920}.
 }
 
 \author{Yunshun Chen, Gordon Smyth}

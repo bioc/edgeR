@@ -12,7 +12,7 @@ dropEmptyLevels(x)
 }
 \details{
 In general, the levels of a factor, \code{levels(x)}, may include values that never actually occur.
-This function drops any levels of that do not occur.
+This function drops any levels that do not occur.
 
 If \code{x} is not a factor, then the function returns \code{factor(x)}.
 If \code{x} is a factor, then the function returns the same value as \code{factor(x)} or \code{x[,drop=TRUE]} but somewhat more efficiently.

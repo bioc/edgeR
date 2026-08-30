@@ -10,21 +10,21 @@ weightedCondLogLikDerDelta(y, delta, tag, prior.n = 10, ntags = nrow(y[[1]]), de
 }
 
 \arguments{
-\item{y}{list with elements comprising the matrices of count data (or pseudocounts) for the different groups}
+\item{y}{list with elements comprising the matrices of count data (or pseudocounts) for the different groups.}
 
-\item{delta}{delta (\code{phi / (phi+1)})parameter of negative binomial}
+\item{delta}{delta (\code{phi / (phi+1)})parameter of negative binomial.}
 
-\item{tag}{gene at which the weighted conditional log-likelihood is evaluated}
+\item{tag}{gene at which the weighted conditional log-likelihood is evaluated.}
 
-\item{prior.n}{smoothing parameter that indicates the weight to put on the common likelihood compared to the individual gene's likelihood; default \code{10} means that the common likelihood is given 10 times the weight of the individual gene's likelihood in the estimation of the genewise dispersion}
+\item{prior.n}{smoothing parameter that indicates the weight to put on the common likelihood compared to the individual gene's likelihood; default \code{10} means that the common likelihood is given 10 times the weight of the individual gene's likelihood in the estimation of the genewise dispersion.}
 
-\item{ntags}{number of genes in the dataset to be analysed}
+\item{ntags}{number of genes in the dataset to be analyzed.}
 
 \item{der}{which derivative to evaluate, either 0 (the function), 1 (first derivative) or 2 (second derivative).}
 }
 
 \details{
-This function computes the weighted conditional log-likelihood for a given gene, parameterized in terms of delta. The value of delta that maximizes the weighted conditional log-likelihood is converted back to the \code{phi} scale, and this value is the estimate of the smoothed (moderated) dispersion parameter for that particular gene. The delta scale for convenience (delta is bounded between 0 and 1). 
+This function computes the weighted conditional log-likelihood for a given gene, parameterized in terms of delta. The value of delta that maximizes the weighted conditional log-likelihood is converted back to the \code{phi} scale, and this value is the estimate of the smoothed (moderated) dispersion parameter for that particular gene. The delta scale is used for convenience (delta is bounded between 0 and 1).
 Users should note that `tag' and `gene' are synonymous when interpreting the names of the arguments for this function.
 }
 

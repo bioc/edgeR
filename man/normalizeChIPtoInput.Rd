@@ -30,7 +30,7 @@ calcNormOffsetsforChIP(input, response, dispersion=0.01, niter=6, loss="p", plot
 \code{normalizeChIPtoInput} identifies significant enrichment for a ChIP-Seq mark relative to input values.
 The ChIP-Seq mark might be for example transcriptional factor binding or an epigenetic mark.
 The function works on the data from one sample.
-Replicate libraries are not explicitly accounted for; this function can either be run on each sample individually or on a pooled of replicates.
+Replicate libraries are not explicitly accounted for; this function can either be run on each sample individually or on a pool of replicates.
 
 ChIP-Seq counts are assumed to be summarized by gene or similar genomic feature of interest.
 
@@ -46,7 +46,7 @@ The normalization line has been fitted to the non-marked genes plotted in black.
 The read counts are treated as negative binomial.
 The dispersion parameter is not estimated from the data; instead a reasonable value is assumed to be given.
 
-\code{calcNormOffsetsforChIP} returns a numeric matrix of offsets, ready for linear modelling.
+\code{calcNormOffsetsforChIP} returns a numeric matrix of offsets, ready for linear modeling.
 }
 
 \value{

@@ -14,7 +14,7 @@ nbinomUnitDeviance(y, mean, dispersion = 0)
 \arguments{
 \item{y}{vector or matrix of negative binomial counts.}
 
-\item{mean}{vector or matrix means (expected values). If a matrix, then of same dimensions as \code{y}.}
+\item{mean}{vector or matrix of means (expected values). If a matrix, then of same dimensions as \code{y}.}
 
 \item{dispersion}{negative binomial dispersions.
 Can be a single value, a vector of length \code{nrow(y)}, or a matrix of same dimensions as \code{y}.}
@@ -36,18 +36,18 @@ Numeric vector or matrix of the same size as \code{y} containing unit deviances.
 Dunn PK, Smyth GK (2018).
 \emph{Generalized linear models with examples in R}.
 Springer, New York, NY.
-\doi{10.1007/978-1-4419-0118-7}
+\doi{10.1007/978-1-4419-0118-7}.
 ISBN: 978-1-4419-0118-7.
 
 Jorgensen B (2013).
 Generalized linear models.
 \emph{Encyclopedia of Environmetrics} 3, Wiley.
-\doi{10.1002/9780470057339.vag010.pub2}
+\doi{10.1002/9780470057339.vag010.pub2}.
 
 McCarthy DJ, Chen Y, Smyth GK (2012).
 Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 }
 
 \author{Gordon Smyth, Yunshun Chen, Aaron Lun.  C++ code by Aaron Lun.}

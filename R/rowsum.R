@@ -22,6 +22,31 @@ rowsum.DGEList <- function (x, group, reorder=FALSE, na.rm=FALSE, ...)
 	x2
 }
 
+rowsum.PCList <- function (x, group, reorder=FALSE, na.rm=FALSE, ...)
+#	Sum counts by groups of rows/genes and
+#	return a PCList with a row for each level of 'group'.
+#	Lizhong Chen
+#	Created 27 Nov 2025. Last modified 27 Nov 2025.
+{
+	isdupgrp <- duplicated(group)
+	x2 <- x[!isdupgrp,]
+	x2$counts  <- rowsum(x$counts,group=group,reorder=FALSE,na.rm=na.rm,...)
+	x2$counts2 <- rowsum(x$counts2,group=group,reorder=FALSE,na.rm=na.rm,...)
+	if(!is.null(x$genes)) {
+#		Keep those columns of x$genes that contain group-level annotation
+		no <- logical(nrow(x))
+		isdupall <- vapply(x$genes,duplicated,no)[isdupgrp,,drop=FALSE]
+		isgenelevel <- (colSums(isdupall) == nrow(isdupall))
+		x2$genes <- x2$genes[,isgenelevel,drop=FALSE]
+		row.names(x2$genes) <- row.names(x2$counts)
+	}
+	if(reorder) {
+		o <- order(row.names(x2))
+		x2 <- x2[o,]
+	}
+	x2
+}
+
 rowsum.SummarizedExperiment <- function(x, group, reorder=FALSE, na.rm=FALSE, ...)
 #	Created 03 April 2020.  Last modified 03 April 2020.
 {

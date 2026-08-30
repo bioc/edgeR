@@ -26,12 +26,12 @@ Estimates tagwise dispersion values by an empirical Bayes method based on weight
 Possible values are \code{"grid"} (default) for interpolation on grid points or \code{"optimize"} to call the function of the same name.}
 \item{grid.length}{for \code{method="grid"}, the number of points on which the interpolation is applied for each tag.}
 \item{grid.range}{for \code{method="grid"}, the range of the grid points around the trend on a log2 scale.}
-\item{tol}{for \code{method="optimize"}, the tolerance for Newton-Rhapson iterations.}
-\item{verbose}{logical, if \code{TRUE} then diagnostic ouput is produced during the estimation process.}
+\item{tol}{for \code{method="optimize"}, the tolerance for Newton-Raphson iterations.}
+\item{verbose}{logical, if \code{TRUE} then diagnostic output is produced during the estimation process.}
 \item{group}{vector or factor giving the experimental group/condition for each library.}
 \item{lib.size}{numeric vector giving the total count (sequence depth) for each library.}
 \item{dispersion}{common dispersion estimate, used as an initial estimate for the tagwise estimates.}
-\item{AveLogCPM}{numeric vector giving average log2 counts per million for each tag}
+\item{AveLogCPM}{numeric vector giving average log2 counts per million for each tag.}
 \item{\dots}{other arguments that are not currently used.}
 }
 
@@ -45,7 +45,7 @@ The prior values for the dispersions are determined by a global trend.
 The individual tagwise dispersions are then squeezed towards this trend.
 The prior degrees of freedom determines the weight given to the prior.
 The larger the prior degrees of freedom, the more the tagwise dispersions are squeezed towards the global trend.
-If the number of libraries is large, the prior becomes less important and the tagwise dispersion are determined more by the individual tagwise data.
+If the number of libraries is large, the prior becomes less important and the tagwise dispersions are determined more by the individual tagwise data.
 
 If \code{trend="none"}, then the prior dispersion is just a constant, the common dispersion.
 Otherwise, the trend is determined by a moving average (\code{trend="movingave"}) or loess smoother applied to the tagwise conditional log-likelihood.
@@ -67,9 +67,9 @@ Note that the terms `tag' and `gene' are synonymous here. The function is only n
 }
 
 \references{
-Robinson, MD, and Smyth, GK (2007). Moderated statistical tests for
+Robinson MD, Smyth GK (2007). Moderated statistical tests for
 assessing differences in tag abundance. \emph{Bioinformatics} 23, 2881-2887.
-\doi{10.1093/bioinformatics/btm453}
+\doi{10.1093/bioinformatics/btm453}.
 }
 
 \author{Mark Robinson, Davis McCarthy, Yunshun Chen and Gordon Smyth}

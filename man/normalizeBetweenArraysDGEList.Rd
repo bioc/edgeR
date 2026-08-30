@@ -3,7 +3,7 @@
 \title{Apply Microarray Normalization to DGEList}
 
 \description{
-Applies microrray-style normalization to a DGEList by modifying the offset matrix.
+Applies microarray-style normalization to a DGEList by modifying the offset matrix.
 }
 
 \usage{
@@ -16,14 +16,14 @@ normalizeBetweenArrays.DGEList(object,
   \item{method}{character string specifying the normalization method to be used.
   Choices are \code{"none"}, \code{"scale"}, \code{"quantile"} or \code{"cyclicloess"}.}
   \item{cyclic.method}{character string indicating the variant of \code{normalizeCyclicLoess} to be used if \code{method=="cyclicloess"}, see \code{\link[limma]{normalizeCyclicLoess}} for possible values.}
-  \item{\dots}{other arguments are passed to \code{normalizeQuantiles} or \code{normalizeCyclicLoess}}
+  \item{\dots}{other arguments are passed to \code{normalizeQuantiles} or \code{normalizeCyclicLoess}.}
 }
 
 \details{
 This function applies microarray-style normalization methods to a \code{DGEList} object by setting the offset matrix appropriately.
 The original counts remain unchanged.
 
-The function \code{cpm()} to compute log2CPM values, then uses \code{limma::normalizeBetweenArrays} to apply the specified normalization method to the log2CPM values, then the difference between the normalized and unnormalized log2CPM matrices is transferred to the offset matrix.
+The function uses \code{cpm()} to compute log2CPM values, then uses \code{limma::normalizeBetweenArrays} to apply the specified normalization method to the log2CPM values, then the difference between the normalized and unnormalized log2CPM matrices is transferred to the offset matrix.
 As usual, the \code{offset} entries represent observation-specific normalized loge library sizes.
 
 This function is an alternative to \code{normLibSizes}.

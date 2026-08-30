@@ -11,9 +11,9 @@ Reduce the size of Poisson-like counts by binomial thinning.
 
 \arguments{ 
 	\item{x}{numeric vector or array of non-negative integers.}
-	\item{prob}{the expected proportion of the events to keep. Either a unit vector or of same length as \code{x}.}
+	\item{prob}{the expected proportion of the events to keep. Either a unit vector or of the same length as \code{x}.}
 	\item{target.size}{the desired total column counts. Either a unit vector or of the same length as \code{NCOL{x}}.
-	Must be not greater than column sum of \code{x}. Ignored if \code{prob} is not \code{NULL}.}
+	Must not be greater than the column sum of \code{x}. Ignored if \code{prob} is not \code{NULL}.}
 }
 
 \value{

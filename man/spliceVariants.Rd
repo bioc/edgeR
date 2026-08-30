@@ -17,7 +17,7 @@ spliceVariants(y, geneID, dispersion=NULL, group=NULL, estimate.genewise.disp=TR
 
 \item{dispersion}{negative binomial dispersion. Single numeric value.}
 
-\item{group}{factor supplying the experimental group/condition to which each sample (column of \code{y}) belongs. If \code{NULL} (default) the function will try to extract if from \code{y}, which only works if \code{y} is a \code{DGEList} object.}
+\item{group}{factor supplying the experimental group/condition to which each sample (column of \code{y}) belongs. If \code{NULL} (default) the function will try to extract it from \code{y}, which only works if \code{y} is a \code{DGEList} object.}
 
 \item{estimate.genewise.disp}{logical, should genewise dispersions (as opposed to a common dispersion value) be computed if the \code{dispersion} argument is \code{NULL}?}
 
@@ -27,7 +27,7 @@ spliceVariants(y, geneID, dispersion=NULL, group=NULL, estimate.genewise.disp=TR
 \value{\code{spliceVariants} returns a \code{DGEExact} object, which contains a table of results for the test of differential splicing between experimental groups (alternative exon usage), a data frame containing the gene identifiers for which results were obtained and the dispersion estimate(s) used in the statistical models and testing.}
 
 \details{
-This function can be used to identify genes showing evidence  of splice variation (i.e. alternative splicing, alternative exon usage, transcript isoforms). A negative binomial generalized linear model is used to assess evidence, for each gene, given the counts for the exons for each gene, by fitting a model with an interaction between exon and experimental group and comparing this model (using a likelihood ratio test) to a null model which does not contain the interaction. Genes that show significant evidence for an interaction between exon and experimental group by definition show evidence for splice variation, as this indicates that the observed differences between the exon counts between the different experimental groups cannot be explained by consistent differential expression of the gene across all exons. The function \code{topTags} can be used to display the results of \code{spliceVariants} with genes ranked by evidence for splice variation.
+This function can be used to identify genes showing evidence of splice variation (i.e. alternative splicing, alternative exon usage, transcript isoforms). A negative binomial generalized linear model is used to assess evidence, for each gene, given the counts for the exons for each gene, by fitting a model with an interaction between exon and experimental group and comparing this model (using a likelihood ratio test) to a null model which does not contain the interaction. Genes that show significant evidence for an interaction between exon and experimental group by definition show evidence for splice variation, as this indicates that the observed differences in the exon counts between the different experimental groups cannot be explained by consistent differential expression of the gene across all exons. The function \code{topTags} can be used to display the results of \code{spliceVariants} with genes ranked by evidence for splice variation.
 }
 
 \author{Davis McCarthy, Gordon Smyth}

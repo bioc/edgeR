@@ -51,8 +51,8 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
 	}
 	
 	exon.genes <- exon.genes[o,,drop=FALSE]
-	geneid <- geneid[o]
-	fit <- fit[o, ]
+	geneid     <- geneid[o]
+	fit        <- fit[o, ]
 	
 #	Check design matrix
 	design <- as.matrix(fit$design)
@@ -132,91 +132,121 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
 	} else {
 		dispersion <- fit$dispersion/fit$average.ql.dispersion
 	}
+	dispersion <- .compressDispersions(fit$counts, dispersion)
 	
 #	Testing null model on gene level
 	gene.lastexon  <- cumsum(gene.nexons)
 	gene.firstexon <- gene.lastexon-gene.nexons+1
 	names(gene.lastexon) <- names(gene.firstexon) <- geneid[gene.firstexon]
 
-	gene.dev <- rowsum(fit$deviance, geneid, reorder=FALSE)
-	exon.LR <- exon.coef <- matrix(0,nexons,1)
-	gene.LR <- matrix(0,ngenes,1)
+	# Call high-performance C solver.
+	# Number of OpenMP threads is taken from the fit (set by glmQLFit); diffSplice
+	# no longer has its own nthreads argument.
+	res <- .Call(.cxx_fit_diff_splice, fit$counts, offset, dispersion, weights, design,
+	             as.integer(coef), as.integer(gene.nexons), as.integer(gene.firstexon - 1L),
+	             as.integer(nexons.approx), 250L, 1e-6, beta, fit$deviance, fit$nthreads)
+
+	exon.LR   <- matrix(res$exon.LR, nexons, 1)
+	exon.coef <- matrix(res$exon.coef, nexons, 1)
+	gene.LR   <- matrix(res$gene.LR, ngenes, 1)
+
 	colnames(exon.LR) <- colnames(exon.coef) <- colnames(gene.LR) <- coef.name
 	rownames(exon.LR) <- rownames(exon.coef) <- exon.genes$ExonID
 	rownames(gene.LR) <- geneid[gene.firstexon]
 
-	for(nexon in unique(gene.nexons))
-	{
-	#	subset data according to number of transcripts
-		exon.keep <- exon.nexons == nexon
-		gene.keep <- gene.nexons == nexon
-		ngene     <- sum(gene.keep)
-		
-		y0       <- fit$counts[exon.keep, ,drop=FALSE]
-		offset0  <- offset[exon.keep, ,drop=FALSE]
-		weights0 <- weights[exon.keep, ,drop=FALSE]
-		beta0    <- beta[exon.keep, ,drop=FALSE]
-		
-		exon.dev <- fit$deviance[exon.keep]
-		
-		if(length(dispersion) > 1L){
-			dispersion0 <- dispersion[exon.keep]
-		} else {
-			dispersion0 <- dispersion
-		}
-		
-	#	fit on gene level
-		fit0     <- .fitByGene(y0, design, coef, beta0, dispersion0, offset0, weights0, nexon)
-		gene.LR[gene.keep] <- fit0$deviance - gene.dev[gene.keep]
-		betabar  <- rep(fit0$beta, each=nexon)
-		
-	#	fit on transcript level
-		if(nexon > nexons.approx){
-			u0 <- matrix(t(fit0$fitted.values),ngene*nexon, ncol(y0), byrow = TRUE)
-			exon.LR[exon.keep]   <- nbinomDeviance(y0,u0,dispersion=dispersion0, weights=weights0) - exon.dev
-			exon.coef[exon.keep] <- beta0[,coef] - betabar
-		} else if(nexon > 2L){
-			i0 <- (0L:(ngene-1L))*nexon
-			for(k in 1:nexon){
-				jk <- i0+k
-				y1 <- y0[-jk, ,drop=FALSE]
-				offset1  <- offset0[-jk, ,drop=FALSE]
-				weights1 <- weights0[-jk, ,drop=FALSE]
-				beta1    <- beta0[-jk, ,drop=FALSE]
-				if(length(dispersion0) > 1L){
-					dispersion1 <- dispersion0[-jk]
-				} else {
-					dispersion1 <- dispersion0
-				}       
-				fit1 <- .fitByGene(y1, design, coef, beta1, dispersion1, offset1, weights1, nexon-1)
-				exon.LR[exon.keep][jk]   <- fit0$deviance - (exon.dev[jk]+fit1$deviance)
-				exon.coef[exon.keep][jk] <- beta0[jk,coef] - fit1$beta
-			}
-		} else {
-			i0 <- (0L:(ngene-1L))*2 + 1
-			exon.LR[exon.keep]          <- rep(gene.LR[gene.keep], each=2)
-			exon.coef[exon.keep][i0]    <- beta0[i0, coef] - beta0[i0+1, coef]
-			exon.coef[exon.keep][i0+1]  <- beta0[i0+1, coef] - beta0[i0, coef]
-		}
-}
+#	------------------------------------------------------------------------------
+#	REFERENCE ONLY (not executed): equivalent pure-R implementation of the C
+#	solver .cxx_fit_diff_splice called above. 
+#	------------------------------------------------------------------------------
+#	gene.dev <- rowsum(fit$deviance, geneid, reorder=FALSE)
+#	exon.LR <- exon.coef <- matrix(0,nexons,1)
+#	gene.LR <- matrix(0,ngenes,1)
+#	colnames(exon.LR) <- colnames(exon.coef) <- colnames(gene.LR) <- coef.name
+#	rownames(exon.LR) <- rownames(exon.coef) <- exon.genes$ExonID
+#	rownames(gene.LR) <- geneid[gene.firstexon]
+#
+#	for(nexon in unique(gene.nexons))
+#	{
+#	#	subset data according to number of transcripts
+#		exon.keep <- exon.nexons == nexon
+#		gene.keep <- gene.nexons == nexon
+#		ngene     <- sum(gene.keep)
+#		
+#		y0       <- fit$counts[exon.keep, ,drop=FALSE]
+#		offset0  <- offset[exon.keep, ,drop=FALSE]
+#		weights0 <- weights[exon.keep, ,drop=FALSE]
+#		beta0    <- beta[exon.keep, ,drop=FALSE]
+#		
+#		exon.dev <- fit$deviance[exon.keep]
+#		
+#		if(length(dispersion) > 1L){
+#			dispersion0 <- dispersion[exon.keep]
+#		} else {
+#			dispersion0 <- dispersion
+#		}
+#		
+#	#	fit on gene level
+#		fit0     <- .fitByGene(y0, design, coef, beta0, dispersion0, offset0, weights0, nexon)
+#		gene.LR[gene.keep] <- fit0$deviance - gene.dev[gene.keep]
+#		betabar  <- rep(fit0$beta, each=nexon)
+#		
+#	#	fit on transcript level
+#		if(nexon > nexons.approx){
+#			u0 <- matrix(t(fit0$fitted.values),ngene*nexon, ncol(y0), byrow = TRUE)
+#			exon.LR[exon.keep]   <- nbinomDeviance(y0,u0,dispersion=dispersion0, weights=weights0) - exon.dev
+#			exon.coef[exon.keep] <- beta0[,coef] - betabar
+#		} else if(nexon > 2L){
+#			i0 <- (0L:(ngene-1L))*nexon
+#			for(k in 1:nexon){
+#				jk <- i0+k
+#				y1 <- y0[-jk, ,drop=FALSE]
+#				offset1  <- offset0[-jk, ,drop=FALSE]
+#				weights1 <- weights0[-jk, ,drop=FALSE]
+#				beta1    <- beta0[-jk, ,drop=FALSE]
+#				if(length(dispersion0) > 1L){
+#					dispersion1 <- dispersion0[-jk]
+#				} else {
+#					dispersion1 <- dispersion0
+#				}       
+#				fit1 <- .fitByGene(y1, design, coef, beta1, dispersion1, offset1, weights1, nexon-1)
+#				exon.LR[exon.keep][jk]   <- fit0$deviance - (exon.dev[jk]+fit1$deviance)
+#				exon.coef[exon.keep][jk] <- beta0[jk,coef] - fit1$beta
+#			}
+#		} else {
+#			i0 <- (0L:(ngene-1L))*2 + 1
+#			exon.LR[exon.keep]          <- rep(gene.LR[gene.keep], each=2)
+#			exon.coef[exon.keep][i0]    <- beta0[i0, coef] - beta0[i0+1, coef]
+#			exon.coef[exon.keep][i0+1]  <- beta0[i0+1, coef] - beta0[i0, coef]
+#		}
+#}
+#	------------------------------------------------------------------------------
 	
 #	Prepare statistics summary
 	exon.df.test <- rep(1, nexons)
 	gene.df.test <- gene.nexons - 1
 	
 	if(is.null(fit$average.ql.dispersion)){
-		exon.stat <- cbind(fit$df.residual.zeros,fit$deviance)
+		exon.stat <- cbind(fit$df.residual.zeros,fit$deviance,fit$df.residual.zeros*fit$AveLogCPM)
 	} else {
-		exon.stat <- cbind(fit$df.residual.adj,fit$deviance.adj)
+		exon.stat <- cbind(fit$df.residual.adj,fit$deviance.adj,fit$df.residual.adj*fit$AveLogCPM)
 	}
 	gene.sum  <- rowsum(exon.stat, geneid, reorder=FALSE)
 	gene.df.residual <- gene.sum[,1]
 	gene.s2          <- gene.sum[,2] / gene.sum[,1]
-	
-	squeeze       <- squeezeVar(var=gene.s2, df=gene.df.residual, robust=robust)
+	gene.AveLogCPM   <- gene.sum[,3] / gene.sum[,1]
+
+#	By default, keep the same abundance.trend as fit object
+	if(length(fit$s2.prior) > 1L){
+		covariate <- gene.AveLogCPM
+	} else {
+		covariate <- NULL
+	}
+
+	squeeze       <- squeezeVar(var=gene.s2, df=gene.df.residual, covariate=covariate, robust=robust)
 	gene.df.total <- gene.df.residual + squeeze$df.prior
 	gene.df.total <- pmin(gene.df.total, sum(gene.df.residual))
 	gene.s2.post  <- squeeze$var.post
+	gene.s2.prior <- squeeze$var.prior
 	
 	exon.df.total <- rep(gene.df.total, times=gene.nexons)
 	exon.s2.post  <- rep(gene.s2.post,  times=gene.nexons)
@@ -231,12 +261,12 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
 	
 #	Output
 	out <- new("MArrayLM",list())
-	out$design       <- design
-	out$comparison   <- colnames(design)[coef]
-	out$genes        <- exon.genes
-	out$genecolname  <- genecolname
-	out$exoncolname  <- exoncolname
-	out$coefficients <- exon.coef
+	out$design        <- design
+	out$comparison    <- colnames(design)[coef]
+	out$genes         <- exon.genes
+	out$genecolname   <- genecolname
+	out$exoncolname   <- exoncolname
+	out$coefficients  <- exon.coef
 	out$nexons.approx <- nexons.approx
 
 #	Exon level output
@@ -248,9 +278,10 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
 	out$gene.df.residual <- gene.df.residual
 	out$gene.df.total    <- gene.df.total
 	out$gene.s2          <- gene.s2
+	out$gene.s2.prior    <- gene.s2.prior
 	out$gene.s2.post     <- gene.s2.post
-	out$gene.F             <- gene.F
-	out$gene.F.p.value     <- gene.p.value
+	out$gene.F           <- gene.F
+	out$gene.F.p.value   <- gene.p.value
 	
 #	Which columns of exon.genes contain gene level annotation? (from diffSplice in limma)
 	no <- logical(nrow(exon.genes))
@@ -282,65 +313,65 @@ diffSplice.DGEGLM <- function(fit, coef=ncol(fit$design), contrast=NULL, geneid,
 	out
 }
 
-.fitByGene <- function(counts, design, coef, beta, dispersion, offset, weights, transcripts.per.gene)
-{
-#	fit the null model for the genes with the same number of transcripts
-#	Created by Gordon 11 Feb 2025
-#	Modified by Lizhong Chen 12 Feb 2025
-
-#	Number of genes and transcripts
-	nsamples <- ncol(counts)
-	ngenes   <- nrow(counts) / transcripts.per.gene
-	
-#	Design matrix for null model, first column to be tested
-	design0 <- diag(transcripts.per.gene) %x% design[, -coef, drop=FALSE]
-	design0 <- cbind(rep(design[,coef],transcripts.per.gene),design0)
-	
-#	Update counts, offsets, weights, starting values
-	y       <- .convertMatGeneToTranscript(counts,  ngenes, nsamples*transcripts.per.gene, transcripts.per.gene)  
-	offset  <- .convertMatGeneToTranscript(offset,  ngenes, nsamples*transcripts.per.gene, transcripts.per.gene)  
-	weights <- .convertMatGeneToTranscript(weights, ngenes, nsamples*transcripts.per.gene, transcripts.per.gene) 
-	beta    <- .convertBetaGeneToTranscript(beta, coef, ngenes, (ncol(beta)-1)*transcripts.per.gene, transcripts.per.gene)
-	
-#	Update dispersion
-#	Note here we assume the dispersion is a scalar or a vector with length equal to number of rows
-	if(length(dispersion) > 1L){
-		dispersion <- matrix(rep(dispersion, each=nsamples), ngenes, nsamples*transcripts.per.gene, byrow = TRUE)
-	}
-	
-#	fit null model
-	fit <- mglmLevenberg(y, design0, dispersion=dispersion, offset=offset, weights=weights, coef.start=beta)
-	
-#	return deviance and average log fold change
-	list(deviance = fit$deviance, beta = fit$coefficients[,1], fitted.values=fit$fitted.values)
-}
-
-.convertMatGeneToTranscript <- function(x, nrow, ncol, transcripts.per.gene)
-{
-#	convert a count matrix or CompressedMatrix on gene level into exon level
-#	Created by Lizhong Chen, 12 Feb 2025
-	out <- x
-	if(inherits(x,"CompressedMatrix")){
-		if(attr(x, "repeat.row") & attr(x, "repeat.col")){
-			attr(out,"Dims") <- as.integer(c(nrow,ncol))
-		} else if(attr(x, "repeat.row")){
-			out <- makeCompressedMatrix(rep(as.vector(x), transcripts.per.gene), c(nrow, ncol))
-		} else {
-			out <- as.matrix(x)
-			out <- matrix(t(out), nrow, ncol, byrow = TRUE)
-		}
-	} else {
-		out <- as.matrix(x)
-		out <- matrix(t(out), nrow, ncol, byrow = TRUE)    
-	}
-	out
-}
-
-.convertBetaGeneToTranscript <- function(beta, coef, nrow, ncol, transcripts.per.gene)
-{
-#	convert a coefficient matrix from gene to transcript as starting coefficients
-#	Created by Lizhong Chen, 18 Feb 2025
-	beta1 <- rowMeans(matrix(beta[,coef], nrow, transcripts.per.gene, byrow = TRUE))
-	beta0 <- .convertMatGeneToTranscript(beta[,-coef, drop=FALSE], nrow, ncol, transcripts.per.gene)
-	cbind(beta1, beta0)
-}
+#.fitByGene <- function(counts, design, coef, beta, dispersion, offset, weights, transcripts.per.gene)
+#{
+##	fit the null model for the genes with the same number of transcripts
+##	Created by Gordon 11 Feb 2025
+##	Modified by Lizhong Chen 12 Feb 2025
+#
+##	Number of genes and transcripts
+#	nsamples <- ncol(counts)
+#	ngenes   <- nrow(counts) / transcripts.per.gene
+#	
+##	Design matrix for null model, first column to be tested
+#	design0 <- diag(transcripts.per.gene) %x% design[, -coef, drop=FALSE]
+#	design0 <- cbind(rep(design[,coef],transcripts.per.gene),design0)
+#	
+##	Update counts, offsets, weights, starting values
+#	y       <- .convertMatGeneToTranscript(counts,  ngenes, nsamples*transcripts.per.gene, transcripts.per.gene)  
+#	offset  <- .convertMatGeneToTranscript(offset,  ngenes, nsamples*transcripts.per.gene, transcripts.per.gene)  
+#	weights <- .convertMatGeneToTranscript(weights, ngenes, nsamples*transcripts.per.gene, transcripts.per.gene) 
+#	beta    <- .convertBetaGeneToTranscript(beta, coef, ngenes, (ncol(beta)-1)*transcripts.per.gene, transcripts.per.gene)
+#	
+##	Update dispersion
+##	Note here we assume the dispersion is a scalar or a vector with length equal to number of rows
+#	if(length(dispersion) > 1L){
+#		dispersion <- matrix(rep(dispersion, each=nsamples), ngenes, nsamples*transcripts.per.gene, byrow = TRUE)
+#	}
+#	
+##	fit null model
+#	fit <- mglmLevenberg(y, design0, dispersion=dispersion, offset=offset, weights=weights, coef.start=beta)
+#	
+##	return deviance and average log fold change
+#	list(deviance = fit$deviance, beta = fit$coefficients[,1], fitted.values=fit$fitted.values)
+#}
+#
+#.convertMatGeneToTranscript <- function(x, nrow, ncol, transcripts.per.gene)
+#{
+##	convert a count matrix or CompressedMatrix on gene level into exon level
+##	Created by Lizhong Chen, 12 Feb 2025
+#	out <- x
+#	if(inherits(x,"CompressedMatrix")){
+#		if(attr(x, "repeat.row") & attr(x, "repeat.col")){
+#			attr(out,"Dims") <- as.integer(c(nrow,ncol))
+#		} else if(attr(x, "repeat.row")){
+#			out <- makeCompressedMatrix(rep(as.vector(x), transcripts.per.gene), c(nrow, ncol))
+#		} else {
+#			out <- as.matrix(x)
+#			out <- matrix(t(out), nrow, ncol, byrow = TRUE)
+#		}
+#	} else {
+#		out <- as.matrix(x)
+#		out <- matrix(t(out), nrow, ncol, byrow = TRUE)    
+#	}
+#	out
+#}
+#
+#.convertBetaGeneToTranscript <- function(beta, coef, nrow, ncol, transcripts.per.gene)
+#{
+##	convert a coefficient matrix from gene to transcript as starting coefficients
+##	Created by Lizhong Chen, 18 Feb 2025
+#	beta1 <- rowMeans(matrix(beta[,coef], nrow, transcripts.per.gene, byrow = TRUE))
+#	beta0 <- .convertMatGeneToTranscript(beta[,-coef, drop=FALSE], nrow, ncol, transcripts.per.gene)
+#	cbind(beta1, beta0)
+#}

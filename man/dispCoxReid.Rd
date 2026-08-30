@@ -11,7 +11,7 @@ Estimate a common dispersion parameter across multiple negative binomial general
 
 \usage{
 dispCoxReid(y, design=NULL, offset=NULL, weights=NULL, AveLogCPM=NULL, interval=c(0,4),
-            tol=1e-5, min.row.sum=5, subset=10000)
+            tol=1e-5, min.row.sum=5, subset=10000, nthreads=1L)
 dispDeviance(y, design=NULL, offset=NULL, interval=c(0,4), tol=1e-5, min.row.sum=5,
             subset=10000, AveLogCPM=NULL, robust=FALSE, trace=FALSE)
 dispPearson(y, design=NULL, offset=NULL, min.row.sum=5, subset=10000,
@@ -25,7 +25,7 @@ dispPearson(y, design=NULL, offset=NULL, min.row.sum=5, subset=10000,
 
 \item{offset}{numeric vector or matrix of offsets for the log-linear models, as for \code{\link{glmFit}}. Defaults to \code{log(colSums(y))}.}
 
-\item{weights}{optional numeric matrix giving observation weights}
+\item{weights}{optional numeric matrix giving observation weights.}
 
 \item{AveLogCPM}{numeric vector giving average log2 counts per million.}
 
@@ -41,7 +41,9 @@ dispPearson(y, design=NULL, offset=NULL, min.row.sum=5, subset=10000,
 
 \item{robust}{logical, should a robust estimator be used?}
 
-\item{initial.dispersion}{starting value for the dispersion}
+\item{initial.dispersion}{starting value for the dispersion.}
+
+\item{nthreads}{integer giving the number of OpenMP threads to use for the genewise computations. Defaults to 1 (serial).}
 }
 
 \value{
@@ -49,16 +51,16 @@ Numeric vector of length one giving the estimated common dispersion.
 }
 
 \details{
-These are low-level (non-object-orientated) functions called by \code{estimateGLMCommonDisp}.
+These are low-level (non-object-oriented) functions called by \code{estimateGLMCommonDisp}.
 
 \code{dispCoxReid} maximizes the Cox-Reid adjusted profile likelihood (Cox and Reid, 1987).
-\code{dispPearson} sets the average Pearson goodness of fit statistics to its (asymptotic) expected value.
+\code{dispPearson} sets the average Pearson goodness of fit statistic to its (asymptotic) expected value.
 This is also known as the \emph{pseudo-likelihood} estimator.
-\code{dispDeviance} sets the average residual deviance statistic to its (asymptotic) expected values.
+\code{dispDeviance} sets the average residual deviance statistic to its (asymptotic) expected value.
 This is also known as the \emph{quasi-likelihood} estimator.
 
 Robinson and Smyth (2008) and McCarthy et al (2011) showed that the Pearson (pseudo-likelihood) estimator typically under-estimates the true dispersion.
-It can be seriously biased when the number of libraries (\code{ncol(y)} is small.
+It can be seriously biased when the number of libraries (\code{ncol(y)}) is small.
 On the other hand, the deviance (quasi-likelihood) estimator typically over-estimates the true dispersion when the number of libraries is small.
 Robinson and Smyth (2008) and McCarthy et al (2011) showed the Cox-Reid estimator to be the least biased of the three options.
 
@@ -69,16 +71,16 @@ The robust options use an order statistic instead the mean statistic, and have t
 }
 
 \references{
-Cox, DR, and Reid, N (1987). Parameter orthogonality and approximate conditional inference.
+Cox DR, Reid N (1987). Parameter orthogonality and approximate conditional inference.
 \emph{Journal of the Royal Statistical Society Series B} 49, 1-39.
 
-Robinson MD and Smyth GK (2008). Small-sample estimation of negative
+Robinson MD, Smyth GK (2008). Small-sample estimation of negative
 binomial dispersion, with applications to SAGE data.
 \emph{Biostatistics}, 9, 321-332
 
-McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research}.
-\url{http://nar.oxfordjournals.org/content/early/2012/02/06/nar.gks042}
+\doi{10.1093/nar/gks042}.
 (Published online 28 January 2012)
 }
 

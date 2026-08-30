@@ -1,9 +1,23 @@
-catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,offset.prior=FALSE,verbose=TRUE)
+catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
+#	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 April 2018. Last modified 26 Jun 2026.
+#	Created 1 April 2018. Last modified 28 Aug 2026.
 {
+#	Check parent.dir
+	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
+	if(is.null(parent.dir)) parent.dir <- "."
+
+#	Check sample.dirs
+	if(is.null(sample.dirs)) {
+		sample.dirs <- dir(parent.dir)
+		IsSalmon <- file.exists(file.path(parent.dir,sample.dirs,"aux_info"))
+		sample.dirs <- sample.dirs[IsSalmon]
+	}
+
+#	Full paths
+	paths <- file.path(parent.dir,sample.dirs)
 	NSamples <- length(paths)
 
 #	Use jsonlite and readr packages for reading
@@ -95,7 +109,7 @@ catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,offset.prior=FALSE,verb
 
 #	Prepare output
 	Quant1 <- as.data.frame(Quant1,stringsAsFactors=FALSE)
-	dimnames(Counts) <- list(Quant1$Name,paths)
+	dimnames(Counts) <- list(Quant1$Name,basename(paths))
 	row.names(Quant1) <- Quant1$Name
 	Quant1$Name <- Quant1$EffectiveLength <- Quant1$NumReads <- NULL
 	Quant1$AveLength <- AveTxLength
@@ -119,7 +133,10 @@ catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,offset.prior=FALSE,verb
 		y$overdispersion.prior <- OverDispPrior
 		y$resample.type <- ResampleType
 		y$divided.counts <- divide
-		if(offset.prior) y$offset.prior <- LTxL - rowMeans(LTxL)
+		if(offset.prior) {
+			y$offset.prior <- LTxL - rowMeans(LTxL)
+			dimnames(y$offset.prior) <- dimnames(Counts)
+		}
 	} else {
 		y <- list(counts=Counts,
 			length=Length,

@@ -14,7 +14,7 @@ estimateExonGenewiseDisp(y, geneID, group=NULL)
 
 \item{geneID}{vector of length equal to the number of rows of \code{y}, which provides the gene identifier for each exon in \code{y}. These identifiers are used to group the relevant exons into genes for the gene-level analysis of splice variation.}
 
-\item{group}{factor supplying the experimental group/condition to which each sample (column of \code{y}) belongs. If \code{NULL} (default) the function will try to extract if from \code{y}, which only works if \code{y} is a \code{DGEList} object.}
+\item{group}{factor supplying the experimental group/condition to which each sample (column of \code{y}) belongs. If \code{NULL} (default) the function will try to extract it from \code{y}, which only works if \code{y} is a \code{DGEList} object.}
 
 }
 

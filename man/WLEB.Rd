@@ -17,7 +17,7 @@ WLEB(theta, loglik, prior.n = 5,
 \item{theta}{numeric vector of values of the parameter at which the log-likelihoods are calculated.}
 \item{loglik}{numeric matrix of log-likelihood of all the candidates at those values of parameter.}
 \item{prior.n}{the weight put on the common likelihood compared to the individual's likelihood, expressed in terms of the number of observations in a notional prior dataset.}
-\item{covariate}{numeric vector of values across which a parameter trend is fitted}
+\item{covariate}{numeric vector of values across which a parameter trend is fitted.}
 \item{trend.method}{method for estimating the parameter trend. Possible values are \code{"none"}, \code{"movingave"}, \code{"loess"}, \code{"locfit"} or \code{"locfit.mixed"}. The latter options cause \code{movingAverageByCol()}, \code{loessBycol()} and \code{locfitByCol()} respectively to be called to smooth \code{loglik} by the covariate values. The \code{"locfit.mixed"} method is the same as \code{"locfit"} but uses a polynomial of degree 1 for lowly expressed genes.}
 \item{span}{width of the smoothing window, as a proportion of the data set. By default, is chosen by \code{chooseLowessSpan()}.}
 \item{legacy.span}{logical, if \code{TRUE} the old default for \code{span} will be used.}
@@ -30,19 +30,19 @@ WLEB(theta, loglik, prior.n = 5,
 
 \details{
 This function implements a very general empirical Bayes strategy outlined by McCarthy et al (2012).
-McCarthy et el used the method to estimate genewise negative binomial dispersion parameters, but here the method is generalized to apply to any parameter and any likelihood function.
+McCarthy et al used the method to estimate genewise negative binomial dispersion parameters, but here the method is generalized to apply to any parameter and any likelihood function.
 The method gives similar results to parametric empirical Bayes with a conjugate prior, when a conjugate prior exists, but does not require the prior distribution to be specified.
-The prior distribution is instead inferred from the pooled likelihood, i.e., from the likelihood that would be arise from pooling all the cases or from pooling all the cases with similar covariate values.
+The prior distribution is instead inferred from the pooled likelihood, i.e., from the likelihood that would arise from pooling all the cases or from pooling all the cases with similar covariate values.
 
 The function assumes a series of cases.
-Each case leads to data set from which a parameter (theta) is to be estimated.
+Each case leads to a data set from which a parameter (theta) is to be estimated.
 For each case, the log-likelihood function has been evaluated over a grid of possible values for theta.
 The function takes as input the matrix of log-likelihood values where the rows correspond to cases and the columns correspond to putative parameter values.
 
 Each case is associated with a covariate value that might affect theta.
 The "overall" parameter estimate is the maximum likelihood estimator of theta that arises if the likelihood is averaged over cases and then maximized over theta.
 The "trend" parameter estimates are estimates for theta that arise if each column of \code{loglik} is replaced by a smooth trend with respect to the covariate.
-The "individual" parameter estimate for each case is a compromise between the maximum likelihood estimate for that case alone and a global parameter estimate computed from all the cases, the latter being either the overall estimate (if \code{trend.method="none"} or the trend estimate (otherwise).
+The "individual" parameter estimate for each case is a compromise between the maximum likelihood estimate for that case alone and a global parameter estimate computed from all the cases, the latter being either the overall estimate (if \code{trend.method="none"}) or the trend estimate (otherwise).
 }
 
 \note{
@@ -58,15 +58,15 @@ A list with the following:
 	\item{overall}{the parameter estimate that maximizes the sum of all the log-likelihoods.}
 	\item{trend}{the estimated trended parameters against the covariate.}
 	\item{individual}{the individual estimates of all the candidates after applying empirical Bayes method along the trend.}
-	\item{shared.loglik}{the estimated numeric matrix of local shared log-likelihoods}
+	\item{shared.loglik}{the estimated numeric matrix of local shared log-likelihoods.}
 }
 
 \author{Yunshun Chen, Gordon Smyth}
 
 \references{
-McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 }
 
 \examples{

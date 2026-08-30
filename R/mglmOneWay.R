@@ -10,7 +10,7 @@ designAsFactor <- function(design)
 	g
 }
 
-mglmOneWay <- function(y,design=NULL,group=NULL,dispersion=0,offset=0,weights=NULL,coef.start=NULL,maxit=50,tol=1e-10)
+mglmOneWay <- function(y,design=NULL,group=NULL,dispersion=0,offset=0,weights=NULL,coef.start=NULL,maxit=50,tol=1e-10,nthreads=1L)
 #	Fit multiple negative binomial glms with log link
 #	by Fisher scoring with
 #	only a single explanatory factor in the model
@@ -18,13 +18,13 @@ mglmOneWay <- function(y,design=NULL,group=NULL,dispersion=0,offset=0,weights=NU
 #	Aapted to use .compress and C functions by Aaron Lun
 #	11 March 2011.  Last modified 24 August 2017.
 {
-	y <- as.matrix(y)
+	y      <- as.matrix(y)
 	ngenes <- nrow(y)
-	nlibs <- ncol(y)
+	nlibs  <- ncol(y)
 
-	offset <- .compressOffsets(y, offset=offset)
+	offset     <- .compressOffsets(y, offset=offset)
 	dispersion <- .compressDispersions(y, dispersion)
-	weights <- .compressWeights(y, weights)
+	weights    <- .compressWeights(y, weights)
 
 #	If necessary, the group factor is computed from the design matrix.
 #	However, if group is supplied, we can avoid creating a design matrix altogether.
@@ -33,16 +33,16 @@ mglmOneWay <- function(y,design=NULL,group=NULL,dispersion=0,offset=0,weights=NU
 			group <- factor(rep_len(1L,nlibs))
 		} else {
 			design <- as.matrix(design)
-			group <- designAsFactor(design)
+			group  <- designAsFactor(design)
 		}
 	} else {
 		group <- as.factor(group)
 	}
 
 #	Convert factor to integer levels for efficiency
-	levg <- levels(group)
+	levg    <- levels(group)
 	ngroups <- length(levg)
-	i <- as.integer(group)
+	i       <- as.integer(group)
 
 	if(!is.null(design)) {
 		if(ncol(design)!=ngroups) stop("design matrix is not equivalent to a oneway layout")
@@ -58,20 +58,24 @@ mglmOneWay <- function(y,design=NULL,group=NULL,dispersion=0,offset=0,weights=NU
 		if(!is.null(design) && !is.null(coef.start)) coef.start <- coef.start %*% t(designunique)
 	}
 
-#	Cycle through groups
-	beta <- matrix(0,ngenes,ngroups)
-	for (g in seq_len(ngroups)) {
-		j <- which(i==g)
-		beta[,g] <- mglmOneGroup(y[,j,drop=FALSE], dispersion=dispersion[,j,drop=FALSE],
-			offset=offset[,j,drop=FALSE], weights=weights[,j,drop=FALSE],
-			coef.start=coef.start[,g,drop=FALSE], maxit=maxit, tol=tol)
+	if (is.null(coef.start)) {
+		coef.start.mat <- matrix(NA_real_, ngenes, ngroups)
+	} else {
+		coef.start.mat <- as.matrix(coef.start)
+		if (!is.double(coef.start.mat)) storage.mode(coef.start.mat) <- "double"
 	}
 
+#	Cycle through groups on C level
+	output   <- .Call(.cxx_fit_one_way, y, offset, dispersion, weights, i - 1L, ngroups, maxit, tol, coef.start.mat, nthreads)
+	beta     <- output$coefficients
+
 #	Reset -Inf values to finite value to simplify calculations downstream
-	beta <- pmax(beta,-1e8)
+#	Now redundant: the C fitter (glm_one_group_vec / fit_one_way_mat) already returns -1e8 for
+#	all-zero groups, so this pmax is a no-op. Kept commented for reference.
+#	beta <- pmax(beta,-1e8)
 
 #	Fitted values from group-wise beta's
-	mu <- .Call(.cxx_get_one_way_fitted, beta, offset, i-1L)
+	mu <- .Call(.cxx_get_one_way_fitted, beta, offset, i-1L, nthreads)
 	dimnames(mu) <- dimnames(y)
 
 #	If necessary, reformat the beta's to reflect the original design.

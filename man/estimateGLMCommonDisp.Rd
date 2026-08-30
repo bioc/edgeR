@@ -32,7 +32,7 @@ Possible values are \code{"CoxReid"}, \code{"Pearson"} or \code{"deviance"}.}
 \item{AveLogCPM}{numeric vector giving average log2 counts per million for each gene.}
 
 \item{verbose}{logical, if \code{TRUE} estimated dispersion and BCV will be printed to standard output.}
-\item{weights}{optional numeric matrix giving observation weights}
+\item{weights}{optional numeric matrix giving observation weights.}
 
 \item{\ldots}{other arguments are passed to lower-level functions.
 See \code{\link{dispCoxReid}}, \code{\link{dispPearson}} and \code{\link{dispDeviance}} for details.}
@@ -52,9 +52,9 @@ See \code{\link{dispCoxReid}} for details of the three methods and a discussion 
 
 
 \references{
-McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 }
 
 \author{Gordon Smyth, Davis McCarthy, Yunshun Chen}

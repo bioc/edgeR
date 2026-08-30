@@ -17,11 +17,11 @@ dispCoxReidPowerTrend(y, design, offset=NULL, subset=10000, AveLogCPM=NULL,
 
 \arguments{ 
 
-\item{y}{numeric matrix of counts}
+\item{y}{numeric matrix of counts.}
 
 \item{design}{numeric matrix giving the design matrix for the GLM that is to be fit.}
 
-\item{offset}{numeric scalar, vector or matrix giving the offset (in addition to the log of the effective library size) that is to be included in the NB GLM for the genes. If a scalar, then this value will be used as an offset for all genes and libraries. If a vector, it should be have length equal to the number of libraries, and the same vector of offsets will be used for each gene. If a matrix, then each library for each gene can have a unique offset, if desired. In \code{adjustedProfileLik} the \code{offset} must be a matrix with the same dimension as the table of counts.}
+\item{offset}{numeric scalar, vector or matrix giving the offset (in addition to the log of the effective library size) that is to be included in the NB GLM for the genes. If a scalar, then this value will be used as an offset for all genes and libraries. If a vector, it should have length equal to the number of libraries, and the same vector of offsets will be used for each gene. If a matrix, then each library for each gene can have a unique offset, if desired. In \code{adjustedProfileLik} the \code{offset} must be a matrix with the same dimension as the table of counts.}
 
 \item{df}{integer giving the degrees of freedom of the spline function, see \code{ns} in the splines package.}
 
@@ -48,7 +48,7 @@ In either case, \code{optim} is used to maximize the adjusted profile likelihood
 }
 
 \references{
-Cox, DR, and Reid, N (1987). Parameter orthogonality and approximate conditional inference. \emph{Journal of the Royal Statistical Society Series B} 49, 1-39.
+Cox DR, Reid N (1987). Parameter orthogonality and approximate conditional inference. \emph{Journal of the Royal Statistical Society Series B} 49, 1-39.
 }
 
 \author{Yunshun Chen, Davis McCarthy, Gordon Smyth}

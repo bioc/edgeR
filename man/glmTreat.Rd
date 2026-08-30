@@ -7,7 +7,7 @@
 
 \usage{
 glmTreat(glmfit, coef = ncol(glmfit$design), contrast = NULL, lfc = log2(1.2),
-         null = "interval")
+         null = "interval", legacy=FALSE)
 }
 
 \arguments{
@@ -20,9 +20,11 @@ glmTreat(glmfit, coef = ncol(glmfit$design), contrast = NULL, lfc = log2(1.2),
 \item{lfc}{numeric scalar specifying the absolute value of the log2-fold change threshold above which differential expression is to be considered.}
 
 \item{null}{character string, choices are \code{"worst.case"} or \code{"interval"}.
-If \code{"worst.case"}, then the null hypothesis asssumes that the true logFC is on the boundary of the possible values, either at \code{lfc} or \code{-lfc}, whichever gives the largest p-value.
+If \code{"worst.case"}, then the null hypothesis assumes that the true logFC is on the boundary of the possible values, either at \code{lfc} or \code{-lfc}, whichever gives the largest p-value.
 This gives the most conservative results.
-If \code{"interval"}, then the null hypotheses assumes the true logFC to belong to a bounded interval of possible values.}
+If \code{"interval"}, then the null hypothesis assumes the true logFC to belong to a bounded interval of possible values.}
+
+\item{legacy}{logical, if \code{TRUE} then produce legacy results as for Bioconductor 3.22 and earlier. If \code{FALSE}, then use the improved z-score approach.}
 }
 
 \value{
@@ -43,7 +45,7 @@ The data frame \code{table} contains the following columns:
 Instead of testing for genes which have log-fold-changes different from zero, it tests whether the log2-fold-change is greater than \code{lfc} in absolute value.
 \code{glmTreat} is analogous to the TREAT approach developed by McCarthy and Smyth (2009) for microarrays.
 
-Note that the \code{lfc} testing threshold used to define the null hypothesis is not the same as a log2-fold-change cutoff, as the observed log2-fold-change needs to substantially larger than \code{lfc} for the gene to be called as significant.
+Note that the \code{lfc} testing threshold used to define the null hypothesis is not the same as a log2-fold-change cutoff, as the observed log2-fold-change needs to be substantially larger than \code{lfc} for the gene to be called as significant.
 In practice, modest values for \code{lfc} such as \code{log2(1.1)}, \code{log2(1.2)} or \code{log2(1.5)} are usually the most useful.
 In practice, setting \code{lfc=log2(1.2)} or \code{lfc=log2(1.5)} will usually cause most differentially expressed genes to have estimated fold-changes of 2-fold or greater, depending on the sample size and precision of the experiment.
 
@@ -58,8 +60,8 @@ If \code{lfc=0}, then \code{glmTreat} is equivalent to \code{glmLRT} or \code{gl
 
 \code{glmTreat} with positive \code{lfc} gives larger p-values than would be obtained with \code{lfc=0}.
 If \code{null="worst.case"}, then \code{glmTreat} conducts a test closely analogous to the \code{treat} function in the limma package.
-This conducts a test if which the null hypothesis puts the true logFC on the boundary of the \code{[-lfc,lfc]} interval closest to the observed logFC.
-If \code{null="interval"}, then the null hypotheses assumes an interval of possible values for the true logFC.
+This conducts a test in which the null hypothesis puts the true logFC on the boundary of the \code{[-lfc,lfc]} interval closest to the observed logFC.
+If \code{null="interval"}, then the null hypothesis assumes an interval of possible values for the true logFC.
 This approach is somewhat less conservative.
 
 Note that, unlike other edgeR functions such as \code{glmLRT} and \code{glmQLFTest}, \code{glmTreat} can only accept a single contrast.
@@ -70,7 +72,7 @@ If \code{contrast} is a matrix with multiple columns, then only the first column
 \code{glmTreat} was previously called \code{treatDGE} in edgeR versions 3.9.10 and earlier. 
 }
 
-\author{Yunshun Chen and Gordon Smyth}
+\author{Yunshun Chen, Lizhong Chen and Gordon Smyth}
 
 \seealso{
 \code{\link{topTags}} displays results from \code{glmTreat}.
@@ -79,10 +81,10 @@ If \code{contrast} is a matrix with multiple columns, then only the first column
 }
 
 \references{
-McCarthy, D. J., and Smyth, G. K. (2009).
+McCarthy DJ, Smyth GK (2009).
 Testing significance relative to a fold-change threshold is a TREAT.
 \emph{Bioinformatics} 25, 765-771.
-\doi{10.1093/bioinformatics/btp053}
+\doi{10.1093/bioinformatics/btp053}.
 }
 
 \examples{

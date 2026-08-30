@@ -8,8 +8,8 @@ Compute adjusted profile log-likelihoods for the dispersion parameters of genewi
 }
 
 \usage{
-adjustedProfileLik(dispersion, y, design, offset, weights=NULL, adjust=TRUE, 
-            start=NULL, get.coef=FALSE)
+adjustedProfileLik(dispersion, y, design, offset, weights=NULL, adjust=TRUE,
+            start=NULL, get.coef=FALSE, nthreads=1L)
 }
 
 \arguments{
@@ -21,6 +21,7 @@ adjustedProfileLik(dispersion, y, design, offset, weights=NULL, adjust=TRUE,
 \item{adjust}{logical, if \code{TRUE} then Cox-Reid adjustment is made to the log-likelihood, if \code{FALSE} then the log-likelihood is returned without adjustment.}
 \item{start}{numeric matrix of starting values for the GLM coefficients, to be passed to \code{\link{glmFit}}.}
 \item{get.coef}{logical, specifying whether fitted GLM coefficients should be returned.}
+\item{nthreads}{integer giving the number of OpenMP threads to use for the genewise computations. Defaults to 1 (serial).}
 }
 
 \value{
@@ -44,15 +45,15 @@ Specifically, the returned GLM coefficients from one call with \code{get.coef==T
 
 The \code{weights} argument is interpreted in terms of averages.
 Each value of \code{y} is assumed to be the average of \code{n} independent and identically distributed NB counts, where \code{n} is given by the weight.
-This assumption can generalized to fractional weights.
+This assumption can be generalized to fractional weights.
 }
 
 \references{
-Cox, DR, and Reid, N (1987). Parameter orthogonality and approximate conditional inference. \emph{Journal of the Royal Statistical Society Series B} 49, 1-39.
+Cox DR, Reid N (1987). Parameter orthogonality and approximate conditional inference. \emph{Journal of the Royal Statistical Society Series B} 49, 1-39.
 
-McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 }
 
 \author{Yunshun Chen, Gordon Smyth, Aaron Lun}

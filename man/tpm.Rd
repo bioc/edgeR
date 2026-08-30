@@ -21,7 +21,7 @@ tpm(y, effective.tx.length, rta.overdispersion=NULL, shrunk=FALSE, ...)
 }
 
 \details{
-This function computes transcripts per million (TPM) by rescaling counts-per-million at the transript level by the effective transcript length and by any count scaling factor.
+This function computes transcripts per million (TPM) by rescaling counts-per-million at the transcript level by the effective transcript length and by any count scaling factor.
 The function will typically be run as part of the DTU analysis after running \code{catchSalmon}, dividing the transcript counts by the RTA-overdispersion, and running \code{glmQLFit} on the divided counts.
 The \code{tpm} function can then extract TPM values from the estimated model coefficients.
 

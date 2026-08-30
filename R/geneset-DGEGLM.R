@@ -57,6 +57,9 @@ romer.DGEGLM <- function(y, index, design=NULL, contrast=ncol(design), ...)
 #	Yunshun Chen and Lizhong Chen
 #	Created 19 Oct 2023.
 {
+# 	Check dispersion
+	if(is.null(y$dispersion)) stop("only support negative binomial models")
+
 #	Check for all zero counts
 	allzero <- rowSums(y$counts>1e-8)==0
 	if(any(allzero)) warning(sum(allzero),"rows with all zero counts")

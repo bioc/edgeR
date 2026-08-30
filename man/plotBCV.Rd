@@ -14,8 +14,8 @@ plotBCV(y, xlab="Average log CPM", ylab="Biological coefficient of variation",
   \item{ylab}{label for the y-axis.}
   \item{pch}{the plotting symbol. See \code{\link{points}} for more details.}
   \item{cex}{plot symbol expansion factor. See \code{\link{points}} for more details.}
-  \item{col.common}{color of line showing common dispersion}
-  \item{col.trend}{color of line showing dispersion trend}
+  \item{col.common}{color of line showing common dispersion.}
+  \item{col.trend}{color of line showing dispersion trend.}
   \item{col.tagwise}{color of points showing genewise dispersions. Note that `tag' and `gene' are synonymous here.}
   \item{\dots}{any other arguments are passed to \code{plot}.}
 }

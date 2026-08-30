@@ -14,9 +14,9 @@ modelMatrixMeth(object, \dots)
 
 \details{
 This function computes a design matrix for modeling methylated and unmethylated counts.
-The resulting design matrix can be input to \code{glmFit} when analysing BS-seq methylation data using edgeR.
+The resulting design matrix can be input to \code{glmFit} when analyzing BS-seq methylation data using edgeR.
 
-In BS-seq methylation analysis, each DNA sample generates two counts, a count of methylated reads and a count of unmethylated reads, for each genomic locus for each sample.
+In BS-seq methylation analysis, each DNA sample generates two counts, a count of methylated reads and a count of unmethylated reads, for each genomic locus.
 The function converts sample-level information about the treatment conditions to make an appropriate design matrix with two rows for each sample.
 Counts are assumed to be ordered as methylated and then unmethylated by sample.
 
@@ -34,10 +34,10 @@ It has 2 rows for each sample and a column for each sample in addition to the co
 }
 
 \references{
-Chen, Y, Pal, B, Visvader, JE, Smyth, GK (2017).
+Chen Y, Pal B, Visvader JE, Smyth GK (2017).
 Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR.
 \emph{F1000Research} 6, 2055.
-\url{https://f1000research.com/articles/6-2055} 
+\doi{10.12688/f1000research.13196.2}.
 }
 
 \author{Gordon Smyth}

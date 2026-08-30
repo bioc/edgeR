@@ -4,7 +4,7 @@
 \alias{filterByExpr.SummarizedExperiment}
 \alias{filterByExpr.default}
 
-\title{Filter Genes By Expression Level}
+\title{Filter Genes by Expression Level}
 
 \description{Determine which genes have sufficiently large counts to be retained in a statistical analysis.}
 
@@ -54,12 +54,12 @@
 
 \details{
 This function implements the filtering strategy that was described informally by Chen et al (2016).
-Roughly speaking, the strategy keeps genes that have at least \code{min.count} reads in a worthwhile number samples.
+Roughly speaking, the strategy keeps genes that have at least \code{min.count} reads in a worthwhile number of samples.
 
 More precisely, the filtering keeps genes that have \code{CPM >= CPM.cutoff} in \code{MinSampleSize} samples,
 where \code{CPM.cutoff = min.count / median(lib.size) * 1e6} and \code{MinSampleSize} is the smallest group sample size or, more generally, the minimum inverse leverage computed from the design matrix.
 
-If all the group samples sizes are large, then \code{MinSampleSize} is reduced somewhat.
+If all the group sample sizes are large, then \code{MinSampleSize} is reduced somewhat.
 If \code{MinSampleSize > large.n}, then genes are kept if \code{CPM >= CPM.cutoff} in \code{k} samples where
 \code{k = large.n + (MinSampleSize - large.n) * min.prop}.
 This rule requires that genes are expressed in at least \code{min.prop * MinSampleSize} samples, even when \code{MinSampleSize} is large.
@@ -70,7 +70,7 @@ In addition, each kept gene is required to have at least \code{min.total.count} 
 \note{
 Note that \code{filterByExpr} implements independent filtering in the sense that the filtering would be exactly the same even if the sample group labels or the rows of the design matrix were permuted. 
 The function uses the \code{design} and \code{group} arguments only to identify the smallest group size (\code{MinSampleSize}). 
-Non-independent filtering that used information about which sample belongs to each group, for example keeping genes expressed in a certain nmber of samples in at least one group, would be invalid because it would potentially cause false discoveries in subsequent differential expression analyses. 
+Non-independent filtering that used information about which sample belongs to each group, for example keeping genes expressed in a certain number of samples in at least one group, would be invalid because it would potentially cause false discoveries in subsequent differential expression analyses. 
 }
 
 \value{
@@ -80,10 +80,10 @@ Logical vector of length \code{nrow(y)} indicating which rows of \code{y} to kee
 \author{Gordon Smyth}
 
 \references{
-Chen Y, Lun ATL, and Smyth, GK (2016).
+Chen Y, Lun ATL, Smyth GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
 \emph{F1000Research} 5, 1438.
-\doi{10.12688/f1000research.8987.2}
+\doi{10.12688/f1000research.8987.2}.
 }
 
 \examples{\dontrun{

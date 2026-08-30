@@ -34,7 +34,7 @@ plotMD.SummarizedExperiment <- function(object, column=1, xlab="Average log CPM 
 plotMD.DGEGLM <- function(object, column=ncol(object), coef=NULL, xlab="Average log CPM", ylab="log-fold-change", main=colnames(object)[column], status=object$genes$Status, zero.weights=FALSE, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
-#	Created 24 June 2015. Last modified 7 Aug 2019.
+#	Created 24 June 2015. Last modified 25 Nov 2025.
 {
 	if(!is.null(coef)) column <- coef
 	if(is.null(object$AveLogCPM)) stop("AveLogCPM component is absent.")
@@ -46,12 +46,30 @@ plotMD.DGEGLM <- function(object, column=ncol(object), coef=NULL, xlab="Average 
 	plotWithHighlights(x=object$AveLogCPM,y=logFC,xlab=xlab,ylab=ylab,main=main,status=status,...)
 }
 
+plotMD.DGEBIN <- function(object, column=ncol(object), coef=NULL, xlab="Average log CPM", ylab="log-odds-ratio", main=colnames(object)[column], status=object$genes$Status, zero.weights=FALSE, ...)
+#	Mean-difference plot for binomial fits (DGEBIN from binFit / binQLFit)
+#	Created 14 July 2026.
+{
+	if(!is.null(coef)) column <- coef
+	if(is.null(object$AveLogCPM)) stop("AveLogCPM component is absent.")
+	logOR <- as.matrix(object$coefficients)[,column]
+	if(!zero.weights && !is.null(object$weights)) {
+		w <- as.matrix(object$weights)[,column]
+		logOR[ is.na(w) | (w <= 0) ] <- NA_real_
+	}
+	plotWithHighlights(x=object$AveLogCPM,y=logOR,xlab=xlab,ylab=ylab,main=main,status=status,...)
+}
+
 plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change", main=object$comparison, status=object$genes$Status, contrast=1, adjust.method="BH", p.value=0.05, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
-#	Created 24 June 2015. Last modified 17 June 2019.
+#	Created 24 June 2015. Last modified 25 Nov 2025.
 {
 	logFC <- object$table$logFC
+	if(is.null(logFC)){
+		logFC <- object$table$logOR
+		if(!is.null(logFC) && identical(ylab,"log-fold-change")) ylab <- "log-odds-ratio"
+	}
 	FTest <- is.null(logFC)
 	
 	if(is.null(status))
@@ -59,10 +77,18 @@ plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change"
 
 #	Multiple contrasts
 	if(FTest) {
-		sel <- grep("^logFC", names(object$table))[contrast]
-		if(is.na(sel)) stop("Selected contrast does not exist.")
-		logFC <- object$table[, sel]
-		contrast.name <- gsub("logFC[.]", "", names(object$table)[sel])
+		if(is.null(object$dispersion)){
+			sel <- grep("^logOR", names(object$table))[contrast]
+			if(is.na(sel)) stop("Selected contrast does not exist.")
+			logFC <- object$table[, sel]
+			contrast.name <- gsub("logOR[.]", "", names(object$table)[sel])
+			if(identical(ylab,"log-fold-change")) ylab <- "log-odds-ratio"
+		} else {
+			sel <- grep("^logFC", names(object$table))[contrast]
+			if(is.na(sel)) stop("Selected contrast does not exist.")
+			logFC <- object$table[, sel]
+			contrast.name <- gsub("logFC[.]", "", names(object$table)[sel])
+		}
 		main <- paste0("Contrast ", contrast.name)
 	}
 	plotWithHighlights(x=object$table$logCPM,y=logFC,xlab=xlab,ylab=ylab,main=main,status=status,...)

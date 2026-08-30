@@ -10,11 +10,11 @@ commonCondLogLikDerDelta(y, delta, der = 0)
 }
 \arguments{ 
 
-\item{y}{list with elements comprising the matrices of count data (or pseudocounts) for the different groups}
+\item{y}{list with elements comprising the matrices of count data (or pseudocounts) for the different groups.}
 
-\item{delta}{delta (\code{phi / (phi+1)}) parameter of negative binomial}
+\item{delta}{delta (\code{phi / (phi+1)}) parameter of negative binomial.}
 
-\item{der}{derivative, either 0 (the function), 1 (first derivative) or 2 (second derivative)}
+\item{der}{derivative, either 0 (the function), 1 (first derivative) or 2 (second derivative).}
 }
 
 \value{ numeric scalar of function/derivative evaluated at given delta}

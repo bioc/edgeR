@@ -20,6 +20,25 @@ function(object, i, j, keep.lib.sizes=TRUE)
 	out
 })
 
+assign("[.PCList",
+function(object, i, j)
+#  Subsetting for PCList objects
+#  Created 16 April 2025. 
+{  
+	if(nargs() < 3) stop("Two subscripts required",call.=FALSE)
+
+#	Recognized components
+	IJ <- c("counts","counts2","weights")
+	IX <- c("genes")
+	JX <- c("samples")
+	I  <- c("AveLogCPM")
+#	Obsolete <- c("conc","infos","all.zeros")
+
+	out <- subsetListOfArrays(object,i,j,IJ=IJ,IX=IX,I=I,JX=JX)
+	if(!missing(j)) out$samples$group <- dropEmptyLevels(out$samples$group)
+	out
+})
+
 assign("[.DGEGLM",
 function(object, i, j)
 #  Subsetting for DGEGLM objects
@@ -30,7 +49,24 @@ function(object, i, j)
 
 #	Recognized components
 	IJ <- character(0)
-	IX <- c("counts","offset","weights","genes","coefficients","fitted.values","unshrunk.coefficients","leverage","unit.deviance.adj","unit.df.adj")
+	IX <- c("counts","counts2","offset","weights","genes","coefficients","fitted.values","unshrunk.coefficients")
+	I  <- c("AveLogCPM","dispersion","prior.n","prior.df","s2.post","s2.prior","df.prior","df.residual","df.residual.zeros","df.residual.adj","deviance","deviance.adj","iter","failed")
+	JX <- character(0)
+
+	subsetListOfArrays(object,i,j,IJ=IJ,IX=IX,I=I,JX=JX)
+})
+
+
+assign("[.DGEBIN",
+function(object, i, j)
+#  Subsetting for DGEBIN objects (binomial fits from binFit / binQLFit)
+{
+	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
+	if(!missing(j)) stop("Subsetting columns not allowed for DGEBIN object.",call.=FALSE)
+
+#	Recognized components
+	IJ <- character(0)
+	IX <- c("counts","counts2","offset","weights","genes","coefficients","fitted.values","unshrunk.coefficients")
 	I  <- c("AveLogCPM","dispersion","prior.n","prior.df","s2.post","s2.prior","df.prior","df.residual","df.residual.zeros","df.residual.adj","deviance","deviance.adj","iter","failed")
 	JX <- character(0)
 
@@ -64,7 +100,7 @@ function(object, i, j)
 
 #	Recognized components
 	IJ <- character(0)
-	IX <- c("counts","offset","weights","genes","coefficients","fitted.values","table","unshrunk.coefficients","leverage","unit.deviance.adj","unit.df.adj")
+	IX <- c("counts","counts2","offset","weights","genes","coefficients","fitted.values","table","unshrunk.coefficients")
 	I  <- c("AveLogCPM","dispersion","prior.n","prior.df","s2.post","s2.prior","df.prior","df.residual","df.residual.zeros","df.residual.adj","deviance","deviance.adj","iter","failed","df.test","df.total")
 	JX <- character(0)
 

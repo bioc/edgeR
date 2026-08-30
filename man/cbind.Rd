@@ -12,7 +12,7 @@ Combine a set of \code{DGEList} objects.
 }
 \arguments{
   \item{\dots}{\code{DGEList} objects.}
-  \item{deparse.level}{not currently used, see \code{\link[base]{cbind}} in the base package}
+  \item{deparse.level}{not currently used, see \code{\link[base]{cbind}} in the base package.}
 }
 \details{
 \code{cbind} combines data objects assuming the same genes in the same order but different samples.

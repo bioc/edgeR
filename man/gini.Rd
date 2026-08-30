@@ -1,6 +1,6 @@
 \name{gini}
 \alias{gini}
-\title{Gini dispersion index}
+\title{Gini Dispersion Index}
 \description{
 Gini index for each column of a matrix.
 }

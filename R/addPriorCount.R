@@ -1,4 +1,4 @@
-addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1) 
+addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1, nthreads=1L)
 # Add library size-adjusted prior counts to values of 'y'.
 # Also add twice the adjusted prior to the library sizes, 
 # which are provided as log-transformed values in 'offset'.
@@ -20,7 +20,7 @@ addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1)
 	offset <- .compressOffsets(y, lib.size=lib.size, offset=offset)
 
 #	Adding the prior count.
-	out <- .Call(.cxx_add_prior_count, y, offset, prior.count)
+	out <- .Call(.cxx_add_prior_count, y, offset, prior.count, nthreads)
 	out$offset <- makeCompressedMatrix(out$offset, dim(y), byrow=TRUE)
 	
 	return(out)

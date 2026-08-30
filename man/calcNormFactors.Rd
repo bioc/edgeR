@@ -69,7 +69,7 @@ The singleton positive counts are paired up between the libraries in decreasing 
 If \code{refColumn} is unspecified, then the column with largest sum of square-root counts is used as the reference library.
 
 RLE is the scaling factor method proposed by Anders and Huber (2010).
-We call it "relative log expression", as median library is calculated from the geometric mean of all columns and the median ratio of each sample to the median library is taken as the scale factor.
+We call it "relative log expression", as the median library is calculated from the geometric mean of all columns and the median ratio of each sample to the median library is taken as the scale factor.
 
 The upperquartile method is the upper-quartile normalization method of Bullard et al (2010), in which the scale factors are calculated from the 75\% quantile of the counts for each library, after removing genes that are zero in all libraries.
 The idea is generalized here to allow normalization by any quantile of the count distributions.
@@ -97,11 +97,11 @@ The two functions are equivalent but \code{calcNormFactors} will eventually be r
 \author{Mark Robinson, Gordon Smyth, Yunshun Chen.}
 
 \references{
-Anders, S, Huber, W (2010).
+Anders S, Huber W (2010).
 Differential expression analysis for sequence count data
 \emph{Genome Biology} 11, R106.
 
-Bullard JH, Purdom E, Hansen KD, Dudoit S. (2010)
+Bullard JH, Purdom E, Hansen KD, Dudoit S (2010)
 Evaluation of statistical methods for normalization and differential expression in mRNA-Seq experiments.
 \emph{BMC Bioinformatics} 11, 94.
 

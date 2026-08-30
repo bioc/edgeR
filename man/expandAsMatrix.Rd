@@ -1,6 +1,6 @@
-\title{expandAsMatrix}
 \name{expandAsMatrix}
 \alias{expandAsMatrix}
+\title{Expand to a Matrix}
 \description{
 Expand scalar or vector to a matrix.
 }
@@ -10,7 +10,7 @@ expandAsMatrix(x, dim=NULL, byrow=TRUE)
 \arguments{
   \item{x}{scalar, vector, matrix or CompressedMatrix.}
   \item{dim}{integer vector of length 2 specifying the required dimensions of the output matrix.}
-  \item{byrow}{logical scalar specifying if matrix should be filled by columns or rows for a vector \code{x}.}
+  \item{byrow}{logical scalar specifying if the matrix should be filled by columns or rows for a vector \code{x}.}
   
 }
 
@@ -24,7 +24,7 @@ The matrix will then be filled by repeating the matrix across the matching dimen
 For example, if \code{length(x)==dim[1]}, the matrix will be filled such that each row contains \code{x}.
 If both dimensions match, filling is determined by \code{byrow}, with filling by rows as the default.
 
-If \code{x} CompressedMatrix object, the size of any non-repeated dimensions must be consistent with corresponding output dimension.
+If \code{x} is a CompressedMatrix object, the size of any non-repeated dimensions must be consistent with the corresponding output dimension.
 The \code{byrow} argument will be ignored as the repeat specifications will dictate how expansion should be performed.
 See \code{?\link{CompressedMatrix}} for more details.
 }

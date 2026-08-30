@@ -54,18 +54,18 @@ See \code{?goana} for other possible input types.
   \item{P.Down}{p-value for over-representation of GO term in down-regulated genes.}
 The row names of the data frame give the GO term IDs.
 
-\code{kegga} produces a data.frame as above except that the rownames are KEGG pathway IDs, Term become Path and there is no Ont column.
+\code{kegga} produces a data.frame as above except that the rownames are KEGG pathway IDs, Term becomes Path and there is no Ont column.
 }
 
 \references{
-Chen Y, Lun ATL, and Smyth, GK (2016). From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
+Chen Y, Lun ATL, Smyth GK (2016). From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
 \emph{F1000Research} 5, 1438. 
-\url{https://f1000research.com/articles/5-1438}
+\doi{10.12688/f1000research.8987.2}.
 
-  Young, M. D., Wakefield, M. J., Smyth, G. K., Oshlack, A. (2010).
+  Young MD, Wakefield MJ, Smyth GK, Oshlack A (2010).
   Gene ontology analysis for RNA-seq: accounting for selection bias.
   \emph{Genome Biology} 11, R14.
-  \doi{10.1186/gb-2010-11-2-r14}
+  \doi{10.1186/gb-2010-11-2-r14}.
 }
 
 \seealso{

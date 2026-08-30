@@ -2,7 +2,7 @@
 \docType{class}
 \alias{DGEGLM-class}
 \alias{show,DGEGLM-method}
-\title{Digital Gene Expression Generalized Linear Model results - class}
+\title{Digital Gene Expression Generalized Linear Model Results - Class}
 
 \description{
 A list-based S4 class for storing results of a GLM fit to each gene in a DGE dataset.
@@ -10,7 +10,7 @@ A list-based S4 class for storing results of a GLM fit to each gene in a DGE dat
 
 \section{List Components}{
 For objects of this class, rows correspond to genomic features and columns to coefficients in the linear model.
-The genomic features are called gene, but in reality might correspond to transcripts, tags, exons, etc.
+The genomic features are called genes, but in reality might correspond to transcripts, tags, exons, etc.
 
 Objects of this class contain the following list components:
 \describe{
@@ -42,7 +42,7 @@ The dimensions, row names and column names of a \code{DGEGLM} object are defined
 \author{edgeR team. First created by Davis McCarthy.}
 
 \seealso{
-Other classes defined in edgeR are \code{\link{DGEList-class}}, \code{\link{DGEExact-class}}, \code{\link{DGELRT-class}}, \code{\link{TopTags-class}}
+Other classes defined in edgeR are \code{\link{DGEBIN-class}}, \code{\link{DGEList-class}}, \code{\link{DGEExact-class}}, \code{\link{DGELRT-class}}, \code{\link{TopTags-class}}
 }
 
 \concept{edgeR classes}

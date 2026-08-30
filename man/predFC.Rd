@@ -4,7 +4,7 @@
 \alias{predFC.SummarizedExperiment}
 \alias{predFC.default}
 
-\title{Predictive log-fold changes}
+\title{Predictive Log-Fold Changes}
 
 \description{Computes estimated coefficients for a NB glm in such a way that the log-fold-changes are shrunk towards zero.}
 
@@ -18,9 +18,9 @@
 }
 
 \arguments{
-\item{y}{a matrix of counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object} 
+\item{y}{a matrix of counts, or a \code{DGEList} object, or a \code{SummarizedExperiment} object.} 
 
-\item{design}{the design matrix for the experiment}
+\item{design}{the design matrix for the experiment.}
 
 \item{prior.count}{the average prior count to be added to each observation. Larger values produce more shrinkage.}
 
@@ -28,7 +28,7 @@
 
 \item{dispersion}{numeric vector of negative binomial dispersions.}
 
-\item{weights}{optional numeric matrix giving observation weights}
+\item{weights}{optional numeric matrix giving observation weights.}
 
 \item{\ldots}{other arguments are passed to \code{glmFit}.}
 }
@@ -39,7 +39,7 @@ The pfc are posterior Bayesian estimators of the true log-fold-changes.
 They are predictive of values that might be replicated in a future experiment.
 
 Specifically, the function adds a small prior count to each observation before fitting the GLM (see \code{\link{addPriorCount}} for details).
-The actual prior count that is added is proportion to the library size.
+The actual prior count that is added is proportional to the library size.
 This has the effect that any log-fold-change that was zero prior to augmentation remains zero and non-zero log-fold-changes are shrunk towards zero.
 
 The prior counts can be viewed as equivalent to a prior belief that the log-fold changes are small, and the output can be viewed as posterior log-fold-changes from this Bayesian viewpoint.
@@ -47,7 +47,7 @@ The output coefficients are called \emph{predictive} log fold-changes because, d
 
 Log-fold changes for genes with low counts are shrunk more than those for genes with high counts.
 In particular, infinite log-fold-changes arising from zero counts are avoided.
-The exact degree to which this is done depends on the negative binomail dispersion.
+The exact degree to which this is done depends on the negative binomial dispersion.
 }
 
 \value{
@@ -57,10 +57,10 @@ Numeric matrix of (shrunk) linear model coefficients on the log2 scale.
 \author{Belinda Phipson and Gordon Smyth}
 
 \references{
-Phipson, B. (2013).
+Phipson B (2013).
 \emph{Empirical Bayes modelling of expression profiles and their associations}.
 PhD Thesis. University of Melbourne, Australia.
-\url{http://hdl.handle.net/11343/38162}
+\url{http://hdl.handle.net/11343/38162}.
 }
 
 \seealso{

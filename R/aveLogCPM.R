@@ -23,6 +23,18 @@ aveLogCPM.DGEList <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispe
 	aveLogCPM(y$counts,lib.size=lib.size,prior.count=prior.count,dispersion=dispersion,weights=y$weights)
 }
 
+aveLogCPM.PCList <- function(y, prior.count=2, ...)
+#	log2(total coverage)
+#	Lizhong Chen
+#	Created 16 April 2025.
+{
+#	Library sizes should be the total coverage
+	lib.size <- colSums(y$counts+y$counts2)
+
+	aveLogCPM(y$counts+y$counts2,lib.size=lib.size,prior.count=prior.count,dispersion=0,weights=y$weights)
+}
+
+
 aveLogCPM.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispersion=NULL, ...)
 #	Created 03 April 2020.  Last modified 03 April 2020.
 {
@@ -38,15 +50,19 @@ aveLogCPM.DGEGLM <- function(y, prior.count=2, dispersion=NULL, ...)
 #	Dispersion supplied as argument over-rules value in object
 	if(is.null(dispersion)) dispersion <- y$dispersion
 
-	aveLogCPM(y$counts,offset=y$offset,prior.count=prior.count,dispersion=dispersion,weights=y$weights)
+	if(is.null(dispersion)){
+		aveLogCPM(y$counts+y$counts2,prior.count=prior.count,dispersion=0,weights=y$weights)
+	} else {
+		aveLogCPM(y$counts,offset=y$offset,prior.count=prior.count,dispersion=dispersion,weights=y$weights)
+	}
 }
 
-aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersion=NULL,weights=NULL, ...)
+aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersion=NULL,weights=NULL, nthreads=1L, ...)
 #	Compute average log2-cpm for each gene over all samples.
 #	This measure is designed to be used as the x-axis for all abundance-dependent trend analyses in edgeR.
 #	It is generally held fixed through an edgeR analysis.
 #	Original author: Gordon Smyth
-#	Created 25 Aug 2012. Last modified 19 Nov 2018.
+#	Created 25 Aug 2012. Last modified 19 Nov 2018. C code modfied 19 Jul 2026.
 {
 	y <- as.matrix(y)
 	if(nrow(y)==0L) return(numeric(0))
@@ -67,21 +83,21 @@ aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersi
 
 	dispersion <- .compressDispersions(y, dispersion)
 
-#   Check weights
+#	Check weights
 	weights <- .compressWeights(y, weights)
 
-#   Check offsets
+#	Check offsets
 	offset <- .compressOffsets(y, lib.size=lib.size, offset=offset)
 
-#   Check prior counts
+#	Check prior counts
 	prior.count <- .compressPrior(y, prior.count)
 
-#   Retrieve GLM fitting parameters
+#	Retrieve GLM fitting parameters
 	maxit <- formals(mglmOneGroup)$maxit
 	tol <- formals(mglmOneGroup)$tol
 
-#   Calling the C++ code
-	ab <- .Call(.cxx_ave_log_cpm, y, offset, prior.count, dispersion, weights, maxit, tol)
+#	Calling the C code
+	ab <- .Call(.cxx_ave_log_cpm, y, offset, prior.count, dispersion, weights, maxit, tol, nthreads)
 	return(ab)
 }
 

@@ -3,14 +3,14 @@
 /* function to compute the unit deviance and the sum
  *
  * inputs:
- * y       row vector or matrix of counts (double)
+ * y       row vector or matrix of counts 
  * mu      row vector or matrix of means
  * disp    compressedMatrix of dispersion
  * weights compressedMatrix of weights
- * 
+ *
  * output:
  * dev     row vector or matrix of deviance
- * 
+ *
  * comment:
  * this is converted from R_compute_nbdev.cpp written by Aaron
  */
@@ -18,13 +18,16 @@
 void compute_nbdev_sum(cmx *y, cmx *mu, cmx *disp, cmx *weights, double *dev)
 {
     int ntag=(y->nrow), nlib=(y->ncol);
-    
+
     /* row vectors for y mu disp weights */
+    double *yptr = R_Calloc(nlib,double);
     double *dptr = R_Calloc(nlib,double);
     double *wptr = R_Calloc(nlib,double);
 
-    double *yptr, *uptr;
-    for(int tag=0;tag<ntag;++tag){
+    double *uptr;
+    for(int tag=0;tag<ntag;++tag)
+    {
+        get_row(y,tag,yptr);
         get_row(disp,tag,dptr);
         get_row(weights,tag,wptr);
 
@@ -36,29 +39,44 @@ void compute_nbdev_sum(cmx *y, cmx *mu, cmx *disp, cmx *weights, double *dev)
         }
         */
 
-        yptr=(y->dmat)+tag;
         uptr=(mu->dmat)+tag;
         dev[tag]=0;
-        for(int lib=0;lib<nlib;++lib,yptr+=ntag,uptr+=ntag){
-            dev[tag]+=compute_unit_nb_deviance((*yptr),(*uptr),dptr[lib])*wptr[lib];
+        for(int lib=0;lib<nlib;++lib,uptr+=ntag)
+        {
+            dev[tag]+=compute_unit_nb_deviance(yptr[lib],(*uptr),dptr[lib])*wptr[lib];
         }
     }
 
+    R_Free(yptr);
     R_Free(wptr);
     R_Free(dptr);
 
     return;
 }
 
+/* function to compute the unit deviance for every observation
+ *
+ * inputs:
+ * y       row vector or matrix of counts 
+ * mu      row vector or matrix of means
+ * disp    compressedMatrix of dispersion
+ *
+ * output:
+ * dev     row vector or matrix of unit deviances
+ */
+
 void compute_nbdev_unit(cmx *y, cmx *mu, cmx *disp, double *dev)
 {
     int ntag=(y->nrow), nlib=(y->ncol);
-    
+
     /* row vectors for y mu disp weights */
+    double *yptr = R_Calloc(nlib,double);
     double *dptr = R_Calloc(nlib,double);
 
-    double *yptr, *uptr, *vptr;
-    for(int tag=0;tag<ntag;++tag){
+    double *uptr, *vptr;
+    for(int tag=0;tag<ntag;++tag)
+    {
+        get_row(y,tag,yptr);
         get_row(disp,tag,dptr);
 
         /*
@@ -67,15 +85,16 @@ void compute_nbdev_unit(cmx *y, cmx *mu, cmx *disp, double *dev)
             dev[ii]     = compute_unit_nb_deviance((y->dmat)[ii],(mu->dmat)[ii],dptr[lib]);
         }
         */
-        
-        yptr=(y->dmat)+tag;
+
         uptr=(mu->dmat)+tag;
         vptr=dev+tag;
-        for(int lib=0;lib<nlib;++lib,yptr+=ntag,uptr+=ntag,vptr+=ntag){
-            (*vptr)=compute_unit_nb_deviance((*yptr),(*uptr),dptr[lib]);
+        for(int lib=0;lib<nlib;++lib,uptr+=ntag,vptr+=ntag)
+        {
+            (*vptr)=compute_unit_nb_deviance(yptr[lib],(*uptr),dptr[lib]);
         }
     }
 
+    R_Free(yptr);
     R_Free(dptr);
 
     return;
@@ -91,12 +110,12 @@ void compute_nbdev_unit(cmx *y, cmx *mu, cmx *disp, double *dev)
 
 /* This C version is converted from nbdev.cpp written by Aaron */
 
-double compute_unit_nb_deviance (double y, double mu, double phi) 
+double compute_unit_nb_deviance (double y, double mu, double phi)
 {
     const double one_tenthousandth=1e-4, mildly_low_value=1e-8, one_million=1e6;
 
     double out;
-	  
+
     // We add a small value to protect against zero during division and logging.
     y+=mildly_low_value;
     mu+=mildly_low_value;
@@ -104,19 +123,39 @@ double compute_unit_nb_deviance (double y, double mu, double phi)
     /* Calculating the deviance using either the Poisson (small phi*mu), the Gamma (large) or NB (everything else).
      * Some additional work is put in to make the transitions between families smooth.
      */
-    if (phi < one_tenthousandth) {
-		const double resid = y - mu;
-		out = 2 * ( y * log(y/mu) - resid - 0.5*resid*resid*phi*(1+phi*(2/3*resid-y)) );
-    } else {
-		const double product=mu*phi;
-		if (product > one_million) {
+    if (phi < one_tenthousandth)
+    {
+        const double resid = y - mu;
+        out = 2 * ( y * log(y/mu) - resid - 0.5*resid*resid*phi*(1+phi*(2.0 / 3.0 * resid - y)) );
+    }
+    else
+    {
+        const double product=mu*phi;
+        if (product > one_million)
+        {
             out = 2 * ( (y - mu)/mu - log(y/mu) ) * mu/(1+product);
-        } else {
-			const double invphi=1/phi;
+        }
+        else
+        {
+            const double invphi=1/phi;
             out = 2 * (y * log( y/mu ) + (y + invphi) * log( (mu + invphi)/(y + invphi) ) );
         }
-	}
+    }
     out = fmax2(out,0);
 
     return out;
+}
+
+/* Weighted sum of unit deviances across n libraries. Factored out of the GLM
+ * fitters (glm.c, diffsplice.c) which all accumulate the deviance the same way:
+ * sum_i w[i] * compute_unit_nb_deviance(y[i], mu[i], disp[i]). The iteration
+ * order matches the original inline loops, so the result is bit-identical. */
+double nb_deviance_sum (int n, const double *y, const double *mu, const double *disp, const double *w)
+{
+    double s = 0;
+    for (int i=0; i<n; ++i)
+    {
+        s += w[i]*compute_unit_nb_deviance(y[i], mu[i], disp[i]);
+    }
+    return s;
 }

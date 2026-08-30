@@ -2,7 +2,7 @@
 \alias{validDGEList}
 \alias{validDGEList}
 
-\title{Check for Valid DGEList object}
+\title{Check for Valid DGEList Object}
 
 \description{
 Check for existence of standard components of DGEList object.

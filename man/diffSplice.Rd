@@ -8,7 +8,7 @@ The features may be any set of isoform-identifying features such as transcripts,
      robust = NULL, nexons.approx = 10, verbose = TRUE, \dots)
 }
 \arguments{
-  \item{fit}{an \code{DGEGLM} fitted model object produced by \code{glmQLFit}. Rows should correspond to transcripts, for a DTU analysis, or to exons and exon-exon junctions for a DEU analysis.}
+  \item{fit}{a \code{DGEGLM} fitted model object produced by \code{glmQLFit}. Rows should correspond to transcripts, for a DTU analysis, or to exons and exon-exon junctions for a DEU analysis.}
   \item{coef}{subscript indicating which coefficient of the generalized linear model is to be tested for differential usage. Defaults to the last coefficient. Can be an integer or a coefficient name.}
   \item{contrast}{numeric vector specifying the contrast of the linear model coefficients to be tested for differential usage. Length must equal to the number of columns of \code{design}. If specified, then takes precedence over \code{coef}.}
   \item{geneid}{gene identifiers. Either a vector of length \code{nrow(fit)} or the name of the column of \code{fit$genes} containing the gene identifiers. Rows with the same ID are assumed to belong to the same gene.}
@@ -62,6 +62,7 @@ The approximation should be very slightly conservative.
 
 The \code{fit} object should be created using \code{glmQLFit}.
 \code{diffSplice} will automatically detect whether \code{glmQLFit} was run with edgeR v4 bias-adjusted deviances (\code{legacy=FALSE}, recommended) or with ordinary deviances (\code{legacy=TRUE}).
+The number of OpenMP threads used for the genewise computations is taken from the \code{nthreads} value stored in \code{fit} by \code{glmQLFit}, so \code{diffSplice} has no separate \code{nthreads} argument.
 
 The feature-level tests are converted into genewise tests by adjusting the p-values for the same gene by Simes method.
 As an alternative, the feature-level tests are also converted into genewise tests by adjusting the smallest p-value for each gene by Bonferroni's method.
@@ -90,7 +91,7 @@ In terms of speed, the new function is slightly slower but the difference should
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
 \emph{Nucleic Acids Research} 53(22), gkaf1305.
-\doi{10.1093/nar/gkaf1305}
+\doi{10.1093/nar/gkaf1305}.
 
 Cmero M, Davidson NM, Oshlack A (2019).
 Using equivalence class counts for fast and accurate testing of differential transcript usage.

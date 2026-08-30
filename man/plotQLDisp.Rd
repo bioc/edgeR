@@ -1,4 +1,4 @@
-\title{Plot the quasi-dispersion}
+\title{Plot the Quasi-Dispersion}
 \name{plotQLDisp}
 \alias{plotQLDisp}
 \description{
@@ -22,7 +22,7 @@ plotQLDisp(glmfit, xlab="Average Log2 CPM", ylab="Quarter-Root Mean Deviance", p
 
 \details{
 This function displays the quarter-root of the quasi-dispersions for all genes, before and after shrinkage towards a trend.
-If \code{glmfit} was constructed without an abundance trend, the function instead plots a horizontal line (of colour \code{col.trend}) at the common value towards which dispersions are shrunk.
+If \code{glmfit} was constructed without an abundance trend, the function instead plots a horizontal line (of color \code{col.trend}) at the common value towards which dispersions are shrunk.
 The quarter-root transformation is applied to improve visibility for dispersions around unity.
 }
 
@@ -46,10 +46,10 @@ plotQLDisp(fit)
 }
 
 \references{
-Chen Y, Lun ATL, and Smyth, GK (2016).
+Chen Y, Lun ATL, Smyth GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
 \emph{F1000Research} 5, 1438.
-\url{https://f1000research.com/articles/5-1438}
+\doi{10.12688/f1000research.8987.2}.
 }
 
 \concept{Dispersion estimation}

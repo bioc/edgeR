@@ -10,11 +10,19 @@ setClass("DGEList",
 representation("list")
 )
 
+setClass("PCList",
+representation("list")
+)
+
 setClass("DGEGLM",
 representation("list")
 )
 
 setClass("DGELRT",
+representation("list")
+)
+
+setClass("DGEBIN",
 representation("list")
 )
 
@@ -26,9 +34,11 @@ representation("list")
 # The LargeDataObject class is set in limma and provides a show method
 
 setIs("DGEList","LargeDataObject")
+setIs("PCList","LargeDataObject")
 setIs("DGEExact","LargeDataObject")
 setIs("DGEGLM","LargeDataObject")
 setIs("DGELRT","LargeDataObject")
+setIs("DGEBIN","LargeDataObject")
 
 # Show method
 

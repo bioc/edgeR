@@ -12,10 +12,10 @@ condLogLikDerDelta(y, delta, der=1L)
 }
 
 \arguments{ 
-\item{y}{matrix of counts, all counts in each row having the same population mean}
-\item{r}{numeric vector or scalar, size parameter of negative binomial distribution, equal to 1/dispersion}
-\item{delta}{numeric vector or scalar, delta parameter of negative binomial, equal to dispersion/(1+dispersion)}
-\item{der}{integer specifying derivative required, either 0 (the function), 1 (first derivative) or 2 (second derivative)}
+\item{y}{matrix of counts, all counts in each row having the same population mean.}
+\item{r}{numeric vector or scalar, size parameter of negative binomial distribution, equal to 1/dispersion.}
+\item{delta}{numeric vector or scalar, delta parameter of negative binomial, equal to dispersion/(1+dispersion).}
+\item{der}{integer specifying derivative required, either 0 (the function), 1 (first derivative) or 2 (second derivative).}
 }
 
 \value{vector of row-wise derivatives with respect to \code{r} or \code{delta}}

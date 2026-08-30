@@ -3,9 +3,9 @@
 \alias{scaleOffset.DGEList}
 \alias{scaleOffset.default}
 
-\title{Scale offsets}
+\title{Scale Offsets}
 
-\description{Ensures scale of offsets are consistent with library sizes.}
+\description{Ensures scale of offsets is consistent with library sizes.}
 
 \usage{
 \method{scaleOffset}{DGEList}(y, offset, \dots)
@@ -13,17 +13,17 @@
 }
 \arguments{ 
 \item{y}{numeric vector or matrix of counts, or a \code{DGEList} object.}
-\item{offset}{numeric vector or matrix of offsets to be scaled. If a vector, its length must equal to the length of \code{y} or the number of columns of \code{y}. If a matrix, its dimension must equal to the dimension of \code{y}.}
+\item{offset}{numeric vector or matrix of offsets to be scaled. If a vector, its length must equal the length of \code{y} or the number of columns of \code{y}. If a matrix, its dimension must equal the dimension of \code{y}.}
 \item{\dots}{other arguments that are not currently used.}
 }
 
 \value{
 \code{scaleOffset.default} returns a numeric vector if \code{offset} is a vector, a matrix if \code{offset} is a matrix or a \code{CompressedMatrix} object if \code{offset} is a \code{CompressedMatrix}.
-\code{scaleOffset.DGEList} computes the scaled offests and store them in the \code{offset} component of the input \code{DGEList} object.
+\code{scaleOffset.DGEList} computes the scaled offsets and stores them in the \code{offset} component of the input \code{DGEList} object.
 }
 
 \details{
-\code{scaleOffset} ensures that the scale of offsets are consistent with library sizes.
+\code{scaleOffset} ensures that the scale of offsets is consistent with library sizes.
 This is done by ensuring that the mean offset for each gene is the same as the mean log-library size.
 The length or dimensions of \code{offset} should be consistent with the number of libraries in \code{y}.
 }

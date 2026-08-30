@@ -33,7 +33,7 @@ A character matrix with the following columns:
 \author{Gordon Smyth}
 
 \seealso{
-\code{\link{catchSalmon}}, \code{\link{strsplit2}}.
+\code{\link{catchSalmon}}, \code{\link[limma]{strsplit2}}.
 }
 
 \concept{Transcript expression}

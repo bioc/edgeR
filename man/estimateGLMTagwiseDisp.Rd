@@ -26,8 +26,8 @@ Compute an empirical Bayes estimate of the negative binomial dispersion paramete
 \item{dispersion}{common or trended dispersion estimates, used as an initial estimate for the tagwise estimates.}
 \item{prior.df}{prior degrees of freedom.}
 \item{span}{width of the smoothing window, in terms of proportion of the data set. Default value decreases with the number of tags.}
-\item{AveLogCPM}{numeric vector giving average log2 counts per million for each tag}
-\item{weights}{optional numeric matrix giving observation weights}
+\item{AveLogCPM}{numeric vector giving average log2 counts per million for each tag.}
+\item{weights}{optional numeric matrix giving observation weights.}
 \item{\ldots}{other arguments are passed to \code{\link{dispCoxReidInterpolateTagwise}}.}
 }
 
@@ -40,7 +40,7 @@ Compute an empirical Bayes estimate of the negative binomial dispersion paramete
 \details{
 This function implements the empirical Bayes strategy proposed by McCarthy et al (2012)
 for estimating the tagwise negative binomial dispersions.
-The experimental conditions are specified by design matrix allowing for multiple explanatory factors.
+The experimental conditions are specified by a design matrix allowing for multiple explanatory factors.
 The empirical Bayes posterior is implemented as a conditional likelihood with tag-specific weights,
 and the conditional likelihood is computed using Cox-Reid approximate conditional likelihood (Cox and Reid, 1987).
 
@@ -54,12 +54,12 @@ This function calls the lower-level function \code{\link{dispCoxReidInterpolateT
 }
 
 \references{
-Cox, DR, and Reid, N (1987). Parameter orthogonality and approximate conditional inference.
+Cox DR, Reid N (1987). Parameter orthogonality and approximate conditional inference.
 \emph{Journal of the Royal Statistical Society Series B} 49, 1-39.
 
-McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 }
 
 \author{Gordon Smyth, Davis McCarthy}

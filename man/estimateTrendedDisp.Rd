@@ -17,12 +17,12 @@ Estimates trended dispersion values by an empirical Bayes method.
 
 \arguments{ 
 \item{y}{matrix of counts or a \code{DGEList} object.}
-\item{method}{method used to estimated the trended dispersions. Possible values are \code{"bin.spline"}, and \code{"bin.loess"}.}
-\item{df}{integer giving the degrees of freedom of the spline function if \code{"bin.spline"} method is used, see \code{ns} in the splines package. Default is 5.}
+\item{method}{method used to estimate the trended dispersions. Possible values are \code{"bin.spline"} and \code{"bin.loess"}.}
+\item{df}{integer giving the degrees of freedom of the spline function if \code{"bin.spline"} method is used. See \code{ns} in the splines package. Default is 5.}
 \item{span}{scalar, passed to \code{loess} to determine the amount of smoothing for the loess fit when \code{"loess"} method is used. Default is \code{2/3}.}
 \item{group}{vector or factor giving the experimental group/condition for each library.}
 \item{lib.size}{numeric vector giving the total count (sequence depth) for each library.}
-\item{AveLogCPM}{numeric vector giving average log2 counts per million for each tag}
+\item{AveLogCPM}{numeric vector giving average log2 counts per million for each tag.}
 \item{\dots}{other arguments that are not currently used.}
 }
 

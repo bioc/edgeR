@@ -1,11 +1,11 @@
 \name{addPriorCount}
 \alias{addPriorCount}
 
-\title{Add a prior count}
+\title{Add a Prior Count}
 \description{Add a library size-adjusted prior count to each observation.}
 
 \usage{
-addPriorCount(y, lib.size=NULL, offset=NULL, prior.count=1)
+addPriorCount(y, lib.size=NULL, offset=NULL, prior.count=1, nthreads=1L)
 }
 
 \arguments{
@@ -13,6 +13,7 @@ addPriorCount(y, lib.size=NULL, offset=NULL, prior.count=1)
 \item{lib.size}{a numeric vector of library sizes.}
 \item{offset}{a numeric vector or matrix of offsets.}
 \item{prior.count}{a numeric scalar or vector of prior counts to be added to each gene.}
+\item{nthreads}{integer giving the number of OpenMP threads to use for the genewise computations. Defaults to 1 (serial).}
 }
 
 \details{
@@ -22,13 +23,13 @@ For example, \code{\link{predFC}} will call this function to calculate shrunken 
 
 The actual value added to the counts for each library is scaled according to the library size.
 This ensures that the relative contribution of the prior is the same for each library.
-Otherwise, a fixed prior would have little effect on a large library, but a big effect for a small library. 
+Otherwise, a fixed prior would have little effect on a large library, but a big effect on a small library.
 
 The library sizes are also modified, with twice the scaled prior being added to the library size for each library.
 To understand the motivation for this, consider that each observation is, effectively, a proportion of the total count in the library.
 The addition scheme implemented here represents an empirical logistic transform and ensures that the proportion can never be zero or one.
 
-If \code{offset} is supplied, this is used in favour of \code{lib.size} where \code{exp(offset)} is defined as the vector/matrix of library sizes.
+If \code{offset} is supplied, this is used in favor of \code{lib.size} where \code{exp(offset)} is defined as the vector/matrix of library sizes.
 If an offset matrix is supplied, this will lead to gene-specific scaling of the prior as described above.
 
 Most use cases of this function will involve supplying a constant value to \code{prior.count} for all genes.

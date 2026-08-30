@@ -1,7 +1,7 @@
 \name{maximizeInterpolant}
 \alias{maximizeInterpolant}
 
-\title{Maximize a function given a table of values by spline interpolation.}
+\title{Maximize a Function given a Table of Values by Spline Interpolation}
 
 \description{
 Maximize a function given a table of values by spline interpolation.
@@ -23,8 +23,8 @@ numeric vector of input values at which the function maximums occur.
 }
 
 \details{
-Calculates the cubic spline interpolant for each row the method of Forsythe et al (1977) using the function \code{fmm_spline} from \code{splines.c} in the \code{stats} package).
-Then calculates the derivatives of the spline segments adjacant to the input with the maximum function value.
+Calculates the cubic spline interpolant for each row by the method of Forsythe et al (1977) using the function \code{fmm_spline} from \code{splines.c} in the \code{stats} package).
+Then calculates the derivatives of the spline segments adjacent to the input with the maximum function value.
 This allows identification of the maximum of the interpolating spline.
 }
 
@@ -36,6 +36,6 @@ maximizeInterpolant(x,y)
 }
 
 \references{
-Forsythe, G. E., Malcolm, M. A. and Moler, C. B. (1977).
+Forsythe GE, Malcolm MA, Moler CB (1977).
 \emph{Computer Methods for Mathematical Computations}, Prentice-Hall.
 }

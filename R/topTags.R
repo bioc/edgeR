@@ -26,7 +26,9 @@ topTags <- function(object,n=10L,adjust.method="BH",sort.by="PValue",p.value=1)
 		if(sort.by=="logFC") warning("Two or more logFC columns in DGELRT object. First logFC column used to rank by logFC.")
 		alfc <- abs(object$table[,1])
 	} else {
-		alfc <- abs(object$table$logFC)
+		logFC <- object$table$logFC
+		if(is.null(logFC)) logFC <- object$table$logOR
+		alfc <- abs(logFC)
 	}
 
 #	Choose top genes

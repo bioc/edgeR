@@ -37,17 +37,17 @@ Care is taken to ensure accurate computation in limiting cases when the dispersi
 Dunn PK, Smyth GK (2018).
 \emph{Generalized linear models with examples in R}.
 Springer, New York, NY.
-\doi{10.1007/978-1-4419-0118-7}
+\doi{10.1007/978-1-4419-0118-7}.
 
 Jorgensen B (2013).
 Generalized linear models.
 \emph{Encyclopedia of Environmetrics} 3, Wiley.
-\doi{10.1002/9780470057339.vag010.pub2}
+\doi{10.1002/9780470057339.vag010.pub2}.
 
 McCarthy DJ, Chen Y, Smyth GK (2012).
 Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 }
 
 \author{Gordon Smyth, Yunshun Chen, Aaron Lun.  C++ code by Aaron Lun.}

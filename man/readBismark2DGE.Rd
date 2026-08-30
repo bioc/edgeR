@@ -11,7 +11,7 @@
 \item{files}{character vector of file names.}
 \item{sample.names}{character vector of sample names. If \code{NULL}, sample names will be extracted from the file names.}
 \item{readr}{logical. If \code{TRUE}, \code{readr} package is used to read the coverage files, otherwise \code{read.delim} is used.}
-\item{verbose}{logical. If \code{TRUE}, read progress messages are send to standard output.}
+\item{verbose}{logical. If \code{TRUE}, read progress messages are sent to standard output.}
 }
 
 \details{
@@ -25,16 +25,16 @@ The number of chromosomes times the largest locus position must be less than \co
 }
 
 \value{
-A \code{\link[edgeR:DGEList-class]{DGEList}} object with a row for each unique genomic loci found in the files and two columns (containing methylated and unmethylated counts) for each sample.
+A \code{\link[edgeR:DGEList-class]{DGEList}} object with a row for each unique genomic locus found in the files and two columns (containing methylated and unmethylated counts) for each sample.
 }
 
 \author{Gordon Smyth}
 
 \references{
-Chen, Y, Pal, B, Visvader, JE, Smyth, GK (2017).
+Chen Y, Pal B, Visvader JE, Smyth GK (2017).
 Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR.
 \emph{F1000Research} 6, 2055.
-\url{https://f1000research.com/articles/6-2055} 
+\doi{10.12688/f1000research.13196.2}.
 }
 
 \concept{Reading data files}

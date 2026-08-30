@@ -4,9 +4,9 @@
 \alias{splitIntoGroups.default}
 \alias{splitIntoGroupsPseudo}
 
-\title{Split the Counts or Pseudocounts from a DGEList Object According To Group}
+\title{Split the Counts or Pseudocounts from a DGEList Object According to Group}
 
-\description{Split the counts from a DGEList object according to group, creating a list where each element consists of a numeric matrix of counts for a particular experimental group. Given a pair of groups, split pseudocounts for these groups, creating a list where each element is a matrix of pseudocounts for a particular gourp.}
+\description{Split the counts from a DGEList object according to group, creating a list where each element consists of a numeric matrix of counts for a particular experimental group. Given a pair of groups, split pseudocounts for these groups, creating a list where each element is a matrix of pseudocounts for a particular group.}
 
 \usage{
 \S3method{splitIntoGroups}{DGEList}(y, ...)
@@ -17,12 +17,12 @@ splitIntoGroupsPseudo(pseudo, group, pair)
 \arguments{
 \item{y}{matrix of counts or a \code{DGEList} object.}
 \item{group}{vector or factor giving the experimental group/condition for each library.}
-\item{pseudo}{numeric matrix of quantile-adjusted pseudocounts to be split}
-\item{pair}{vector of length two stating pair of groups to be split for the pseudocounts}
+\item{pseudo}{numeric matrix of quantile-adjusted pseudocounts to be split.}
+\item{pair}{vector of length two stating pair of groups to be split for the pseudocounts.}
 \item{\dots}{other arguments that are not currently used.}
 }
 
-\value{\code{splitIntoGroups} outputs a list in which each element is a matrix of count counts for an individual group. \code{splitIntoGroupsPseudo} outputs a list with two elements, in which each element is a numeric matrix of (pseudo-)count data for one of the groups specified.}
+\value{\code{splitIntoGroups} outputs a list in which each element is a matrix of counts for an individual group. \code{splitIntoGroupsPseudo} outputs a list with two elements, in which each element is a numeric matrix of (pseudo-)count data for one of the groups specified.}
 
 \author{Davis McCarthy}
 \examples{

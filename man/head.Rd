@@ -1,19 +1,23 @@
 \name{head}
 \alias{head.DGEList}
+\alias{head.PCList}
 \alias{head.DGEExact}
 \alias{head.DGEGLM}
+\alias{head.DGEBIN}
 \alias{head.DGELRT}
 \alias{head.TopTags}
 \alias{tail.DGEList}
+\alias{tail.PCList}
 \alias{tail.DGEExact}
 \alias{tail.DGEGLM}
+\alias{tail.DGEBIN}
 \alias{tail.DGELRT}
 \alias{tail.TopTags}
 
 \title{Return the First to Last Part of a Data Object}
 
 \description{
-Retrieve the first or last parts of a DGEList, DGEExat, DGEGLM, DGELRT or TopTags object.
+Retrieve the first or last parts of a DGEList, PCList, DGEExact, DGEGLM, DGELRT or TopTags object.
 }
 
 \usage{
@@ -22,10 +26,10 @@ Retrieve the first or last parts of a DGEList, DGEExat, DGEGLM, DGELRT or TopTag
 }
 
 \arguments{
-  \item{x}{an object of class \code{DGEList}, \code{DGEExact}, \code{DGEGLM}, \code{DGELRT} or \code{TopTags}.}
+  \item{x}{an object of class \code{DGEList}, \code{PCList}, \code{DGEExact}, \code{DGEGLM}, \code{DGELRT} or \code{TopTags}.}
   \item{n}{
     a single integer.
-    If positive or zero, number rows of resulting object.
+    If positive or zero, gives the number of rows of the resulting object.
     If negative, all but the \code{n} last/first rows of \code{x}.
   }
   \item{\dots}{other arguments are not currently used.}

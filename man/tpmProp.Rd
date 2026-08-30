@@ -1,7 +1,7 @@
 \name{tpmProp}
 \alias{tpmProp}
 
-\title{TPM Proportion By Transcript For Each Gene}
+\title{TPM Proportion by Transcript for Each Gene}
 
 \description{Compute the expression proportion from each transcript for each gene.}
 

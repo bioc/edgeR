@@ -1,9 +1,9 @@
 \name{nearestReftoX}
 \alias{nearestReftoX}
-\title{Find Nearest Element of Reference for each Element of X}
+\title{Find Nearest Element of Reference for Each Element of X}
 
 \description{
-Find nearest element of a sorted reference vector and to each element of x.
+Find nearest element of a sorted reference vector to each element of x.
 }
 
 \usage{

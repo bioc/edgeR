@@ -37,14 +37,14 @@ The mid-p method handles non-integer values by interpolation while the randomize
 }
  
 \references{
-Berry, G., & Armitage, P. (1995).
+Berry G, Armitage P (1995).
 Mid-P confidence intervals: a brief review.
 \emph{The Statistician}, 417-423.
 
-Dunn, K. P., and Smyth, G. K. (1996).
+Dunn PK, Smyth GK (1996).
 Randomized quantile residuals.
 \emph{Journal of Computational and Graphical Statistics} \bold{5}, 1-10.
-\url{https://gksmyth.github.io/pubs/residual.html}
+\url{https://gksmyth.github.io/pubs/residual.html}.
 }
 
 \author{Gordon Smyth}

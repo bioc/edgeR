@@ -36,7 +36,7 @@ glmFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, prior.c
 	glmFit.DGEList(y, design=design, dispersion=dispersion, prior.count=prior.count, start=start, ...)
 }
 
-glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, prior.count=0.125, start=NULL, ...)
+glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, prior.count=0.125, start=NULL, nthreads=1L, ...)
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries
 #	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun
@@ -91,18 +91,10 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 	offset <- .compressOffsets(y=y, lib.size=lib.size, offset=offset)
 
 #	weights are checked in lower-level functions
+	weights.mat <- .compressWeights(y, weights)
 
 #	Fit the tagwise glms
-#	If the design is equivalent to a oneway layout, use a shortcut algorithm
-	group <- designAsFactor(design)
-	if(nlevels(group)==ncol(design)) {
-		fit <- mglmOneWay(y,design=design,group=group,dispersion=dispersion.mat,offset=offset,weights=weights,coef.start=start)
-		fit$deviance <- nbinomDeviance(y=y,mean=fit$fitted.values,dispersion=dispersion.mat,weights=weights)
-		fit$method <- "oneway"
-	} else {
-		fit <- mglmLevenberg(y,design=design,dispersion=dispersion.mat,offset=offset,weights=weights,coef.start=start,maxit=250)
-		fit$method <- "levenberg"
-	}
+	fit <- .Call(.cxx_fit_glm, y, offset, dispersion.mat, weights.mat, design, 250L, 1e-6, start, nthreads)
 
 #	Prepare output
 	fit$counts <- y
@@ -110,7 +102,9 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 		fit$unshrunk.coefficients <- fit$coefficients
 		colnames(fit$unshrunk.coefficients) <- colnames(design)
 		rownames(fit$unshrunk.coefficients) <- rownames(y)
-		fit$coefficients <- predFC(y,design,offset=offset,dispersion=dispersion.mat,prior.count=prior.count,weights=weights,...)*log(2)
+		priors <- .compressPrior(y, prior.count)
+		fit$coefficients <- .Call(.cxx_pred_fc, y, offset, priors, dispersion.mat, weights.mat, design, 250L, 1e-6, nthreads)
+	#	fit$coefficients <- predFC(y,design,offset=offset,dispersion=dispersion.mat,prior.count=prior.count,weights=weights.mat,...)*log(2)
 	}
 	colnames(fit$coefficients) <- colnames(design)
 	rownames(fit$coefficients) <- rownames(y)
@@ -120,8 +114,9 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 	fit$design <- design
 	fit$offset <- offset
 	fit$dispersion <- dispersion
-	fit$weights <- weights
+	if(!is.null(weights)) fit$weights <- weights
 	fit$prior.count <- prior.count
+	fit$nthreads <- nthreads
 	new("DGEGLM",fit)
 }
 
@@ -193,7 +188,7 @@ glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 	} else {
 		dispersion <- glmfit$dispersion/glmfit$average.ql.dispersion
 	}
-	fit.null <- glmFit(glmfit$counts,design=design0,offset=glmfit$offset,weights=glmfit$weights,dispersion=dispersion,prior.count=0)
+	fit.null <- glmFit(glmfit$counts,design=design0,offset=glmfit$offset,weights=glmfit$weights,dispersion=dispersion,prior.count=0,nthreads=glmfit$nthreads)
 
 #	Likelihood ratio statistic
 	LR <- fit.null$deviance - glmfit$deviance

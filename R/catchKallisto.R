@@ -1,9 +1,22 @@
-catchKallisto <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
+catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Gordon Smyth and Pedro Baldoni
-#	Created 2 April 2018. Last modified 26 Jun 2026.
+#	Created 2 April 2018. Last modified 29 Aug 2026.
 {
+#	Check parent.dir
+	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
+	if(is.null(parent.dir)) parent.dir <- "."
+
+#	Check sample.dirs
+	if(is.null(sample.dirs)) {
+		sample.dirs <- dir(parent.dir)
+		IsKallisto <- file.exists(file.path(parent.dir,sample.dirs,"abundance.h5"))
+		sample.dirs <- sample.dirs[IsKallisto]
+	}
+
+#	Full paths
+	paths <- file.path(parent.dir,sample.dirs)
 	NSamples <- length(paths)
 
 #	Use rhdf5 package for reading
@@ -84,7 +97,7 @@ catchKallisto <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 	    Overdispersion=OverDisp,
 	    row.names=aux$ids,
 	    stringsAsFactors=FALSE)
-	dimnames(Counts) <- list(aux$ids,paths)
+	dimnames(Counts) <- list(aux$ids,basename(paths))
 
 #	Detect and unpack Gencode tx names
 	x <- row.names(Ann)[1]

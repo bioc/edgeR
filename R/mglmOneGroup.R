@@ -1,4 +1,4 @@
-mglmOneGroup <- function(y,dispersion=0,offset=0,weights=NULL,coef.start=NULL,maxit=50,tol=1e-10,verbose=FALSE)
+mglmOneGroup <- function(y,dispersion=0,offset=0,weights=NULL,coef.start=NULL,maxit=50,tol=1e-10,verbose=FALSE,nthreads=1L)
 #	Fit single-group negative-binomial glm
 #	R version by Gordon Smyth
 #	C++ version by Aaron Lun
@@ -26,7 +26,7 @@ mglmOneGroup <- function(y,dispersion=0,offset=0,weights=NULL,coef.start=NULL,ma
 	weights <- .compressWeights(y, weights)
 
 #	Fisher scoring iteration.
-	output <- .Call(.cxx_fit_one_group, y, offset, dispersion, weights, maxit, tol, coef.start)
+	output <- .Call(.cxx_fit_one_group, y, offset, dispersion, weights, maxit, tol, coef.start, nthreads)
 
 #	Convergence achieved for all tags?
 	if (verbose && any(!output$convergence)) { 

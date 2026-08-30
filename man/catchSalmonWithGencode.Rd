@@ -1,13 +1,14 @@
 \name{catchSalmonWithGencode}
 \alias{catchSalmonWithGencode}
 
-\title{Process Salmon Output To Produce Gene Counts}
+\title{Process Salmon Output to Produce Gene Counts}
 
 \description{Produce a gene count object from Salmon output for a series of biological samples with Gencode annotation.}
 
 \usage{
-catchSalmonWithGencode(parent.dir = NULL, sample.dirs = NULL, DGEList = TRUE,
-                       divide = FALSE, offset.prior = TRUE, verbose = TRUE)
+catchSalmonWithGencode(parent.dir = NULL, sample.dirs = NULL,
+        DGEList = TRUE, divide = FALSE,
+        offset.prior = TRUE, gene.length = "moderate", verbose = TRUE)
 }
 
 \arguments{
@@ -20,6 +21,7 @@ catchSalmonWithGencode(parent.dir = NULL, sample.dirs = NULL, DGEList = TRUE,
 \item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
 \item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
 \item{offset.prior}{logical. If \code{TRUE}, a prior offset matrix representing differences in effective transcript length will be included in the DGEList.}
+\item{gene.length}{How to compute average gene length. Possibilities are \code{"moderate"}, \code{"tximport"} and \code{"simple"}.}
 \item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
 }
 
@@ -28,7 +30,7 @@ This function assumes that Salmon (Patro et al 2017; Zakeri et al 2017) has been
 The function will automatically detect whether bootstrap or Gibbs samples are available.
 
 The function will unpack the Gencode transcript names using \code{splitGencodeTxNames} to obtain gene and transcript IDs.
-The transcript-level counts will collapsed to gene-level counts and RTA overdispersions will be estimated at the gene level.
+The transcript-level counts will be collapsed to gene-level counts and RTA overdispersions will be estimated at the gene level.
 Average transcript lengths are also computed for each gene using the method of Soneson et al (2016).
 }
 
@@ -63,26 +65,26 @@ The rownames will be reset to plain Ensembl gene IDs and the \code{genes} data.f
 Baldoni PL, Chen Y, Hediyeh-zadeh S, Liao Y, Dong X, Ritchie ME, Shi W, Smyth GK (2024a).
 Dividing out quantification uncertainty allows efficient assessment of differential transcript expression with edgeR.
 \emph{Nucleic Acids Research} 52(3), e13.
-\doi{10.1093/nar/gkad1167}
+\doi{10.1093/nar/gkad1167}.
 
 Baldoni PL, Chen L, Smyth GK (2024b).
 Faster and more accurate assessment of differential transcript expression with Gibbs sampling and edgeR v4.
 \emph{NAR Genomics and Bioinformatics} 6(4), lqae151.
-\doi{10.1093/nargab/lqae151}
+\doi{10.1093/nargab/lqae151}.
 
 Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
 \emph{Nucleic Acids Research} 53(22), gkaf1305.
-\doi{10.1093/nar/gkaf1305}
+\doi{10.1093/nar/gkaf1305}.
 
 Patro R, Duggal G, Love MI, Irizarry RA, Kingsford C (2017).
 Salmon provides fast and bias-aware quantification of transcript expression.
 \emph{Nature Methods} 14(4), 417-419.
 
-Soneson C, Love MI and Robinson MD (2016).
+Soneson C, Love MI, Robinson MD (2016).
 Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences.
 \emph{F1000Research} 4, 1521.
-\doi{10.12688/f1000research.7563.2}
+\doi{10.12688/f1000research.7563.2}.
 
 Zakeri M, Srivastava A, Almodaresi F, Patro R (2017).
 Improved data-driven likelihood factorizations for transcript abundance estimation.

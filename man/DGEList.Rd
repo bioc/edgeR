@@ -3,12 +3,10 @@
 \alias{DGEList.default}
 \alias{DGEList.data.frame}
 
-\title{
-Create a DGEList object
-}
+\title{Create a DGEList Object}
 
 \description{
-Assembles a \code{DGEList} object from its components, especially the table counts as a matrix or data.frame.
+Assembles a \code{DGEList} object from its components, especially the table of counts as a matrix or data.frame.
 }
 
 \usage{

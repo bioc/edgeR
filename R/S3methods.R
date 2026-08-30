@@ -2,6 +2,7 @@
 
 as.matrix.DGEList <- function(x,...) as.matrix(x$counts)
 as.matrix.DGEGLM <- function(x,...) as.matrix(x$coefficients)
+as.matrix.DGEBIN <- as.matrix.DGEGLM
 
 # S3 as.data.frame method
 
@@ -18,6 +19,21 @@ as.data.frame.DGEList <- function(x,row.names=NULL,...)
 		data.frame(x$genes,x$counts,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
 	}
 }
+
+as.data.frame.PCList <- function(x,row.names=NULL,...)
+#	Created 16 April 2025.
+{
+	if(is.null(x$genes)) {
+		data.frame(x$counts,x$counts2,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
+	} else {
+		if(is.null(row.names)) {
+			rn <- rownames(x$counts)
+			if(!is.null(rn) && !anyDuplicated(rn)) row.names(x$genes) <- rn
+		}
+		data.frame(x$genes,x$counts,x$counts2,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
+	}
+}
+
 as.data.frame.DGEGLM <- function(x,row.names=NULL,...)
 #	Created 18 Jan 2024.
 {
@@ -27,6 +43,7 @@ as.data.frame.DGEGLM <- function(x,row.names=NULL,...)
 	} else
 		data.frame(x$genes,x$coefficients,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
 }
+as.data.frame.DGEBIN <- as.data.frame.DGEGLM
 as.data.frame.DGEExact <- as.data.frame.DGELRT <- function(x,row.names=NULL,...)
 {
 	if(is.null(x$genes)) {
@@ -45,7 +62,9 @@ as.data.frame.TopTags <- function(x,row.names=NULL,...)
 # These enable nrow() and ncol() as well
 
 dim.DGEList <- function(x) if(is.null(x$counts)) c(0,0) else dim(as.matrix(x$counts))
+dim.PCList <- function(x) if(is.null(x$counts)) c(0,0) else dim(as.matrix(x$counts))
 dim.DGEGLM <- function(x) if(is.null(x$coefficients)) c(0,0) else dim(as.matrix(x$coefficients))
+dim.DGEBIN <- dim.DGEGLM
 dim.DGEExact <- dim.TopTags <- dim.DGELRT <- function(x) if(is.null(x$table)) c(0,0) else dim(as.matrix(x$table))
 
 # S3 length methods
@@ -57,7 +76,9 @@ dim.DGEExact <- dim.TopTags <- dim.DGELRT <- function(x) if(is.null(x$table)) c(
 # These enable rownames() and colnames() as well
 
 dimnames.DGEList <- function(x) dimnames(x$counts)
+dimnames.PCList <- function(x) dimnames(x$counts)
 dimnames.DGEGLM <- function(x) dimnames(x$coefficients)
+dimnames.DGEBIN <- dimnames.DGEGLM
 dimnames.DGEExact <- dimnames.DGELRT <- dimnames.TopTags <- function(x) dimnames(x$table)
 
 # S3 dimnames<- methods
@@ -69,6 +90,14 @@ assign("dimnames<-.DGEList",function(x,value)
 	if(hasName(x,"samples")) row.names(x$samples) <- value[[2]]
 	if(hasName(x,"genes")) row.names(x$genes) <- value[[1]]
 	if(hasName(x,"offset.prior")) row.names(x$offset.prior) <- value[[1]]
+	x
+})
+
+assign("dimnames<-.PCList",function(x,value)
+{
+	dimnames(x$counts) <- dimnames(x$counts2) <- value
+	if(hasName(x,"samples")) row.names(x$samples) <- value[[2]]
+	if(hasName(x,"genes")) row.names(x$genes) <- value[[1]]
 	x
 })
 
@@ -89,6 +118,8 @@ assign("dimnames<-.DGEGLM",function(x,value)
 	x
 })
 
+assign("dimnames<-.DGEBIN",`dimnames<-.DGEGLM`)
+
 assign("dimnames<-.DGELRT",function(x,value)
 #	4 June 2015
 {
@@ -103,8 +134,8 @@ assign("dimnames<-.DGELRT",function(x,value)
 
 # S3 head and tail methods
 
-head.DGEList <- head.DGEExact <- head.DGEGLM <- head.DGELRT <- head.TopTags <-
-function (x, n = 6L, ...) 
+head.DGEList <- head.PCList <- head.DGEExact <- head.DGEGLM <- head.DGEBIN <- head.DGELRT <- head.TopTags <-
+function (x, n = 6L, ...)
 {
 	stopifnot(length(n) == 1L)
 	n <- if (n < 0L) 
@@ -114,8 +145,8 @@ function (x, n = 6L, ...)
 	x[seq_len(n),]
 }
 
-tail.DGEList <- tail.DGEExact <- tail.DGEGLM <- tail.DGELRT <- tail.TopTags <-
-function (x, n = 6L, ...) 
+tail.DGEList <- tail.PCList <- tail.DGEExact <- tail.DGEGLM <- tail.DGEBIN <- tail.DGELRT <- tail.TopTags <-
+function (x, n = 6L, ...)
 {
 	stopifnot(length(n) == 1L)
 	nrx <- nrow(x)

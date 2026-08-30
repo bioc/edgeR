@@ -3,7 +3,7 @@
 
 \title{Goodness of Fit Tests for Multiple GLM Fits}
 
-\description{Conducts deviance goodness of fit tests for each fit in a \code{DGEGLM} object}
+\description{Conducts deviance goodness of fit tests for each fit in a \code{DGEGLM} object.}
 
 \usage{
 gof(glmfit, pcutoff = 0.1, adjust = "holm", plot = FALSE,
@@ -34,7 +34,7 @@ A list with the following components:
 \item{gof.statistics}{numeric vector of deviance statistics, which are the statistics used for the goodness of fit test}
 \item{gof.pvalues}{numeric vector of p-values providing evidence of poor fit; computed from the chi-square distribution on the residual degrees of freedom from the GLM fits.}
 \item{outlier}{logical vector indicating whether or not each gene is a `dispersion outlier' (i.e., the model fit is poor for that gene indicating that the dispersion estimate is not good for that gene).} 
-\item{df}{scalar, the residual degrees of freedom from the GLM fit for which the goodness of fit statistics have been computed. Also the degrees of freedom for the goodness of fit statistics for the LR (chi-quare) test for significance.}
+\item{df}{scalar, the residual degrees of freedom from the GLM fit for which the goodness of fit statistics have been computed. Also the degrees of freedom for the goodness of fit statistics for the LR (chi-square) test for significance.}
 
 If \code{plot=TRUE}, then a plot is also produced on the current graphics device.
 }
@@ -42,9 +42,9 @@ If \code{plot=TRUE}, then a plot is also produced on the current graphics device
 \author{Davis McCarthy and Gordon Smyth}
 
 \references{
-McCarthy, DJ, Chen, Y, Smyth, GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297
-\doi{10.1093/nar/gks042}
+\doi{10.1093/nar/gks042}.
 }
 
 \examples{

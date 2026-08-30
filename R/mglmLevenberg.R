@@ -1,4 +1,4 @@
-mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.start=NULL, start.method="null", maxit=200, tol=1e-06)
+mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.start=NULL, start.method="null", maxit=200, tol=1e-06, nthreads=1L)
 #	Fit genewise negative binomial glms with log-link
 #	using Levenberg damping to ensure convergence
 
@@ -49,14 +49,14 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 #	Initializing values for the coefficients at reasonable best guess with linear models.
 	if(is.null(coef.start)) {
 		start.method <- match.arg(start.method, c("null","y"))
-		beta <- .Call(.cxx_get_levenberg_start, y, offset, dispersion, weights, design, start.method=="null")
+		beta <- .Call(.cxx_get_levenberg_start, y, offset, dispersion, weights, design, start.method=="null", nthreads)
 	} else {
 		beta <- as.matrix(coef.start)
 	}
 
 # 	Checking arguments and calling the C++ method.
 	if (!is.double(beta)) storage.mode(beta) <- "double"
-	output <- .Call(.cxx_fit_levenberg, y, offset, dispersion, weights, design, beta, tol, maxit)
+	output <- .Call(.cxx_fit_levenberg, y, offset, dispersion, weights, design, beta, tol, maxit, nthreads)
 
 #	Naming the output and returning it.  
 	colnames(output$coefficients) <- colnames(design)

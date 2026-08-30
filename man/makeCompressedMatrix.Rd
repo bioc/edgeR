@@ -28,22 +28,22 @@ makeCompressedMatrix(x, dims = NULL, byrow = TRUE)
 
 \method{Ops}{CompressedMatrix}(e1, e2)
 
-\method{rbind}{CompressedMatrix}(...)
-\method{cbind}{CompressedMatrix}(...)
+\method{rbind}{CompressedMatrix}(\dots)
+\method{cbind}{CompressedMatrix}(\dots)
 
-\method{as.matrix}{CompressedMatrix}(x, ...)
+\method{as.matrix}{CompressedMatrix}(x, \dots)
 }
 
 \arguments{
   \item{x}{For \code{makeCompressedMatrix}, a scalar, vector, matrix or CompressedMatrix object.
         For the S3 methods, a CompressedMatrix object.}
-  \item{dims}{integer vector of length 2 giving matrix dimensions, ignored if \code{x} is already a matrix}
+  \item{dims}{integer vector of length 2 giving matrix dimensions, ignored if \code{x} is already a matrix.}
   \item{byrow}{logical. If \code{x} is a vector, should it be repeated across rows (default) or across columns?}
-  \item{i, j}{subset indices to apply to \code{x}, which behave the same as indices for \code{matrix} subsetting}
-  \item{drop}{logical, indicating whether or not to drop dimensions when subsetting to a single row/column}
-  \item{value}{an array-like object or vector to be used to replace values in \code{x}}
-  \item{e1, e2}{a CompressedMatrix object}
-  \item{...}{multiple CompressedMatrix objects for \code{rbind} and \code{cbind}.
+  \item{i, j}{subset indices to apply to \code{x}, which behave the same as indices for \code{matrix} subsetting.}
+  \item{drop}{logical, indicating whether or not to drop dimensions when subsetting to a single row/column.}
+  \item{value}{an array-like object or vector to be used to replace values in \code{x}.}
+  \item{e1, e2}{a CompressedMatrix object.}
+  \item{\dots}{multiple CompressedMatrix objects for \code{rbind} and \code{cbind}.
   Otherwise additional arguments that are ignored in \code{as.matrix}.}
 }
 
@@ -90,10 +90,22 @@ Calling \code{as.matrix} on a \code{CompressedMatrix} object will return the ord
 }
 
 \value{
-A object of class CompressedMatrix, containing \code{x} and the additional attributes \code{repeat.row} and \code{repeat.col}.
+An object of class CompressedMatrix, containing \code{x} and the additional attributes \code{repeat.row} and \code{repeat.col}.
 }
 
 \author{Aaron Lun}
+
+\references{
+Harris CR, Millman KJ, Van Der Walt SJ, Gommers R, Virtanen P, Cournapeau D, Wieser E, Taylor J, Berg S, Smith NJ, Kern R (2020).
+Array programming with NumPy.
+\emph{Nature} 585(7825), 357-362.
+\doi{10.1038/s41586-020-2649-2}.
+
+Hillis WD, Steele GL Jr (1986).
+Data parallel algorithms.
+\emph{Communications of the ACM} 9(12), 1170-1183.
+\doi{10.1145/7902.7903}.
+}
 
 \examples{
 # Repeated rows:

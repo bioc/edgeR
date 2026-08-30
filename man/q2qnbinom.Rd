@@ -15,7 +15,7 @@ q2qnbinom(x, input.mean, output.mean, dispersion=0)
 \item{x}{numeric matrix of counts.}
 \item{input.mean}{population means for \code{x}. Can be a vector of length \code{nrow(x)} or a matrix of same dimensions as \code{x}.}
 \item{output.mean}{population means for the output values. Can be a vector of length \code{nrow(x)} or a matrix of same dimensions as \code{x}.}
-\item{dispersion}{negative binomial dispersion values. Can be a unit vector, or a vector of length \code{nrow(x)}, or a matrix of same dimensions as \code{x}.}
+\item{dispersion}{negative binomial dispersion values. Can be a single value, or a vector of length \code{nrow(x)}, or a matrix of same dimensions as \code{x}.}
 }
 
 \details{
@@ -23,7 +23,7 @@ This function finds the quantile with the same left and right tail probabilities
 \code{q2qpois} is equivalent to \code{q2qnbinom} with \code{dispersion=0}.
 
 In principle, \code{q2qnbinom} gives similar results to calling \code{pnbinom} followed by \code{qnbinom} as in the example below.
-However this function avoids infinite values arising from rounding errors and does appropriate interpolation to return continuous values.
+However, this function avoids infinite values arising from rounding errors and does appropriate interpolation to return continuous values.
 
 \code{q2qnbinom} is called by \code{\link{equalizeLibSizes}} to perform quantile-to-quantile normalization.
 }

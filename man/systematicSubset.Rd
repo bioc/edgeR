@@ -1,7 +1,7 @@
 \name{systematicSubset}
 \alias{systematicSubset}
 
-\title{Take a systematic subset of indices.}
+\title{Take a Systematic Subset of Indices}
 
 \description{
 Take a systematic subset of indices stratified by a ranking variable.

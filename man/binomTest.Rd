@@ -40,7 +40,7 @@ When the counts are reasonably large, the binomial test, Fisher's test and Pears
 When the counts are smaller, the binomial test is usually to be preferred in this context.
 
 This function replaces the earlier \code{sage.test} functions in the statmod and sagenhaft packages.
-It produces the same results as \code{\link{binom.test}} in the stats packge, but is much faster.
+It produces the same results as \code{\link{binom.test}} in the stats package, but is much faster.
 }
 
 \value{
@@ -48,13 +48,13 @@ Numeric vector of p-values.
 }
 
 \references{
-\url{https://en.wikipedia.org/wiki/Binomial_test}
+\url{https://en.wikipedia.org/wiki/Binomial_test}.
 
-\url{https://en.wikipedia.org/wiki/Fisher's_exact_test}
+\url{https://en.wikipedia.org/wiki/Fisher's_exact_test}.
 
-\url{https://en.wikipedia.org/wiki/Serial_analysis_of_gene_expression}
+\url{https://en.wikipedia.org/wiki/Serial_analysis_of_gene_expression}.
 
-\url{https://en.wikipedia.org/wiki/RNA-Seq}
+\url{https://en.wikipedia.org/wiki/RNA-Seq}.
 }
 
 \author{Gordon Smyth}

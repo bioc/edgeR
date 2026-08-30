@@ -33,9 +33,9 @@ To read the counts instead into a sparse matrix format, the \code{read10xResults
 \value{
 Either a \code{\link[edgeR:DGEList-class]{DGEList}} object (if \code{DGEList=TRUE}) or an ordinary list with the following components:
 \item{counts}{matrix of counts.}
-\item{genes}{data.frame counting gene symbols.}
+\item{genes}{data.frame containing gene symbols.}
 \item{samples}{data.frame containing information about each cell. This will be omitted if \code{barcodes=NULL} and \code{DGEList=FALSE}.}
-The only difference between the \code{DGEList} or list formats is that the \code{DGEList} adds some extra columns to the \code{samples} data.frame.
+The only difference between the \code{DGEList} and list formats is that the \code{DGEList} adds some extra columns to the \code{samples} data.frame.
 }
 
 \author{Gordon Smyth}

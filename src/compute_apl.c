@@ -17,48 +17,103 @@
  * this is converted from adj_coxreid.cpp and R_compute_apl.cpp written by Aaron
  */
 
-void compute_adj_profile_ll(cmx *y, cmx *mu, cmx *disp, cmx *weights, cmx *design, int do_adjust, double *output) 
+/* per-thread scratch for the adjusted profile likelihood */
+typedef struct {
+    double *xtwx;     /* nvar*nvar Fisher info */
+    int    *pivots;   /* nvar LDL pivots       */
+    double *work;     /* lwork dsytrf work     */
+    double *zwpt;     /* nlib working weights  */
+    double *yptr, *uptr, *wptr, *dptr;   /* nlib row buffers */
+} apl_ws;
+
+void compute_adj_profile_ll(cmx *y, cmx *mu, cmx *disp, cmx *weights, cmx *design, int do_adjust, double *output, int nthreads)
 {
     const char uplo = 'U';
     const double low_value = 1e-10, log_low_value = log(1e-10);
 
     int ntag=(y->nrow), nlib=(y->ncol), nvar=(design->ncol);
-    double *dm; dm = (design->dmat);
+    double *dm;
+    dm = (design->dmat);
 
-    double *xtwx = R_Calloc(nvar*nvar, double);
-    int *pivots  = R_Calloc(nvar, int);
-    
-    /* We also want to identify the optimal size of the 'work' array 
-     * using the ability of the dystrf function to call ILAENV. We then
-     * reallocate the work pointer to this value.
+    int nth = clamp_threads(nthreads);
+
+    /* We also want to identify the optimal size of the 'work' array
+     * using the ability of the dystrf function to call ILAENV. The query is
+     * independent of the matrix contents, so a scratch buffer is fine.
      */
     int info=0, lwork=-1;
-	double temp_work;
-    F77_CALL(dsytrf)(&uplo, &nvar, xtwx, &nvar, pivots, &temp_work, &lwork, &info FCONE);
-	if (info) { error("failed to identify optimal size of workspace through ILAENV"); }
+    double temp_work;
+    double *qbuf = R_Calloc(nvar*nvar, double);
+    int    *pbuf = R_Calloc(nvar, int);
+    /* dsytrf is the LAPACK double-precision symmetric-indefinite (Bunch-Kaufman)
+     * factorization A = U*D*U**T; here it is called with lwork = -1 as a pure
+     * workspace-size query, which internally consults ILAENV for the optimal block
+     * size.  edgeR runs the query once so the per-thread 'work' arrays used later for
+     * the Cox-Reid adjustment (adjusted profile likelihood) are sized correctly.
+     * Argument mapping: UPLO = uplo ('U', upper triangle stored), N = nvar (order of
+     * the Fisher-information matrix), A = qbuf (N x N scratch, contents irrelevant to
+     * a size query), LDA = nvar (leading dimension), IPIV = pbuf (N pivot scratch),
+     * WORK = &temp_work (receives the optimal lwork in its first element), LWORK =
+     * lwork (-1, i.e. request a query, not a factorization), INFO = info (0 on
+     * success, non-zero if the query itself failed).
+     * The returned temp_work is rounded up into lwork, the length of each thread's
+     * work buffer.
+     * Equivalent R operation: none; this is a workspace-size query with no algorithmic
+     * R equivalent.
+     * Netlib references: https://netlib.org/lapack/explore-html/ (dsytrf) */
+    F77_CALL(dsytrf)(&uplo, &nvar, qbuf, &nvar, pbuf, &temp_work, &lwork, &info FCONE);
+    if (info)
+    {
+        R_Free(qbuf);
+        R_Free(pbuf);
+        error("failed to identify optimal size of workspace through ILAENV");
+    }
     lwork = (int)(temp_work +0.5);
-    if (lwork < 1) { lwork = 1; }
+    if (lwork < 1)
+    {
+        lwork = 1;
+    }
+    R_Free(qbuf);
+    R_Free(pbuf);
 
-    // working space for dsytrf
-    double *work = R_Calloc(lwork, double);
+    /* one workspace per thread */
+    apl_ws *ws = R_Calloc(nth, apl_ws);
+    for (int t=0; t<nth; ++t)
+    {
+        ws[t].xtwx   = R_Calloc(nvar*nvar, double);
+        ws[t].pivots = R_Calloc(nvar, int);
+        ws[t].work   = R_Calloc(lwork, double);
+        ws[t].zwpt   = R_Calloc(nlib, double);
+        ws[t].yptr   = R_Calloc(nlib, double);
+        ws[t].uptr   = R_Calloc(nlib, double);
+        ws[t].wptr   = R_Calloc(nlib, double);
+        ws[t].dptr   = R_Calloc(nlib, double);
+    }
 
-    // zwpt: working weights in XtWX, or Wz
-    double *zwpt = R_Calloc(nlib, double);
+    /* per-thread LDL-factorization failure flag (raised after the region) */
+    int *lfail = R_Calloc(nth, int);
 
-    // row vectors for y mu weights and disp
-    double *yptr = R_Calloc(nlib, double);
-    double *uptr = R_Calloc(nlib, double);
-    double *wptr = R_Calloc(nlib, double);
-    double *dptr = R_Calloc(nlib, double);
-
-    for (int tag=0; tag<ntag; ++tag) {
+    #ifdef _OPENMP
+    #pragma omp parallel for num_threads(nth) schedule(static)
+    #endif
+    for (int tag=0; tag<ntag; ++tag)
+    {
+        int tid = 0;
+        #ifdef _OPENMP
+        tid = omp_get_thread_num();
+        #endif
+        apl_ws *w = &ws[tid];
+        double *yptr=w->yptr, *uptr=w->uptr, *wptr=w->wptr, *dptr=w->dptr, *zwpt=w->zwpt;
         get_row4(y,mu,disp,weights,tag,yptr,uptr,dptr,wptr);
 
         output[tag] = 0;
         /* First computing the log-likelihood. */
-        for (int lib=0; lib<nlib; ++lib) {
-            if (uptr[lib]==0) {
-                if (do_adjust) {
+        for (int lib=0; lib<nlib; ++lib)
+        {
+            if (uptr[lib]==0)
+            {
+                if (do_adjust)
+                {
                     zwpt[lib] = 0;
                 }
                 continue; // Mean should only be zero if count is zero, where the log-likelihood would then be 0.
@@ -72,12 +127,15 @@ void compute_adj_profile_ll(cmx *y, cmx *mu, cmx *disp, cmx *weights, cmx *desig
             double curd = dptr[lib] / curw;
 
             double loglik=0;
-            if (curd > 0) {
+            if (curd > 0)
+            {
                 // same as loglik <- rowSums(weights*dnbinom(y,size=1/dispersion,mu=mu,log = TRUE))
                 double r=1/curd;
                 double logmur=log(curu+r);
                 loglik = cury*log(curu) - cury*logmur + r*log(r) - r*logmur + lgamma(cury+r) - lgamma(cury+1) - lgamma(r);
-            } else {
+            }
+            else
+            {
                 // same as loglik <- rowSums(weights*dpois(y,lambda=mu,log = TRUE))
                 loglik = cury*log(curu) - curu - lgamma(cury+1);
             }
@@ -87,7 +145,8 @@ void compute_adj_profile_ll(cmx *y, cmx *mu, cmx *disp, cmx *weights, cmx *desig
             // of the _scaled_ NB distribution (after dividing the original sum by the weight).
             // output[tag] += log(curw);
 
-            if (do_adjust) {
+            if (do_adjust)
+            {
                 /* Computing 'W', the matrix of negative binomial working weights.
                  * The class computes 'XtWX' and performs an LDL decomposition
                  * to compute the Cox-Reid adjustment factor.
@@ -96,33 +155,57 @@ void compute_adj_profile_ll(cmx *y, cmx *mu, cmx *disp, cmx *weights, cmx *desig
             }
         }
 
-        if (do_adjust) {
+        if (do_adjust)
+        {
             double adj=0;
-            if (nvar==1) {
-                for(int lib=0;lib<nlib;++lib) { adj += zwpt[lib]; }
+            if (nvar==1)
+            {
+                for(int lib=0;lib<nlib;++lib)
+                {
+                    adj += zwpt[lib];
+                }
                 adj=log(fabs(adj))/2;
-            } 
-            else {
-                compute_xtwx(nlib, nvar, dm, zwpt, xtwx);
+            }
+            else
+            {
+                int linfo=0;
+                compute_xtwx(nlib, nvar, dm, zwpt, w->xtwx);
 
                 /* DSYTRF computes the factorization of a real symmetric matrix A using
                  * the Bunch-Kaufman diagonal pivoting method.  The form of the factorization is
                  * A = U*D*U**T  or  A = L*D*L**T
-                 * where U (or L) is a product of permutation and unit upper (lower)
-                 * triangular matrices, and D is symmetric and block diagonal with
-                 * 1-by-1 and 2-by-2 diagonal blocks.
-                 * 
+                 *
                  * https://netlib.org/lapack/explore-3.2-html/dsytrf.f.html
-                 * 
                  */
 
-                F77_CALL(dsytrf)(&uplo, &nvar, xtwx, &nvar, pivots, work, &lwork, &info FCONE);
-                
-                if (info<0) { error("LDL factorization failed for XtWX."); }
-                    
+                /* dsytrf is the LAPACK double-precision symmetric-indefinite (Bunch-Kaufman)
+                 * factorization; here (UPLO = 'U') it factors the symmetric XtWX in place
+                 * into A = U*D*U**T with a block-diagonal D.  edgeR calls it to obtain the
+                 * log-determinant of the expected Fisher information, which forms the
+                 * Cox-Reid term subtracted from the adjusted profile log-likelihood.
+                 * Argument mapping: UPLO = uplo ('U', upper triangle supplied by compute_xtwx),
+                 * N = nvar (number of coefficients), A = w->xtwx (N x N Fisher info, overwritten
+                 * in place by the U and D factors), LDA = nvar (leading dimension), IPIV =
+                 * w->pivots (N Bunch-Kaufman pivot indices), WORK = w->work (workspace of length
+                 * lwork), LWORK = lwork (sized by the earlier query), INFO = linfo (0 on success,
+                 * <0 illegal argument, >0 a zero pivot in D).
+                 * On return the diagonal of w->xtwx holds the diagonal of D; half the sum of its
+                 * logs is half the log-determinant, i.e. the Cox-Reid adjustment.  linfo < 0
+                 * raises the per-thread failure flag checked after the parallel region.
+                 * Equivalent R operation: 0.5 * determinant(XtWX, logarithm = TRUE)$modulus,
+                 * i.e. half the log-determinant of the Fisher information.
+                 * Netlib references: https://netlib.org/lapack/explore-html/ (dsytrf) */
+                F77_CALL(dsytrf)(&uplo, &nvar, w->xtwx, &nvar, w->pivots, w->work, &lwork, &linfo FCONE);
+
+                if (linfo<0)
+                {
+                    lfail[tid]=1;
+                }
+
                 // the sum of half log diagonal entries
-                for (int i=0; i<nvar; ++i) {
-                    double cur_val = xtwx[i*nvar + i];
+                for (int i=0; i<nvar; ++i)
+                {
+                    double cur_val = w->xtwx[i*nvar + i];
                     adj = (cur_val < low_value)? adj+log_low_value : adj+log(cur_val)*0.5;
                 }
             }
@@ -130,15 +213,30 @@ void compute_adj_profile_ll(cmx *y, cmx *mu, cmx *disp, cmx *weights, cmx *desig
         }
     }
 
-    R_Free(xtwx);
-    R_Free(pivots);
-    R_Free(zwpt);
-    R_Free(work);
+    int failed=0;
+    for(int t=0;t<nth;++t)
+    {
+        failed |= lfail[t];
+    }
 
-    R_Free(yptr);
-    R_Free(uptr);
-    R_Free(dptr);
-    R_Free(wptr);
+    for (int t=0; t<nth; ++t)
+    {
+        R_Free(ws[t].xtwx);
+        R_Free(ws[t].pivots);
+        R_Free(ws[t].work);
+        R_Free(ws[t].zwpt);
+        R_Free(ws[t].yptr);
+        R_Free(ws[t].uptr);
+        R_Free(ws[t].wptr);
+        R_Free(ws[t].dptr);
+    }
+    R_Free(ws);
+    R_Free(lfail);
+
+    if (failed)
+    {
+        error("LDL factorization failed for XtWX.");
+    }
 
     return;
 }
@@ -179,15 +277,33 @@ void compute_adj_profile_ll(cmx *y, cmx *mu, cmx *disp, cmx *weights, cmx *desig
    not occur for positive (semi)definite matrices, which is what XtWX should always be.
 */
 
+/* Compute the upper triangle of X'WX, the weighted cross-product that serves as
+ * the negative binomial Fisher information for the Cox-Reid adjustment.
+ *
+ * inputs:
+ * nlib  number of libraries (rows of X, length of W)
+ * nvar  number of coefficients (columns of X)
+ * X     design matrix, nlib x nvar in column-major order
+ * W     working weights, length nlib
+ *
+ * output:
+ * out   nvar x nvar matrix; only the upper triangle is written, packed one
+ *       column at a time
+ *
+ * No return value; writes only into the caller-owned out array.
+ */
 // Computes upper-triangular matrix.
-void compute_xtwx (int nlib, int nvar, double* X, double* W, double* out) 
+void compute_xtwx (int nlib, int nvar, double* X, double* W, double* out)
 {
     const double* xptr1=X;
-    for (int coef1=0; coef1<nvar; ++coef1, xptr1+=nlib) {
+    for (int coef1=0; coef1<nvar; ++coef1, xptr1+=nlib)
+    {
         const double* xptr2=X;
-        for (int coef2=0; coef2<=coef1; ++coef2, xptr2+=nlib) {
+        for (int coef2=0; coef2<=coef1; ++coef2, xptr2+=nlib)
+        {
             out[coef2]=0;
-            for (int lib=0; lib<nlib; ++lib) {
+            for (int lib=0; lib<nlib; ++lib)
+            {
                 out[coef2] += xptr1[lib]*xptr2[lib]*W[lib];
             }
         }

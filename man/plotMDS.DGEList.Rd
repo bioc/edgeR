@@ -1,4 +1,4 @@
-\title{Multidimensional scaling plot of distances between digital gene expression profiles}
+\title{Multidimensional Scaling Plot of Distances between Digital Gene Expression Profiles}
 \name{plotMDS.DGEList}
 \alias{plotMDS.DGEList}
 \alias{plotMDS.SummarizedExperiment}
@@ -13,13 +13,13 @@ Plot samples on a two-dimensional scatterplot so that distances on the plot appr
 \arguments{
   \item{x}{a \code{DGEList} or \code{SummarizedExperiment} object.}
   \item{top}{number of top genes used to calculate pairwise distances.}
-  \item{labels}{character vector of sample names or labels. If \code{x} has no column names, then defaults the index of the samples.}
+  \item{labels}{character vector of sample names or labels. If \code{x} has no column names, then it defaults to the index of the samples.}
   \item{pch}{plotting symbol or symbols. See \code{\link{points}} for possible values. Ignored if \code{labels} is non-\code{NULL}.}
   \item{cex}{numeric vector of plot symbol expansions. See \code{\link[graphics]{text}} for possible values.}
   \item{dim.plot}{which two dimensions should be plotted, numeric vector of length two.}
   \item{gene.selection}{character, \code{"pairwise"} to choose the top genes separately for each pairwise comparison between the samples, or \code{"common"} to select the same genes for all comparisons. Only used when \code{method="logFC"}.}
-  \item{xlab}{x-axis label}
-  \item{ylab}{y-axis label}
+  \item{xlab}{x-axis label.}
+  \item{ylab}{y-axis label.}
   \item{method}{method used to compute distances. Possible values are \code{"logFC"} or \code{"bcv"}. Note the \code{"bcv"} method is scheduled to be removed in a future version of edgeR.}
   \item{prior.count}{average prior count to be added to observation to shrink the estimated log-fold-changes towards zero. Only used when \code{method="logFC"}.}
   \item{plot}{logical. If \code{TRUE} then a plot is created on the current graphics device.}
@@ -33,7 +33,7 @@ This method calculates distances between samples based on log2 fold changes.
 See the \code{\link[limma:plotMDS]{plotMDS help page}} for details.
 
 The alternative method (\code{method="bcv"}) calculates distances based on biological coefficient of variation.
-A set of top genes are chosen that have largest biological variation between the libraries
+A set of top genes is chosen that have the largest biological variation between the libraries
 (those with largest genewise dispersion treating all libraries as one group).
 Then the distance between each pair of libraries (columns) is the biological coefficient of variation (square root of the common dispersion) between those two libraries alone, using
 the top genes.
@@ -41,7 +41,7 @@ Beware that the \code{"bcv"} method is slow when the number of samples is large.
 The \code{"bcv"} method is in general much less used than \code{"logFC"} and is scheduled to be removed in a future version of edgeR.
 
 The number of genes (\code{top}) chosen for this exercise should roughly correspond to the number of differentially expressed genes with materially large fold-changes.
-The default setting of 500 genes is widely effective and suitable for routine use, but a smaller value might be chosen for when the samples are distinguished by a specific focused molecular pathway.
+The default setting of 500 genes is widely effective and suitable for routine use, but a smaller value might be chosen when the samples are distinguished by a specific focused molecular pathway.
 Very large values (greater than 1000) are not usually so effective.
 }
 

@@ -22,11 +22,11 @@ This function takes a series of genomic loci, defined by a vector of chromosome 
 and finds the nearest transcriptional start site (TSS) for each locus.
 The chromosome names can be in the format \code{"1","2","X"} or can be \code{"chr1","chr2","chrX"}.
 
-For genes with more than one annotated TSS, only the most 5' (upstream) of the alternative TSS is reported.
+For genes with more than one annotated TSS, only the most 5' (upstream) of the alternative TSSs is reported.
 
 This function uses the Bioconductor organism package named "org.XX.eg.db" where XX is \code{species}.
 Note that each organism package supports only a particular build of the genome for that species.
-For human (\code{species="Hs"}, the results are for the hg38 genome build.
+For human (\code{species="Hs"}), the results are for the hg38 genome build.
 For mouse (\code{species="Mm"}), the results are for the mm10 genome build.
 }
 
@@ -37,7 +37,7 @@ A data.frame with the following columns:
   \item{strand}{character vector with \code{"+"} for positive strand genes and \code{"-"} for negative strand genes.}
   \item{tss}{integer vector giving TSS.}
   \item{width}{integer vector giving genomic width of the gene.}
-  \item{distance}{integer vector giving distance to nearest TSS. Positive values means that the TSS is downstream of the locus, negative values means that it is upstream. Gene body loci will therefore have negative distances and promotor loci will have positive.}
+  \item{distance}{integer vector giving distance to nearest TSS. Positive values mean that the TSS is downstream of the locus, negative values mean that it is upstream. Gene body loci will therefore have negative distances and promoter loci will have positive.}
 }
 
 \author{Gordon Smyth}

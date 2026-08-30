@@ -15,11 +15,11 @@
 
 \arguments{ 
 \item{y}{
-  a object of class \code{DGEList}, \code{DGEGLM} or \code{DGELRT}.
+  an object of class \code{DGEList}, \code{DGEGLM} or \code{DGELRT}.
   Alternatively a numeric matrix or an object that can be coerced to a numeric matrix.
 }
 \item{log}{
-  logical, if \code{TRUE} then the library sizes are return on the natural log scale.
+  logical, if \code{TRUE} then the library sizes are returned on the natural log scale.
 }
 \item{\dots}{
   other arguments are not currently used.
@@ -34,7 +34,7 @@ If \code{log=TRUE}, then natural log values are returned, equal to library size 
 \details{
 This function extracts normalized library sizes, equal to the original library sizes multiplied by the corresponding normalization factors, from an edgeR data object or fitted model object.
 
-If the object contains a row-specific offsets (i.e., a non-sparse matrix of offsets), then the offsets for the first row are returned.
+If the object contains row-specific offsets (i.e., a non-sparse matrix of offsets), then the offsets for the first row are returned.
 }
 
 \author{Gordon Smyth}

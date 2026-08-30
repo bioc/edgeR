@@ -156,23 +156,15 @@ design <- model.matrix(~Group)
 y[1:5,2:3] <- 0
 y <- DGEList(counts=y,group=Group)
 
-fit <- glmQLFit(y,design,legacy=FALSE,keep.unit.mat=TRUE)
+fit <- glmQLFit(y,design,legacy=FALSE)
 fit$dispersion
 summary(fit$s2.post)
-fit$unit.deviance.adj[1:10,]
-fit$unit.df.adj[1:10,]
 summary(fit$deviance.adj)
 summary(fit$df.residual.adj)
 
 # diffSplice
 GeneID <- rep(1:10,each=10)
 ds <- diffSplice(fit,geneid=GeneID)
-topSplice(ds,test="F")
-topSplice(ds,test="simes")
-topSplice(ds,test="t")
-
-vfit <- voomLmFit(y,design)
-ds <- diffSplice(vfit,geneid=GeneID)
 topSplice(ds,test="F")
 topSplice(ds,test="simes")
 topSplice(ds,test="t")
@@ -196,11 +188,9 @@ y$tagwise.dispersion[1:10]
 summary(y$tagwise.dispersion)
 
 # glmQLFit
-fit <- glmQLFit(y,design,legacy=FALSE,keep.unit.mat=TRUE)
+fit <- glmQLFit(y,design,legacy=FALSE)
 fit$dispersion
 summary(fit$s2.post)
-fit$unit.deviance.adj[1:10,]
-fit$unit.df.adj[1:10,]
 summary(fit$deviance.adj)
 summary(fit$df.residual.adj)
 fit <- glmQLFit(y,design,legacy=TRUE)

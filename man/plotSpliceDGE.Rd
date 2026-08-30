@@ -1,4 +1,4 @@
-\title{Differential splicing plot}
+\title{Differential Splicing Plot}
 \name{plotSpliceDGE}
 \alias{plotSpliceDGE}
 \description{
@@ -19,7 +19,7 @@ plotSpliceDGE(lrt, geneid=NULL, genecolname=NULL, rank=1L, FDR=0.05)
 Plot relative log2-fold-changes by exon for the specified gene.
 The relative logFC is the difference between the exon's logFC and the overall logFC for the gene, as computed by \code{diffSpliceDGE}.
 The significantly spliced individual exons are highlighted as red dots. 
-The size of the red dots are weighted by its significance.
+The size of the red dots is weighted by their significance.
 }
 
 \value{A plot is created on the current graphics device.}
