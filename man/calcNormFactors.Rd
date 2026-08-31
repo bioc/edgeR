@@ -25,19 +25,6 @@ Calculate scaling factors to convert the raw library sizes for a set of sequence
                 method = c("TMM","TMMwsp","RLE","upperquartile","none"),
                 refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
                 Acutoff = -1e10, p = 0.75, \dots)
-
-\method{calcNormFactors}{DGEList}(object,
-                method = c("TMM","TMMwsp","RLE","upperquartile","none"),
-                refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
-                Acutoff = -1e10, p = 0.75, \dots)
-\method{calcNormFactors}{SummarizedExperiment}(object,
-                method = c("TMM","TMMwsp","RLE","upperquartile","none"),
-                refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
-                Acutoff = -1e10, p = 0.75, \dots)
-\method{calcNormFactors}{default}(object, lib.size = NULL,
-                method = c("TMM","TMMwsp","RLE","upperquartile","none"),
-                refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
-                Acutoff = -1e10, p = 0.75, \dots)
 }
 
 \arguments{
@@ -90,7 +77,7 @@ If \code{object} is a \code{DGEList} or \code{SummarizedExperiment} object, then
 }
 
 \note{
-\code{normLibSizes} is the new name for \code{calcNormFactors}.
+\code{normLibSizes} become the new name for \code{calcNormFactors} in edgeR 3.42.0.
 The two functions are equivalent but \code{calcNormFactors} will eventually be retired.
 }
 

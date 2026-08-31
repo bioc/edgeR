@@ -113,11 +113,12 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 	if(identical(gene.length,"tximport")) {
 		GeneIsAllZero <- which(rowSums(Counts) == 0)
 		TxGeneIsAllZero <- which(EnsG %in% EnsG[!d][GeneIsAllZero])
+		m <- rowMeans(EffLen[TxGeneIsAllZero,,drop=FALSE])
 		Length <- Counts
-		Length[GeneIsAllZero,] <- rowsum(EffLen[TxGeneIsAllZero,],EnsG[TxGeneIsAllZero],reorder=FALSE) / NTxPerGene[GeneIsAllZero]
+		Length[GeneIsAllZero,] <- rowsum(m,EnsG[TxGeneIsAllZero],reorder=FALSE) / NTxPerGene[GeneIsAllZero]
 		Length[-GeneIsAllZero,] <- rowsum(TPM[-TxGeneIsAllZero,]*EffLen[-TxGeneIsAllZero,],EnsG[-TxGeneIsAllZero],reorder=FALSE) / rowsum(TPM[-TxGeneIsAllZero,],EnsG[-TxGeneIsAllZero],reorder=FALSE) 
 		if(anyNA(Length)) {
-			m <- rowMeans(Length,na.rm=TRUE)
+			m <- exp(rowMeans(log(Length),na.rm=TRUE))
 			i <- which(is.na(Length))
 			Length[i] <- matrix(m,NGene,NSamples)[i]
 		}
@@ -153,7 +154,7 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 
 #	Prepare output
 	EnsGu <- EnsG[!d]
-	dimnames(Counts) <- list(EnsGu,basename(paths))
+	dimnames(Counts) <- dimnames(Length) <- list(EnsGu,basename(paths))
 	NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
 	Genes <- data.frame(GeneAnn,NTx=NTxPerGene,AveLength=AveLength,Max2MinLength=RangeLength,Overdispersion=OverDisp)
 	row.names(Genes) <- EnsGu
@@ -176,6 +177,7 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 			y$offset.prior <- LGL - m
 			dimnames(y$offset.prior) <- dimnames(Counts)
 		}
+		y$other$length <- Length
 	} else {
 		y <- list(counts=Counts,
 			length=Length,

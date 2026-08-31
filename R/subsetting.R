@@ -3,7 +3,7 @@
 assign("[.DGEList",
 function(object, i, j, keep.lib.sizes=TRUE)
 #  Subsetting for DGEList objects
-#  Created 24 September 2009.  Last modified 2 Feb 2026.
+#  Created 24 Sep 2009.  Last modified 31 Aug 2026.
 {  
 	if(nargs() < 3) stop("Two subscripts required",call.=FALSE)
 
@@ -12,12 +12,15 @@ function(object, i, j, keep.lib.sizes=TRUE)
 	IX <- c("genes")
 	JX <- c("samples")
 	I  <- c("AveLogCPM","trended.dispersion","tagwise.dispersion","prior.n","prior.df")
-#	Obsolete <- c("conc","infos","all.zeros")
+	object <- subsetListOfArrays(object,i,j,IJ=IJ,IX=IX,I=I,JX=JX)
 
-	out <- subsetListOfArrays(object,i,j,IJ=IJ,IX=IX,I=I,JX=JX)
-	if(!(missing(i) || keep.lib.sizes)) out$samples$lib.size <- colSums(out$counts)
-	if(!missing(j)) out$samples$group <- dropEmptyLevels(out$samples$group)
-	out
+	if(!(missing(i) || keep.lib.sizes)) object$samples$lib.size <- colSums(object$counts)
+	if(!missing(j)) object$samples$group <- dropEmptyLevels(object$samples$group)
+
+	oc <- names(object$other)
+	if(!missing(i) || !missing(j)) for(a in oc) object$other[[a]] <- object$other[[a]][i,j,drop=FALSE]
+
+	object
 })
 
 assign("[.PCList",
@@ -32,7 +35,6 @@ function(object, i, j)
 	IX <- c("genes")
 	JX <- c("samples")
 	I  <- c("AveLogCPM")
-#	Obsolete <- c("conc","infos","all.zeros")
 
 	out <- subsetListOfArrays(object,i,j,IJ=IJ,IX=IX,I=I,JX=JX)
 	if(!missing(j)) out$samples$group <- dropEmptyLevels(out$samples$group)
