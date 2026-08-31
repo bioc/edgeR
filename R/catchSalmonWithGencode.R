@@ -3,7 +3,7 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 #	Unpack Gencode annotation and summarize to gene level.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of genewise counts.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 April 2018. Last modified 28 Aug 2026.
+#	Created 1 April 2018. Last modified 31 Aug 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -69,7 +69,7 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 			EnsG <- GenecodeAnn[,"EnsG"]
 			NTxPerGene <- drop(rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE))
 			d <- duplicated(EnsG)
-			GeneAnn <- data.frame(GenecodeAnn[!d,"GeneName"],drop=FALSE)
+			GeneAnn <- data.frame(GenecodeAnn[!d,"GeneName",drop=FALSE])
 			NGene <- nrow(GeneAnn)
 			Counts <- matrix(0,NGene,NSamples)
 			TPM <- EffLen <- matrix(0,NTx,NSamples)
