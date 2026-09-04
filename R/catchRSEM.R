@@ -2,7 +2,7 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,DGEList=FALSE,divide=FALSE,
 # Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
 # Use Gibbs samples to estimate overdispersion of transcriptwise counts.
 # Pedro Baldoni and Gordon Smyth
-# Created 24 April 2024. Last modified 21 Apr 2026.
+# Created 24 April 2024. Last modified 4 Sep 2026.
 {
 #	Check files
 	if(is.null(files)) {
@@ -48,7 +48,7 @@ catchRSEM <- function(files=NULL,path=".",ngibbs=100,DGEList=FALSE,divide=FALSE,
 			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="___dd___dd___",progress=FALSE))
 			if(is.null(Quant$expected_count)) stop("File doesn't contain expected_count column", call.=FALSE)
 			Counts[,j] <- Quant$expected_count
-			Length[,j] <- Quant1$effective_length
+			Length[,j] <- Quant$effective_length
 			M <- Quant$posterior_mean_count
 			S <- Quant$posterior_standard_deviation_of_count
 		}
