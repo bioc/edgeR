@@ -1,9 +1,9 @@
-catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,verbose=TRUE)
+catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 April 2018. Last modified 28 Aug 2026.
+#	Created 1 Apr 2018. Last modified 3 Sep 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -58,19 +58,19 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 
 #		Read counts and lengths
 		if(j == 1L) {
-			Counts <- Length <- matrix(0,NTx,NSamples)
+			Counts <- EffLen <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NTx)
 			OverDisp <- rep_len(0,NTx)
 			Quant1 <- suppressWarnings(readr::read_tsv(QuantFile,col_types="cdd_d",progress=FALSE))
 			Counts[,1L] <- Quant1$NumReads	
-			Length[,1L] <- Quant1$EffectiveLength
+			EffLen[,1L] <- Quant1$EffectiveLength
 		} else {
 			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="__d_d",progress=FALSE))
 			Counts[,j] <- Quant$NumReads
-			Length[,j] <- Quant$EffectiveLength
+			EffLen[,j] <- Quant$EffectiveLength
 		}
 
-#		Bootstrap samples
+#		Read and summarize bootstrap samples
 		if(NBoot > 0L) {
 			BootFileCon <- gzcon(file(BootFile,open="rb"))
 			Boot <- readBin(BootFileCon,what="double",n=NTx*NBoot)
@@ -84,11 +84,11 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 	}
 	
 #	Compute length statistics
-	LTxL <- log(Length)
-	AveTxLength <- exp(rowMeans(LTxL))
+	LTxL <- log(EffLen)
+	AveEffLength <- exp(rowMeans(LTxL))
 	MinLLen <- apply(LTxL, 1, min)
 	MaxLLen <- apply(LTxL, 1, max)
-	RangeTxLength <- exp(MaxLLen - MinLLen)
+	Max2MinEffLength <- exp(MaxLLen - MinLLen)
 
 #	Estimate overdispersion for each transcript
 	i <- (DF > 0L)
@@ -112,8 +112,8 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 	dimnames(Counts) <- list(Quant1$Name,basename(paths))
 	row.names(Quant1) <- Quant1$Name
 	Quant1$Name <- Quant1$EffectiveLength <- Quant1$NumReads <- NULL
-	Quant1$AveLength <- AveTxLength
-	Quant1$Max2MinLength <- RangeTxLength
+	Quant1$AveEffLen <- AveEffLength
+	Quant1$Max2MinEffLen <- Max2MinEffLength
 	Quant1$Overdispersion <- OverDisp
 
 #	Detect and unpack Gencode tx names
@@ -122,11 +122,24 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 	if(gencode) {
 		A <- splitGencodeTxNames(row.names(Quant1))
 		Quant1 <- data.frame(Quant1,A[,-1])
+		Quant1$AnnLength <- NULL
 		row.names(Quant1) <- row.names(Counts) <- A[,1]
 	}
+	dimnames(EffLen) <- dimnames(Counts)
 
 #	Divided counts
 	if(divide) Counts <- Counts / Quant1$Overdispersion
+
+#	Impute effective lengths
+	if(impute.eff.len) {
+		i <- which(Quant1$Length - EffLen < 0.5)
+		if(length(i)) {
+			irow <- ((i-1L) %% NTx) + 1L
+			m <- apply(EffLen[irow,,drop=FALSE],1,min,na.rm=TRUE)
+			if(anyNA(m)) m[is.na(m)] <- 1
+			EffLen[i] <- m
+		}
+	}
 
 	if(DGEList) {
 		y <- DGEList(count=Counts,genes=Quant1)
@@ -137,9 +150,10 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 			y$offset.prior <- LTxL - rowMeans(LTxL)
 			dimnames(y$offset.prior) <- dimnames(Counts)
 		}
+		y$other$effective.length <- EffLen
 	} else {
 		y <- list(counts=Counts,
-			length=Length,
+			effective.length=EffLen,
 			annotation=Quant1,
 			overdispersion.prior=OverDispPrior,
 			resample.type=ResampleType,

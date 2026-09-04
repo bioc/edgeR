@@ -1,13 +1,13 @@
 \name{catchSalmonWithGencode}
 \alias{catchSalmonWithGencode}
 
-\title{Process Salmon Output to Produce Gene Counts}
+\title{Process Salmon Output With Gencode Annotation to Produce Gene Counts}
 
 \description{Produce a gene count object from Salmon output for a series of biological samples with Gencode annotation.}
 
 \usage{
 catchSalmonWithGencode(parent.dir = NULL, sample.dirs = NULL,
-        DGEList = TRUE, divide = FALSE,
+        DGEList = TRUE, divide = FALSE, impute.eff.len = TRUE,
         offset.prior = TRUE, gene.length = "moderate", verbose = TRUE)
 }
 
@@ -20,6 +20,9 @@ catchSalmonWithGencode(parent.dir = NULL, sample.dirs = NULL,
 }
 \item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
 \item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
+\item{impute.eff.len}{
+  whether to impute missing effective transcript lengths from Salmon.
+}
 \item{offset.prior}{logical. If \code{TRUE}, a prior offset matrix representing differences in effective transcript length will be included in the DGEList.}
 \item{gene.length}{How to compute average gene length. Possibilities are \code{"moderate"}, \code{"tximport"} and \code{"simple"}.}
 \item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
@@ -31,7 +34,16 @@ The function will automatically detect whether bootstrap or Gibbs samples are av
 
 The function will unpack the Gencode transcript names using \code{splitGencodeTxNames} to obtain gene and transcript IDs.
 The transcript-level counts will be collapsed to gene-level counts and RTA overdispersions will be estimated at the gene level.
-Average transcript lengths are also computed for each gene using the method of Soneson et al (2016).
+
+Average transcript lengths are computed for each gene and optionally used to create a prior offset matrix.
+The average lengths are computed by three possible methods as specified by \code{gene.length}, either a simple average of the transcript lengths (\code{"simple"}), or the method of Soneson et al (2016) (\code{"tximport"}),
+or by a method that moderates the lengths weakly towards the gene average and, even more weakly, towards the simple average of transcript lengths (\code{"moderate"}).
+The moderated method is recommended.
+
+For paired-end RNA-seq, Salmon uses sample-specific empirical fragment distributions to estimate the effective transcript lengths.
+For very short transcripts, there may be too few entries in the empirical distribution to estimate the conditional fragment length.
+In such cases, Salmon falls back to setting the effective transcript length equal to the actual length even though the effective transcript length should in principle be much shorter.
+If \code{impute.eff.len} is \code{TRUE}, then any effective transcript length equal to the transcript's actual length will be reset to the minimum effective transcript length for that transript across all the samples in the series.
 }
 
 \value{

@@ -5,13 +5,13 @@ adjustedProfileLik <- function(dispersion, y, design, offset, weights=NULL, adju
 #	y is a matrix: rows are genes/tags/transcripts, columns are samples/libraries.
 #	offset is a matrix of the same dimensions as y.
 
-#	The weights argument was added by Xiaobei Zhou 20 March 2013,
+#	The weights argument was added by Xiaobei Zhou 20 Mar 2013,
 #	but the log NB probabilities were incorrectly multiplied by the weights.
-#	This is fixed 1 March 2018 with a more rigorous interpretation of weights
+#	This is fixed 1 Mar 2018 with a more rigorous interpretation of weights
 #	in terms of averages.
 
 #	Yunshun Chen, Gordon Smyth, Aaron Lun
-#	Created June 2010. Last modified 22 May 2020.
+#	Created Jun 2010. Last modified 22 May 2020.
 {
 #	Checking counts
 	if (!is.numeric(y)) stop("counts must be numeric")

@@ -4,7 +4,7 @@ estimateTagwiseDisp <- function(y, ...)
 UseMethod("estimateTagwiseDisp")
 
 estimateTagwiseDisp.DGEList <- function(y, prior.df=10, trend="movingave", span=NULL, method="grid", grid.length=11, grid.range=c(-6,6), tol=1e-06, verbose=FALSE, ...)
-# Yunshun Chen. Created 18 March 2016.
+# Yunshun Chen. Created 18 Mar 2016.
 {
 	y <- validDGEList(y)
 	group <- y$samples$group
@@ -27,9 +27,9 @@ estimateTagwiseDisp.DGEList <- function(y, prior.df=10, trend="movingave", span=
 
 estimateTagwiseDisp.default <- function(y, group=NULL, lib.size=NULL, dispersion, AveLogCPM=NULL, prior.df=10, trend="movingave", span=NULL, method="grid", grid.length=11, grid.range=c(-6,6), tol=1e-06, verbose=FALSE, ...)
 #  Davis McCarthy, Mark Robinson, Yunshun Chen, Gordon Smyth.
-#  Created 2009. Last modified 1 June 2016.
+#  Created 2009. Last modified 1 Jun 2016.
 
-#  Notes 3 July 2012:
+#  Notes 3 Jul 2012:
 #  - interpolating derivatives would be better than interpolating loglik values.
 #  - share code with estimateGLMTagwiseDisp?
 {

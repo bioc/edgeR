@@ -1,7 +1,7 @@
 designAsFactor <- function(design)
 #	Construct a factor from the unique rows of a matrix
 #	Gordon Smyth
-#	11 March 2011.  Last modified 19 March 2011.
+#	11 Mar 2011.  Last modified 19 Mar 2011.
 {
 	design <- as.matrix(design)
 	z <- (exp(1)+pi)/5
@@ -16,7 +16,7 @@ mglmOneWay <- function(y,design=NULL,group=NULL,dispersion=0,offset=0,weights=NU
 #	only a single explanatory factor in the model
 #	Gordon Smyth
 #	Aapted to use .compress and C functions by Aaron Lun
-#	11 March 2011.  Last modified 24 August 2017.
+#	11 Mar 2011.  Last modified 24 Aug 2017.
 {
 	y      <- as.matrix(y)
 	ngenes <- nrow(y)

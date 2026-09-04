@@ -5,7 +5,7 @@ UseMethod("estimateDisp")
 
 estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, legacy.span=FALSE, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 #	Yunshun Chen.
-#	Created 16 March 2016. Last modified 24 Aug 2025.
+#	Created 16 Mar 2016. Last modified 24 Aug 2025.
 {
 	y <- validDGEList(y)
 	group <- y$samples$group
@@ -32,7 +32,7 @@ estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="lo
 
 estimateDisp.SummarizedExperiment <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, legacy.span=FALSE, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 #	Yunshun Chen.
-#	Created 19 March 2020. Last modified 24 Aug 2025.
+#	Created 19 Mar 2020. Last modified 24 Aug 2025.
 {
 	y <- SE2DGEList(y)
 	y <- estimateDisp.DGEList(y, design=design, prior.df=prior.df, trend.method=trend.method, tagwise=tagwise, span=span, legacy.span=legacy.span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, ...)
@@ -45,7 +45,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 #	A matrix of likelihoods is computed for each gene at a set of dispersion grid points
 #	and WLEB() is called for weighted likelihood empirical Bayes.
 #	Yunshun Chen, Aaron Lun, Gordon Smyth.
-#	Created July 2012. Last modified 17 Jul 2026.
+#	Created Jul 2012. Last modified 17 Jul 2026.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -239,7 +239,7 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 #	Weighted likelihood empirical Bayes for estimating a parameter vector theta
 #	given log-likelihood values on a grid of theta values
 #	Yunshun Chen, Gordon Smyth
-#	Created July 2012. Last modified 24 Aug 2025.
+#	Created Jul 2012. Last modified 24 Aug 2025.
 {
 #	Check loglik
 	loglik <- as.matrix(loglik)
@@ -318,8 +318,8 @@ WLEB <- function(theta, loglik, prior.n=5, covariate=NULL, trend.method="locfit"
 #	This reduces the memory footprint for large matrices.
 #
 #	written by Aaron Lun
-#	created 29 September 2016
-#	last modified 16 December 2018
+#	created 29 Sep 2016
+#	last modified 16 Dec 2018
 {
 	isokay <- TRUE
 	if (!missing(i)) {

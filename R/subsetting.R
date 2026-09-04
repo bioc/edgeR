@@ -26,7 +26,7 @@ function(object, i, j, keep.lib.sizes=TRUE)
 assign("[.PCList",
 function(object, i, j)
 #  Subsetting for PCList objects
-#  Created 16 April 2025. 
+#  Created 16 Apr 2025. 
 {  
 	if(nargs() < 3) stop("Two subscripts required",call.=FALSE)
 
@@ -80,7 +80,7 @@ assign("[.DGEExact",
 function(object, i, j)
 #  Subsetting for DGEExact objects
 #  Davis McCarthy, Gordon Smyth
-#  Created 6 October 2010.  Last modified 11 Dec 2013.
+#  Created 6 Oct 2010.  Last modified 11 Dec 2013.
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(j)) stop("Subsetting columns not allowed for DGEExact objects.",call.=FALSE)
@@ -95,7 +95,7 @@ function(object, i, j)
 assign("[.DGELRT",
 function(object, i, j)
 #  Subsetting for DGELRT objects
-#  Created 6 April 2011.  Last modified 20 Oct 2023.
+#  Created 6 Apr 2011.  Last modified 20 Oct 2023.
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(j)) stop("Subsetting columns not allowed for DGELRT object.",call.=FALSE)
@@ -113,7 +113,7 @@ function(object, i, j)
 assign("[.TopTags",
 function(object, i, j)
 #  Subsetting for TopTags objects
-#  Created 7 October 2009. Last modified 11 Dec 2013.
+#  Created 7 Oct 2009. Last modified 11 Dec 2013.
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(i) || !missing(j)) object$table <- object$table[i,j,drop=FALSE]

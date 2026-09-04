@@ -1,7 +1,7 @@
 maPlot <- function(x,y, logAbundance=NULL, logFC=NULL, normalize=FALSE, plot.it=TRUE, smearWidth=1, col=NULL, allCol="black", lowCol="orange", deCol="red", de.tags=NULL, smooth.scatter=FALSE, lowess=FALSE, ...)
 #  Low-level function for creating an MA-plot for DGE data.
-#  Created by Mark Robinson. Last modified by Davis McCarthy, 19 November 2010.
-#  Edits by Gordon Smyth 20 March 2011.
+#  Created by Mark Robinson. Last modified by Davis McCarthy, 19 Nov 2010.
+#  Edits by Gordon Smyth 20 Mar 2011.
 {
 	if( !is.null(logAbundance) && !is.null(logFC) ) {
 		A <- logAbundance

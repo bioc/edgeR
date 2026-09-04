@@ -3,7 +3,7 @@ catchOarfish <- function(parent.dir=NULL,prefixes=NULL,DGEList=TRUE,divide=FALSE
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 4 July 2025. Last modified 29 Aug 2026.
+#	Created 4 Jul 2025. Last modified 29 Aug 2026.
 {
 #	Check prefixes
 	if(is.null(prefixes)) {

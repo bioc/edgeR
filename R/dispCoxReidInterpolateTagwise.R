@@ -3,7 +3,7 @@ dispCoxReidInterpolateTagwise <- function(y, design, offset=NULL, dispersion, tr
 #	using weighted Cox-Reid Adjusted Profile-likelihood
 #	and cubic spline interpolation over a tagwise grid.
 #	Yunshun Chen and Gordon Smyth
-#	Created August 2010. Last modified 11 March 2013.
+#	Created Aug 2010. Last modified 11 Mar 2013.
 {
 #	Check y
 	y <- as.matrix(y)

@@ -2,7 +2,7 @@ nbinomDeviance <- function(y,mean,dispersion=0,weights=NULL)
 #	Residual deviances for row-wise negative binomial glms.
 #	y is a matrix and a deviance is computed for each row.
 #	A vector y is taken to be a matrix with one row; in this case mean and dispersion must also be vectors.
-#	Original version (deviances.function) 23 November 2010.
+#	Original version (deviances.function) 23 Nov 2010.
 #	Renamed to nbinomDeviance 9 Dec 2013.
 #	Last modified 10 May 2024.
 {

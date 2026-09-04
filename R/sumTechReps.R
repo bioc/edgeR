@@ -6,7 +6,7 @@ sumTechReps <- function(x,ID=colnames(x),...) UseMethod("sumTechReps")
 sumTechReps.default <- function(x,ID=colnames(x),...)
 #	Sum over replicate columns, for matrices
 #	Yifang Hu and Gordon Smyth
-#	Created 14 March 2014
+#	Created 14 Mar 2014
 {
 	if(is.null(x)) return(NULL)
 	x <- as.matrix(x)
@@ -17,7 +17,7 @@ sumTechReps.default <- function(x,ID=colnames(x),...)
 sumTechReps.DGEList <- function(x,ID=colnames(x),...)
 #	Sum over replicate columns, for matrices
 #	Yifang Hu and Gordon Smyth
-#	Created 14 March 2014. Last modified 2 Jun 2020.
+#	Created 14 Mar 2014. Last modified 2 Jun 2020.
 {
 	d <- duplicated(ID)
 	if(!any(d)) return(x)
@@ -44,7 +44,7 @@ sumTechReps.DGEList <- function(x,ID=colnames(x),...)
 }
 
 sumTechReps.SummarizedExperiment <- function(x, ID, ...)
-#	Created 03 April 2020.  Last modified 03 April 2020.
+#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
 {
 	x <- SE2DGEList(x)
 	sumTechReps.DGEList(x, ID=ID, ...)

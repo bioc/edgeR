@@ -16,7 +16,7 @@ normLibSizes.DGEList <- function(object, method=c("TMM","TMMwsp","RLE","upperqua
 normLibSizes.SummarizedExperiment <- function(object, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Library size normalization for read count matrices.
 #	Method for SummarizedExperiment objects.
-#	Created 19 March 2020.  Last modified 7 Nov 2022.
+#	Created 19 Mar 2020.  Last modified 7 Nov 2022.
 {
 	object <- SE2DGEList(object)
 	object$samples$norm.factors <- normLibSizes(object=object$counts, lib.size=object$samples$lib.size, method=method, refColumn=refColumn, logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff, p=p)
@@ -27,7 +27,7 @@ normLibSizes.default <- function(object, lib.size=NULL, method=c("TMM","TMMwsp",
 #	Library size normalization for read count matrices.
 #	Method for atomic count matrices.
 #	Mark Robinson, Gordon Smyth and edgeR team
-#	Created 22 October 2009. Last modified 10 May 2024.
+#	Created 22 Oct 2009. Last modified 10 May 2024.
 {
 #	Check object
 	x <- as.matrix(object)

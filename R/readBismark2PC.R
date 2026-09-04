@@ -7,7 +7,7 @@ readBismark2PC <- function(files,sample.names=NULL,readr=TRUE,verbose=TRUE)
 #	less than 10^16.
 #
 #	Lizhong Chen, Gordon Smyth
-#	Created 23 April 2025. Last modified 23 April 2025.
+#	Created 23 Apr 2025. Last modified 23 Apr 2025.
 {
 	files <- as.character(files)
 	nsamples <- length(files)

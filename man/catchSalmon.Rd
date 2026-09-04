@@ -6,17 +6,18 @@
 
 \title{Process kallisto, Salmon, Oarfish, or RSEM Transcript Output}
 
-\description{Read transcript counts from RSEM, kallisto or Salmon output for a series of biological samples and use bootstrap or posterior distribution samples to estimate the read-to-transcript-ambiguity for each transcript.}
+\description{Read transcript counts from RSEM, kallisto, Salmon or Oarfish output for a series of biological samples and use bootstrap or posterior distribution samples to estimate the read-to-transcript-ambiguity for each transcript.}
 
 \usage{
 catchKallisto(parent.dir = NULL, sample.dirs = NULL,
-          DGEList = TRUE, divide = FALSE, verbose = TRUE)
-catchSalmon(parent.dir = NULL, sample.dirs = NULL,
           DGEList = TRUE, divide = FALSE, offset.prior = TRUE, verbose = TRUE)
+catchSalmon(parent.dir = NULL, sample.dirs = NULL,
+          DGEList = TRUE, divide = FALSE,
+          impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
 catchOarfish(parent.dir = NULL, prefixes = NULL,
           DGEList = TRUE, divide = FALSE, verbose = TRUE)
 catchRSEM(parent.dir = NULL, files = NULL, ngibbs = 100,
-          DGEList = TRUE, divide = FALSE, verbose = TRUE)
+          DGEList = TRUE, divide = FALSE, offset.prior = TRUE, verbose = TRUE)
 }
 
 \arguments{
@@ -27,10 +28,6 @@ catchRSEM(parent.dir = NULL, files = NULL, ngibbs = 100,
   If \code{parent.dir} and \code{sample.dirs} are both provided, then the \code{sample.dirs} are relative to \code{parent.dir}.
   If \code{sample.dirs} is \code{NULL}, then all the kallisto or Salmon directories found in \code{parent.dir} will be read.
 }
-\item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
-\item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
-\item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
-\item{offset.prior}{logical. If \code{TRUE}, a prior offset matrix representing differences in effective transcript length will be included in the DGEList.}
 \item{prefixes}{
   character vector giving the sample-specific file prefixes created by Oarfish.
   Each entry corresponds to one RNA-seq sample.
@@ -42,10 +39,18 @@ catchRSEM(parent.dir = NULL, files = NULL, ngibbs = 100,
   Each entry corresponds to one RNA-seq sample.
   By default, all files in the \code{parent.dir} directory with names ending in \code{isoforms.results} will be read.
 }
+\item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
+\item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
+\item{impute.eff.len}{
+  whether to impute missing effective transcript lengths from Salmon.
+}
+\item{offset.prior}{logical. If \code{TRUE}, a prior offset matrix representing differences in effective transcript length will be included in the DGEList.}
+\item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
 \item{ngibbs}{number of Gibbs samples used to generate the RSEM results files.}
 }
 
 \details{
+\emph{Reading transcript counts}.
 \code{catchSalmon} assumes that Salmon (Patro et al 2017; Zakeri et al 2017) has been run to estimate transcript counts for one or more RNA samples and that either bootstrap resamples or Gibbs posterior samples are included in the Salmon output.
 \code{catchSalmon} will automatically detect whether bootstrap or Gibbs samples are available.
 The number of technical resamples does not need to be the same for each RNA sample, but the resamples should always be of the same type, either bootstrap or Gibbs.
@@ -61,44 +66,52 @@ The number of Gibbs samples is assumed to be the same for each RNA sample.
 
 \code{catchOarfish} assumes that Oarfish (Jousheghani et al 2025) has been run to estimate transcript counts for one or more RNA samples and that bootstrap resamples are included in the output.
 
+\emph{RTA overdispersion}.
 These functions read the transcript counts and use the technical (bootstrap or Gibbs) resamples to estimate an overdispersion parameter for each transcript.
 The overdispersion represents the variance inflation that occurs from ambiguity in assigning sequence reads to transcripts, a phenomenon that is called \emph{read to transcript ambiguity} (RTA) overdispersion by Baldoni et al (2024ab).
 Transcripts that overlap other transcripts and have greater quantification uncertainty will have larger RTA overdispersions.
 The RTA overdispersions are greater than or equal to 1, with 1 representing no variance inflation.
 
+\emph{Divided counts}.
 To assess differential transcript expression, the transcript counts can be divided by the overdispersion parameters, after which the divided-counts can be input into standard differential expression pipelines designed for gene-level counts (Baldoni et al 2024a).
 The edgeR quasi pipeline has been found to perform well with the divided counts (Baldoni et al 2024ab).
 The divided-counts behave much like negative binomial counts and show the same mean-variance trends as for gene-level RNA-seq counts.
 While bootstrap and Gibbs resamples both perform well, Baldoni et al (2024b) show that Gibbs resamples are computationally faster than bootstrap resamples and give slightly better performance in the downstream differential expression analyses.
 
-All the functions will detect Gencode-style transcript names, if present, which will be unpacked into separate annotation columns using \code{splitGencodeTxNames}.
+\emph{Imputing missing transcript lengths}.
+For paired-end RNA-seq, Salmon uses sample-specific empirical fragment distributions to estimate the effective transcript lengths.
+For very short transcripts, there may be too few entries in the empirical distribution to estimate the conditional fragment length.
+In such cases, Salmon falls back to setting the effective transcript length equal to the actual length even though the effective transcript length should in principle be much shorter.
+If \code{impute.eff.len} is \code{TRUE}, then any effective transcript length equal to the transcript's actual length will be reset to the minimum effective transcript length for that transript across all the samples in the series.
+
+\emph{Gencode imbedded annotation}.
+Gencode packs transcript and gene annotation into composite transcript IDs, with fields separated by \code{|} characters.
+All the functions above will detect Gencode-style transcript names and will unpack the annotation fields into separate annotation columns using \code{splitGencodeTxNames}.
 }
 
 \value{
-If \code{DGEList=FALSE}, a plain list containing components
+If \code{DGEList=TRUE}, a \code{\link[edgeR:DGEList-class]{DGEList}} object with components:
 \item{counts}{matrix of transcript counts, with rows for transcripts and columns for RNA samples.}
-\item{length}{matrix of effective transcript lengths, with rows for transcripts and columns for RNA samples.}
-\item{annotation}{data.frame of transcript information with columns \code{Length}, \code{AveLength}, \code{Max2MinLength}, and \code{Overdispersion} corresponding to transcript length, effective transcript length averaged over samples, ratio of largest to smallest length for different samples, and RTA overdispersion respectively.}
+\item{genes}{data.frame of transcript information with columns \code{Length}, \code{AveEffLen}, \code{Max2MinEffLen}, and \code{Overdispersion} corresponding to transcript length, effective transcript length averaged over samples, ratio of largest to smallest length for different samples, and RTA overdispersion respectively.}
 \item{overdispersion.prior}{median overdispersion, used to moderate the transcript-wise overdispersion values.}
 \item{resample.type}{character vector giving type of resampling (\code{"bootstrap"} or \code{"gibbs"}) for each sample.}
 \item{divided.counts}{a logical indicating whether the counts have been divided by the RTA overdispersions.}
+\item{offset.prior}{matrix of prior offsets representing relative differences in effective lengths for each transcript on the log-scale (only if \code{offset.prior=TRUE}). Rows add to zero.}
+\item{other$effective.length}{matrix of effective transcript lengths.}
 
-For \code{catchOarfish}, the \code{annotation} data.frame does not contain the \code{AveLength} and \code{Max2MinLength} columns.
-
-If \code{DGEList=TRUE}, a \code{\link[edgeR:DGEList-class]{DGEList}} object as the output.
-In this case, the \code{genes} component of the object will contain the same columns as in the \code{annotation} data.frame from the plain list output.
-If \code{offset.prior=TRUE}, then the \code{offset.prior} component will contain prior offsets representing sample-wise differences in effective transcript lengths.
-As well as standard DGEList components, the output DGEList will contain components \code{overdispersion.prior}, \code{resample.type}, and \code{divided.counts} equivalent to those from the plain list output.
-
-If Gencode-style composite rownames are detected, then the rownames will be reset to plain Ensembl transcript IDs and the \code{annotation} and \code{genes} data.frames will include columns:
-  \item{EnsT}{Ensembl transcript ID, without version number suffix.}
+If Gencode-style composite rownames are detected, then the rownames will be reset to plain Ensembl transcript IDs, without veresion number suffixes, and the \code{genes} data.frame will include columns:
   \item{EnsG}{Ensembl gene ID, without version number suffix.}
   \item{HavG}{Havana gene ID.}
   \item{HavT}{Havana transcript ID.}
   \item{TxName}{Transcript name.}
   \item{GeneName}{Gene name.}
-  \item{AnnLength}{Transcript length.}
   \item{Type}{Type of transcript.}
+
+If \code{DGEList=FALSE}, then a plain list is created.
+The components are as documented above for DGELists except that the annotation data.frame is called \code{annotation} instead of \code{genes},
+and the \code{effective.length} matrix is a top-level component.
+
+For \code{catchOarfish}, the \code{annotation} data.frame does not contain the \code{AveEffLen} and \code{Max2MinEffLen} columns.
 }
 
 \author{Gordon Smyth and Pedro Baldoni}
@@ -142,7 +155,7 @@ Improved data-driven likelihood factorizations for transcript abundance estimati
 }
 
 \seealso{
-\code{\link{catchSalmonWithGencode}} for gene-level summaries.
+See \code{\link{catchSalmonWithGencode}} for automatic gene-level counts and overdispersions using Gencode-supplied gene to transript annotation.
 }
 
 \examples{

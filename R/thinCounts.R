@@ -1,7 +1,7 @@
 thinCounts <- function(x,prob=NULL,target.size=min(colSums(x)))
 #	Binomial or multinomial thinning of counts
 #	Gordon Smyth
-#	23 March 2011.  Last revised 23 Nov 2011.
+#	23 Mar 2011.  Last revised 23 Nov 2011.
 {
 	if(!is.null(prob)) {
 		x[] <- rbinom(length(x),size=x,prob=prob)

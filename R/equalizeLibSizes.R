@@ -4,7 +4,7 @@ equalizeLibSizes <- function(y, ...)
 UseMethod("equalizeLibSizes")
 
 equalizeLibSizes.DGEList <- function(y, dispersion=NULL, ...)
-#	Yunshun Chen. Created 17 March 2016.
+#	Yunshun Chen. Created 17 Mar 2016.
 {
 #	Check y
 	y <- validDGEList(y)
@@ -23,7 +23,7 @@ equalizeLibSizes.DGEList <- function(y, dispersion=NULL, ...)
 equalizeLibSizes.default <- function(y, group=NULL, dispersion=NULL, lib.size=NULL, ...)
 #	Uses a quantile-to-quantile transformation so that new count counts are equivalent deviates on the equalized scale.
 #	Davis McCarthy, Gordon Smyth.
-#	Created July 2009. Last modified 17 March 2016.
+#	Created Jul 2009. Last modified 17 Mar 2016.
 {
 #	Check y
 	y <- as.matrix(y)

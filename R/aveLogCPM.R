@@ -4,7 +4,7 @@ UseMethod("aveLogCPM")
 aveLogCPM.DGEList <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispersion=NULL, ...)
 #	log2(AveCPM)
 #	Gordon Smyth
-#	Created 11 March 2013.  Last modified 9 July 2017.
+#	Created 11 Mar 2013.  Last modified 9 Jul 2017.
 {
 #	Library sizes should be stored in y but are sometimes missing
 	lib.size <- y$samples$lib.size
@@ -26,7 +26,7 @@ aveLogCPM.DGEList <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispe
 aveLogCPM.PCList <- function(y, prior.count=2, ...)
 #	log2(total coverage)
 #	Lizhong Chen
-#	Created 16 April 2025.
+#	Created 16 Apr 2025.
 {
 #	Library sizes should be the total coverage
 	lib.size <- colSums(y$counts+y$counts2)
@@ -36,7 +36,7 @@ aveLogCPM.PCList <- function(y, prior.count=2, ...)
 
 
 aveLogCPM.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispersion=NULL, ...)
-#	Created 03 April 2020.  Last modified 03 April 2020.
+#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
 {
 	y <- SE2DGEList(y)
 	aveLogCPM.DGEList(y, normalized.lib.sizes=normalized.lib.sizes, prior.count=prior.count, dispersion=dispersion, ...)
@@ -45,7 +45,7 @@ aveLogCPM.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, prior.c
 aveLogCPM.DGEGLM <- function(y, prior.count=2, dispersion=NULL, ...)
 #	aveLogCPM method for DGEGLM objects.
 #	Gordon Smyth
-#	Created 11 March 2013.  Last modified 24 Nov 2013.
+#	Created 11 Mar 2013.  Last modified 24 Nov 2013.
 {
 #	Dispersion supplied as argument over-rules value in object
 	if(is.null(dispersion)) dispersion <- y$dispersion
@@ -62,7 +62,7 @@ aveLogCPM.default <- function(y,lib.size=NULL,offset=NULL,prior.count=2,dispersi
 #	This measure is designed to be used as the x-axis for all abundance-dependent trend analyses in edgeR.
 #	It is generally held fixed through an edgeR analysis.
 #	Original author: Gordon Smyth
-#	Created 25 Aug 2012. Last modified 19 Nov 2018. C code modfied 19 Jul 2026.
+#	Created 25 Aug 2012. Last modified 19 Nov 2018. C code modified 19 Jul 2026.
 {
 	y <- as.matrix(y)
 	if(nrow(y)==0L) return(numeric(0))

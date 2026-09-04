@@ -1,9 +1,9 @@
-catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
+catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Unpack Gencode annotation and summarize to gene level.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of genewise counts.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 April 2018. Last modified 31 Aug 2026.
+#	Created 1 Apr 2018. Last modified 4 Sep 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -102,12 +102,23 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 		}
 	}
 
+#	Impute effective lengths
+	if(impute.eff.len) {
+		i <- which(Quant1$Length - EffLen < 0.5)
+		if(length(i)) {
+			irow <- ((i-1L) %% NTx) + 1L
+			m <- apply(EffLen[irow,,drop=FALSE],1,min,na.rm=TRUE)
+			if(anyNA(m)) m[is.na(m)] <- 1
+			EffLen[i] <- m
+		}
+	}
+
 #	Average gene length, with weak moderation towards genewise average and towards unweighted average
 	gene.length <- match.arg(gene.length,c("moderate","tximport","simple"))
 	if(identical(gene.length,"moderate")) {
 		eps <- 1e-6
 		m <- rowMeans(TPM)
-		TPM2 <- TPM + eps + m/1000
+		TPM2 <- TPM + eps + m/100
 		Length <- rowsum(TPM2*EffLen,EnsG,reorder=FALSE)/rowsum(TPM2,EnsG,reorder=FALSE)
 	}
 	if(identical(gene.length,"tximport")) {
@@ -156,7 +167,7 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 	EnsGu <- EnsG[!d]
 	dimnames(Counts) <- dimnames(Length) <- list(EnsGu,basename(paths))
 	NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
-	Genes <- data.frame(GeneAnn,NTx=NTxPerGene,AveLength=AveLength,Max2MinLength=RangeLength,Overdispersion=OverDisp)
+	Genes <- data.frame(GeneAnn,NTx=NTxPerGene,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
 	row.names(Genes) <- EnsGu
 
 #	Divided counts
@@ -177,10 +188,10 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 			y$offset.prior <- LGL - m
 			dimnames(y$offset.prior) <- dimnames(Counts)
 		}
-		y$other$length <- Length
+		y$other$effective.length <- Length
 	} else {
 		y <- list(counts=Counts,
-			length=Length,
+			effective.length=Length,
 			annotation=Genes,
 			overdispersion.prior=OverDispPrior,
 			resample.type=ResampleType,

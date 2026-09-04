@@ -3,7 +3,7 @@ plotMeanVar2 <- function(y, design=NULL, dispersion=0, offset=0, nbins=100, make
 # Compute squared residuals
 # Bin by size of fitted value and plot average squared residual vs average fitted value
 # Davis McCarthy and Gordon Smyth
-# Created 9 November 2010.
+# Created 9 Nov 2010.
 # Renamed from binStdResidPois() to dglmStdResid() and moved from meanVar.R to dglmStdResid.R on 25 Nov 2010.
 # Renamed from dglmStdResid() to meanVar2() on 7 Aug 2019.
 # Last modified 7 Aug 2019.

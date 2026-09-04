@@ -2,8 +2,8 @@ zscoreNBinom <- function(q, size, mu, method="midp")
 #	Z-score equivalents for negative binomial deviates
 #	Non-integer values for q are allowed
 #	Gordon Smyth, Aaron Lun
-#	Created 10 December 2011
-#	Last modified 8 January 2024
+#	Created 10 Dec 2011
+#	Last modified 8 Jan 2024
 {
 #	Ensure arguments all same length
 	n <- length(q)

@@ -1,7 +1,7 @@
 goana.DGELRT <- function(de, geneid = rownames(de), FDR = 0.05, trend = FALSE, ...)
 #  Gene ontology analysis of DE genes from linear model fit
 #  Gordon Smyth, Yifang Hu and Yunshun Chen
-#  Created 25 August 2014.  Last modified 27 May 2019.
+#  Created 25 Aug 2014.  Last modified 27 May 2019.
 {
 #	Avoid argument collision with default method
 	dots <- names(list(...))

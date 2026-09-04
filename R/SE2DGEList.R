@@ -2,7 +2,7 @@ SE2DGEList <- function(object)
 #	Given any SummarizedExperiment data object, extract basic information needed
 #	and convert it into a DGEList object
 #	Yunshun Chen, Gordon Smyth
-#	18 March 2020. Last modified 23 March 2020.
+#	18 Mar 2020. Last modified 23 Mar 2020.
 {
 	if(!is(object,"SummarizedExperiment"))
 		stop("object is not of the SummarizedExperiment class")

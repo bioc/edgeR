@@ -1,6 +1,6 @@
 q2qpois <- function (x, input.mean, output.mean)
 #	Approximate quantile to quantile mapping between Poisson distributions
-#	Original version, Gordon Smyth, 31 July 2009
+#	Original version, Gordon Smyth, 31 Jul 2009
 {
 	if(any(x<0)) stop("x must be non-negative")
 	if(any(input.mean<0)) stop("input.mean must be non-negative")
@@ -30,7 +30,7 @@ q2qpois <- function (x, input.mean, output.mean)
 q2qnbinom <- function(x, input.mean, output.mean, dispersion=0)
 #	Approximate quantile to quantile mapping between negative-binomial distributions
 #	with different means but same dispersion
-#	Original version, Gordon Smyth, 31 July 2009
+#	Original version, Gordon Smyth, 31 Jul 2009
 {
 	if(any(x<0)) stop("x must be non-negative")
 	if(any(input.mean<0)) stop("input.mean must be non-negative")

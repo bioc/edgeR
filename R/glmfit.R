@@ -30,7 +30,7 @@ glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, s
 }
 
 glmFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
-#	Created 19 March 2020.  Last modified 19 March 2020.
+#	Created 19 Mar 2020.  Last modified 19 Mar 2020.
 {
 	y <- SE2DGEList(y)
 	glmFit.DGEList(y, design=design, dispersion=dispersion, prior.count=prior.count, start=start, ...)
@@ -40,7 +40,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries
 #	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun
-#	Created 17 August 2010. Last modified 7 Aug 2019.
+#	Created 17 Aug 2010. Last modified 7 Aug 2019.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -124,7 +124,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth, Davis McCarthy, Lizhong Chen and Yunshun Chen.
-#	Created 1 July 2010.  Last modified 5 May 2024.
+#	Created 1 Jul 2010.  Last modified 5 May 2024.
 {
 #	Check glmfit
 	if(!is(glmfit,"DGEGLM")) {

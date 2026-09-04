@@ -26,7 +26,7 @@ estimateCommonDisp.DGEList <- function(y, tol=1e-06, rowsum.filter=5, verbose=FA
 
 estimateCommonDisp.default <- function(y, group=NULL, lib.size=NULL, tol=1e-06, rowsum.filter=5, verbose=FALSE, ...)
 #	Davis McCarthy, Mark Robinson, Gordon Smyth.
-#	Created 2009. Last modified 18 March 2016.
+#	Created 2009. Last modified 18 Mar 2016.
 {
 #	Check y
 	y <- as.matrix(y)

@@ -3,7 +3,7 @@ UseMethod("calcNormFactors")
 
 calcNormFactors.DGEList <- function(object, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for DGEList objects
-#	Created 2 October 2014.  Last modified 8 Apr 2026.
+#	Created 2 Oct 2014.  Last modified 8 Apr 2026.
 {
 	if(hasName(object,"offset")) warning("object contains offsets, which take precedence over library\nsizes and norm factors (and which will not be recomputed).")
 	object$samples$norm.factors <- calcNormFactors(object=object$counts, lib.size=object$samples$lib.size, method=method, refColumn=refColumn, logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff, p=p)
@@ -12,7 +12,7 @@ calcNormFactors.DGEList <- function(object, method=c("TMM","TMMwsp","RLE","upper
 
 calcNormFactors.SummarizedExperiment <- function(object, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for SummarizedExperiment objects
-#	Created 19 March 2020.  Last modified 19 March 2020.
+#	Created 19 Mar 2020.  Last modified 19 Mar 2020.
 {
 	object <- SE2DGEList(object)
 	object$samples$norm.factors <- calcNormFactors(object=object$counts, lib.size=object$samples$lib.size, method=method, refColumn=refColumn, logratioTrim=logratioTrim, sumTrim=sumTrim, doWeighting=doWeighting, Acutoff=Acutoff, p=p)
@@ -22,7 +22,7 @@ calcNormFactors.SummarizedExperiment <- function(object, method=c("TMM","TMMwsp"
 calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMwsp","RLE","upperquartile","none"), refColumn=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10, p=0.75, ...)
 #	Scale normalization of RNA-Seq data, for count matrices
 #	Mark Robinson, Gordon Smyth and edgeR team
-#	Created 22 October 2009. Last modified 29 Dec 2023.
+#	Created 22 Oct 2009. Last modified 29 Dec 2023.
 #	Deprecation message added 3 Feb 2026.
 {
 	message("calcNormFactors has been renamed to normLibSizes")

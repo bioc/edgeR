@@ -1,7 +1,7 @@
 mbinIWLS <- function (y, z, design, offset = NULL, weights = NULL, maxit = 100, tol = 1e-06, nthreads=1L)
 #	Fit binomial logistic models using iterated weighted least square
 #	Created by Lizhong Chen
-#	11 April 2025.  Last modified 15 April 2025.
+#	11 Apr 2025.  Last modified 15 Apr 2025.
 {
 #	check counts
 	y <- as.matrix(y)

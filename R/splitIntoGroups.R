@@ -4,14 +4,14 @@ splitIntoGroups <- function(y, ...)
 UseMethod("splitIntoGroups")
 
 splitIntoGroups.DGEList <- function(y, ...)
-# Yunshun Chen. Created 18 March 2016.
+# Yunshun Chen. Created 18 Mar 2016.
 {
 	group <- y$samples$group
 	splitIntoGroups(y$counts, group=group)
 }
 
 splitIntoGroups.default <- function(y, group=NULL, ...) 
-# Written by Davis McCarthy, February 2009, idea suggested by Mark Robinson
+# Written by Davis McCarthy, Feb 2009, idea suggested by Mark Robinson
 # Last modified 2 Jun 2020.
 {
 #	Check y

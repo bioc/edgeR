@@ -25,7 +25,7 @@ filterByExpr.DGEList <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
 }
 
 filterByExpr.SummarizedExperiment <- function(y, design=NULL, group=NULL, lib.size=NULL, ...)
-#	Created 19 March 2020. Last revised 19 March 2020.
+#	Created 19 Mar 2020. Last revised 19 Mar 2020.
 {
 	y <- SE2DGEList(y)
 	filterByExpr.DGEList(y, design=design, group=group, lib.size=lib.size, ...)

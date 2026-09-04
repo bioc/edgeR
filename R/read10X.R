@@ -1,7 +1,7 @@
 read10X <- function(mtx=NULL,genes=NULL,barcodes=NULL,path=".",DGEList=TRUE)
 #	Read 10X Genomics Matrix Exchange Format files created by CellRanger
 #	Gordon Smyth
-#	Created 10 Jan 2018. Last modified 3 March 2021.
+#	Created 10 Jan 2018. Last modified 3 Mar 2021.
 {
 #	Get file names
 	if(is.null(mtx) || is.null(genes) || is.null(barcodes)) {

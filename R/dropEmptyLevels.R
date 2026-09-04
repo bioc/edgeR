@@ -1,7 +1,7 @@
 dropEmptyLevels <- function(x)
 #	Drop levels of a factor that don't occur
 #	Gordon Smyth
-#	Created 25 March 2012.  Last modified 6 March 2015.
+#	Created 25 Mar 2012.  Last modified 6 Mar 2015.
 {
 	if(is.factor(x)) {
 		i <- which(tabulate(as.integer(x))>0L)

@@ -1,7 +1,7 @@
 kegga.DGELRT <- function(de, geneid = rownames(de), FDR = 0.05, trend = FALSE, ...)
 #	KEGG analysis of DE genes from linear model fit
 #	Gordon Smyth
-#	Created 4 June 2015.  Last modified 27 May 2019.
+#	Created 4 Jun 2015.  Last modified 27 May 2019.
 {
 #	Avoid argument collision with default method
 	dots <- names(list(...))

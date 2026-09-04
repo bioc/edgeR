@@ -3,7 +3,7 @@ binQLFit <- function(y, ...)
 	UseMethod("binQLFit")
 
 binQLFit.PCList <- function(y, design=NULL, abundance.trend=TRUE, covariate.trend=NULL, robust=TRUE, ...)
-#	Created 11 July 2026. Last modified 11 July 2026.
+#	Created 11 Jul 2026. Last modified 11 Jul 2026.
 {
 	if(is.null(design)) {
 		design <- y$design
@@ -26,7 +26,7 @@ binQLFit.PCList <- function(y, design=NULL, abundance.trend=TRUE, covariate.tren
 binQLFit.default <- function(y, z, design=NULL, weights=NULL, offset=NULL, AveLogCPM=NULL, abundance.trend=TRUE, covariate.trend=NULL, robust=TRUE, prior.count=1, nthreads=1L, ...)
 #	Fit binomial generalized linear model for each feature
 #	Lizhong Chen, Gordon Smyth
-#	Created 11 July 2026. Last modified 11 July 2026.
+#	Created 11 Jul 2026. Last modified 11 Jul 2026.
 {
 	#	Check counts
 	y <- as.matrix(y)
@@ -115,7 +115,7 @@ binQLFit.default <- function(y, z, design=NULL, weights=NULL, offset=NULL, AveLo
 binQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, or = 1, lor = NULL, upshot=TRUE)
 #	Quasi-likelihood F-tests for binomial models.
 #	Lizhong Chen, Gordon Smyth
-#	Created 09 July 2026. Last modified 11 July 2026
+#	Created 09 Jul 2026. Last modified 11 Jul 2026
 {
 	if(!is(glmfit,"DGEBIN")) stop("glmfit must be a DGEBIN object produced by binQLFit")
 	if(is.null(glmfit$s2.post)) stop("need to run binQLFit before binQLFTest")

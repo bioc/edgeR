@@ -3,7 +3,7 @@ processAmplicons <- function(readfile, readfile2=NULL, barcodefile, hairpinfile,
 					dualIndexForwardRead=FALSE, verbose=FALSE, barcodesInHeader=FALSE,
 					hairpinBeforeBarcode=FALSE,
 					plotPositions=FALSE)
-#	Oliver Voogd 28 July 2022.
+#	Oliver Voogd 28 Jul 2022.
 #	Edits by Gordon Smyth 5 Aug 2022.
 {
 	# A simple check for the existence of the given files

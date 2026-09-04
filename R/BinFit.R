@@ -3,7 +3,7 @@ binFit <- function(y, ...)
 	UseMethod("binFit")
 
 binFit.PCList <- function(y, design=NULL, ...)
-#	Created 15 April 2025.  Last modified 18 April 2025.
+#	Created 15 Apr 2025.  Last modified 18 Apr 2025.
 {
 	if(is.null(design)) {
 		design <- y$design
@@ -26,7 +26,7 @@ binFit.PCList <- function(y, design=NULL, ...)
 binFit.default <- function(y, z, design=NULL, weights=NULL, offset=NULL, prior.count=1, nthreads=1L, ...)
 #	Fit binomial generalized linear model for each feature
 #	Lizhong Chen, Gordon Smyth
-#	Created 15 April 2025. Last modified 22 April 2025.
+#	Created 15 Apr 2025. Last modified 22 Apr 2025.
 {
 	#	Check counts
 	y <- as.matrix(y)

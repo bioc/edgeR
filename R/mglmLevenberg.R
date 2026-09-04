@@ -5,7 +5,7 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 #	R version by Gordon Smyth and Yunshun Chen
 #	C++ version by Aaron Lun
 #	C version by Lizhong Chen
-#	Created 3 March 2011.  Last modified 16 Sep 2024
+#	Created 3 Mar 2011.  Last modified 16 Sep 2024
 {
 #	Check arguments
 	y <- as.matrix(y)

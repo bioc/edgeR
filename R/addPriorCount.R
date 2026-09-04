@@ -4,7 +4,7 @@ addPriorCount <- function(y, lib.size=NULL, offset=NULL, prior.count=1, nthreads
 # which are provided as log-transformed values in 'offset'.
 #
 # written by Aaron Lun
-# created 26 September 2016
+# created 26 Sep 2016
 # last modified 4 Nov 2018    
 {
 #	Check y

@@ -48,7 +48,7 @@ rowsum.PCList <- function (x, group, reorder=FALSE, na.rm=FALSE, ...)
 }
 
 rowsum.SummarizedExperiment <- function(x, group, reorder=FALSE, na.rm=FALSE, ...)
-#	Created 03 April 2020.  Last modified 03 April 2020.
+#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
 {
 	x <- SE2DGEList(x)
 	rowsum.DGEList(x, group=group, reorder=reorder, na.rm=na.rm, ...)

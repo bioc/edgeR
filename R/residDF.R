@@ -4,7 +4,7 @@
 # combination of TRUE/FALSE values in 'truths'.
 # 
 # written by Aaron Lun
-# Created 24 October 2014
+# Created 24 Oct 2014
 {
 #	Integer packing will only work for 31 libraries at a time.	
 	assembly <- list()

@@ -3,7 +3,7 @@ mglmOneGroup <- function(y,dispersion=0,offset=0,weights=NULL,coef.start=NULL,ma
 #	R version by Gordon Smyth
 #	C++ version by Aaron Lun
 #	C version by Lizhong Cheng
-#	Created 18 Aug 2010. Last modified 11 July 2024. 
+#	Created 18 Aug 2010. Last modified 11 Jul 2024. 
 {
 #	Check y
 	y <- as.matrix(y)

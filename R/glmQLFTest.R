@@ -6,7 +6,7 @@ UseMethod("glmQLFit")
 glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE,...)
 # 	Fit NB GLMs and estimate QL dispersions with empirical Bayes moderation.
 # 	Yunshun Chen, Aaron Lun, Lizhong Chen, Gordon Smyth
-#	Created 5 November 2014. Last modified 23 December 2025.
+#	Created 5 Nov 2014. Last modified 23 Dec 2025.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -38,7 +38,7 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 }
 
 glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE,...)
-#	Created 3 April 2020. Last modified 8 April 2023.
+#	Created 3 Apr 2020. Last modified 8 Apr 2023.
 {
 	y <- SE2DGEList(y)
 	glmQLFit.DGEList(y, design=design, dispersion=dispersion, abundance.trend=abundance.trend, robust=robust, winsor.tail.p=winsor.tail.p, legacy=legacy,...)
@@ -55,8 +55,8 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
 #	C++ replaced with pure C by Lizhong Chen, 6 May 2024.
 #	legacy=FALSE argument passed to squeezeVar(), 1 Aug 2024.
-#	Support binomial models, 29 April 2025
-#	Last modified 29 April 2025.
+#	Support binomial models, 29 Apr 2025
+#	Last modified 29 Apr 2025.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -162,8 +162,8 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 
 glmQLFTest <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, fc = 1, lfc = NULL, poisson.bound=TRUE, upshot=TRUE)
 #	Quasi-likelihood F-tests for DGE quasi-negative binomial models.
-#	Support quasi-binomial models, 29 April 2025
-#	Treat analysis testing relative to a minimum threshold by Lizhong Chen, 29 April 2025
+#	Support quasi-binomial models, 29 Apr 2025
+#	Treat analysis testing relative to a minimum threshold by Lizhong Chen, 29 Apr 2025
 #	Support UPSHOT method, 13 Nov 2025
 #	Davis McCarthy, Gordon Smyth, Aaron Lun, Lizhong Chen.
 #	Created 18 Feb 2011. Last modified 18 Nov 2025

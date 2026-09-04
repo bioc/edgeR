@@ -7,7 +7,7 @@ as.matrix.DGEBIN <- as.matrix.DGEGLM
 # S3 as.data.frame method
 
 as.data.frame.DGEList <- function(x,row.names=NULL,...)
-#	Created 17 June 2020.
+#	Created 17 Jun 2020.
 {
 	if(is.null(x$genes)) {
 		data.frame(x$counts,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
@@ -21,7 +21,7 @@ as.data.frame.DGEList <- function(x,row.names=NULL,...)
 }
 
 as.data.frame.PCList <- function(x,row.names=NULL,...)
-#	Created 16 April 2025.
+#	Created 16 Apr 2025.
 {
 	if(is.null(x$genes)) {
 		data.frame(x$counts,x$counts2,row.names=row.names,check.rows=FALSE,check.names=FALSE,stringsAsFactors=FALSE)
@@ -121,7 +121,7 @@ assign("dimnames<-.DGEGLM",function(x,value)
 assign("dimnames<-.DGEBIN",`dimnames<-.DGEGLM`)
 
 assign("dimnames<-.DGELRT",function(x,value)
-#	4 June 2015
+#	4 Jun 2015
 {
 	dimnames(x$table) <- value
 	if(hasName(x,"coefficients")) rownames(x$coefficients) <- value[[1]]

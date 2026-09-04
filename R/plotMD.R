@@ -1,7 +1,7 @@
 plotMD.DGEList <- function(object, column=1, xlab="Average log CPM (this sample and others)", ylab="log-ratio (this sample vs others)", main=colnames(object)[column], status=object$genes$Status, zero.weights=FALSE, prior.count=3, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
-#	Created 24 June 2015. Last modified 7 Aug 2019.
+#	Created 24 Jun 2015. Last modified 7 Aug 2019.
 {
 	nlib <- ncol(object)
 	if(nlib < 2L) stop("Need at least two columns")
@@ -25,7 +25,7 @@ plotMD.DGEList <- function(object, column=1, xlab="Average log CPM (this sample 
 }
 
 plotMD.SummarizedExperiment <- function(object, column=1, xlab="Average log CPM (this sample and others)", ylab="log-ratio (this sample vs others)", zero.weights=FALSE, prior.count=3, ...)
-#	Created 03 April 2020.  Last modified 01 Oct 2022.
+#	Created 03 Apr 2020.  Last modified 01 Oct 2022.
 {
 	object <- SE2DGEList(object)
 	plotMD.DGEList(object, column=column, xlab=xlab, ylab=ylab, zero.weights=zero.weights, prior.count=prior.count, ...)
@@ -34,7 +34,7 @@ plotMD.SummarizedExperiment <- function(object, column=1, xlab="Average log CPM 
 plotMD.DGEGLM <- function(object, column=ncol(object), coef=NULL, xlab="Average log CPM", ylab="log-fold-change", main=colnames(object)[column], status=object$genes$Status, zero.weights=FALSE, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
-#	Created 24 June 2015. Last modified 25 Nov 2025.
+#	Created 24 Jun 2015. Last modified 25 Nov 2025.
 {
 	if(!is.null(coef)) column <- coef
 	if(is.null(object$AveLogCPM)) stop("AveLogCPM component is absent.")
@@ -48,7 +48,7 @@ plotMD.DGEGLM <- function(object, column=ncol(object), coef=NULL, xlab="Average 
 
 plotMD.DGEBIN <- function(object, column=ncol(object), coef=NULL, xlab="Average log CPM", ylab="log-odds-ratio", main=colnames(object)[column], status=object$genes$Status, zero.weights=FALSE, ...)
 #	Mean-difference plot for binomial fits (DGEBIN from binFit / binQLFit)
-#	Created 14 July 2026.
+#	Created 14 Jul 2026.
 {
 	if(!is.null(coef)) column <- coef
 	if(is.null(object$AveLogCPM)) stop("AveLogCPM component is absent.")
@@ -63,7 +63,7 @@ plotMD.DGEBIN <- function(object, column=ncol(object), coef=NULL, xlab="Average 
 plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change", main=object$comparison, status=object$genes$Status, contrast=1, adjust.method="BH", p.value=0.05, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
-#	Created 24 June 2015. Last modified 25 Nov 2025.
+#	Created 24 Jun 2015. Last modified 25 Nov 2025.
 {
 	logFC <- object$table$logFC
 	if(is.null(logFC)){
@@ -97,7 +97,7 @@ plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change"
 plotMD.DGEExact <- function(object, xlab="Average log CPM", ylab="log-fold-change", main=NULL, status=object$genes$Status, adjust.method="BH", p.value=0.05, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
-#	Created 24 June 2015.  Last modified 7 Feb 2017.
+#	Created 24 Jun 2015.  Last modified 7 Feb 2017.
 {
 	if(is.null(status))
 		status <- decideTests(object, adjust.method=adjust.method, p.value=p.value)

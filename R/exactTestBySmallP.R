@@ -7,7 +7,7 @@ exactTestBySmallP <- function(y1,y2,dispersion=0)
 #	all values with probability equal or less than that observed.
 
 #	Mark Robinson, Davis McCarthy, Gordon Smyth.
-#	Created 17 June 2009.  Last modified 13 Jul 2024.
+#	Created 17 Jun 2009.  Last modified 13 Jul 2024.
 {
 	y1 <- as.matrix(y1)
 	y2 <- as.matrix(y2)

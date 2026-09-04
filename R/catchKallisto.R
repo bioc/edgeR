@@ -1,8 +1,9 @@
-catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,verbose=TRUE)
+catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
+#	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 2 April 2018. Last modified 29 Aug 2026.
+#	Created 2 Apr 2018. Last modified 3 Sep 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -43,12 +44,12 @@ catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=F
 
 #		Store counts
 		if(j == 1L) {
-			Counts <- Length <- matrix(0,NTx,NSamples)
+			Counts <- EffLen <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NTx)
 			OverDisp <- rep_len(0,NTx)
 		}
 		Counts[,j] <- h5$est_counts
-		Length[,j] <- aux$eff_lengths
+		EffLen[,j] <- aux$eff_lengths
 
 #		Bootstraps
 		if(NBoot > 0L) Boot <- do.call(cbind,h5$bootstrap)
@@ -65,12 +66,12 @@ catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=F
 		}
 	}
 	
-# Compute length statistics
-	LTxL <- log(Length)
-	AveTxLength <- exp(rowMeans(LTxL))
+#	Compute length statistics
+	LTxL <- log(EffLen)
+	AveEffLength <- exp(rowMeans(LTxL))
 	MinLLen <- apply(LTxL, 1, min)
 	MaxLLen <- apply(LTxL, 1, max)
-	RangeTxLength <- exp(MaxLLen - MinLLen)
+	Max2MinEffLength <- exp(MaxLLen - MinLLen)
 
 #	Estimate overdispersion for each transcript
 	i <- (DF > 0L)
@@ -90,14 +91,14 @@ catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=F
 	}
 
 #	Prepare output
-	Ann <- data.frame(
-	    Length=as.integer(aux$lengths),
-	    AveTxLength=AveTxLength,
-	    Max2MinLength=RangeTxLength,
-	    Overdispersion=OverDisp,
-	    row.names=aux$ids,
-	    stringsAsFactors=FALSE)
 	dimnames(Counts) <- list(aux$ids,basename(paths))
+	Ann <- data.frame(
+		Length=as.integer(aux$lengths),
+		AveEffLen=AveEffLength,
+		Max2MinEffLen=Max2MinEffLength,
+		Overdispersion=OverDisp,
+		row.names=aux$ids,
+		stringsAsFactors=FALSE)
 
 #	Detect and unpack Gencode tx names
 	x <- row.names(Ann)[1]
@@ -105,19 +106,31 @@ catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=F
 	if(gencode) {
 		A <- splitGencodeTxNames(row.names(Ann))
 		Ann <- data.frame(Ann,A[,-1])
+		Ann$AnnLength <- NULL
 		row.names(Ann) <- row.names(Counts) <- A[,1]
 	}
+	dimnames(EffLen) <- dimnames(Counts)
 
 #	Divided counts
 	if(divide) Counts <- Counts / Ann$Overdispersion
 	
 	if(DGEList) {
-	  y  <- DGEList(count=Counts,genes=Ann)
-	  y$overdispersion.prior <- OverDispPrior
-	  y$resample.type <- ResampleType
-	  y$divided.counts <- divide
+		y  <- DGEList(count=Counts,genes=Ann)
+		y$overdispersion.prior <- OverDispPrior
+		y$resample.type <- ResampleType
+		y$divided.counts <- divide
+		if(offset.prior) {
+			y$offset.prior <- LTxL - rowMeans(LTxL)
+			dimnames(y$offset.prior) <- dimnames(Counts)
+		}
+		y$other$effective.length <- EffLen
 	} else {
-	  y <- list(counts=Counts,annotation=Ann,overdispersion.prior=OverDispPrior,resample.type=ResampleType,divided.counts=divide)
+		y <- list(counts=Counts,
+			effective.length=EffLen,
+			annotation=Ann,
+			overdispersion.prior=OverDispPrior,
+			resample.type=ResampleType,
+			divided.counts=divide)
 	}
 	
 	y

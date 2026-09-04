@@ -4,7 +4,7 @@ UseMethod("cpm")
 cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	Counts per million for a DGEList
 #	Davis McCarthy and Gordon Smyth.
-#	Created 20 June 2011. Last modified 9 Aug 2026.
+#	Created 20 Jun 2011. Last modified 9 Aug 2026.
 {
 	if(hasName(y,"offset"))
 		return(cpm(y$counts, offset=y[["offset"]], log=log, prior.count=prior.count))
@@ -16,7 +16,7 @@ cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, 
 
 cpm.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	Counts per million for a SummarizedExperiment
-#	Created 03 April 2020.  Last modified 1 June 2020.
+#	Created 03 Apr 2020.  Last modified 1 Jun 2020.
 {
 	y <- SE2DGEList(y)
 	cpm.DGEList(y, normalized.lib.sizes=normalized.lib.sizes, log=log, prior.count=prior.count, ...)
@@ -24,7 +24,7 @@ cpm.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, log=FALSE, pr
 
 cpm.DGELRT <- cpm.DGEGLM <- function(y, log=FALSE, shrunk=TRUE, ...)
 #	Fitted counts per million from a fitted model object.
-#	Created 19 April 2020.  Last modified 30 Sep 2025.
+#	Created 19 Apr 2020.  Last modified 30 Sep 2025.
 {
 	if(shrunk) {
 		eta <- y$coefficients %*% t(y$design)
@@ -55,7 +55,7 @@ cpm.default <- function(y, lib.size=NULL, offset=NULL, offset.prior=NULL, log=FA
 #	Counts per million for a matrix
 #	Davis McCarthy, Yunshun Chen, Gordon Smyth.
 #	C++ version by Aaron Lun. C version by Lizhong Chen.
-#	Created 20 June 2011. Last modified 18 Aug 2026.
+#	Created 20 Jun 2011. Last modified 18 Aug 2026.
 {
 #	Coerce to matrix
 	y <- as.matrix(y)

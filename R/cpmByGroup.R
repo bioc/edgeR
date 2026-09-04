@@ -4,7 +4,7 @@ UseMethod("cpmByGroup")
 cpmByGroup.DGEList <- function(y, group=NULL, dispersion=NULL, ...)
 #	Counts per million averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017. Last modified 4 Nov 2018.
+#	Created 10 Jul 2017. Last modified 4 Nov 2018.
 {
 	if(is.null(group)) group <- y$samples$group
 	group <- as.factor(group)
@@ -17,7 +17,7 @@ cpmByGroup.DGEList <- function(y, group=NULL, dispersion=NULL, ...)
 }
 
 cpmByGroup.SummarizedExperiment <- function(y, group=NULL, dispersion=NULL, ...)
-#	Created 03 April 2020.  Last modified 03 April 2020.
+#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
 {
 	y <- SE2DGEList(y)
 	cpmByGroup.DGEList(y, group=group, dispersion=dispersion, ...)
@@ -26,7 +26,7 @@ cpmByGroup.SummarizedExperiment <- function(y, group=NULL, dispersion=NULL, ...)
 cpmByGroup.default <- function(y, group=NULL, dispersion=0.05, offset=NULL, weights=NULL, log=FALSE, prior.count=2, ...)
 #	Counts per million averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017. Last modified 10 May 2024.
+#	Created 10 Jul 2017. Last modified 10 May 2024.
 {
 #	Check y
 	ymin <- min(y)

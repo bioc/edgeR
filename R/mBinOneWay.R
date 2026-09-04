@@ -1,7 +1,7 @@
 mbinOneWay <- function(y, z, design=NULL, group=NULL, offset=NULL, weights=NULL, maxit=50, tol=1e-8, nthreads=1L)
 #	Fit one-way layout binomial models using weighted mean
 #	Created by Lizhong Chen
-#	11 April 2025.  Last modified 18 April 2025.
+#	11 Apr 2025.  Last modified 18 Apr 2025.
 {
 #	check counts
 	y <- as.matrix(y)

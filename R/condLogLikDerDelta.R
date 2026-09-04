@@ -2,7 +2,7 @@ condLogLikDerDelta <- function(y,delta,der=1L)
 # Derivatives of log-likelihood function wrt to delta
 # r=1/dispersion and delta=1/(1+r)=dispersion/(1+dispersion)
 # der is order of derivative required (0th deriv is the function)
-# Written by Mark Robinson, edited by Davis McCarthy, February 2009
+# Written by Mark Robinson, edited by Davis McCarthy, Feb 2009
 {
 #	Vector interpreted as matrix of one row, i.e., one gene
 	if (is.vector(y)) {

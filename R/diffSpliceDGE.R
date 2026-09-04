@@ -1,7 +1,7 @@
 diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, geneid, exonid=NULL, prior.count=0.125, robust=NULL, verbose=TRUE)
 # Identify exons and genes with splice variants using negative binomial GLMs
 # Yunshun Chen, Lizhong Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 12 Mar 2025.
+# Created 29 Mar 2014.  Last modified 12 Mar 2025.
 {
 #	Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
@@ -228,7 +228,7 @@ diffSpliceDGE <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, genei
 
 topSpliceDGE <- function(lrt, test="Simes", number=10, FDR=1)
 # Yunshun Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 25 September 2015. 
+# Created 29 Mar 2014.  Last modified 25 Sep 2015. 
 {
 	test <- match.arg(test,c("Simes","simes","gene","exon"))
 	if(test=="simes") test <- "Simes"
@@ -265,7 +265,7 @@ topSpliceDGE <- function(lrt, test="Simes", number=10, FDR=1)
 plotSpliceDGE <- function(lrt, geneid=NULL, genecolname=NULL, rank=1L, FDR = 0.05)
 # Plot exons of most differentially spliced gene
 # Yunshun Chen and Gordon Smyth
-# Created 29 March 2014.  Last modified 17 April 2024.
+# Created 29 Mar 2014.  Last modified 17 Apr 2024.
 {
 	if(is.null(genecolname)) 
 		genecolname <- lrt$genecolname

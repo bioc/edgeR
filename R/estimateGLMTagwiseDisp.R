@@ -24,7 +24,7 @@ estimateGLMTagwiseDisp.DGEList <- function(y, design=NULL, prior.df=10, trend=!i
 }
 
 estimateGLMTagwiseDisp.default <- function(y, design=NULL, offset=NULL, dispersion, prior.df=10, trend=TRUE, span=NULL, AveLogCPM=NULL, weights=NULL, ...)
-#	Created 24 March 2011. Last modified 7 Aug 2019.
+#	Created 24 Mar 2011. Last modified 7 Aug 2019.
 {
 #	Check y
 	y <- as.matrix(y)

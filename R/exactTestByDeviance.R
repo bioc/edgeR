@@ -6,8 +6,8 @@ exactTestByDeviance <-  function(y1,y2,dispersion=0)
 #	Rejection region is defined by large deviance statistics,
 #	so this is a conditional likelihood ratio test.
 
-#	R version by Davis McCarthy and Gordon Smyth, 8 August 2011.
-#	C++ version by Aaron Lun, 26 July 2012.
+#	R version by Davis McCarthy and Gordon Smyth, 8 Aug 2011.
+#	C++ version by Aaron Lun, 26 Jul 2012.
 #	C version by Lizhong Chen, 13 May 2024.
 #	Last modified 13 Jul 2024.
 {

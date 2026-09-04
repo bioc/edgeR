@@ -82,7 +82,7 @@ dim.CompressedMatrix <- function(x)
 # Getting dimensions.
 #
 # written by Aaron Lun
-# created 21 June 2017
+# created 21 Jun 2017
 {
 	attr(x, "Dims")
 }
@@ -91,8 +91,8 @@ length.CompressedMatrix <- function(x)
 # Getting length. 
 #
 # written by Aaron Lun
-# created 25 January 2018
-# last modified 1 March 2018
+# created 25 Jan 2018
+# last modified 1 Mar 2018
 {
 	prod(attr(x,"Dims"))
 }
@@ -101,8 +101,8 @@ length.CompressedMatrix <- function(x)
 # Subsetting for CompressedMatrix objects.
 #
 # written by Aaron Lun
-# created 24 September 2016
-# last modified 21 June 2017
+# created 24 Sep 2016
+# last modified 21 Jun 2017
 {
 	Nargs <- nargs() - !(missing(drop))
 	if (Nargs<3L) {
@@ -148,7 +148,7 @@ length.CompressedMatrix <- function(x)
 # Subset assignment for CompressedMatrix objects.
 #
 # written by Aaron Lun
-# created 25 January 2018
+# created 25 Jan 2018
 {
 	ref <- as.matrix(x)
 	if (is(value, "CompressedMatrix")) { 
@@ -167,8 +167,8 @@ as.matrix.CompressedMatrix <- function(x, ...)
 # Expanding it to a full matrix.
 #
 # written by Aaron Lun
-# created 26 September 2016
-# last modified 21 June 2017
+# created 26 Sep 2016
+# last modified 21 Jun 2017
 {
 	raw.mat <- .strip_to_matrix(x)
 	row.status <- attr(x, "repeat.row") 
@@ -188,7 +188,7 @@ rbind.CompressedMatrix <- function(...)
 # Rbinding things together.
 # 
 # written by Aaron Lun
-# created 21 June 2017	
+# created 21 Jun 2017	
 {
 	everything <- list(...)
 	nobjects <- length(everything)
@@ -248,7 +248,7 @@ cbind.CompressedMatrix <- function(...)
 # Cbinding things together.
 # 
 # written by Aaron Lun
-# created 21 June 2017	
+# created 21 Jun 2017	
 {
 	everything <- list(...)
 	nobjects <- length(everything)
@@ -309,8 +309,8 @@ Ops.CompressedMatrix <- function(e1, e2)
 # in a manner that best preserves memory usage.
 #
 # written by Aaron Lun
-# created 26 September 2016
-# last modified 30 June 2017
+# created 26 Sep 2016
+# last modified 30 Jun 2017
 {
 	if (!inherits(e1, "CompressedMatrix")) {
 		e1 <- makeCompressedMatrix(e1, dim(e2), byrow=FALSE) # Promoted to column-major CompressedMatrix 

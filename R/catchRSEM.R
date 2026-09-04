@@ -1,9 +1,9 @@
-catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=FALSE,verbose=TRUE)
+catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
 #	Use Gibbs samples to estimate overdispersion of transcriptwise counts.
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Pedro Baldoni and Gordon Smyth
-#	Created 24 April 2024. Last modified 29 Aug 2026.
+#	Created 24 Apr 2024. Last modified 4 Sep 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -25,7 +25,7 @@ catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=
 #	Initialize vector of inferential sample types
 	ResampleType <- rep_len("gibbs",NSamples)
 
-#	Check for readr package  
+#	Check for readr package
 	OK <- requireNamespace("readr",quietly=TRUE)
 	if(!OK) stop("readr package required but is not installed (or can't be loaded)")
 	
@@ -41,19 +41,19 @@ catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=
 		if(j == 1L) {
 			Quant1 <- suppressWarnings(readr::read_tsv(QuantFile,col_types="c_ddd___dd___",progress=FALSE))
 			NTx <- nrow(Quant1)
-			Counts <- Length <- matrix(0,NTx,NSamples)
+			Counts <- EffLen <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NTx)
 			OverDisp <- rep_len(0,NTx)
 			if(is.null(Quant1$expected_count)) stop("File doesn't contain expected_count column", call.=FALSE)
 			Counts[,1L] <- Quant1$expected_count
-			Length[,1L] <- Quant1$effective_length
+			EffLen[,1L] <- Quant1$effective_length
 			M <- Quant1$posterior_mean_count
 			S <- Quant1$posterior_standard_deviation_of_count
 		} else {
 			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="___dd___dd___",progress=FALSE))
 			if(is.null(Quant$expected_count)) stop("File doesn't contain expected_count column", call.=FALSE)
 			Counts[,j] <- Quant$expected_count
-			Length[,j] <- Quant1$effective_length
+			EffLen[,j] <- Quant$effective_length
 			M <- Quant$posterior_mean_count
 			S <- Quant$posterior_standard_deviation_of_count
 		}
@@ -72,12 +72,12 @@ catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=
 	}
 	
 # Compute length statistics
-	LTxL <- log(Length)
+	LTxL <- log(EffLen)
 	LTxL[is.infinite(LTxL)] <- log(1e-8)
-	AveTxLength <- exp(rowMeans(LTxL))
+	AveEffLength <- exp(rowMeans(LTxL))
 	MinLLen <- apply(LTxL, 1, min)
 	MaxLLen <- apply(LTxL, 1, max)
-	RangeTxLength <- exp(MaxLLen - MinLLen)
+	Max2MinEffLength <- exp(MaxLLen - MinLLen)
 
 #	Estimate overdispersion for each transcript
 	i <- (DF > 0L)
@@ -104,8 +104,8 @@ catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=
 	Quant1$transcript_id <- Quant1$effective_length <- Quant1$expected_count <- NULL
 	Quant1$posterior_mean_count <- Quant1$posterior_standard_deviation_of_count<- NULL
 	colnames(Quant1) <- c("Length")
-	Quant1$AveLength <- AveTxLength
-	Quant1$Max2MinLength <- RangeTxLength
+	Quant1$AveEffLen <- AveEffLength
+	Quant1$Max2MinEffLen <- Max2MinEffLength
 	Quant1$Overdispersion <- OverDisp
 
 #	Detect and unpack Gencode tx names
@@ -114,19 +114,31 @@ catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=
 	if(gencode) {
 		A <- splitGencodeTxNames(row.names(Quant1))
 		Quant1 <- data.frame(Quant1,A[,-1])
+		Quant1$AnnLength <- NULL
 		row.names(Quant1) <- row.names(Counts) <- A[,1]
 	}
+	dimnames(EffLen) <- dimnames(Counts)
 
 #	Divided counts
 	if(divide) Counts <- Counts / Quant1$Overdispersion
 	
 	if(DGEList) {
-	  y  <- DGEList(count=Counts,genes=Quant1)
-	  y$overdispersion.prior <- OverDispPrior
-	  y$resample.type <- ResampleType
-	  y$divided.counts <- divide
+		y <- DGEList(count=Counts,genes=Quant1)
+		y$overdispersion.prior <- OverDispPrior
+		y$resample.type <- ResampleType
+		y$divided.counts <- divide
+		if(offset.prior) {
+			y$offset.prior <- LTxL - rowMeans(LTxL)
+			dimnames(y$offset.prior) <- dimnames(Counts)
+		}
+		y$other$effective.length <- EffLen
 	} else {
-	  y <- list(counts=Counts,annotation=Quant1,overdispersion.prior=OverDispPrior,resample.type=ResampleType,divided.counts=divide)
+		y <- list(counts=Counts,
+			effective.length=EffLen,
+			annotation=Quant1,
+			overdispersion.prior=OverDispPrior,
+			resample.type=ResampleType,
+			divided.counts=divide)
 	}
 	
 	y

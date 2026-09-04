@@ -1,6 +1,6 @@
 PCList <- function(counts, counts2, samples=NULL, group=NULL, genes=NULL, ...)
 # Created by Lizhong Chen
-#	11 April 2025.  Last modified 15 April 2025.
+#	11 Apr 2025.  Last modified 15 Apr 2025.
 {
 #	Check counts
 	counts  <- as.matrix(counts)

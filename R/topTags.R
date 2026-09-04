@@ -1,7 +1,7 @@
 topTags <- function(object,n=10L,adjust.method="BH",sort.by="PValue",p.value=1) 
 #	Summary table of the n most differentially expressed tags
 #	Mark Robinson, Davis McCarthy, Gordon Smyth, Yunshun Chen.
-#	Created September 2008.  Last modified 9 Oct 2017.
+#	Created Sep 2008.  Last modified 9 Oct 2017.
 {
 #	Check object
 	if(is.null(object$table)) stop("Need to run exactTest or glmLRT first")

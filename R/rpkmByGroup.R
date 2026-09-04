@@ -4,7 +4,7 @@ UseMethod("rpkmByGroup")
 rpkmByGroup.DGEList <- function(y, group=NULL, gene.length=NULL, dispersion=NULL, ...)
 #	RPKM or FPKM averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017. Last modified 4 Nov 2018.
+#	Created 10 Jul 2017. Last modified 4 Nov 2018.
 {
 	if(is.null(group)) group <- y$samples$group
 	group <- as.factor(group)
@@ -38,7 +38,7 @@ rpkmByGroup.DGEList <- function(y, group=NULL, gene.length=NULL, dispersion=NULL
 }
 
 rpkmByGroup.SummarizedExperiment <- function(y, group=NULL, gene.length=NULL, dispersion=NULL, ...)
-#	Created 03 April 2020.  Last modified 03 April 2020.
+#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
 {
 	y <- SE2DGEList(y)
 	rpkmByGroup.DGEList(y, group=group, gene.length=gene.length, dispersion=dispersion, ...)
@@ -47,7 +47,7 @@ rpkmByGroup.SummarizedExperiment <- function(y, group=NULL, gene.length=NULL, di
 rpkmByGroup.default <- function(y, group=NULL, gene.length, dispersion=0.05, offset=NULL, weights=NULL, log=FALSE, prior.count=2, ...)
 #	RPKM or FPKM averaged by group
 #	Gordon Smyth
-#	Created 10 July 2017. Last modified 21 June 2019.
+#	Created 10 Jul 2017. Last modified 21 Jun 2019.
 {
 	if(is.null(group)) {
 		group <- factor(rep_len(1,ncol(y)))

@@ -1,7 +1,7 @@
 gini <- function(x)
 #	Gini diversity index for columns of a numeric matrix
 #	Gordon Smyth
-#	Created 5 Feb 2016. Last revised 17 April 2017.
+#	Created 5 Feb 2016. Last revised 17 Apr 2017.
 {
 	x <- as.matrix(x)
 	d <- dim(x)

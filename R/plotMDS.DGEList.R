@@ -98,7 +98,7 @@ plotMDS.DGEList <- function (x,top=500,labels=NULL,pch=NULL,cex=1,dim.plot=c(1,2
 }
 
 plotMDS.SummarizedExperiment <- function(x, top=500, labels=NULL, pch=NULL, cex=1, dim.plot=c(1,2), gene.selection="pairwise", xlab=NULL, ylab=NULL, method="logFC", prior.count=2, plot=TRUE, var.explained=TRUE, ...)
-#	Created 03 April 2020.  Last modified 13 May 2021.
+#	Created 03 Apr 2020.  Last modified 13 May 2021.
 {
 	x <- SE2DGEList(x)
 	plotMDS.DGEList(x, top=top, labels=labels, pch=pch, cex=cex, dim.plot=dim.plot, gene.selection=gene.selection, xlab=xlab, ylab=ylab, method=method, prior.count=prior.count, plot=plot, var.explained=var.explained, ...)

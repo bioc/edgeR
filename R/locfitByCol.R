@@ -1,6 +1,6 @@
 locfitByCol <- function(y, x=NULL, weights=1, span=0.5, degree=0)
 #	Gordon Smyth
-#	20 Aug 2012.  Last modified 15 June 2016.
+#	20 Aug 2012.  Last modified 15 Jun 2016.
 {
 	y <- as.matrix(y)
 	ntags <- nrow(y)

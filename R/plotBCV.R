@@ -1,7 +1,7 @@
 plotBCV <- function(y, xlab="Average log CPM", ylab="Biological coefficient of variation", pch=16, cex=0.2, col.common="red", col.trend="blue", col.tagwise="black", ...)
 #	Plot biological coefficient of variation against average log CPM
 #	Davis McCarthy, Yunshun Chen, Gordon Smyth.
-#	Created 18 January 2012.  Last modified 11 March 2013.
+#	Created 18 Jan 2012.  Last modified 11 Mar 2013.
 {
 #	Check y
 	if(!is(y,"DGEList")) stop("y must be a DGEList.")

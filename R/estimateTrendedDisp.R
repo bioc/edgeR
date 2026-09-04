@@ -4,7 +4,7 @@ estimateTrendedDisp <- function(y, ...)
 UseMethod("estimateTrendedDisp")
 
 estimateTrendedDisp.DGEList <- function(y, method="bin.spline", df=5, span=2/3, ...)
-# Yunshun Chen. Created 18 March 2016.
+# Yunshun Chen. Created 18 Mar 2016.
 {
 	y <- validDGEList(y)
 	group <- y$samples$group
