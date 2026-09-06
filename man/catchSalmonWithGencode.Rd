@@ -1,5 +1,6 @@
 \name{catchSalmonWithGencode}
 \alias{catchSalmonWithGencode}
+\alias{catchSalmonGene}
 
 \title{Process Salmon Output With Gencode Annotation to Produce Gene Counts}
 
@@ -7,6 +8,10 @@
 
 \usage{
 catchSalmonWithGencode(parent.dir = NULL, sample.dirs = NULL,
+        DGEList = TRUE, divide = FALSE, impute.eff.len = TRUE,
+        offset.prior = TRUE, gene.length = "moderate", verbose = TRUE)
+catchSalmonGene(parent.dir = NULL, sample.dirs = NULL,
+        tx2gene = NULL, remove.version.numbers = FALSE,
         DGEList = TRUE, divide = FALSE, impute.eff.len = TRUE,
         offset.prior = TRUE, gene.length = "moderate", verbose = TRUE)
 }
@@ -18,14 +23,14 @@ catchSalmonWithGencode(parent.dir = NULL, sample.dirs = NULL,
   If \code{parent.dir} and \code{sample.dirs} are both provided, then the \code{sample.dirs} are relative to \code{parent.dir}.
   If \code{sample.dirs} is \code{NULL}, then all the Salmon directories found in \code{parent.dir} will be read.
 }
-\item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
-\item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
-\item{impute.eff.len}{
-  whether to impute missing effective transcript lengths from Salmon.
-}
+\item{tx2gene}{data.frame mapping transcript IDs to gene IDs, with first column for transcript IDs and the second for the corresponding gene IDs. Not needed if Gencode was used for the quantifications.}
+\item{remove.version.numbers}{logical, whether to remove version numbers from transcript and gene IDs.}
+\item{DGEList}{logical, whether to output a \code{DGEList} instead of a plain list.}
+\item{divide}{logical, whether to divide the counts by the RTA overdispersions.}
+\item{impute.eff.len}{logical, whether to impute missing effective transcript lengths from Salmon.}
 \item{offset.prior}{logical. If \code{TRUE}, a prior offset matrix representing differences in effective transcript length will be included in the DGEList.}
 \item{gene.length}{How to compute average gene length. Possibilities are \code{"moderate"}, \code{"tximport"} and \code{"simple"}.}
-\item{verbose}{logical. If \code{TRUE}, progress information will be sent to standard output as each sample is processed.}
+\item{verbose}{logical, whether to message progress information to standard output as each sample is processed.}
 }
 
 \details{

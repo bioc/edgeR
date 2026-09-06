@@ -6,11 +6,12 @@
 \description{Split delimited transcript names provided by Gencode FASTA files into separate columns.}
 
 \usage{
-splitGencodeTxNames(x)
+splitGencodeTxNames(x, remove.version.numbers = TRUE)
 }
 
 \arguments{
 \item{x}{character vector of Gencode transcript names.}
+\item{remove.version.numbers}{logical, whether to remove version numbers from transcript and gene IDs.}
 }
 
 \details{

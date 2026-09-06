@@ -1,9 +1,12 @@
-catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
-#	Read transcriptwise counts and bootstrap samples from Salmon output.
-#	Unpack Gencode annotation and summarize to gene level.
+catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version.numbers=FALSE,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
+#	Read transcriptwise counts and bootstrap samples from Salmon output
+#	and summarize at gene level using either imbedded Gencode annotation
+#	or an externally provided data.frame mapping tx to gene IDs.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of genewise counts.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 Apr 2018. Last modified 4 Sep 2026.
+#	catchSalmon() created 1 Apr 2018. 
+#	catchSalmonWithGencode() created 14 July 2026.
+#	catchSalmonWithGene() created 6 Sep 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -20,7 +23,6 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 	}
 
 	NSamples <- length(paths)
-	if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
 
 #	Use jsonlite and readr packages for reading
 	OK <- requireNamespace("jsonlite",quietly=TRUE)
@@ -63,14 +65,34 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 			Quant1 <- suppressWarnings(readr::read_tsv(QuantFile,col_types="cdddd",progress=FALSE))
 #			Detect and unpack Gencode tx names
 			Name1 <- Quant1$Name[1]
-			IsGencode <- (nchar(Name1)-nchar(gsub("|","",Name1,fixed=TRUE)) >= 8L)
-			if(!IsGencode) stop("Row names do not appear to be from Gencode")
-			GenecodeAnn <- splitGencodeTxNames(Quant1$Name)
-			EnsG <- GenecodeAnn[,"EnsG"]
-			NTxPerGene <- drop(rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE))
-			d <- duplicated(EnsG)
-			GeneAnn <- data.frame(GenecodeAnn[!d,"GeneName",drop=FALSE])
-			NGene <- nrow(GeneAnn)
+			if(is.null(tx2gene)) {
+				IsGencode <- (nchar(Name1)-nchar(gsub("|","",Name1,fixed=TRUE)) >= 8L)
+				if(IsGencode)
+					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
+				else
+					stop("tx2gene not provided and row names do not appear to be from Gencode")
+				GenecodeAnn <- splitGencodeTxNames(Quant1$Name, remove.version.numbers=remove.version.numbers)
+				EnsG <- GenecodeAnn[,"EnsG"]
+				d <- duplicated(EnsG)
+				GeneAnn <- data.frame(GenecodeAnn[!d,"GeneName",drop=FALSE])
+			} else {
+				tx2gene <- as.data.frame(tx2gene)
+				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
+				if(remove.version.numbers) {
+					tx2gene[,1] <- strsplit2(tx2gene[,1],split="\\.")[,1]
+					Quant1$Name <- strsplit2(Quant1$Name,split="\\.")[,1]
+				}
+				m <- match(Quant1$Name,tx2gene[,1])
+				if(anyNA(m)) stop("Tx names not found in first column of tx2gene")
+				EnsG <- tx2gene[m,2]
+				if(anyNA(EnsG)) stop("Missing gene IDs")
+				GeneAnn <- NULL	
+				if(verbose) message("Summarizing to genewise counts using tx2gene")
+			}
+			NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
+			EnsGu <- row.names(NTxPerGene)
+			NGene <- length(NTxPerGene)
+			NTxPerGene <- drop(NTxPerGene)
 			Counts <- matrix(0,NGene,NSamples)
 			TPM <- EffLen <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NGene)
@@ -78,14 +100,11 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 			Counts[,1L] <- drop(rowsum(Quant1$NumReads,EnsG,reorder=FALSE))
 			TPM[,1L] <- Quant1$TPM
 			EffLen[,1L] <- Quant1$EffectiveLength
-#			eps <- 1e-6
-#			Length[,1L] <- rowsum(Quant1$EffectiveLength*(Quant1$TPM+eps),EnsG,reorder=FALSE)/rowsum(Quant1$TPM+eps,EnsG,reorder=FALSE)
 		} else {
 			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="__ddd",progress=FALSE))
 			Counts[,j] <- drop(rowsum(Quant$NumReads,EnsG,reorder=FALSE))
 			TPM[,j] <- Quant$TPM
 			EffLen[,j] <- Quant$EffectiveLength
-#			Length[,j] <- rowsum(Quant$EffectiveLength*(Quant$TPM+eps),EnsG,reorder=FALSE)/rowsum(Quant$TPM+eps,EnsG,reorder=FALSE)
 		}
 
 #		Bootstrap samples
@@ -164,10 +183,12 @@ catchSalmonWithGencode <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE
 	}
 
 #	Prepare output
-	EnsGu <- EnsG[!d]
 	dimnames(Counts) <- dimnames(Length) <- list(EnsGu,basename(paths))
 	NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
-	Genes <- data.frame(GeneAnn,NTx=NTxPerGene,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
+	if(is.null(GeneAnn))
+		Genes <- data.frame(NTx=NTxPerGene,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
+	else
+		Genes <- data.frame(GeneAnn,NTx=NTxPerGene,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
 	row.names(Genes) <- EnsGu
 
 #	Divided counts
