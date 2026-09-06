@@ -2,7 +2,7 @@
 \alias{catchSalmonWithGencode}
 \alias{catchSalmonGene}
 
-\title{Process Salmon Output With Gencode Annotation to Produce Gene Counts}
+\title{Process Salmon Output to Produce Gene Counts}
 
 \description{Produce a gene count object from Salmon output for a series of biological samples with Gencode annotation.}
 
@@ -39,6 +39,7 @@ The function will automatically detect whether bootstrap or Gibbs samples are av
 
 The function will unpack the Gencode transcript names using \code{splitGencodeTxNames} to obtain gene and transcript IDs.
 The transcript-level counts will be collapsed to gene-level counts and RTA overdispersions will be estimated at the gene level.
+Alternatively, tx to gene mappings can be provided by the data.frame \code{tx2gene}.
 
 Average transcript lengths are computed for each gene and optionally used to create a prior offset matrix.
 The average lengths are computed by three possible methods as specified by \code{gene.length}, either a simple average of the transcript lengths (\code{"simple"}), or the method of Soneson et al (2016) (\code{"tximport"}),

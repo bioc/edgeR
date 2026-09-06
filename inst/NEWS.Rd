@@ -31,6 +31,10 @@ New function readBismark2PC() to read Bismark output into an edgeR PCList object
 New class PCList to store paired counts, for example methylated and unmethylated reads, for the same genomic regions.
 
 \item
+New function catchSalmonGene() that reads Salmon output and produces gene-level results, collapsing the tx quantifications to gene-level counts and RTA dispersions.
+It automatically extracts gene IDs and annotation from Gencode transcript names if they are present, or alternatively accepts tx to gene mappings via a data.frame.
+
+\item
 New function splitGencodeTxNames() to unpack gene and transcript annotation found in Gencode transcript IDs.
 
 \item
@@ -38,14 +42,11 @@ catchSalmon(), catchKallisto(), catchOarfish() and catchRSEM() will now detect a
 This provides gene IDs and other annotation that is stored in the output object.
 
 \item
-New function catchSalmonWithGencode() that automatically extracts gene annotation from Gencode transcript names and uses the associated Ensembl gene IDs to collapse the quantifications to gene-level counts and RTA dispersions.
+New argument `parent.dir` for catchSalmon(), catchSalmonGene(), catchKallisto(), catchOarfish() and catchRSEM() to more easily read all the samples available in a specified output directory.
+New argument `sample.dirs` for catchSalmon(), catchSalmonGene(), and catchKallisto(), that replaces `paths` and allows individual samples to be specified.
 
 \item
-New argument `parent.dir` for catchSalmon(), catchSalmonWithGencode(), catchKallisto(), catchOarfish() and catchRSEM() to more easily read all the samples available in a specified output directory.
-New argument `sample.dirs` for catchSalmon(), catchSalmonWithGencode(), and catchKallisto(), that replaces `paths` and allows individual samples to be specified.
-
-\item
-New argument `offset.prior` for cpm(), rpkm(), catchSalmon() and catchSalmonWithGencode() to allow the offset matrix to be specified relative to the log(library sizes).
+New argument `offset.prior` for cpm(), rpkm(), catchSalmon() and catchSalmonGene() to allow the offset matrix to be specified relative to the log(library sizes).
 The `offset` argument still takes priority if it is set.
 
 \item
