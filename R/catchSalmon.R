@@ -3,7 +3,7 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 #	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 Apr 2018. Last modified 3 Sep 2026.
+#	Created 1 Apr 2018. Last modified 7 Sep 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -82,7 +82,10 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 			DF[i] <- DF[i]+NBoot-1L
 		}
 	}
-	
+
+#	Impute effective lengths
+	if(impute.eff.len) EffLen <- .imputeEffectiveLengths(Quant1$Length,EffLen)
+
 #	Compute length statistics
 	LTxL <- log(EffLen)
 	AveEffLength <- exp(rowMeans(LTxL))
@@ -130,17 +133,6 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 #	Divided counts
 	if(divide) Counts <- Counts / Quant1$Overdispersion
 
-#	Impute effective lengths
-	if(impute.eff.len) {
-		i <- which(Quant1$Length - EffLen < 0.5)
-		if(length(i)) {
-			irow <- ((i-1L) %% NTx) + 1L
-			m <- apply(EffLen[irow,,drop=FALSE],1,min,na.rm=TRUE)
-			if(anyNA(m)) m[is.na(m)] <- 1
-			EffLen[i] <- m
-		}
-	}
-
 	if(DGEList) {
 		y <- DGEList(count=Counts,genes=Quant1)
 		y$overdispersion.prior <- OverDispPrior
@@ -161,4 +153,26 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 	}
 	
 	y
+}
+
+.imputeEffectiveLengths <- function(Length,EffLen)
+#	Reset any effective length equal to actual length to 
+#	minimum effective length across samples.
+#	Gordon Smyth
+#	7 Sep 2026.
+{
+	i <- which(Length - EffLen < 0.5)
+	if(length(i)) {
+		irow <- ((i-1L) %% length(Length)) + 1L
+		icol <- ceiling(i / length(Length))
+		irowu <- sort(unique(irow))
+		EffLen2 <- EffLen[irowu,,drop=FALSE]
+		k <- match(irow,irowu)
+		i2 <- k + (icol-1L)*nrow(EffLen2)
+		EffLen2[i2] <- NA
+		m <- suppressWarnings(apply(EffLen2,1,min,na.rm=TRUE))
+		m[!is.finite(m)] <- 1
+		EffLen[i] <- m[k]
+	}
+	EffLen
 }

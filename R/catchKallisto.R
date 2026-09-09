@@ -1,9 +1,9 @@
-catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,verbose=TRUE)
+catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 2 Apr 2018. Last modified 3 Sep 2026.
+#	Created 2 Apr 2018. Last modified 7 Sep 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -65,7 +65,10 @@ catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=F
 			DF[i] <- DF[i]+NBoot-1L
 		}
 	}
-	
+
+#	Impute effective lengths
+	if(impute.eff.len) EffLen <- .imputeEffectiveLengths(as.vector(aux$lengths),EffLen)
+
 #	Compute length statistics
 	LTxL <- log(EffLen)
 	AveEffLength <- exp(rowMeans(LTxL))

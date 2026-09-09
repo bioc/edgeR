@@ -10,7 +10,8 @@
 
 \usage{
 catchKallisto(parent.dir = NULL, sample.dirs = NULL,
-          DGEList = TRUE, divide = FALSE, offset.prior = TRUE, verbose = TRUE)
+          DGEList = TRUE, divide = FALSE,
+          impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
 catchSalmon(parent.dir = NULL, sample.dirs = NULL,
           DGEList = TRUE, divide = FALSE,
           impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
@@ -85,7 +86,7 @@ In such cases, Salmon falls back to setting the effective transcript length equa
 If \code{impute.eff.len} is \code{TRUE}, then any effective transcript length equal to the transcript's actual length will be reset to the minimum effective transcript length for that transript across all the samples in the series.
 
 \emph{Gencode imbedded annotation}.
-Gencode packs transcript and gene annotation into composite transcript IDs, with fields separated by \code{|} characters.
+Gencode packs transcript and gene annotation into composite transcript IDs, with fields separated by vertical bar \code{|} characters.
 All the functions above will detect Gencode-style transcript names and will unpack the annotation fields into separate annotation columns using \code{splitGencodeTxNames}.
 }
 
@@ -155,7 +156,7 @@ Improved data-driven likelihood factorizations for transcript abundance estimati
 }
 
 \seealso{
-See \code{\link{catchSalmonWithGencode}} for automatic gene-level counts and overdispersions using Gencode-supplied gene to transript annotation.
+See \code{\link{catchSalmonGene}} for gene-level counts and overdispersions.
 }
 
 \examples{

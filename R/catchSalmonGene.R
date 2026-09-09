@@ -1,4 +1,4 @@
-catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version.numbers=FALSE,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
+catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version.numbers=TRUE,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output
 #	and summarize at gene level using either imbedded Gencode annotation
 #	or an externally provided data.frame mapping tx to gene IDs.
@@ -6,7 +6,7 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 #	Gordon Smyth and Pedro Baldoni
 #	catchSalmon() created 1 Apr 2018. 
 #	catchSalmonWithGencode() created 14 July 2026.
-#	catchSalmonWithGene() created 6 Sep 2026.
+#	catchSalmonWithGene() created 6 Sep 2026. Last modified 7 Sep 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -121,16 +121,13 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 		}
 	}
 
+#	Maximum tx length per gene
+	o <- order(Quant1$Length,decreasing=TRUE)
+	m <- match(EnsGu,EnsG[o])
+	MaxTxLen <- Quant1$Length[o][m]
+
 #	Impute effective lengths
-	if(impute.eff.len) {
-		i <- which(Quant1$Length - EffLen < 0.5)
-		if(length(i)) {
-			irow <- ((i-1L) %% NTx) + 1L
-			m <- apply(EffLen[irow,,drop=FALSE],1,min,na.rm=TRUE)
-			if(anyNA(m)) m[is.na(m)] <- 1
-			EffLen[i] <- m
-		}
-	}
+	if(impute.eff.len) EffLen <- .imputeEffectiveLengths(Quant1$Length,EffLen)
 
 #	Average gene length, with weak moderation towards genewise average and towards unweighted average
 	gene.length <- match.arg(gene.length,c("moderate","tximport","simple"))
@@ -186,9 +183,9 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 	dimnames(Counts) <- dimnames(Length) <- list(EnsGu,basename(paths))
 	NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
 	if(is.null(GeneAnn))
-		Genes <- data.frame(NTx=NTxPerGene,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
+		Genes <- data.frame(NTx=NTxPerGene,MaxTxLen=MaxTxLen,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
 	else
-		Genes <- data.frame(GeneAnn,NTx=NTxPerGene,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
+		Genes <- data.frame(GeneAnn,NTx=NTxPerGene,MaxTxLen=MaxTxLen,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
 	row.names(Genes) <- EnsGu
 
 #	Divided counts
