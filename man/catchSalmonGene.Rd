@@ -1,11 +1,16 @@
 \name{catchSalmonGene}
+\alias{catchKallistoGene}
 \alias{catchSalmonGene}
 
-\title{Process Salmon Output to Produce Gene Counts}
+\title{Process Kallisto or Salmon Output to Produce Gene Counts}
 
 \description{Produce a gene count object from Salmon output for a series of biological samples, optionally with Gencode annotation.}
 
 \usage{
+catchKallistoGene(parent.dir = NULL, sample.dirs = NULL,
+        tx2gene = NULL, remove.version.numbers = TRUE,
+        DGEList = TRUE, divide = FALSE, impute.eff.len = TRUE,
+        offset.prior = TRUE, gene.length = "moderate", verbose = TRUE)
 catchSalmonGene(parent.dir = NULL, sample.dirs = NULL,
         tx2gene = NULL, remove.version.numbers = TRUE,
         DGEList = TRUE, divide = FALSE, impute.eff.len = TRUE,
@@ -30,9 +35,14 @@ catchSalmonGene(parent.dir = NULL, sample.dirs = NULL,
 }
 
 \details{
-This function assumes that Salmon (Patro et al 2017; Zakeri et al 2017) has been run to estimate transcript counts for one or more RNA samples, and that either bootstrap resamples or Gibbs posterior samples are included in the Salmon output.
+\code{catchSalmonGene()} assumes that Salmon (Patro et al 2017; Zakeri et al 2017) has been run to estimate transcript counts for one or more RNA samples, and that either bootstrap resamples or Gibbs posterior samples are included in the Salmon output.
 The function reads the Salmon quantifications and summarizes them at the gene level.
 The function will automatically detect whether bootstrap or Gibbs samples are available.
+
+\code{catchKallistoGene()} assumes that kallisto (Bray et al 2016) has been run to estimate transcript counts for one or more RNA samples and that bootstrap samples have also been generated.
+The number of bootstrap resamples does not need to be the same for each RNA sample.
+\code{catchKallistoGene()} uses the rhdf5 package to read the HDF5 format files output by kallisto.
+
 The transcript-level counts will be collapsed to gene-level counts and RTA overdispersions will be estimated at the gene level, using a method similar at Baldoni et al (2024ab) but applied to gene level counts instead of transcript counts.
 
 The function needs to know which gene each transcript belongs to.
@@ -93,6 +103,10 @@ Baldoni PL, Chen L, Li M, Chen Y, Smyth GK (2025).
 Dividing out quantification uncertainty enables assessment of differential transcript usage with limma and edgeR.
 \emph{Nucleic Acids Research} 53(22), gkaf1305.
 \doi{10.1093/nar/gkaf1305}.
+
+Bray NL, Pimentel H, Melsted P, Pachter L (2016).
+Near-optimal probabilistic RNA-seq quantification.
+\emph{Nature Biotechnology} 34(5), 525-527.
 
 Patro R, Duggal G, Love MI, Irizarry RA, Kingsford C (2017).
 Salmon provides fast and bias-aware quantification of transcript expression.

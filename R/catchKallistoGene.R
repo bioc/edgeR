@@ -1,20 +1,18 @@
-catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version.numbers=TRUE,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
-#	Read transcriptwise counts and bootstrap samples from Salmon output
+catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version.numbers=TRUE,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
+#	Read transcriptwise counts and bootstrap samples from kallisto output
 #	and summarize at gene level using either imbedded Gencode annotation
 #	or an externally provided data.frame mapping tx to gene IDs.
-#	Use Gibbs or bootstrap samples to estimate overdispersion of genewise counts.
-#	Gordon Smyth and Pedro Baldoni
-#	catchSalmon() created 1 Apr 2018. 
-#	catchSalmonWithGencode() created 14 July 2026.
-#	catchSalmonWithGene() created 6 Sep 2026. Last modified 11 Sep 2026.
+#	Use bootstrap samples to estimate overdispersion of genewise counts.
+#	Gordon Smyth
+#	Created 11 Sep 2026. Last modified 12 Sep 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
 	if(is.null(sample.dirs)) {
 		if(is.null(parent.dir)) parent.dir <- "."
 		sample.dirs <- dir(parent.dir)
-		IsSalmon <- file.exists(file.path(parent.dir,sample.dirs,"aux_info"))
-		sample.dirs <- sample.dirs[IsSalmon]
+		IsKallisto <- file.exists(file.path(parent.dir,sample.dirs,"abundance.h5"))
+		sample.dirs <- sample.dirs[IsKallisto]
 	}
 
 #	Full paths
@@ -25,54 +23,42 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 	}
 	NSamples <- length(paths)
 
-#	Use jsonlite and readr packages for reading
-	OK <- requireNamespace("jsonlite",quietly=TRUE)
-	if(!OK) stop("jsonlite package required but is not installed (or can't be loaded)")
-	OK <- requireNamespace("readr",quietly=TRUE)
-	if(!OK) stop("readr package required but is not installed (or can't be loaded)")
-
+#	Use rhdf5 package for reading
+	suppressPackageStartupMessages(OK <- requireNamespace("rhdf5",quietly=TRUE))
+	if(!OK) stop("rhdf5 package required but is not installed (or can't be loaded)")
+	
 #	Initialize vector of inferential sample types
-	ResampleType <- rep_len("",NSamples)
+	ResampleType <- rep_len("bootstrap",NSamples)
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {
 		if(verbose) cat("Reading ",paths[j],", ",sep="")
 
-#		File locations
-		MetaFile <- file.path(paths[j],"aux_info","meta_info.json")
-		QuantFile <- file.path(paths[j],"quant.sf")
-		BootFile <- file.path(paths[j],"aux_info","bootstrap","bootstraps.gz")
-		if(!file.exists(QuantFile)) {
-			QuantFile <- dir(paths[j],pattern="^quant.sf",full.names=TRUE)
-			if(length(QuantFile)) QuantFile <- QuantFile[1]
-			if(!file.exists(QuantFile)) {
-				stop("quant.sf file not found at specified path")
-			}
-		}
+#		Open H5 file
+		h5File <- file.path(paths[j],"abundance.h5")
+		if(!file.exists(h5File)) stop("abundance.h5 file not found at specified path")
+		h5 <- rhdf5::H5Fopen(h5File)
 
-#		Meta information
-		Meta <- jsonlite::fromJSON(MetaFile)
-		NTx <- Meta$num_targets
-		if(is.null(NTx)) NTx <- Meta$num_valid_targets
-		if(is.null(NTx)) stop("Can't find number of targets")
-		NBoot <- Meta$num_bootstraps
-		if(is.null(NBoot)) stop("Can't find number of bootstraps")
-		Type <- Meta$samp_type
-		if(is.null(ResampleType)) Type <- "bootstrap" else ResampleType[j] <- Type
-		if(verbose) cat(NTx,"transcripts,",NBoot,Type,"samples\n")
+#		Auxiliary information
+		aux <- h5$aux
+		NBoot <- as.integer(aux$num_bootstrap)
+		if(verbose) cat(length(aux$ids),"transcripts,",NBoot,"bootstraps\n")
 
-#		Read counts and lengths
+#		Initalize dataset-wide information from first sample
 		if(j == 1L) {
-			Quant1 <- suppressWarnings(readr::read_tsv(QuantFile,col_types="cdddd",progress=FALSE))
-#			Detect and unpack Gencode tx names
-			Name1 <- Quant1$Name[1]
+			TxID <- aux$ids
+			NTx <- length(TxID)
+			TxLen <- as.vector(aux$lengths)
+
+#			Get gene IDs from tx2gene or from unpacking Gencode annotation
+			TxID1 <- TxID[1]
 			if(is.null(tx2gene)) {
-				IsGencode <- (nchar(Name1)-nchar(gsub("|","",Name1,fixed=TRUE)) >= 8L)
+				IsGencode <- (nchar(TxID1)-nchar(gsub("|","",TxID1,fixed=TRUE)) >= 8L)
 				if(IsGencode)
 					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
 				else
 					stop("tx2gene not provided and row names do not appear to be from Gencode")
-				GenecodeAnn <- splitGencodeTxNames(Quant1$Name, remove.version.numbers=remove.version.numbers)
+				GenecodeAnn <- splitGencodeTxNames(TxID, remove.version.numbers=remove.version.numbers)
 				EnsG <- GenecodeAnn[,"EnsG"]
 				d <- duplicated(EnsG)
 				GeneAnn <- data.frame(GenecodeAnn[!d,"GeneName",drop=FALSE])
@@ -81,54 +67,56 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
 				if(remove.version.numbers) {
 					tx2gene[,1] <- strsplit2(tx2gene[,1],split="\\.")[,1]
-					Quant1$Name <- strsplit2(Quant1$Name,split="\\.")[,1]
+					TxID <- strsplit2(TxID,split="\\.")[,1]
 				}
-				m <- match(Quant1$Name,tx2gene[,1])
+				m <- match(TxID,tx2gene[,1])
 				if(anyNA(m)) stop("Tx names not found in first column of tx2gene")
 				EnsG <- tx2gene[m,2]
 				if(anyNA(EnsG)) stop("Missing gene IDs")
 				GeneAnn <- NULL	
 				if(verbose) message("Summarizing to genewise counts using tx2gene")
 			}
+
+#			Genewise statistics
 			NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
 			EnsGu <- row.names(NTxPerGene)
 			NGene <- length(NTxPerGene)
 			NTxPerGene <- drop(NTxPerGene)
+
+#			Initialize matrices
 			Counts <- matrix(0,NGene,NSamples)
 			TPM <- EffTxLen <- matrix(0,NTx,NSamples)
 			DF <- rep_len(0L,NGene)
 			OverDisp <- rep_len(0,NGene)
-			Counts[,1L] <- drop(rowsum(Quant1$NumReads,EnsG,reorder=FALSE))
-			TPM[,1L] <- Quant1$TPM
-			EffTxLen[,1L] <- Quant1$EffectiveLength
-		} else {
-			Quant <- suppressWarnings(readr::read_tsv(QuantFile,col_types="__ddd",progress=FALSE))
-			Counts[,j] <- drop(rowsum(Quant$NumReads,EnsG,reorder=FALSE))
-			TPM[,j] <- Quant$TPM
-			EffTxLen[,j] <- Quant$EffectiveLength
 		}
+
+#		Store quantifications
+		Counts[,j] <- drop(rowsum(h5$est_counts,EnsG,reorder=FALSE))
+		EffTxLen[,j] <- aux$eff_lengths
+		x <- h5$est_counts / aux$eff_lengths
+		TPM[,j] <- 1e6 * x / sum(x)
 
 #		Bootstrap samples
 		if(NBoot > 0L) {
-			BootFileCon <- gzcon(file(BootFile,open="rb"))
-			Boot <- readBin(BootFileCon,what="double",n=NTx*NBoot)
-			close(BootFileCon)
-			dim(Boot) <- c(NTx,NBoot)
+			Boot <- do.call(cbind,h5$bootstrap)
 			Boot <- rowsum(Boot,EnsG,reorder=FALSE)
 			M <- rowMeans(Boot)
 			i <- (M > 0)
 			OverDisp[i] <- OverDisp[i] + rowSums((Boot[i,]-M[i])^2) / M[i]
 			DF[i] <- DF[i]+NBoot-1L
 		}
+
+#		Close H5 file
+		rhdf5::H5Fclose(h5)
 	}
 
 #	Maximum tx length per gene
-	o <- order(Quant1$Length,decreasing=TRUE)
+	o <- order(TxLen,decreasing=TRUE)
 	m <- match(EnsGu,EnsG[o])
-	MaxTxLen <- Quant1$Length[o][m]
+	MaxTxLen <- TxLen[o][m]
 
 #	Impute effective lengths
-	if(impute.eff.len) EffTxLen <- .imputeEffectiveLengths(Quant1$Length,EffTxLen)
+	if(impute.eff.len) EffTxLen <- .imputeEffectiveLengths(TxLen,EffTxLen)
 
 #	Average gene length, with weak moderation towards genewise average and towards unweighted average
 	gene.length <- match.arg(gene.length,c("moderate","tximport","simple"))
