@@ -6,7 +6,7 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 #	Gordon Smyth and Pedro Baldoni
 #	catchSalmon() created 1 Apr 2018. 
 #	catchSalmonWithGencode() created 14 July 2026.
-#	catchSalmonWithGene() created 6 Sep 2026. Last modified 11 Sep 2026.
+#	catchSalmonWithGene() created 6 Sep 2026. Last modified 13 Sep 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -181,7 +181,8 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 	}
 
 #	Prepare output
-	dimnames(Counts) <- dimnames(EffGeneLen) <- list(EnsGu,basename(paths))
+	TPM <- rowsum(TPM,EnsG,reorder=FALSE)
+	dimnames(Counts) <- dimnames(EffGeneLen) <- dimnames(TPM) <- list(EnsGu,basename(paths))
 	NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
 	if(is.null(GeneAnn))
 		Genes <- data.frame(NTx=NTxPerGene,MaxTxLen=MaxTxLen,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
@@ -208,14 +209,16 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 			dimnames(y$offset.prior) <- dimnames(Counts)
 		}
 		y$other$effective.length <- EffGeneLen
+		y$other$tpm <- TPM
 	} else {
 		y <- list(counts=Counts,
 			effective.length=EffGeneLen,
+			tpm=rowsum(TPM,EnsG,reorder=FALSE),
 			annotation=Genes,
 			overdispersion.prior=OverDispPrior,
 			resample.type=ResampleType,
 			divided.counts=divide)
 	}
-	
+
 	y
 }

@@ -4,7 +4,7 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 #	or an externally provided data.frame mapping tx to gene IDs.
 #	Use bootstrap samples to estimate overdispersion of genewise counts.
 #	Gordon Smyth
-#	Created 11 Sep 2026. Last modified 12 Sep 2026.
+#	Created 11 Sep 2026. Last modified 13 Sep 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -169,7 +169,8 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 	}
 
 #	Prepare output
-	dimnames(Counts) <- dimnames(EffGeneLen) <- list(EnsGu,basename(paths))
+	TPM <- rowsum(TPM,EnsG,reorder=FALSE)
+	dimnames(Counts) <- dimnames(EffGeneLen) <- dimnames(TPM) <- list(EnsGu,basename(paths))
 	NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
 	if(is.null(GeneAnn))
 		Genes <- data.frame(NTx=NTxPerGene,MaxTxLen=MaxTxLen,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
@@ -196,9 +197,11 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 			dimnames(y$offset.prior) <- dimnames(Counts)
 		}
 		y$other$effective.length <- EffGeneLen
+		y$other$tpm <- TPM
 	} else {
 		y <- list(counts=Counts,
 			effective.length=EffGeneLen,
+			tpm=rowsum(TPM,EnsG,reorder=FALSE),
 			annotation=Genes,
 			overdispersion.prior=OverDispPrior,
 			resample.type=ResampleType,
