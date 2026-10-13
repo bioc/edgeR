@@ -46,4 +46,4 @@ plotExonUsage(d, "gene.1")
 \code{\link{spliceVariants}} for methods to detect genes with evidence for alternative exon usage.
 }
 
-\concept{Differential exon usage}
+\concept{Differential usage}

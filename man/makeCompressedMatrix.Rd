@@ -143,4 +143,4 @@ as.matrix(offsets)
 \code{\link{as.matrix}}, \code{\link{expandAsMatrix}}
 }
 
-\concept{edgeR classes}
+\concept{Classes}

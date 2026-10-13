@@ -1,9 +1,9 @@
-catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
+catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=TRUE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 Apr 2018. Last modified 7 Sep 2026.
+#	Created 1 Apr 2018. Last modified 13 Oct 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -31,7 +31,7 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FAL
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {
-		if(verbose) cat("Reading ",paths[j],", ",sep="")
+		if(verbose) cat("Reading ",basename(paths[j]),", ",sep="")
 
 #		File locations
 		MetaFile <- file.path(paths[j],"aux_info","meta_info.json")

@@ -47,6 +47,5 @@ Dividing out quantification uncertainty enables assessment of differential trans
 \code{\link{cpm}}, \code{\link{diffSplice.DGEGLM}}
 }
 
-\keyword{rna-seq}
-\concept{Differential transcript usage}
+\keyword{RNA-seq}
 \concept{Differential usage}

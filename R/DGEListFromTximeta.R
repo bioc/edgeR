@@ -1,7 +1,7 @@
-DGEListFromTximeta <- function(txm, samples = NULL, group = NULL, remove.zeros = FALSE, divide = FALSE)
+DGEListFromTximeta <- function(txm, samples = NULL, group = NULL, remove.zeros = FALSE, divide = TRUE)
 # Create DGEList from tximeta() output.
 # Pedro Baldoni and Gordon Smyth
-# Created 5 Mar 2026. Last modified 17 Apr 2026.
+# Created 5 Mar 2026. Last modified 13 Oct 2026.
 {
 	if(!requireNamespace("SummarizedExperiment", quietly = TRUE))
 		stop("SummarizedExperiment package required but is not installed (or can't be loaded)")

@@ -26,4 +26,4 @@ A numeric matrix.
   \code{\link{as.matrix}} in the base package or \code{\link[limma:asmatrix]{as.matrix}} in the limma package.
 }
 
-\concept{edgeR classes}
+\concept{Classes}

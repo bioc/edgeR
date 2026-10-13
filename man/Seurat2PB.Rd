@@ -48,5 +48,5 @@ so@meta.data <- cbind(so@meta.data, sample=sp, cluster=clst)
 y <- Seurat2PB(so, sample="sample", cluster="cluster")
 }}
 
-\concept{edgeR classes}
+\concept{Classes}
 

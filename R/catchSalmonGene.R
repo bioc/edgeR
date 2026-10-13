@@ -1,4 +1,4 @@
-catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version.numbers=TRUE,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
+catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version=TRUE,DGEList=TRUE,divide=TRUE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output
 #	and summarize at gene level using either imbedded Gencode annotation
 #	or an externally provided data.frame mapping tx to gene IDs.
@@ -6,7 +6,7 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 #	Gordon Smyth and Pedro Baldoni
 #	catchSalmon() created 1 Apr 2018. 
 #	catchSalmonWithGencode() created 14 July 2026.
-#	catchSalmonWithGene() created 6 Sep 2026. Last modified 13 Sep 2026.
+#	catchSalmonGene() created 6 Sep 2026. Last modified 13 Oct 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -36,7 +36,7 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {
-		if(verbose) cat("Reading ",paths[j],", ",sep="")
+		if(verbose) cat("Reading ",basename(paths[j]),", ",sep="")
 
 #		File locations
 		MetaFile <- file.path(paths[j],"aux_info","meta_info.json")
@@ -72,14 +72,12 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
 				else
 					stop("tx2gene not provided and row names do not appear to be from Gencode")
-				GenecodeAnn <- splitGencodeTxNames(Quant1$Name, remove.version.numbers=remove.version.numbers)
-				EnsG <- GenecodeAnn[,"EnsG"]
-				d <- duplicated(EnsG)
-				GeneAnn <- data.frame(GenecodeAnn[!d,"GeneName",drop=FALSE])
+				TxAnn <- splitGencodeTxNames(Quant1$Name, remove.version=remove.version)
+				GeneAnn <- collapseGencodeTx2Gene(TxAnn)
 			} else {
 				tx2gene <- as.data.frame(tx2gene)
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
-				if(remove.version.numbers) {
+				if(remove.version) {
 					tx2gene[,1] <- strsplit2(tx2gene[,1],split="\\.")[,1]
 					Quant1$Name <- strsplit2(Quant1$Name,split="\\.")[,1]
 				}
@@ -140,7 +138,7 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 	}
 	if(identical(gene.length,"tximport")) {
 		GeneIsAllZero <- which(rowSums(Counts) == 0)
-		TxGeneIsAllZero <- which(EnsG %in% EnsG[!d][GeneIsAllZero])
+		TxGeneIsAllZero <- which(EnsG %in% EnsGu[GeneIsAllZero])
 		m <- rowMeans(EffTxLen[TxGeneIsAllZero,,drop=FALSE])
 		EffGeneLen <- Counts
 		EffGeneLen[GeneIsAllZero,] <- rowsum(m,EnsG[TxGeneIsAllZero],reorder=FALSE) / NTxPerGene[GeneIsAllZero]
@@ -185,9 +183,9 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 	dimnames(Counts) <- dimnames(EffGeneLen) <- dimnames(TPM) <- list(EnsGu,basename(paths))
 	NTxPerGene <- rowsum(rep_len(1L,NTx),EnsG,reorder=FALSE)
 	if(is.null(GeneAnn))
-		Genes <- data.frame(NTx=NTxPerGene,MaxTxLen=MaxTxLen,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
+		Genes <- data.frame(NTx=NTxPerGene,MaxTxLen=MaxTxLen,AveEffLen=AveLength,Overdispersion=OverDisp)
 	else
-		Genes <- data.frame(GeneAnn,NTx=NTxPerGene,MaxTxLen=MaxTxLen,AveEffLen=AveLength,Max2MinEffLen=RangeLength,Overdispersion=OverDisp)
+		Genes <- data.frame(GeneAnn,NTx=NTxPerGene,MaxTxLen=MaxTxLen,AveEffLen=AveLength,Overdispersion=OverDisp)
 	row.names(Genes) <- EnsGu
 
 #	Divided counts

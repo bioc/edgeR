@@ -33,4 +33,4 @@ example(SummarizedExperiment)
 y <- SE2DGEList(se)
 }}
 
-\concept{edgeR classes}
+\concept{Classes}

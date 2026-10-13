@@ -1,10 +1,10 @@
-catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version.numbers=TRUE,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
+catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove.version=TRUE,DGEList=TRUE,divide=TRUE,impute.eff.len=TRUE,offset.prior=TRUE,gene.length="moderate",verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	and summarize at gene level using either imbedded Gencode annotation
 #	or an externally provided data.frame mapping tx to gene IDs.
 #	Use bootstrap samples to estimate overdispersion of genewise counts.
 #	Gordon Smyth
-#	Created 11 Sep 2026. Last modified 13 Sep 2026.
+#	Created 11 Sep 2026. Last modified 13 Oct 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -32,7 +32,7 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {
-		if(verbose) cat("Reading ",paths[j],", ",sep="")
+		if(verbose) cat("Reading ",basename(paths[j]),", ",sep="")
 
 #		Open H5 file
 		h5File <- file.path(paths[j],"abundance.h5")
@@ -58,14 +58,12 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
 				else
 					stop("tx2gene not provided and row names do not appear to be from Gencode")
-				GenecodeAnn <- splitGencodeTxNames(TxID, remove.version.numbers=remove.version.numbers)
-				EnsG <- GenecodeAnn[,"EnsG"]
-				d <- duplicated(EnsG)
-				GeneAnn <- data.frame(GenecodeAnn[!d,"GeneName",drop=FALSE])
+				TxAnn <- splitGencodeTxNames(TxID, remove.version=remove.version)
+				GeneAnn <- collapseGencodeTx2Gene(TxAnn)
 			} else {
 				tx2gene <- as.data.frame(tx2gene)
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
-				if(remove.version.numbers) {
+				if(remove.version) {
 					tx2gene[,1] <- strsplit2(tx2gene[,1],split="\\.")[,1]
 					TxID <- strsplit2(TxID,split="\\.")[,1]
 				}
@@ -128,7 +126,7 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 	}
 	if(identical(gene.length,"tximport")) {
 		GeneIsAllZero <- which(rowSums(Counts) == 0)
-		TxGeneIsAllZero <- which(EnsG %in% EnsG[!d][GeneIsAllZero])
+		TxGeneIsAllZero <- which(EnsG %in% EnsGu[GeneIsAllZero])
 		m <- rowMeans(EffTxLen[TxGeneIsAllZero,,drop=FALSE])
 		EffGeneLen <- Counts
 		EffGeneLen[GeneIsAllZero,] <- rowsum(m,EnsG[TxGeneIsAllZero],reorder=FALSE) / NTxPerGene[GeneIsAllZero]

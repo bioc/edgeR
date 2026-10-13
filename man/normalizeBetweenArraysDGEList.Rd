@@ -51,4 +51,4 @@ y <- normalizeBetweenArrays.DGEList(y)
 head(y$offset)
 }
 
-\keyword{normalization}
+\keyword{Normalization}

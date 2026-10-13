@@ -36,3 +36,5 @@ x <- matrix(rpois(8*3,lambda=5),8,3)
 colnames(x) <- c("a","a","b")
 sumTechReps(x)
 }
+
+\concept{Preprocessing}

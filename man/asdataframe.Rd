@@ -36,4 +36,4 @@ A data.frame.
   \code{\link[base]{as.data.frame}} in the base package.
 }
 
-\concept{edgeR classes}
+\concept{Classes}

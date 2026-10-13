@@ -36,4 +36,4 @@ validDGEList(dge)
 \code{\link{DGEList}}
 }
 
-\concept{edgeR classes}
+\concept{Classes}

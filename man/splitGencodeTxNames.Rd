@@ -1,26 +1,30 @@
 \name{splitGencodeTxNames}
 \alias{splitGencodeTxNames}
+\alias{collapseGencodeTx2Gene}
 
-\title{Split Gencode Transcript Names}
+\title{Split GENCODE Transcript Names and Summarize By Gene}
 
-\description{Split delimited transcript names provided by Gencode FASTA files into separate columns.}
+\description{Split delimited transcript names provided by GENCODE FASTA files into separate columns.}
 
 \usage{
-splitGencodeTxNames(x, remove.version.numbers = TRUE)
+splitGencodeTxNames(x, remove.version = TRUE)
+collapseGencodeTx2Gene(txann)
 }
 
 \arguments{
-\item{x}{character vector of Gencode transcript names.}
-\item{remove.version.numbers}{logical, whether to remove version numbers from transcript and gene IDs.}
+\item{x}{character vector of GENCODE transcript names.}
+\item{remove.version}{logical, whether to remove version numbers from transcript and gene IDs.}
+\item{txann}{eight-column character matrix produced by \code{splitGencodeTxNames}.}
 }
 
 \details{
-Gencode transcript names consist of different annotations pasted together with \code{|} delimiters.
-Here we split the annotations into separate columns of a matrix.
+GENCODE transcript names consist of different annotations pasted together with \code{|} delimiters.
+\code{splitGencodeTxNames} splits the annotations into an eight-column character matrix.
+\code{collapseGencodeTx2Gene} collapses the output of \code{splitGencodeTxNames} to a gene-level data.frame.
 }
 
 \value{
-A character matrix with the following columns:
+\code{splitGencodeTxNames} produces a character matrix with the following columns:
   \item{EnsT}{Ensembl transcript ID, without version number suffix.}
   \item{EnsG}{Ensembl gene ID, without version number suffix.}
   \item{HavG}{Havana gene ID.}
@@ -28,13 +32,18 @@ A character matrix with the following columns:
   \item{TxName}{Transcript name.}
   \item{GeneName}{Gene name.}
   \item{AnnLength}{Transcript length.}
-  \item{Type}{Type of transcript.}
+  \item{Type}{Biotype of transcript.}
+
+\code{collapseGencodeTx2Gene} produces a data.frame with Ensembl gene IDs as row.names and the following columns:
+  \item{GeneName}{Gene name.}
+  \item{TxTypes}{Unique transcript biotypes for that gene (pipe-separated).}
+  \item{NPCTx}{Number of protein-coding transcripts for that gene.}
 }
 
 \author{Gordon Smyth}
 
 \seealso{
-\code{\link{catchSalmon}}, \code{\link[limma]{strsplit2}}.
+\code{\link{catchSalmon}}, \code{\link{catchSalmonGene}}.
 }
 
 \concept{Transcript expression}

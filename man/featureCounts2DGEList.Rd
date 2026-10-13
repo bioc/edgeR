@@ -46,6 +46,5 @@ The \code{Exon} column gives the numbering of the exons and junctions within gen
 See the \code{featureCounts} function in the Rsubread package for creation of \code{x}.
 }
 
-\concept{edgeR classes}
-\concept{differential transcript usage}
+\concept{Classes}
 \concept{Differential usage}

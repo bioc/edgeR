@@ -4,16 +4,16 @@
 
 \title{Process Kallisto or Salmon Output to Produce Gene Counts}
 
-\description{Produce a gene count object from kallisto or Salmon output for a series of biological samples, optionally with Gencode annotation.}
+\description{Produce a gene count object from kallisto or Salmon output for a series of biological samples, optionally with GENCODE annotation.}
 
 \usage{
 catchKallistoGene(parent.dir = NULL, sample.dirs = NULL,
-        tx2gene = NULL, remove.version.numbers = TRUE,
-        DGEList = TRUE, divide = FALSE, impute.eff.len = TRUE,
+        tx2gene = NULL, remove.version = TRUE,
+        DGEList = TRUE, divide = TRUE, impute.eff.len = TRUE,
         offset.prior = TRUE, gene.length = "moderate", verbose = TRUE)
 catchSalmonGene(parent.dir = NULL, sample.dirs = NULL,
-        tx2gene = NULL, remove.version.numbers = TRUE,
-        DGEList = TRUE, divide = FALSE, impute.eff.len = TRUE,
+        tx2gene = NULL, remove.version = TRUE,
+        DGEList = TRUE, divide = TRUE, impute.eff.len = TRUE,
         offset.prior = TRUE, gene.length = "moderate", verbose = TRUE)
 }
 
@@ -24,8 +24,8 @@ catchSalmonGene(parent.dir = NULL, sample.dirs = NULL,
   If \code{parent.dir} and \code{sample.dirs} are both provided, then the \code{sample.dirs} are relative to \code{parent.dir}.
   If \code{sample.dirs} is \code{NULL}, then all the Salmon directories found in \code{parent.dir} will be read.
 }
-\item{tx2gene}{data.frame mapping transcript IDs to gene IDs, with first column for transcript IDs and the second for the corresponding gene IDs. Not needed if Gencode annotation was used for the quantifications.}
-\item{remove.version.numbers}{logical, whether to remove version numbers from transcript and gene IDs.}
+\item{tx2gene}{data.frame mapping transcript IDs to gene IDs, with first column for transcript IDs and the second for the corresponding gene IDs. Not needed if GENCODE annotation was used for the quantifications.}
+\item{remove.version}{logical, whether to remove version numbers from transcript and gene IDs.}
 \item{DGEList}{logical, whether to output a \code{DGEList} instead of a plain list.}
 \item{divide}{logical, whether to divide the gene counts by the RTA overdispersions.}
 \item{impute.eff.len}{logical, whether to impute missing effective transcript lengths.}
@@ -46,8 +46,8 @@ The number of bootstrap resamples does not need to be the same for each RNA samp
 The transcript-level counts will be collapsed to gene-level counts and RTA overdispersions will be estimated at the gene level, using a method similar at Baldoni et al (2024ab) but applied to gene level counts instead of transcript counts.
 
 The function needs to know which gene each transcript belongs to.
-If Salmon was run with a Gencode transcript FASTA file, then \code{catchSalmonGene} will detect that automatically.
-It will then unpack the Gencode transcript names using \code{splitGencodeTxNames} to obtain gene and transcript IDs.
+If Salmon was run with a GENCODE transcript FASTA file, then \code{catchSalmonGene} will detect that automatically.
+It will then unpack the GENCODE transcript names using \code{splitGencodeTxNames} to obtain gene and transcript IDs.
 Otherwise, a data.frame \code{tx2gene} needs to be provided to map transcript to gene IDs.
 
 Average transcript lengths are computed for each gene and optionally used to create a prior offset matrix.
@@ -65,7 +65,7 @@ If \code{impute.eff.len} is \code{TRUE}, then any effective transcript length eq
 If \code{DGEList=TRUE}, a \code{\link[edgeR:DGEList-class]{DGEList}} object with gene IDs as row.names and the following components:
 \item{counts}{matrix of gene counts, with rows for genes and columns for RNA samples.}
 \item{genes}{data.frame of gene annotation.}
-\item{genes$GeneName}{gene name (if Gencode annotation detected).}
+\item{genes$GeneName}{gene name (if GENCODE annotation detected).}
 \item{genes$NTx}{number of transcripts per gene.}
 \item{genes$MaxTxLen}{maximum transcript length per gene.}
 \item{genes$AveEffLen}{effective gene length, averaged over samples.}

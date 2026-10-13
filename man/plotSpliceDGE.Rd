@@ -28,4 +28,4 @@ The size of the red dots is weighted by their significance.
 \code{\link{diffSpliceDGE}}, \code{\link{topSpliceDGE}}.
 }
 
-\concept{Differential exon usage}
+\concept{Differential usage}

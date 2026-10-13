@@ -31,31 +31,75 @@ filterByExpr.SummarizedExperiment <- function(y, design=NULL, group=NULL, lib.si
 	filterByExpr.DGEList(y, design=design, group=group, lib.size=lib.size, ...)
 }
 
-filterByExpr.default <- function(y, design=NULL, group=NULL, lib.size=NULL, min.count=10, min.total.count=15, large.n=10, min.prop=0.7, ...)
-#	Filter low expressed genes given count matrix
-#	Computes TRUE/FALSE index vector indicating which rows to keep
+filterByExpr.default <- function(y, design=NULL, group=NULL, min.sample.size=NULL, lib.size=NULL, min.count=10, min.total.count=15, large.n=10, min.prop=0.7, max.n.samples=40, preset=NULL, ...)
+#	Filter low expressed genes given count matrix.
+#	Computes TRUE/FALSE index vector indicating which rows to keep.
 #	Gordon Smyth
-#	Created 13 Nov 2017. Last revised 26 Jan 2020.
+#	Created 13 Nov 2017.
+#	Arguments min.n.samples, max.n.samples, and preset added 9 Oct 2026.
+#	Last modified 10 Oct 2026.
 {
 	y <- as.matrix(y)
 	if(mode(y) != "numeric") stop("y is not a numeric matrix")
 	if(is.null(lib.size)) lib.size <- colSums(y)
 
+#	Preset options.
+#	The "stringent" option matches the historical default setting for this function from 2020 to now.
+#	The "lenient" option does minimal filtering, assuming that
+#	functions like glmQLFit() and voomLmFit() are now robust to small counts.
+	if(!is.null(preset)) {
+		preset <- match.arg(preset, c("stringent","moderate","lenient"))
+		if(!all(missing(min.count),missing(min.total.count),missing(large.n),missing(min.prop),missing(max.n.samples),missing(max.n.samples)))
+			message("Using ",preset," settings. Ignoring arguments set individually.")
+		switch(preset,
+		stringent = {
+			min.count <- 10
+			min.total.count <- 15
+			large.n <- 10
+			min.prop <- 0.7
+			max.n.samples <- 40
+		},
+		moderate = {
+			min.count <- 2
+			min.total.count <- 8
+			large.n <- 4
+			min.prop <- 0.5
+			max.n.samples <- 20
+		},
+		lenient = {
+			min.count <- 1
+			min.total.count <- 6
+			large.n <- 2
+			min.prop <- 0.5
+			max.n.samples <- 10
+		})
+	}
+
 #	Minimum effect sample sample size for any of the coefficients
-	if(is.null(group)) {
-		if(is.null(design)) {
-			message("No group or design set. Assuming all samples belong to one group.")
-			MinSampleSize <- ncol(y)
+	if(is.null(min.sample.size)) {
+		if(is.null(group)) {
+			if(is.null(design)) {
+				message("No group or design set. Assuming all samples belong to one group.")
+				MinSampleSize <- ncol(y)
+			} else {
+				h <- hat(design)
+				MinSampleSize <- 1/max(h)
+			}
 		} else {
-			h <- hat(design)
-			MinSampleSize <- 1/max(h)
+			group <- as.factor(group)
+			n <- tabulate(group)
+			MinSampleSize <- min(n[n > 0L])
 		}
 	} else {
-		group <- as.factor(group)
-		n <- tabulate(group)
-		MinSampleSize <- min(n[n > 0L])
+		MinSampleSize <- min.sample.size
 	}
+
+#	For the first few samples, require genes to be expressed in every one.
+#	As the group sample size increases, require genes to be expressed in just a proportion of the additional samples.
 	if(MinSampleSize > large.n) MinSampleSize <- large.n + (MinSampleSize-large.n)*min.prop
+
+#	When all the group sizes are large, keep any gene expressed in max.n.samples samples
+	MinSampleSize <- min(MinSampleSize, max.n.samples)
 
 #	CPM cutoff
 	MedianLibSize <- median(lib.size)

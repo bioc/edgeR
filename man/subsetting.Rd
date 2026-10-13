@@ -50,5 +50,5 @@ results[1:2,]
 # NB: cannot subset columns for DGEExact objects
 }
 
-\concept{edgeR classes}
+\concept{Classes}
 

@@ -42,5 +42,5 @@ The dimensions, row names and column names of a \code{PCList} object are defined
 
 \author{edgeR team. First created by Lizhong Chen.}
 
-\concept{edgeR classes}
+\concept{Classes}
 

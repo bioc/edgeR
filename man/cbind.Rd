@@ -37,4 +37,4 @@ dge <- cbind(dge1,dge2,dge3)
 }
 }
 
-\concept{edgeR classes}
+\concept{Classes}

@@ -40,4 +40,4 @@ nrow(y)
 ncol(y)
 }
 
-\concept{edgeR classes}
+\concept{Classes}

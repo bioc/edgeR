@@ -1,9 +1,9 @@
-catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=FALSE,offset.prior=TRUE,verbose=TRUE)
+catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=TRUE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
 #	Use Gibbs samples to estimate overdispersion of transcriptwise counts.
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Pedro Baldoni and Gordon Smyth
-#	Created 24 Apr 2024. Last modified 4 Sep 2026.
+#	Created 24 Apr 2024. Last modified 13 Oct 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")

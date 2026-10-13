@@ -58,4 +58,4 @@ head(y)
 tail(y)
 }
 
-\concept{edgeR classes}
+\concept{Classes}

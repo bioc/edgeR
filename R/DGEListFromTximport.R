@@ -1,6 +1,6 @@
-DGEListFromTximport <- function(txi, samples = NULL, group = NULL, genes = NULL, remove.zeros = FALSE, divide = FALSE)
+DGEListFromTximport <- function(txi, samples = NULL, group = NULL, genes = NULL, remove.zeros = FALSE, divide = TRUE)
 # Create DGEList from tximport() output.
-# Created 2 Feb 2026. Last modified 11 May 2026.
+# Created 2 Feb 2026. Last modified 13 Oct 2026.
 {
 #	Check input
 	ExpectedCols <- c("counts","length","countsFromAbundance")

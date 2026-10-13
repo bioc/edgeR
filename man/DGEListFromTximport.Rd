@@ -10,9 +10,9 @@ Assembles a \code{DGEList} object from the list object created by either \code{t
 
 \usage{
 DGEListFromTximport(txi, samples = NULL, group = NULL, genes = NULL,
-    remove.zeros = FALSE, divide = FALSE)
+    remove.zeros = FALSE, divide = TRUE)
 DGEListFromTximeta(txm, samples = NULL, group = NULL,
-    remove.zeros = FALSE, divide = FALSE)
+    remove.zeros = FALSE, divide = TRUE)
 }
 
 \arguments{
@@ -82,5 +82,5 @@ Dividing out quantification uncertainty enables assessment of differential trans
 The input objects \code{txi} or \code{txm} are created by either \code{tximport} or \code{tximeta} in the tximport and tximeta packages, respectively.
 }
 
-\concept{edgeR classes}
+\concept{Classes}
 \concept{Reading data files}

@@ -10,15 +10,15 @@
 
 \usage{
 catchKallisto(parent.dir = NULL, sample.dirs = NULL,
-          DGEList = TRUE, divide = FALSE,
+          DGEList = TRUE, divide = TRUE,
           impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
 catchSalmon(parent.dir = NULL, sample.dirs = NULL,
-          DGEList = TRUE, divide = FALSE,
+          DGEList = TRUE, divide = TRUE,
           impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
 catchOarfish(parent.dir = NULL, prefixes = NULL,
-          DGEList = TRUE, divide = FALSE, verbose = TRUE)
+          DGEList = TRUE, divide = TRUE, verbose = TRUE)
 catchRSEM(parent.dir = NULL, files = NULL, ngibbs = 100,
-          DGEList = TRUE, divide = FALSE, offset.prior = TRUE, verbose = TRUE)
+          DGEList = TRUE, divide = TRUE, offset.prior = TRUE, verbose = TRUE)
 }
 
 \arguments{

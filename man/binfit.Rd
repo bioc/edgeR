@@ -73,4 +73,4 @@ fit <- binFit(y)
 }
 
 \concept{Model fit}
-\concept{Differential expression}
+\concept{Differential methylation}

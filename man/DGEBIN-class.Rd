@@ -48,4 +48,4 @@ The dimensions, row names and column names of a \code{DGEBIN} object are defined
 Other classes defined in edgeR are \code{\link{DGEGLM-class}}, \code{\link{DGEList-class}}, \code{\link{DGEExact-class}}, \code{\link{DGELRT-class}}, \code{\link{TopTags-class}}.
 }
 
-\concept{edgeR classes}
+\concept{Classes}

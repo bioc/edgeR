@@ -50,4 +50,4 @@ colnames(y) <- c("A","B")
 dimnames(y)
 }
 
-\concept{edgeR classes}
+\concept{Classes}

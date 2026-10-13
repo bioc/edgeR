@@ -1,9 +1,9 @@
-catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=FALSE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
+catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=TRUE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 2 Apr 2018. Last modified 7 Sep 2026.
+#	Created 2 Apr 2018. Last modified 13 Oct 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -29,7 +29,7 @@ catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=F
 
 #	Accumulate counts and CV^2 of bootstrap counts for each sample
 	for (j in 1L:NSamples) {
-		if(verbose) cat("Reading ",paths[j],", ",sep="")
+		if(verbose) cat("Reading ",basename(paths[j]),", ",sep="")
 
 #		Open H5 file
 		h5File <- file.path(paths[j],"abundance.h5")

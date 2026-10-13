@@ -61,4 +61,4 @@ y$samples
 show(y)
 }
 
-\concept{edgeR classes}
+\concept{Classes}

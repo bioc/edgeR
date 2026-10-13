@@ -83,4 +83,4 @@ topTags(res)
 }
 
 \concept{Model fit}
-\concept{Differential expression}
+\concept{Differential methylation}
