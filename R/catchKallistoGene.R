@@ -64,8 +64,8 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 				tx2gene <- as.data.frame(tx2gene)
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
 				if(remove.version) {
-					tx2gene[,1] <- strsplit2(tx2gene[,1],split="\\.")[,1]
-					TxID <- strsplit2(TxID,split="\\.")[,1]
+					tx2gene[,1] <- sub("\\.[0-9]+", "", tx2gene[,1])
+					TxID <- sub("\\.[0-9]+", "", TxID)
 				}
 				m <- match(TxID,tx2gene[,1])
 				if(anyNA(m)) stop("Tx names not found in first column of tx2gene")

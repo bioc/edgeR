@@ -78,8 +78,8 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 				tx2gene <- as.data.frame(tx2gene)
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
 				if(remove.version) {
-					tx2gene[,1] <- strsplit2(tx2gene[,1],split="\\.")[,1]
-					Quant1$Name <- strsplit2(Quant1$Name,split="\\.")[,1]
+					tx2gene[,1] <- sub("\\.[0-9]+", "", tx2gene[,1])
+					Quant1$Name <- sub("\\.[0-9]+", "", Quant1$Name)
 				}
 				m <- match(Quant1$Name,tx2gene[,1])
 				if(anyNA(m)) stop("Tx names not found in first column of tx2gene")
