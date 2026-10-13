@@ -66,19 +66,28 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 			Quant1 <- suppressWarnings(readr::read_tsv(QuantFile,col_types="cdddd",progress=FALSE))
 #			Detect and unpack Gencode tx names
 			Name1 <- Quant1$Name[1]
+			IsGencode <- (nchar(Name1)-nchar(gsub("|","",Name1,fixed=TRUE)) >= 8L)
 			if(is.null(tx2gene)) {
-				IsGencode <- (nchar(Name1)-nchar(gsub("|","",Name1,fixed=TRUE)) >= 8L)
 				if(IsGencode)
 					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
 				else
 					stop("tx2gene not provided and row names do not appear to be from Gencode")
 				TxAnn <- splitGencodeTxNames(Quant1$Name, remove.version=remove.version)
+				EnsG <- TxAnn[,"EnsG"]
 				GeneAnn <- collapseGencodeTx2Gene(TxAnn)
 			} else {
 				tx2gene <- as.data.frame(tx2gene)
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
+				if(IsGencode) {
+					tx2geneIsGencode <- (nchar(tx2gene[1,1])-nchar(gsub("|","",tx2gene[1,1],fixed=TRUE)) >= 8L)
+					if(IsGencode && !tx2geneIsGencode) {
+						if(verbose) message("Salmon tx names are Gencode-style but tx2gene tx names are not, so unpacking Salmon tx names")
+						Quant1$Name <- sub("[|].*", "", Quant1$Name)
+					}
+				}
 				if(remove.version) {
 					tx2gene[,1] <- sub("\\.[0-9]+", "", tx2gene[,1])
+					tx2gene[,2] <- sub("\\.[0-9]+", "", tx2gene[,2])
 					Quant1$Name <- sub("\\.[0-9]+", "", Quant1$Name)
 				}
 				m <- match(Quant1$Name,tx2gene[,1])
@@ -219,26 +228,4 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 	}
 
 	y
-}
-
-.imputeEffectiveLengths <- function(Length,EffLen)
-#	Reset any effective length equal to actual length to 
-#	minimum effective length across samples.
-#	Gordon Smyth
-#	7 Sep 2026.
-{
-	i <- which(Length - EffLen < 0.5)
-	if(length(i)) {
-		irow <- ((i-1L) %% length(Length)) + 1L
-		icol <- ceiling(i / length(Length))
-		irowu <- sort(unique(irow))
-		EffLen2 <- EffLen[irowu,,drop=FALSE]
-		k <- match(irow,irowu)
-		i2 <- k + (icol-1L)*nrow(EffLen2)
-		EffLen2[i2] <- NA
-		m <- suppressWarnings(apply(EffLen2,1,min,na.rm=TRUE))
-		m[!is.finite(m)] <- 1
-		EffLen[i] <- m[k]
-	}
-	EffLen
 }
