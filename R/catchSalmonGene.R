@@ -66,19 +66,28 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 			Quant1 <- suppressWarnings(readr::read_tsv(QuantFile,col_types="cdddd",progress=FALSE))
 #			Detect and unpack Gencode tx names
 			Name1 <- Quant1$Name[1]
+			IsGencode <- (nchar(Name1)-nchar(gsub("|","",Name1,fixed=TRUE)) >= 8L)
 			if(is.null(tx2gene)) {
-				IsGencode <- (nchar(Name1)-nchar(gsub("|","",Name1,fixed=TRUE)) >= 8L)
 				if(IsGencode)
 					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
 				else
 					stop("tx2gene not provided and row names do not appear to be from Gencode")
 				TxAnn <- splitGencodeTxNames(Quant1$Name, remove.version=remove.version)
+				EnsG <- TxAnn[,"EnsG"]
 				GeneAnn <- collapseGencodeTx2Gene(TxAnn)
 			} else {
 				tx2gene <- as.data.frame(tx2gene)
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
+				if(IsGencode) {
+					tx2geneIsGencode <- (nchar(tx2gene[1,1])-nchar(gsub("|","",tx2gene[1,1],fixed=TRUE)) >= 8L)
+					if(IsGencode && !tx2geneIsGencode) {
+						if(verbose) message("Salmon tx names are Gencode-style but tx2gene tx names are not, so unpacking Salmon tx names")
+						Quant1$Name <- sub("[|].*", "", Quant1$Name)
+					}
+				}
 				if(remove.version) {
 					tx2gene[,1] <- sub("\\.[0-9]+", "", tx2gene[,1])
+					tx2gene[,2] <- sub("\\.[0-9]+", "", tx2gene[,2])
 					Quant1$Name <- sub("\\.[0-9]+", "", Quant1$Name)
 				}
 				m <- match(Quant1$Name,tx2gene[,1])

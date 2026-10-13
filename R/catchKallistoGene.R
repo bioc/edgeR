@@ -52,17 +52,25 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 
 #			Get gene IDs from tx2gene or from unpacking Gencode annotation
 			TxID1 <- TxID[1]
+			IsGencode <- (nchar(TxID1)-nchar(gsub("|","",TxID1,fixed=TRUE)) >= 8L)
 			if(is.null(tx2gene)) {
-				IsGencode <- (nchar(TxID1)-nchar(gsub("|","",TxID1,fixed=TRUE)) >= 8L)
 				if(IsGencode)
 					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
 				else
 					stop("tx2gene not provided and row names do not appear to be from Gencode")
 				TxAnn <- splitGencodeTxNames(TxID, remove.version=remove.version)
+				EnsG <- TxAnn[,"EnsG"]
 				GeneAnn <- collapseGencodeTx2Gene(TxAnn)
 			} else {
 				tx2gene <- as.data.frame(tx2gene)
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
+				if(IsGencode) {
+					tx2geneIsGencode <- (nchar(tx2gene[1,1])-nchar(gsub("|","",tx2gene[1,1],fixed=TRUE)) >= 8L)
+					if(IsGencode && !tx2geneIsGencode) {
+						if(verbose) message("Salmon tx names are Gencode-style but tx2gene tx names are not, so unpacking Salmon tx names")
+						TxID <- sub("[|].*", "", TxID)
+					}
+				}
 				if(remove.version) {
 					tx2gene[,1] <- sub("\\.[0-9]+", "", tx2gene[,1])
 					TxID <- sub("\\.[0-9]+", "", TxID)
