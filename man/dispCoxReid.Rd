@@ -71,17 +71,19 @@ The robust options use an order statistic instead the mean statistic, and have t
 }
 
 \references{
-Cox DR, Reid N (1987). Parameter orthogonality and approximate conditional inference.
+Cox DR, Reid N (1987).
+Parameter orthogonality and approximate conditional inference.
 \emph{Journal of the Royal Statistical Society Series B} 49, 1-39.
 
-Robinson MD, Smyth GK (2008). Small-sample estimation of negative
-binomial dispersion, with applications to SAGE data.
-\emph{Biostatistics}, 9, 321-332
+Robinson MD, Smyth GK (2008).
+Small-sample estimation of negative binomial dispersion, with applications to SAGE data.
+\emph{Biostatistics} 9, 321-332.
+\doi{10.1093/biostatistics/kxm030}.
 
-McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
-\emph{Nucleic Acids Research}.
+McCarthy DJ, Chen Y, Smyth GK (2012).
+Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+\emph{Nucleic Acids Research} 40, 4288-4297.
 \doi{10.1093/nar/gks042}.
-(Published online 28 January 2012)
 }
 
 \author{Gordon Smyth}
@@ -98,3 +100,5 @@ disp <- dispCoxReid(y, design, offset=log(lib.size), subset=100)
 \seealso{
 \code{\link{estimateGLMCommonDisp}}, \code{\link{optimize}}, \code{\link{uniroot}}
 }
+
+\concept{Dispersion estimation}

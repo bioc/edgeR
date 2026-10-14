@@ -39,6 +39,6 @@ x <- rpois(10,lambda=10)
 thinCounts(x,prob=0.5)
 }
 
-\concept{Data exploration}
+\concept{Preprocessing}
 
 

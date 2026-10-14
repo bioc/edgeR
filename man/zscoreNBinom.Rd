@@ -54,3 +54,5 @@ Randomized quantile residuals.
 \examples{
 zscoreNBinom(c(0,10,100), mu=10, size=10)
 }
+
+\concept{Gene set tests}

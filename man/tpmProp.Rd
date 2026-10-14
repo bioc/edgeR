@@ -35,5 +35,5 @@ Dividing out quantification uncertainty enables assessment of differential trans
 \code{\link{tpm}}
 }
 
-\keyword{RNA-seq}
+\keyword{Transcript expression}
 \concept{Differential usage}

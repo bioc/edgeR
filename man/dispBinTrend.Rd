@@ -44,7 +44,8 @@ The number of bins is limited to 1000.
 }
 
 \references{
-McCarthy DJ, Chen Y, Smyth GK (2012). Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
+McCarthy DJ, Chen Y, Smyth GK (2012).
+Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
 \emph{Nucleic Acids Research} 40, 4288-4297.
 \doi{10.1093/nar/gks042}.
 }
@@ -66,3 +67,5 @@ with(out, plot(AveLogCPM, sqrt(dispersion)))
 \seealso{
 \code{\link{estimateGLMTrendedDisp}}
 }
+
+\concept{Dispersion estimation}

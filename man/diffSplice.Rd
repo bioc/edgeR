@@ -127,5 +127,4 @@ topSplice(ds)
 plotSplice(ds)
 }
 
-\concept{Differential transcript usage}
 \concept{Differential usage}

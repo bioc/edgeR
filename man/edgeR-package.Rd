@@ -42,11 +42,13 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Pedro Baldoni, Matth
   Chen Y, Pal B, Visvader JE, Smyth GK (2017).
   Differential methylation analysis of reduced representation bisulfite sequencing experiments using edgeR.
   \emph{F1000Research} 6, 2055.
+  \url{https://bioinf.wehi.edu.au/edgeR/F1000Research2017/}.
 
   Lun AT, Smyth GK (2017).
   No counts, no variance: allowing for loss of degrees of freedom when assessing biological variability from RNA-seq data.
   \emph{Statistical Applications in Genetics and Molecular Biology} 16(2), 83-93.
-
+  \doi{10.1515/sagmb-2017-0010}.
+  
   Chen Y, Lun ATL, Smyth GK (2016).
   From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.
   \emph{F1000Research} 5, 1438.
@@ -79,10 +81,11 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Pedro Baldoni, Matth
   McCarthy DJ#, Chen Y#, Smyth GK (2012).
   Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.
   \emph{Nucleic Acids Research} 40, 4288-4297.
+  \doi{10.1093/nar/gks042}.
 
   Robinson MD, Oshlack A (2010).
   A scaling normalization method for differential expression analysis of RNA-seq data.
-  \emph{Genome Biology}, 11, R25.
+  \emph{Genome Biology} 11, R25.
 
   Robinson MD, McCarthy DJ, Smyth GK (2010). edgeR: a Bioconductor
   package for differential expression analysis of digital gene
@@ -90,11 +93,14 @@ Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Pedro Baldoni, Matth
 
   Robinson MD, Smyth GK (2008).
   Small-sample estimation of negative binomial dispersion, with applications to SAGE data.
-  \emph{Biostatistics}, 9, 321-332
+  \emph{Biostatistics}, 9, 321-332.
+  \doi{10.1093/biostatistics/kxm030}.
 
   Robinson MD, Smyth GK (2007).
   Moderated statistical tests for assessing differences in tag abundance.
-  \emph{Bioinformatics} 23, 2881-2887
+  \emph{Bioinformatics} 23, 2881-2887.
+  \doi{10.1093/bioinformatics/btm453}.
+
 )}
 
 \concept{Documentation}

@@ -40,3 +40,5 @@ Columns that vary within groups will be dropped.
 x <- DGEList(counts=matrix(1:8,4,2))
 rowsum(x, group=c("A","A","B","B"))
 }
+
+\concept{Preprocessing}
