@@ -116,3 +116,25 @@ catchSalmon <- function(paths,DGEList=FALSE,divide=FALSE,verbose=TRUE)
 	
 	y
 }
+
+.imputeEffectiveLengths <- function(Length,EffLen)
+#	Reset any effective length equal to actual length to 
+#	minimum effective length across samples.
+#	Gordon Smyth
+#	7 Sep 2026.
+{
+	i <- which(Length - EffLen < 0.5)
+	if(length(i)) {
+		irow <- ((i-1L) %% length(Length)) + 1L
+		icol <- ceiling(i / length(Length))
+		irowu <- sort(unique(irow))
+		EffLen2 <- EffLen[irowu,,drop=FALSE]
+		k <- match(irow,irowu)
+		i2 <- k + (icol-1L)*nrow(EffLen2)
+		EffLen2[i2] <- NA
+		m <- suppressWarnings(apply(EffLen2,1,min,na.rm=TRUE))
+		m[!is.finite(m)] <- 1
+		EffLen[i] <- m[k]
+	}
+	EffLen
+}
