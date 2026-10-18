@@ -37,7 +37,7 @@ filterByExpr.default <- function(y, design=NULL, group=NULL, min.sample.size=NUL
 #	Gordon Smyth
 #	Created 13 Nov 2017.
 #	Arguments min.n.samples, max.n.samples, and preset added 9 Oct 2026.
-#	Last modified 10 Oct 2026.
+#	Last modified 18 Oct 2026.
 {
 	y <- as.matrix(y)
 	if(mode(y) != "numeric") stop("y is not a numeric matrix")
@@ -60,8 +60,8 @@ filterByExpr.default <- function(y, design=NULL, group=NULL, min.sample.size=NUL
 			max.n.samples <- 40
 		},
 		moderate = {
-			min.count <- 2
-			min.total.count <- 8
+			min.count <- 6
+			min.total.count <- 10
 			large.n <- 4
 			min.prop <- 0.5
 			max.n.samples <- 20
