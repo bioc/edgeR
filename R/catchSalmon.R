@@ -1,23 +1,25 @@
-catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=TRUE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
+catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,remove.version=TRUE,DGEList=TRUE,divide=TRUE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from Salmon output.
 #	Use Gibbs or bootstrap samples to estimate overdispersion of transcriptwise counts.
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 1 Apr 2018. Last modified 13 Oct 2026.
+#	Created 1 Apr 2018. Last modified 21 Oct 2026.
 {
-#	Check parent.dir
+#	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
-	if(is.null(parent.dir)) parent.dir <- "."
-
-#	Check sample.dirs
 	if(is.null(sample.dirs)) {
+		if(is.null(parent.dir)) parent.dir <- "."
 		sample.dirs <- dir(parent.dir)
 		IsSalmon <- file.exists(file.path(parent.dir,sample.dirs,"aux_info"))
 		sample.dirs <- sample.dirs[IsSalmon]
 	}
 
 #	Full paths
-	paths <- file.path(parent.dir,sample.dirs)
+	if(is.null(parent.dir)) {
+		paths <- sample.dirs
+	} else {
+		paths <- file.path(parent.dir,sample.dirs)
+	}
 	NSamples <- length(paths)
 
 #	Use jsonlite and readr packages for reading
@@ -123,7 +125,7 @@ catchSalmon <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=TRU
 	x <- row.names(Quant1)[1]
 	gencode <- (nchar(x)-nchar(gsub("|","",x,fixed=TRUE)) >= 8L)
 	if(gencode) {
-		A <- splitGencodeTxNames(row.names(Quant1))
+		A <- splitGencodeTxNames(row.names(Quant1), remove.version=remove.version)
 		Quant1 <- data.frame(Quant1,A[,-1])
 		Quant1$AnnLength <- NULL
 		row.names(Quant1) <- row.names(Counts) <- A[,1]

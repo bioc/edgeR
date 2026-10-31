@@ -1,4 +1,4 @@
-#  FIT GENERALIZED LINEAR MODELS
+#	FIT GENERALIZED LINEAR MODELS
 
 filterByExpr <- function(y, ...)
 UseMethod("filterByExpr")

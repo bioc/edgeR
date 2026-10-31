@@ -1,7 +1,7 @@
 dispCoxReid <- function(y, design=NULL, offset=NULL, weights=NULL, AveLogCPM=NULL, interval=c(0,4), tol=1e-5, min.row.sum=5, subset=10000, nthreads=1L)
 #	Cox-Reid APL estimator of common dispersion
 #	Gordon Smyth, Davis McCarthy
-#	26 Jan 2011.  Last modified 9 Dec 2013.
+#	26 Jan 2011. Last modified 9 Dec 2013.
 {
 #	Check y
 	y <- as.matrix(y)

@@ -1,6 +1,6 @@
 Seurat2PB <- function(object, sample, cluster="seurat_clusters", assay="RNA")
 #	Given a 'Seurat' or 'SeuratObject' data object, create pseudo-bulk samples using
-#   the sample and cluster information and return a DGEList object
+#	 the sample and cluster information and return a DGEList object
 #	Yunshun Chen
 #	04 Jan 2023. Last modified 07 May 2025.
 {
@@ -18,7 +18,7 @@ Seurat2PB <- function(object, sample, cluster="seurat_clusters", assay="RNA")
 	}
 	if( is.null(counts) ) stop(paste0("object doesn't contain raw ", assay, " counts"))
 
-#   Check 'meta.data'
+#	 Check 'meta.data'
 	meta <- object@meta.data
 	if(! sample %in% names(meta) ) stop("sample information can not be found in meta.data")
 	if(! cluster %in% names(meta) ) stop("cluster information can not be found in meta.data")

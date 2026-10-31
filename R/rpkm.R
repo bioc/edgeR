@@ -38,7 +38,7 @@ rpkm.DGEList <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FAL
 
 rpkm.SummarizedExperiment <- function(y, gene.length=NULL, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	RPKM for a SummarizedExperiment.
-#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
+#	Created 03 Apr 2020. Last modified 03 Apr 2020.
 {
 	y <- SE2DGEList(y)
 	rpkm.DGEList(y, gene.length=gene.length, normalized.lib.sizes=normalized.lib.sizes, log=log, prior.count=prior.count, ...)

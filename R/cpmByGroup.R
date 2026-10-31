@@ -17,7 +17,7 @@ cpmByGroup.DGEList <- function(y, group=NULL, dispersion=NULL, ...)
 }
 
 cpmByGroup.SummarizedExperiment <- function(y, group=NULL, dispersion=NULL, ...)
-#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
+#	Created 03 Apr 2020. Last modified 03 Apr 2020.
 {
 	y <- SE2DGEList(y)
 	cpmByGroup.DGEList(y, group=group, dispersion=dispersion, ...)

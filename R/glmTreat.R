@@ -6,7 +6,7 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 {
 	if(lfc < 0) stop("lfc has to be non-negative")
 	
-#  	Check if glmfit is from glmFit() or glmQLFit()
+#		Check if glmfit is from glmFit() or glmQLFit()
 	isLRT <- is.null(glmfit$df.prior)
 	
 #	Switch to glmLRT() or glmQLFTest() if lfc is zero
@@ -73,6 +73,8 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 		design <- reform$design
 	}
 	unshrunk.logFC <- as.vector(unshrunk.logFC)
+#	All-zero rows have NA coefficients under a non-oneway design (Levenberg fit); use 0 so they get p=1 as in glmLRT
+	unshrunk.logFC[is.na(unshrunk.logFC)] <- 0
 	
 #	Null design matrix
 	design0 <- design[, -coef, drop=FALSE]
@@ -94,7 +96,7 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 #	Test statistics at beta_0 = -tau
 	fit2 <- glmFit(glmfit$counts, design=design0, offset=offset.old-offset.adj, weights=glmfit$weights, dispersion=dispersion, prior.count=0)
 	
-#   likelihood ratio statistics
+#	 likelihood ratio statistics
 	LRleft  <- pmax(0, fit1$deviance - glmfit$deviance)
 	LRright <- pmax(0, fit2$deviance - glmfit$deviance)
 	
@@ -106,6 +108,7 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 			poisson.bound <- FALSE
 		} else {
 			df.residual <- glmfit$df.residual.zeros
+			poisson.bound <- TRUE
 		}        
 		df.total <- glmfit$df.prior + df.residual
 		df.residual.total <- sum(glmfit$df.residual)
@@ -173,7 +176,6 @@ glmTreat <- function(glmfit, coef=ncol(glmfit$design), contrast=NULL, lfc=log2(1
 #			Interval threshold
 			c <- 1.470402
 			j <- (-z.right + z.left) > c
-			j <- j[!is.na(j)]
 			p.value[j]  <- .integratepnorm(z.right[j], z.right[j]+c) + .integratepnorm(z.left[j]-c, z.left[j])            
 		} 
 	} else {

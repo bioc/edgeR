@@ -1,9 +1,9 @@
-catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=TRUE,offset.prior=TRUE,verbose=TRUE)
+catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,remove.version=TRUE,DGEList=TRUE,divide=TRUE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and Gibbs posterior means and standard deviations from RSEM output.
 #	Use Gibbs samples to estimate overdispersion of transcriptwise counts.
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Pedro Baldoni and Gordon Smyth
-#	Created 24 Apr 2024. Last modified 13 Oct 2026.
+#	Created 24 Apr 2024. Last modified 21 Oct 2026.
 {
 #	Check parent.dir
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -112,7 +112,7 @@ catchRSEM <- function(parent.dir=NULL,files=NULL,ngibbs=100,DGEList=TRUE,divide=
 	x <- row.names(Quant1)[1]
 	gencode <- (nchar(x)-nchar(gsub("|","",x,fixed=TRUE)) >= 8L)
 	if(gencode) {
-		A <- splitGencodeTxNames(row.names(Quant1))
+		A <- splitGencodeTxNames(row.names(Quant1),remove.version=remove.version)
 		Quant1 <- data.frame(Quant1,A[,-1])
 		Quant1$AnnLength <- NULL
 		row.names(Quant1) <- row.names(Counts) <- A[,1]

@@ -56,7 +56,7 @@ camera.DGEList <- function(y, index, design=NULL, contrast=ncol(design), weights
 romer.DGEList <- function(y, index, design=NULL, contrast=ncol(design), ...)
 #	rotation mean-rank version of GSEA (gene set enrichment analysis) for RNA-Seq data
 #	Yunshun Chen, Gordon Smyth
-#	Created 20 Oct 2014.  Last modified 29 Dec 2017.
+#	Created 20 Oct 2014. Last modified 29 Dec 2017.
 {
 	if(is.null(design)) {
 		design <- y$design

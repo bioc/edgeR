@@ -289,6 +289,12 @@ void max_interpolant(double *, cmx *, double *);
 void loess_by_column(double *, cmx *, int, double *, double *);
 
 /* -------------------------------------------------------------
+ * locfit_lite.c
+ * locfit's default 1-D local fit (locfitByCol), by columns
+ */
+void locfit_by_col_mat(double *, int, int, const double *, const double *, double, int, int);
+
+/* -------------------------------------------------------------
  * ql_glm.c
  */
 

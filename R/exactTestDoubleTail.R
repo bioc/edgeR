@@ -8,7 +8,7 @@ exactTestDoubleTail <- function(y1,y2,dispersion=0,big.count=900)
 #	instead of trying to find smaller of tail probabilities?
 
 #	Gordon Smyth
-#	28 Sep 2019.  Last modified 2 Jun 2020.
+#	28 Sep 2019. Last modified 2 Jun 2020.
 {
 #	Convert matrices to vectors
 	ntags <- NROW(y1)

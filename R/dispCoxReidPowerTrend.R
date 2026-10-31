@@ -1,7 +1,7 @@
 dispCoxReidPowerTrend <- function(y, design, offset=NULL, subset=10000, AveLogCPM=NULL, method.optim="Nelder-Mead", trace=0)
 #	Estimate trend dispersion=a*mean^b+c
 #	Gordon Smyth, Davis McCarthy, Yunshun Chen
-#	16 Dec 2010.  Last modified 3 Oct 2012.
+#	16 Dec 2010. Last modified 3 Oct 2012.
 {
 	y <- as.matrix(y)
 	nlibs <- ncol(y)

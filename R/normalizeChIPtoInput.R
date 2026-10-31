@@ -2,7 +2,7 @@ normalizeChIPtoInput <- function(input,response,dispersion=0.01,niter=6,loss="p"
 #	Normalize ChIP-Seq counts to input
 #	and test for enrichment
 #	Gordon Smyth  
-#	2 Dec 2011.  Last modified 1 Jun 2020.
+#	2 Dec 2011. Last modified 1 Jun 2020.
 {
 	if(length(input)!=length(response)) stop("input and response must be same length")
 	if(any(input<0) || any(response<0)) stop("negative values not allowed")

@@ -1,7 +1,7 @@
 nearestTSS <- function(chr,locus,species="Hs")
 #	Find nearest gene transcriptional start sites from the appropriate organism db package
 #	Gordon Smyth
-#	Created 3 Jan 2018.  Last modified 21 Dec 2019.
+#	Created 3 Jan 2018. Last modified 21 Dec 2019.
 {
 #	Check input
 	chr <- as.character(chr)

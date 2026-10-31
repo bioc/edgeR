@@ -6,7 +6,7 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 #	Gordon Smyth and Pedro Baldoni
 #	catchSalmon() created 1 Apr 2018. 
 #	catchSalmonWithGencode() created 14 July 2026.
-#	catchSalmonGene() created 6 Sep 2026. Last modified 13 Oct 2026.
+#	catchSalmonGene() created 6 Sep 2026. Last modified 21 Oct 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -68,13 +68,11 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 			Name1 <- Quant1$Name[1]
 			IsGencode <- (nchar(Name1)-nchar(gsub("|","",Name1,fixed=TRUE)) >= 8L)
 			if(is.null(tx2gene)) {
-				if(IsGencode)
-					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
-				else
-					stop("tx2gene not provided and row names do not appear to be from Gencode")
-				TxAnn <- splitGencodeTxNames(Quant1$Name, remove.version=remove.version)
-				EnsG <- TxAnn[,"EnsG"]
-				GeneAnn <- collapseGencodeTx2Gene(TxAnn)
+			  if(!IsGencode) stop("tx2gene not provided and row names do not appear to be from Gencode")
+			  if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
+			  TxAnn <- splitGencodeTxNames(Quant1$Name, remove.version=remove.version)
+			  EnsG <- TxAnn[,"EnsG"]
+			  GeneAnn <- collapseGencodeTx2Gene(TxAnn)
 			} else {
 				tx2gene <- as.data.frame(tx2gene)
 				if(ncol(tx2gene) < 2L) stop("tx2gene doesn't have two columns")
@@ -202,7 +200,7 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 		if(NBoot > 0) {
 			Counts <- Counts / OverDisp
 		} else {
-			message("No bootscript or Gibbs samples, so counts not divided")
+			message("No bootstrap or Gibbs samples, so counts not divided")
 		}
 	}
 

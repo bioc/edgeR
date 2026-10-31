@@ -2,7 +2,7 @@ expandAsMatrix <- function(x,dim=NULL,byrow=TRUE)
 #	Convert scalar, row or column vector, or matrix, to be a matrix
 #	Gordon Smyth, Yunshun Chen, Aaron Lun
 #	created 26 Jan 2011.  
-#   last modified 29 Jun 2016.
+#	 last modified 29 Jun 2016.
 {
 #	Check dim argument
 	if(is.null(dim)) return(as.matrix(x))

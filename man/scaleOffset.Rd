@@ -12,9 +12,9 @@
 \method{scaleOffset}{default}(y, offset, \dots)
 }
 \arguments{ 
-\item{y}{numeric vector or matrix of counts, or a \code{DGEList} object.}
-\item{offset}{numeric vector or matrix of offsets to be scaled. If a vector, its length must equal the length of \code{y} or the number of columns of \code{y}. If a matrix, its dimension must equal the dimension of \code{y}.}
-\item{\dots}{other arguments that are not currently used.}
+\item{y}{a matrix of counts, or a \code{DGEList} object, or a numeric vector containing library sizes.}
+\item{offset}{a numeric vector, matrix, or CompressedMatrix of offsets to be scaled. If a vector, its length must equal the length of \code{y} or the number of columns of \code{y}. If a matrix, its dimension must equal the dimension of \code{y}.}
+\item{\dots}{other arguments are not currently used.}
 }
 
 \value{
@@ -23,9 +23,13 @@
 }
 
 \details{
-\code{scaleOffset} ensures that the scale of offsets is consistent with library sizes.
-This is done by ensuring that the mean offset for each gene is the same as the mean log-library size.
+This function makes the scale of the offsets is consistent with the library sizes by making mean offset for each gene the same as the mean log-library size.
 The length or dimensions of \code{offset} should be consistent with the number of libraries in \code{y}.
+
+The function can be used to ensure that an offset matrix input to edgeR but created by external software is consistent with edgeR's definition of an offset matrix.
+It ensures that the each offset entry can be interpreted as the normalized effective log library size for that observation.
+
+This function is not currently called by any other edgeR function, but can be used optionally when inputing an externally created offset matrix to edgeR.
 }
 
 \author{Aaron Lun, Yunshun Chen}

@@ -15,6 +15,7 @@ estimateGLMCommonDisp.DGEList <- function(y, design=NULL, method="CoxReid", subs
 }
 
 estimateGLMCommonDisp.default <- function(y, design=NULL, offset=NULL, method="CoxReid", subset=10000, AveLogCPM=NULL, verbose=FALSE, weights=NULL, ...)
+#	Created (as non-generic function) 11 Feb 2011.
 {
 #	Check y
 	y <- as.matrix(y)

@@ -1,7 +1,7 @@
 dispDeviance <- function(y, design=NULL, offset=NULL, interval=c(0,4), tol=1e-5, min.row.sum=5, subset=10000, AveLogCPM=NULL, robust=FALSE, trace=FALSE)
 #	Deviance estimator of common dispersion
 #	Gordon Smyth, Davis McCarthy
-#	26 Jan 2011.  Last modified 30 Sep 2012.
+#	26 Jan 2011. Last modified 30 Sep 2012.
 {
 #	Check y
 	y <- as.matrix(y)

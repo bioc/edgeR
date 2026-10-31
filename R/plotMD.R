@@ -25,7 +25,7 @@ plotMD.DGEList <- function(object, column=1, xlab="Average log CPM (this sample 
 }
 
 plotMD.SummarizedExperiment <- function(object, column=1, xlab="Average log CPM (this sample and others)", ylab="log-ratio (this sample vs others)", zero.weights=FALSE, prior.count=3, ...)
-#	Created 03 Apr 2020.  Last modified 01 Oct 2022.
+#	Created 03 Apr 2020. Last modified 01 Oct 2022.
 {
 	object <- SE2DGEList(object)
 	plotMD.DGEList(object, column=column, xlab=xlab, ylab=ylab, zero.weights=zero.weights, prior.count=prior.count, ...)
@@ -97,7 +97,7 @@ plotMD.DGELRT <- function(object, xlab="Average log CPM", ylab="log-fold-change"
 plotMD.DGEExact <- function(object, xlab="Average log CPM", ylab="log-fold-change", main=NULL, status=object$genes$Status, adjust.method="BH", p.value=0.05, ...)
 #	Mean-difference plot with color coding for controls
 #	Gordon Smyth
-#	Created 24 Jun 2015.  Last modified 7 Feb 2017.
+#	Created 24 Jun 2015. Last modified 7 Feb 2017.
 {
 	if(is.null(status))
 		status <- decideTests(object, adjust.method=adjust.method, p.value=p.value)

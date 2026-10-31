@@ -1,8 +1,8 @@
 spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.genewise.disp=TRUE, trace=FALSE)
-# Identify genes with splice variants using a negative binomial model
-# We assume that the data come in a matrix (possibly and/or a DGEList), counts summarized at exon level, with gene information available
-# Davis McCarthy and Gordon Smyth
-# Created 4 Feb 2011.  Last modified 13 Jul 2024. 
+#	Identify genes with splice variants using a negative binomial model
+#	We assume that the data come in a matrix (possibly and/or a DGEList), counts summarized at exon level, with gene information available
+#	Davis McCarthy and Gordon Smyth
+#	Created 4 Feb 2011. Last modified 13 Jul 2024. 
 {
 	if( is(y, "DGEList") ) {
 		y.mat <- y$counts
@@ -122,7 +122,6 @@ spliceVariants <- function(y, geneID, dispersion=NULL, group=NULL, estimate.gene
 }
 
 
-
 estimateExonGenewiseDisp <- function(y, geneID, group=NULL)
 #	Function to estimate a common dispersion from exon count data
 #	Created by Davis McCarthy, 29 Jul 2011.
@@ -228,4 +227,3 @@ plotExonUsage <- function(y, geneID, group=NULL, transform="none", counts.per.mi
 	legend(legend.coords[1], legend.coords[2], levels(group), col=cols, lwd=2)
 	invisible(exon.mat)
 }
-

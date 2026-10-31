@@ -6,7 +6,7 @@ exactTestBetaApprox <- function(y1,y2,dispersion=0)
 #	Left and right rejection regions have equal probability.
 
 #	Gordon Smyth
-#	28 Sep 2019.  Last modified 28 Sep 2011.
+#	28 Sep 2019. Last modified 28 Sep 2011.
 {
 #	Convert matrices to vectors
 	ntags <- NROW(y1)

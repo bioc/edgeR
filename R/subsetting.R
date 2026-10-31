@@ -1,10 +1,10 @@
-#  SUBSET DATA SETS
+#	SUBSET DATA SETS
 
 assign("[.DGEList",
 function(object, i, j, keep.lib.sizes=TRUE)
-#  Subsetting for DGEList objects
-#  Created 24 Sep 2009.  Last modified 31 Aug 2026.
-{  
+#	Subsetting for DGEList objects
+#	Created 24 Sep 2009. Last modified 31 Aug 2026.
+{
 	if(nargs() < 3) stop("Two subscripts required",call.=FALSE)
 
 #	Recognized components
@@ -25,9 +25,9 @@ function(object, i, j, keep.lib.sizes=TRUE)
 
 assign("[.PCList",
 function(object, i, j)
-#  Subsetting for PCList objects
-#  Created 16 Apr 2025. 
-{  
+#	Subsetting for PCList objects
+#	Created 16 Apr 2025. 
+{
 	if(nargs() < 3) stop("Two subscripts required",call.=FALSE)
 
 #	Recognized components
@@ -43,8 +43,8 @@ function(object, i, j)
 
 assign("[.DGEGLM",
 function(object, i, j)
-#  Subsetting for DGEGLM objects
-#  Created 11 May 2011.  Last modified 5 Aug 2024.
+#	Subsetting for DGEGLM objects
+#	Created 11 May 2011. Last modified 5 Aug 2024.
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(j)) stop("Subsetting columns not allowed for DGEGLM object.",call.=FALSE)
@@ -61,7 +61,7 @@ function(object, i, j)
 
 assign("[.DGEBIN",
 function(object, i, j)
-#  Subsetting for DGEBIN objects (binomial fits from binFit / binQLFit)
+#	Subsetting for DGEBIN objects (binomial fits from binFit / binQLFit)
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(j)) stop("Subsetting columns not allowed for DGEBIN object.",call.=FALSE)
@@ -78,9 +78,9 @@ function(object, i, j)
 
 assign("[.DGEExact",
 function(object, i, j)
-#  Subsetting for DGEExact objects
-#  Davis McCarthy, Gordon Smyth
-#  Created 6 Oct 2010.  Last modified 11 Dec 2013.
+#	Subsetting for DGEExact objects
+#	Davis McCarthy, Gordon Smyth
+#	Created 6 Oct 2010. Last modified 11 Dec 2013.
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(j)) stop("Subsetting columns not allowed for DGEExact objects.",call.=FALSE)
@@ -94,8 +94,8 @@ function(object, i, j)
 
 assign("[.DGELRT",
 function(object, i, j)
-#  Subsetting for DGELRT objects
-#  Created 6 Apr 2011.  Last modified 20 Oct 2023.
+#	Subsetting for DGELRT objects
+#	Created 6 Apr 2011. Last modified 20 Oct 2023.
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(j)) stop("Subsetting columns not allowed for DGELRT object.",call.=FALSE)
@@ -112,8 +112,8 @@ function(object, i, j)
 
 assign("[.TopTags",
 function(object, i, j)
-#  Subsetting for TopTags objects
-#  Created 7 Oct 2009. Last modified 11 Dec 2013.
+#	Subsetting for TopTags objects
+#	Created 7 Oct 2009. Last modified 11 Dec 2013.
 {
 	if(nargs() != 3) stop("Two subscripts required",call.=FALSE)
 	if(!missing(i) || !missing(j)) object$table <- object$table[i,j,drop=FALSE]

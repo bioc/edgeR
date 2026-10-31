@@ -1,6 +1,6 @@
 readDGE <- function(files,path=NULL,columns=c(1,2),group=NULL,labels=NULL,...) 
 #	Read and collate a set of count data files, each file containing counts for one library
-#	Created 2006.  Last modified 8 Sep 2021.
+#	Created 2006. Last modified 8 Sep 2021.
 {
 #	Create data.frame to hold sample information
 	x <- list()

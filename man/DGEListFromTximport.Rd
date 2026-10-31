@@ -77,7 +77,7 @@ Dividing out quantification uncertainty enables assessment of differential trans
 }
 
 \seealso{
-\code{\link{catchSalmon}}, \code{\link{catchKallisto}}, \code{\link{catchRSEM}}, \code{\link{catchOarfish}}, \code{\link[edgeR:DGEList-class]{DGEList-class}}.
+\code{\link{catchSalmonGene}}, \code{\link{catchKallistoGene}}, \code{\link{catchSalmon}}, \code{\link{catchKallisto}}, \code{\link{catchRSEM}}, \code{\link{catchOarfish}}, \code{\link[edgeR:DGEList-class]{DGEList-class}}.
 
 The input objects \code{txi} or \code{txm} are created by either \code{tximport} or \code{tximeta} in the tximport and tximeta packages, respectively.
 }

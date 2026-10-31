@@ -1,8 +1,8 @@
 \name{catchSalmon}
 \alias{catchSalmon}
 \alias{catchKallisto}
-\alias{catchOarfish}
 \alias{catchRSEM}
+\alias{catchOarfish}
 
 \title{Process kallisto, Salmon, Oarfish, or RSEM Transcript Output}
 
@@ -10,15 +10,16 @@
 
 \usage{
 catchKallisto(parent.dir = NULL, sample.dirs = NULL,
-          DGEList = TRUE, divide = TRUE,
-          impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
+              remove.version = TRUE, DGEList = TRUE, divide = TRUE,
+              impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
 catchSalmon(parent.dir = NULL, sample.dirs = NULL,
-          DGEList = TRUE, divide = TRUE,
-          impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
-catchOarfish(parent.dir = NULL, prefixes = NULL,
-          DGEList = TRUE, divide = TRUE, verbose = TRUE)
+            remove.version = TRUE, DGEList = TRUE, divide = TRUE,
+            impute.eff.len = TRUE, offset.prior = TRUE, verbose = TRUE)
 catchRSEM(parent.dir = NULL, files = NULL, ngibbs = 100,
-          DGEList = TRUE, divide = TRUE, offset.prior = TRUE, verbose = TRUE)
+          remove.version = TRUE, DGEList = TRUE, divide = TRUE,
+          offset.prior = TRUE, verbose = TRUE)
+catchOarfish(parent.dir = NULL, prefixes = NULL,
+             remove.version = TRUE, DGEList = TRUE, divide = TRUE, verbose = TRUE)
 }
 
 \arguments{
@@ -29,17 +30,18 @@ catchRSEM(parent.dir = NULL, files = NULL, ngibbs = 100,
   If \code{parent.dir} and \code{sample.dirs} are both provided, then the \code{sample.dirs} are relative to \code{parent.dir}.
   If \code{sample.dirs} is \code{NULL}, then all the kallisto or Salmon directories found in \code{parent.dir} will be read.
 }
+\item{files}{
+  character vector specifying the \code{isoforms.results} files output by RSEM.
+  Each entry corresponds to one RNA-seq sample.
+  By default, all files in the \code{parent.dir} directory with names ending in \code{isoforms.results} will be read.
+}
 \item{prefixes}{
   character vector giving the sample-specific file prefixes created by Oarfish.
   Each entry corresponds to one RNA-seq sample.
   Can contain a directory separator.
   By default, all files in the \code{parent.dir} directory with names ending in \code{.quant}, \code{.infreps.pq} and \code{.meta_info.json} will be read.
 }
-\item{files}{
-  character vector specifying the \code{isoforms.results} files output by RSEM.
-  Each entry corresponds to one RNA-seq sample.
-  By default, all files in the \code{parent.dir} directory with names ending in \code{isoforms.results} will be read.
-}
+\item{remove.version}{logical, whether to remove version numbers from transcript and gene IDs.}
 \item{DGEList}{logical. If \code{TRUE}, the function will output a \code{DGEList} instead of a plain list.}
 \item{divide}{logical. If \code{TRUE}, counts are divided by the RTA overdispersions.}
 \item{impute.eff.len}{

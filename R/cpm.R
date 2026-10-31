@@ -16,7 +16,7 @@ cpm.DGEList <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, 
 
 cpm.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, log=FALSE, prior.count=2, ...)
 #	Counts per million for a SummarizedExperiment
-#	Created 03 Apr 2020.  Last modified 1 Jun 2020.
+#	Created 03 Apr 2020. Last modified 1 Jun 2020.
 {
 	y <- SE2DGEList(y)
 	cpm.DGEList(y, normalized.lib.sizes=normalized.lib.sizes, log=log, prior.count=prior.count, ...)
@@ -24,7 +24,7 @@ cpm.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, log=FALSE, pr
 
 cpm.DGELRT <- cpm.DGEGLM <- function(y, log=FALSE, shrunk=TRUE, ...)
 #	Fitted counts per million from a fitted model object.
-#	Created 19 Apr 2020.  Last modified 30 Sep 2025.
+#	Created 19 Apr 2020. Last modified 30 Sep 2025.
 {
 	if(shrunk) {
 		eta <- y$coefficients %*% t(y$design)
@@ -41,7 +41,7 @@ cpm.DGELRT <- cpm.DGEGLM <- function(y, log=FALSE, shrunk=TRUE, ...)
 
 cpm.MArrayLM <- function(y, log=FALSE, ...)
 #	Fitted counts per million from a limma fitted model object.
-#	Created 9 Oct 2025.  Last modified 9 Oct 2025.
+#	Created 9 Oct 2025. Last modified 9 Oct 2025.
 {
 	eta <- fitted(y)
 	if(log) {

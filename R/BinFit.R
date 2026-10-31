@@ -3,7 +3,7 @@ binFit <- function(y, ...)
 	UseMethod("binFit")
 
 binFit.PCList <- function(y, design=NULL, ...)
-#	Created 15 Apr 2025.  Last modified 18 Apr 2025.
+#	Created 15 Apr 2025. Last modified 18 Apr 2025.
 {
 	if(is.null(design)) {
 		design <- y$design

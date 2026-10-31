@@ -1,10 +1,10 @@
-#  FIT GENERALIZED LINEAR MODELS
+#	FIT GENERALIZED LINEAR MODELS
 
 glmFit <- function(y, ...)
 UseMethod("glmFit")
 
 glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
-#	Created 11 May 2011.  Last modified 11 Jan 2024.
+#	Created 11 May 2011. Last modified 11 Jan 2024.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -30,7 +30,7 @@ glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, s
 }
 
 glmFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
-#	Created 19 Mar 2020.  Last modified 19 Mar 2020.
+#	Created 19 Mar 2020. Last modified 19 Mar 2020.
 {
 	y <- SE2DGEList(y)
 	glmFit.DGEList(y, design=design, dispersion=dispersion, prior.count=prior.count, start=start, ...)
@@ -124,7 +124,7 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 glmLRT <- function(glmfit,coef=ncol(glmfit$design),contrast=NULL)
 #	Tagwise likelihood ratio tests for DGEGLM
 #	Gordon Smyth, Davis McCarthy, Lizhong Chen and Yunshun Chen.
-#	Created 1 Jul 2010.  Last modified 5 May 2024.
+#	Created 1 Jul 2010. Last modified 5 May 2024.
 {
 #	Check glmfit
 	if(!is(glmfit,"DGEGLM")) {

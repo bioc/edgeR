@@ -40,7 +40,7 @@
 .residDF <- function(zero, design)
 #	Effective residual degrees of freedom after adjusting for exact zeros
 #	Gordon Smyth and Aaron Lun
-#	Created 6 Jan 2014.  Last modified 2 Jun 2020
+#	Created 6 Jan 2014. Last modified 2 Jun 2020
 {
 	nlib <- ncol(zero)
 	ncoef <- ncol(design)

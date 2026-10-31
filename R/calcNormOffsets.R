@@ -1,7 +1,7 @@
 calcNormOffsetsforChIP <- function(input,response,dispersion=0.01,niter=6,loss="p",plot=FALSE,verbose=FALSE,...)
 #	Normalize ChIP-Seq counts to input and form offset matrix
 #	Gordon Smyth  
-#	14 Dec 2011.  Last modified 14 May 2012.
+#	14 Dec 2011. Last modified 14 May 2012.
 {
 	input <- as.matrix(input)
 	y <- as.matrix(response)

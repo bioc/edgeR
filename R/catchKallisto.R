@@ -1,23 +1,25 @@
-catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=TRUE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
+catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,remove.version=TRUE,DGEList=TRUE,divide=TRUE,impute.eff.len=TRUE,offset.prior=TRUE,verbose=TRUE)
 #	Read transcriptwise counts and bootstrap samples from kallisto output
 #	Use bootstrap samples to estimate overdispersion of transcriptwise counts
 #	Will unpack Genecode Tx annotation if found in row.names.
 #	Gordon Smyth and Pedro Baldoni
-#	Created 2 Apr 2018. Last modified 13 Oct 2026.
+#	Created 2 Apr 2018. Last modified 21 Oct 2026.
 {
-#	Check parent.dir
+#	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
-	if(is.null(parent.dir)) parent.dir <- "."
-
-#	Check sample.dirs
 	if(is.null(sample.dirs)) {
+		if(is.null(parent.dir)) parent.dir <- "."
 		sample.dirs <- dir(parent.dir)
 		IsKallisto <- file.exists(file.path(parent.dir,sample.dirs,"abundance.h5"))
 		sample.dirs <- sample.dirs[IsKallisto]
 	}
 
 #	Full paths
-	paths <- file.path(parent.dir,sample.dirs)
+	if(is.null(parent.dir)) {
+		paths <- sample.dirs
+	} else {
+		paths <- file.path(parent.dir,sample.dirs)
+	}
 	NSamples <- length(paths)
 
 #	Use rhdf5 package for reading
@@ -107,7 +109,7 @@ catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,DGEList=TRUE,divide=T
 	x <- row.names(Ann)[1]
 	gencode <- (nchar(x)-nchar(gsub("|","",x,fixed=TRUE)) >= 8L)
 	if(gencode) {
-		A <- splitGencodeTxNames(row.names(Ann))
+		A <- splitGencodeTxNames(row.names(Ann), remove.version=remove.version)
 		Ann <- data.frame(Ann,A[,-1])
 		Ann$AnnLength <- NULL
 		row.names(Ann) <- row.names(Counts) <- A[,1]

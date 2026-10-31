@@ -284,9 +284,9 @@ void bin_iwls_mat (cmx *y, cmx *offsets, cmx *weights, cmx *design, int maxit, d
 
     int nth = clamp_threads(nthreads);
 
-    /* one full scratch workspace per thread (pivot is reset to 1..ncoef as
-     * in the serial code; dqrdc2 reinitialises it internally so there is no
-     * dependency across tags) */
+    /* one full scratch workspace per thread (dqrdc2 permutes pivot in place and
+     * does not reinitialise it, so bin_iwls_vec resets it to 1..ncoef before each
+     * IWLS dqrls; there is no dependency across tags) */
     biwls_ws *ws = R_Calloc(nth, biwls_ws);
     for(int t=0;t<nth;++t)
     {
@@ -506,6 +506,11 @@ static void bin_iwls_vec(int nlib, int ny, int rank, double *y, double *offsets,
          * Netlib references: dqrls is a LINPACK-based routine shipped with R in
          * src/appl/dqrls.f (calls LINPACK dqrdc2 / dqrsl); see
          * https://netlib.org/linpack/ . */
+        // dqrdc2 permutes pivot in place: reset it so pivot maps this solve only
+        for(int j=0; j<ncoef; ++j)
+        {
+            pivot[j]=j+1;
+        }
         F77_CALL(dqrls)(xdm, &nlib, &ncoef, lptr, &ny, &lmtol, bptr, resid, effects, &rank, pivot, qraux, work);
 
         // update pptr, lptr, deviance
@@ -529,6 +534,18 @@ static void bin_iwls_vec(int nlib, int ny, int rank, double *y, double *offsets,
             failed=1;
             break;
         }
+    }
+
+    // unpivot: when sqrt(w) * design is rank deficient, dqrls returns bptr in pivoted
+    // column order with the aliased coefficients (j >= rank) set to 0. Scatter back to
+    // design column order; work is free after the last dqrls.
+    for(int j=0; j<ncoef; ++j)
+    {
+        work[j]=bptr[j];
+    }
+    for(int j=0; j<ncoef; ++j)
+    {
+        bptr[pivot[j]-1]=work[j];
     }
 
     // save results

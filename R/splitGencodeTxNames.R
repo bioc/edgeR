@@ -1,24 +1,31 @@
-splitGencodeTxNames <- function(x, remove.version = TRUE)
+splitGencodeTxNames <- function(x, remove.version=TRUE)
 #	Split GENCODE transcript IDs into an 8-column character matrix.
 #	Gencode transcript names consist of vertical-bar-separated values,
 #	i.e., different annotations pasted together with "|" delimiters.
 #	Gordon Smyth
-#	Created 26 Jun 2026. Last modified 7 Oct 2026.
+#	Created 26 Jun 2026. Last modified 22 Oct 2026.
 {
+#	Split pipe-delimited IDs. True Gencode tx IDs should yield 8 columns.
 	x <- as.character(x)
-	n <- length(x)
+	A <- strsplit2(x, split="|", fixed=TRUE)
 
-#	Split on "|"
-	s <- unlist(strsplit(x, split="|", fixed=TRUE), use.names=FALSE)
-	A <- matrix(s, nrow=n, ncol=8L, byrow=TRUE)
- 
 #	Remove version numbers from Ensembl transcript and gene IDs
+	j <- min(2L,ncol(A))
 	if(remove.version) {
-		A[,1:2] <- sub("\\.[0-9]+", "", A[,1:2])
+		A[,1:j] <- sub("\\.[0-9]+", "", A[,1:j])
 	}
 
 #	Abbreviated column names: Ens for Ensembl, Hav for Havana, Tx for Transcript, Type for Biotype
-	colnames(A) <- c("EnsT","EnsG","HavG","HavT","TxName","GeneName","AnnLength","Type")
+	GencodeFields <- c("EnsT","EnsG","HavG","HavT","TxName","GeneName","AnnLength","Type")
+	if(ncol(A)==8L) {
+		colnames(A) <- GencodeFields
+	} else {
+		if(ncol(A) < 8L) {
+			colnames(A) <- GencodeFields[1:ncol(A)]
+		} else {
+			colnames(A) <- c(GencodeFields,paste0("V",9:ncol(A)))
+		}
+	}
 	A
 }
 

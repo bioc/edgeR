@@ -12,6 +12,7 @@ static const R_CallMethodDef all_call_entries[] = {
 	CALLDEF(coxreid_disp_top, 10),
 	CALLDEF(exact_test_by_deviance, 5),
 	CALLDEF(loess_by_col, 3),
+	CALLDEF(locfit_by_col, 6),
 	CALLDEF(maximize_interpolant, 2),
 
     CALLDEF(fit_levenberg, 9),

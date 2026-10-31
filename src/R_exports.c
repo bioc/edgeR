@@ -513,6 +513,39 @@ SEXP loess_by_col(SEXP x, SEXP y, SEXP s)
 }
 
 /*---------------------------------------------------------------
+ * from locfit_lite.c
+ * wrapper function for locfit_by_col_mat
+ *
+ * y        matrix, each column smoothed against x
+ * x        covariate, length nrow(y)
+ * w        prior weights, length nrow(y)
+ * s        span (locfit alpha)
+ * d        local polynomial degree
+ * nthreads number of threads over columns
+ *
+ * returns a new matrix of fitted values; y is not modified
+ */
+
+SEXP locfit_by_col(SEXP y, SEXP x, SEXP w, SEXP s, SEXP d, SEXP nthreads)
+{
+    SEXP yy;
+
+    PROTECT(x=coerceVector(x,REALSXP));
+    PROTECT(w=coerceVector(w,REALSXP));
+    PROTECT(yy=duplicate(coerceVector(y,REALSXP)));
+
+    int ntags = nrows(yy), ncol = ncols(yy);
+    if(LENGTH(x) != ntags || LENGTH(w) != ntags)
+        error("x and weights must have one value per row of y");
+
+    locfit_by_col_mat(REAL(yy), ntags, ncol, REAL(x), REAL(w), asReal(s), asInteger(d), asInteger(nthreads));
+
+    UNPROTECT(3);
+
+    return yy;
+}
+
+/*---------------------------------------------------------------
  * from ql_glm.c
  */
 

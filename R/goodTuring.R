@@ -10,7 +10,7 @@ goodTuring <- function(x, conf=1.96)
 #	R version by Gordon Smyth
 #	C++ version by Aaron Lun
 #	C version by Lizhong Chen
-#	Created 9 Nov 2010.  Last modified 13 May 2024.
+#	Created 9 Nov 2010. Last modified 13 May 2024.
 {
 #	Raw frequencies
 	x <- as.integer(x)
@@ -53,7 +53,7 @@ goodTuringPlot <- function(x)
 #	and gives identical results.
 
 #	Gordon Smyth
-#	9 Nov 2010.  Last modified 21 Nov 2010.
+#	9 Nov 2010. Last modified 21 Nov 2010.
 {
 #	Raw frequencies
 	n <- tabulate(x+1L)
@@ -78,7 +78,7 @@ goodTuringPlot <- function(x)
 goodTuringProportions <- function(counts)
 #	Transform counts to approximately normal expression values
 #	Gordon Smyth
-#	15 Dec 2010.  Last modified 5 Jan 2011.
+#	15 Dec 2010. Last modified 5 Jan 2011.
 {
 	z <- counts <- as.matrix(counts)
 	nlibs <- ncol(counts)

@@ -1,7 +1,7 @@
 maximizeQuadratic <- function(y, x=1:ncol(y))
 #	Maximize a function using quadratic approximation
 #	Yunshun Chen and Gordon Smyth
-#	Created 20 Oct 2011.  Last modified 7 Aug 2019.
+#	Created 20 Oct 2011. Last modified 7 Aug 2019.
 {	
 	if(is.vector(y)) 
 		y <- matrix(y, nrow=1)

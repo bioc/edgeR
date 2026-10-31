@@ -38,7 +38,7 @@ rpkmByGroup.DGEList <- function(y, group=NULL, gene.length=NULL, dispersion=NULL
 }
 
 rpkmByGroup.SummarizedExperiment <- function(y, group=NULL, gene.length=NULL, dispersion=NULL, ...)
-#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
+#	Created 03 Apr 2020. Last modified 03 Apr 2020.
 {
 	y <- SE2DGEList(y)
 	rpkmByGroup.DGEList(y, group=group, gene.length=gene.length, dispersion=dispersion, ...)

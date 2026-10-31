@@ -4,7 +4,7 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 #	or an externally provided data.frame mapping tx to gene IDs.
 #	Use bootstrap samples to estimate overdispersion of genewise counts.
 #	Gordon Smyth
-#	Created 11 Sep 2026. Last modified 13 Oct 2026.
+#	Created 11 Sep 2026. Last modified 21 Oct 2026.
 {
 #	Check specified directories
 	if(length(parent.dir) > 1L) stop("parent.dir should be of length 1")
@@ -54,10 +54,8 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 			TxID1 <- TxID[1]
 			IsGencode <- (nchar(TxID1)-nchar(gsub("|","",TxID1,fixed=TRUE)) >= 8L)
 			if(is.null(tx2gene)) {
-				if(IsGencode)
-					if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
-				else
-					stop("tx2gene not provided and row names do not appear to be from Gencode")
+				if(!IsGencode) stop("tx2gene not provided and row names do not appear to be from Gencode")
+				if(verbose) message("Summarizing to genewise counts using Gencode's imbedded annotation")
 				TxAnn <- splitGencodeTxNames(TxID, remove.version=remove.version)
 				EnsG <- TxAnn[,"EnsG"]
 				GeneAnn <- collapseGencodeTx2Gene(TxAnn)
@@ -189,7 +187,7 @@ catchKallistoGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remo
 		if(NBoot > 0) {
 			Counts <- Counts / OverDisp
 		} else {
-			message("No bootscript or Gibbs samples, so counts not divided")
+			message("No bootstrap or Gibbs samples, so counts not divided")
 		}
 	}
 

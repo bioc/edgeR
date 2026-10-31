@@ -30,6 +30,9 @@ SEXP get_levenberg_start (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 /* column-wise lowess smoothing of a matrix */
 SEXP loess_by_col(SEXP, SEXP, SEXP);
 
+/* column-wise locfit smoothing of a matrix (locfitByCol) */
+SEXP locfit_by_col(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
 /* maximize a spline interpolant to locate the optimal dispersion */
 SEXP maximize_interpolant(SEXP, SEXP);
 

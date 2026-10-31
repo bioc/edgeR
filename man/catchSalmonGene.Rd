@@ -1,6 +1,7 @@
 \name{catchSalmonGene}
 \alias{catchKallistoGene}
 \alias{catchSalmonGene}
+\alias{catchOarfishGene}
 
 \title{Process Kallisto or Salmon Output to Produce Gene Counts}
 
@@ -15,6 +16,10 @@ catchSalmonGene(parent.dir = NULL, sample.dirs = NULL,
         tx2gene = NULL, remove.version = TRUE,
         DGEList = TRUE, divide = TRUE, impute.eff.len = TRUE,
         offset.prior = TRUE, gene.length = "moderate", verbose = TRUE)
+catchOarfishGene(parent.dir = NULL, prefixes = NULL,
+        tx2gene = NULL, remove.version = TRUE,
+        DGEList = TRUE, divide = TRUE,
+        gene.length = "moderate", verbose = TRUE)
 }
 
 \arguments{
@@ -23,6 +28,12 @@ catchSalmonGene(parent.dir = NULL, sample.dirs = NULL,
   character vector giving paths to the sample directories created by Salmon.
   If \code{parent.dir} and \code{sample.dirs} are both provided, then the \code{sample.dirs} are relative to \code{parent.dir}.
   If \code{sample.dirs} is \code{NULL}, then all the Salmon directories found in \code{parent.dir} will be read.
+}
+\item{prefixes}{
+  character vector giving the sample-specific file prefixes created by Oarfish.
+  Each entry corresponds to one RNA-seq sample.
+  Can contain a directory separator.
+  By default, all files in the \code{parent.dir} directory with names ending in \code{.quant}, \code{.infreps.pq} and \code{.meta_info.json} will be read.
 }
 \item{tx2gene}{data.frame mapping transcript IDs to gene IDs, with first column for transcript IDs and the second for the corresponding gene IDs. Not needed if GENCODE annotation was used for the quantifications.}
 \item{remove.version}{logical, whether to remove version numbers from transcript and gene IDs.}
@@ -43,10 +54,13 @@ The function will automatically detect whether bootstrap or Gibbs samples are av
 The number of bootstrap resamples does not need to be the same for each RNA sample.
 \code{catchKallistoGene()} uses the rhdf5 package to read the HDF5 format files output by kallisto.
 
+\code{catchOarfishGene()} assumes that oarfish (Jousheghani et al 2025) has been run to estimate transcript counts for one or more RNA samples and that bootstrap samples have also been generated.
+The function reads the oarfish quantifications and summarizes them at the gene level.
+
 The transcript-level counts will be collapsed to gene-level counts and RTA overdispersions will be estimated at the gene level, using a method similar at Baldoni et al (2024ab) but applied to gene level counts instead of transcript counts.
 
 The function needs to know which gene each transcript belongs to.
-If Salmon was run with a GENCODE transcript FASTA file, then \code{catchSalmonGene} will detect that automatically.
+If Salmon, kallisto, or oarfish were run with a GENCODE transcript FASTA file, then \code{catchSalmonGene}, \code{catchKallistoGene}, and \code{catchOarfishGene} will detect that automatically.
 It will then unpack the GENCODE transcript names using \code{splitGencodeTxNames} to obtain gene and transcript IDs.
 Otherwise, a data.frame \code{tx2gene} needs to be provided to map transcript to gene IDs.
 
@@ -54,6 +68,10 @@ Average transcript lengths are computed for each gene and optionally used to cre
 The average lengths are computed by three possible methods as specified by \code{gene.length}, either a simple average of the transcript lengths (\code{"simple"}), or the method of Soneson et al (2016) (\code{"tximport"}),
 or by a method that moderates the lengths weakly towards the gene average and, even more weakly, towards the simple average of transcript lengths (\code{"moderate"}).
 The moderated method is recommended.
+
+For long-read RNA-seq data, it is assumed that expected counts do not depend on the length of transcripts and that the effective length of transcripts equals their actual length.
+Therefore, \code{catchOarfishGene()} does not create a prior offset matrix.
+Gene lengths are still computed using the method specified by \code{gene.length}.
 
 For paired-end RNA-seq, kallisto and Salmon use sample-specific empirical fragment distributions to estimate the effective transcript lengths.
 For very short transcripts, there may be too few entries in the empirical distribution to estimate the conditional fragment length.
@@ -74,9 +92,11 @@ If \code{DGEList=TRUE}, a \code{\link[edgeR:DGEList-class]{DGEList}} object with
 \item{overdispersion.prior}{median of genewise overdispersions, used to moderate the overdispersion values.}
 \item{resample.type}{character vector giving the resampling type (\code{"bootstrap"} or \code{"gibbs"}) for each sample.}
 \item{divided.counts}{logical, indicating whether the counts have been divided by the RTA overdispersions.}
-\item{offset.prior}{matrix of prior offsets representing relative differences in effective lengths for each gene on the log-scale (only if \code{offset.prior=TRUE}). Rows add to zero.}
+\item{offset.prior}{matrix of prior offsets representing relative differences in effective lengths for each gene on the log-scale (only if \code{offset.prior=TRUE} in \code{catchSalmonGene} and \code{catchKallistoGene}). Rows add to zero.}
 \item{other$effective.length}{matrix of effective gene lengths.}
 \item{other$tpm}{matrix of genewise TPM values.}
+
+For \code{catchOarfishGene}, effective gene length equals the actual gene length, which is computed according to the \code{gene.length} argument.
 
 If \code{DGEList=FALSE}, then a plain list is created.
 The components are as documented above for DGELists except that the annotation data.frame is called \code{annotation} instead of \code{genes}, and the \code{effective.length} and \code{tpm} matrices are top-level components.
@@ -116,10 +136,14 @@ Differential analyses for RNA-seq: transcript-level estimates improve gene-level
 Zakeri M, Srivastava A, Almodaresi F, Patro R (2017).
 Improved data-driven likelihood factorizations for transcript abundance estimation.
 \emph{Bioinformatics} 33(14), i142-i151.
+
+Jousheghani ZZ, Singh NP, Patro R (2025).
+Oarfish: enhanced probabilistic modeling leads to improved accuracy in long read transcriptome quantification.
+\emph{Bioinformatics} 41(Supplement 1), i304-i313.
 }
 
 \seealso{
-\code{\link{catchKallisto}}, \code{\link{catchSalmon}}, \code{\link{splitGencodeTxNames}}.
+\code{\link{catchKallisto}}, \code{\link{catchSalmon}}, \code{\link{catchOarfish}}, \code{\link{splitGencodeTxNames}}.
 }
 
 \examples{

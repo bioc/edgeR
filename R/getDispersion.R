@@ -1,7 +1,7 @@
 getDispersion <- function(y)
 #	Get most complex dispersion values from DGEList object
 #	Gordon Smyth
-#	Created 12 Dec 2011.  Last modified 3 Feb 2026.
+#	Created 12 Dec 2011. Last modified 3 Feb 2026.
 {
 	if( hasName(y,"tagwise.dispersion") ) {
 		dispersion <- y$tagwise.dispersion

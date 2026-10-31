@@ -1,8 +1,8 @@
 
 cbind.DGEList <- function(..., deparse.level=1)
-#  Combine samples from DGEList objects with same genelists
-#  Gordon Smyth
-#  20 Jun 2017
+#	Combine samples from DGEList objects with same genelists
+#	Gordon Smyth
+#	20 Jun 2017
 {
 	objects <- list(...)
 	nobjects <- length(objects)
@@ -19,9 +19,9 @@ cbind.DGEList <- function(..., deparse.level=1)
 }
 
 rbind.DGEList <- function(..., deparse.level=1)
-#  Combine genes from EList objects with same samples
-#  Gordon Smyth
-#  20 Jun 2017
+#	Combine genes from EList objects with same samples
+#	Gordon Smyth
+#	20 Jun 2017
 {
 	objects <- list(...)
 	nobjects <- length(objects)

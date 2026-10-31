@@ -4,7 +4,7 @@ UseMethod("aveLogCPM")
 aveLogCPM.DGEList <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispersion=NULL, ...)
 #	log2(AveCPM)
 #	Gordon Smyth
-#	Created 11 Mar 2013.  Last modified 9 Jul 2017.
+#	Created 11 Mar 2013. Last modified 9 Jul 2017.
 {
 #	Library sizes should be stored in y but are sometimes missing
 	lib.size <- y$samples$lib.size
@@ -36,7 +36,7 @@ aveLogCPM.PCList <- function(y, prior.count=2, ...)
 
 
 aveLogCPM.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, prior.count=2, dispersion=NULL, ...)
-#	Created 03 Apr 2020.  Last modified 03 Apr 2020.
+#	Created 03 Apr 2020. Last modified 03 Apr 2020.
 {
 	y <- SE2DGEList(y)
 	aveLogCPM.DGEList(y, normalized.lib.sizes=normalized.lib.sizes, prior.count=prior.count, dispersion=dispersion, ...)
@@ -45,7 +45,7 @@ aveLogCPM.SummarizedExperiment <- function(y, normalized.lib.sizes=TRUE, prior.c
 aveLogCPM.DGEGLM <- function(y, prior.count=2, dispersion=NULL, ...)
 #	aveLogCPM method for DGEGLM objects.
 #	Gordon Smyth
-#	Created 11 Mar 2013.  Last modified 24 Nov 2013.
+#	Created 11 Mar 2013. Last modified 24 Nov 2013.
 {
 #	Dispersion supplied as argument over-rules value in object
 	if(is.null(dispersion)) dispersion <- y$dispersion
