@@ -115,8 +115,9 @@ calcNormFactors.default <- function(object, lib.size=NULL, method=c("TMM","TMMws
 }
 
 .calcFactorTMM <- function(obs, ref, libsize.obs=NULL, libsize.ref=NULL, logratioTrim=.3, sumTrim=0.05, doWeighting=TRUE, Acutoff=-1e10)
-#	TMM between two libraries
+#	TMM between an observed library and a reference library
 #	Mark Robinson
+#	Created 22 Oct 2009.
 {
 	obs <- as.numeric(obs)
 	ref <- as.numeric(ref)

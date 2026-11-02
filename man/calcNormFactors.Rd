@@ -16,12 +16,12 @@ Calculate scaling factors to convert the raw library sizes for a set of sequence
 \method{normLibSizes}{DGEList}(object,
                 method = c("TMM", "TMMwsp", "RLE", "upperquartile", "none"),
                 refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
-                Acutoff = -1e10, p = 0.75, \dots)
+                Acutoff = -1e10, p = 0.75, renormalize.offset = FALSE, \dots)
 \method{normLibSizes}{SummarizedExperiment}(object,
                 method = c("TMM","TMMwsp","RLE","upperquartile","none"),
                 refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
                 Acutoff = -1e10, p = 0.75, \dots)
-\method{normLibSizes}{default}(object, lib.size = NULL,
+\method{normLibSizes}{default}(object, lib.size = NULL, offset.prior = NULL,
                 method = c("TMM","TMMwsp","RLE","upperquartile","none"),
                 refColumn = NULL, logratioTrim = .3, sumTrim = 0.05, doWeighting = TRUE,
                 Acutoff = -1e10, p = 0.75, \dots)
@@ -30,6 +30,7 @@ Calculate scaling factors to convert the raw library sizes for a set of sequence
 \arguments{
   \item{object}{a matrix of raw read counts or a \code{DGEList} object or a \code{SummarizedExperiment} object.}
   \item{lib.size}{numeric vector of library sizes corresponding to the columns of the matrix \code{object}.}
+  \item{offset.prior}{prior offset matrix providing observation-specific normalizations separate from the library sizes.}
   \item{method}{normalization method to be used.}
   \item{refColumn}{column to use as reference for \code{method="TMM"}. Can be a column number or a numeric vector of length \code{nrow(object)}.}
   \item{logratioTrim}{the fraction (0 to 0.5) of observations to be trimmed from each tail of the distribution of log-ratios (M-values) before computing the mean. Used by \code{method="TMM"} for each pair of samples.}
@@ -37,6 +38,7 @@ Calculate scaling factors to convert the raw library sizes for a set of sequence
   \item{doWeighting}{logical, whether to use (asymptotic binomial precision) weights when computing the mean M-values. Used by \code{method="TMM"} for each pair of samples.}
   \item{Acutoff}{minimum cutoff applied to A-values. Count pairs with lower A-values are ignored. Used by \code{method="TMM"} for each pair of samples.}
   \item{p}{numeric value between 0 and 1 specifying which quantile of the counts should be used by \code{method="upperquartile"}.}
+  \item{renormalize.offset}{whether to proceed with library size normalization even if \code{object} contains an \code{offset} matrix. In that case, the offset matrix is converted to a prior offset matrix so that the library sizes can be normalized separately.}
   \item{\dots}{other arguments are not currently used.}
 }
 
