@@ -97,6 +97,11 @@ Cmero M, Davidson NM, Oshlack A (2019).
 Using equivalence class counts for fast and accurate testing of differential transcript usage.
 \emph{F1000Research} 8, 265.
 \doi{10.12688/f1000research.18276.2}.
+
+Dong X, Chen L, Nie J, Smyth GK, Chen Y (2026).
+Differential transcript expression and differential transcript usage using Salmon and edgeR.
+\emph{Nature Protocols}.
+\doi{10.1038/s41596-026-01443-w}.
 }
 
 \examples{
