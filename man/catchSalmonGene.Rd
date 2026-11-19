@@ -84,6 +84,8 @@ If \code{DGEList=TRUE}, a \code{\link[edgeR:DGEList-class]{DGEList}} object with
 \item{counts}{matrix of gene counts, with rows for genes and columns for RNA samples.}
 \item{genes}{data.frame of gene annotation.}
 \item{genes$GeneName}{gene name (if GENCODE annotation detected).}
+\item{genes$TxTypes}{unique transcript biotypes for that gene (pipe-separated, if GENCODE annotation detected).}
+\item{genes$NPCTx}{number of protein-coding transcripts for that gene (if GENCODE annotation detected).}
 \item{genes$NTx}{number of transcripts per gene.}
 \item{genes$MaxTxLen}{maximum transcript length per gene.}
 \item{genes$AveEffLen}{effective gene length, averaged over samples.}
