@@ -60,6 +60,10 @@ fit <- glmFit(d,design,prior.count=0.5/4)
 lrt <- glmLRT(fit,coef=2)
 topTags(lrt)
 
+fit <- glmFit(d)
+fit$design
+fit <- glmFit(d,weights=array(1,dim(d)))
+
 dglm <- estimateGLMCommonDisp(d,design)
 dglm$common.dispersion
 dglm <- estimateGLMTagwiseDisp(dglm,design,prior.df=20)

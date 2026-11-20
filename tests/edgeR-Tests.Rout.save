@@ -1,13 +1,11 @@
 
-R version 4.6.1 (2026-06-24) -- "Happy Hop"
+R version 4.6.2 (2026-10-29 ucrt) -- "Diversified Portfolio"
 Copyright (C) 2026 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu
+Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -258,6 +256,24 @@ Tag.19 -0.7976602 13.31405 0.9279151 0.33540526 0.8276702
 Tag.12  0.7081170 14.31389 0.9095513 0.34023349 0.8276702
 Tag.3  -0.7300410 13.54155 0.8300307 0.36226364 0.8276702
 Tag.8  -0.7917906 12.86353 0.7830377 0.37621371 0.8276702
+> 
+> fit <- glmFit(d)
+> fit$design
+  (Intercept) group2
+1           1      0
+2           1      0
+3           1      1
+4           1      1
+attr(,"assign")
+[1] 0 1
+attr(,"contrasts")
+attr(,"contrasts")$group
+[1] "contr.treatment"
+
+> fit <- glmFit(d,weights=array(1,dim(d)))
+Warning message:
+In glmFit.DGEList(d, weights = array(1, dim(d))) :
+  'weights' not accepted as an argument for glmFit.DGEList(). Weights should be set as part of the DGEList object.
 > 
 > dglm <- estimateGLMCommonDisp(d,design)
 > dglm$common.dispersion
@@ -678,4 +694,4 @@ Max number of exons in a gene:  10
 > 
 > proc.time()
    user  system elapsed 
-  0.770   0.048   1.384 
+   0.75    0.21    0.98 

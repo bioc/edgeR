@@ -3,17 +3,18 @@
 glmFit <- function(y, ...)
 UseMethod("glmFit")
 
-glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
-#	Created 11 May 2011. Last modified 11 Jan 2024.
+glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, nthreads=1L, ...)
+#	Created 11 May 2011. Last modified 20 Nov 2026.
 {
-#	The design matrix defaults to the oneway layout defined by y$samples$group.
+#	The design matrix defaults to the oneway layout defined by y$samples$group,
+#	with the first level as the reference.
 #	If there is only one group, then the design matrix is left NULL so that a
 #	matrix with a single intercept column will be set later by glmFit.default.
 	if(is.null(design)) {
 		design <- y$design
 		if(is.null(design)) {
 			group <- droplevels(as.factor(y$samples$group))
-			if(nlevels(group) > 1L) design <- model.matrix(~y$samples$group)
+			if(nlevels(group) > 1L) design <- model.matrix(~group)
 		}
 	}
 	if(is.null(dispersion)) dispersion <- getDispersion(y)
@@ -21,7 +22,15 @@ glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, s
 	offset <- getOffset(y)
 	if(is.null(y$AveLogCPM)) y$AveLogCPM <- aveLogCPM(y)
 
-	fit <- glmFit.default(y=y$counts,design=design,dispersion=dispersion,offset=offset,lib.size=NULL,weights=y$weights,prior.count=prior.count,start=start,...)
+#	Check for disallowed arguments in '...'
+	ExtraArgs <- ...names()
+	if(length(ExtraArgs)) {
+		if("offset" %in% ExtraArgs) warning("'offset' not accepted as an argument for glmFit.DGEList(). The offset matrix should be set as part of the DGEList object or should be left for glmFit() to set.")
+		if("lib.size" %in% ExtraArgs) warning("'lib.size' not accepted as an argument for glmFit.DGEList(). Library sizes should be set when the DGEList is created.")
+		if("weights" %in% ExtraArgs) warning("'weights' not accepted as an argument for glmFit.DGEList(). Weights should be set as part of the DGEList object.")
+	}
+
+	fit <- glmFit.default(y=y$counts,design=design,dispersion=dispersion,offset=offset,lib.size=NULL,weights=y$weights,prior.count=prior.count,start=start,nthreads=nthreads)
 	fit$samples <- y$samples
 	fit$genes <- y$genes
 	fit$prior.df <- y$prior.df
@@ -29,18 +38,18 @@ glmFit.DGEList <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, s
 	fit
 }
 
-glmFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, ...)
-#	Created 19 Mar 2020. Last modified 19 Mar 2020.
+glmFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, prior.count=0.125, start=NULL, nthreads=1L, ...)
+#	Created 19 Mar 2020. Last modified 20 Nov 2026.
 {
 	y <- SE2DGEList(y)
-	glmFit.DGEList(y, design=design, dispersion=dispersion, prior.count=prior.count, start=start, ...)
+	glmFit.DGEList(y, design=design, dispersion=dispersion, prior.count=prior.count, start=start, nthreads=nthreads)
 }
 
 glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.size=NULL, weights=NULL, prior.count=0.125, start=NULL, nthreads=1L, ...)
 #	Fit negative binomial generalized linear model for each transcript
 #	to a series of digital expression libraries
-#	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun
-#	Created 17 Aug 2010. Last modified 7 Aug 2019.
+#	Davis McCarthy, Gordon Smyth, Yunshun Chen, Aaron Lun, Lizhong Chen.
+#	Created 17 Aug 2010. Last modified 20 Nov 2026.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -104,12 +113,12 @@ glmFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.siz
 		rownames(fit$unshrunk.coefficients) <- rownames(y)
 		priors <- .compressPrior(y, prior.count)
 		fit$coefficients <- .Call(.cxx_pred_fc, y, offset, priors, dispersion.mat, weights.mat, design, 250L, 1e-6, nthreads)
-	#	fit$coefficients <- predFC(y,design,offset=offset,dispersion=dispersion.mat,prior.count=prior.count,weights=weights.mat,...)*log(2)
+#		fit$coefficients <- predFC(y,design,offset=offset,dispersion=dispersion.mat,prior.count=prior.count,weights=weights.mat,...)*log(2)
 	}
 	colnames(fit$coefficients) <- colnames(design)
 	rownames(fit$coefficients) <- rownames(y)
 	dimnames(fit$fitted.values) <- dimnames(y)
-#	FIXME: we are not allowing missing values, so df.residual must be same for all tags
+
 	fit$df.residual <- rep(nlib-ncol(design),ntag)
 	fit$design <- design
 	fit$offset <- offset

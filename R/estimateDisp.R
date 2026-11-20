@@ -5,20 +5,16 @@ UseMethod("estimateDisp")
 
 estimateDisp.DGEList <- function(y, design=NULL, prior.df=NULL, trend.method="locfit", tagwise=TRUE, span=NULL, legacy.span=FALSE, min.row.sum=5, grid.length=21, grid.range=c(-10,10), robust=FALSE, winsor.tail.p=c(0.05,0.1), tol=1e-06, ...)
 #	Yunshun Chen.
-#	Created 16 Mar 2016. Last modified 24 Aug 2025.
+#	Created 16 Mar 2016. Last modified 20 Nov 2026.
 {
 	y <- validDGEList(y)
 	group <- y$samples$group
 	lib.size <- y$samples$lib.size * y$samples$norm.factors
-
-	if(is.null(design)) {
-		design <- y$design
-	} else {
-		y$design <- design
-	}
+	if(is.null(design)) design <- y$design
 
 	d <- estimateDisp(y=y$counts, design=design, group=group, lib.size=lib.size, offset=getOffset(y), prior.df=prior.df, trend.method=trend.method, tagwise=tagwise, span=span, legacy.span=legacy.span, min.row.sum=min.row.sum, grid.length=grid.length, grid.range=grid.range, robust=robust, winsor.tail.p=winsor.tail.p, tol=tol, weights=y$weights, ...)
 
+	if(is.null(design) && !is.null(d$design)) y$design <- y$design
 	y$common.dispersion <- d$common.dispersion
 	y$trended.dispersion <- d$trended.dispersion
 	if(tagwise) y$tagwise.dispersion <- d$tagwise.dispersion
@@ -45,7 +41,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 #	A matrix of likelihoods is computed for each gene at a set of dispersion grid points
 #	and WLEB() is called for weighted likelihood empirical Bayes.
 #	Yunshun Chen, Aaron Lun, Gordon Smyth.
-#	Created Jul 2012. Last modified 17 Jul 2026.
+#	Created Jul 2012. Last modified 19 Nov 2026.
 {
 #	Check y
 	y <- as.matrix(y)
@@ -57,9 +53,12 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	trend.method <- match.arg(trend.method, c("none", "loess", "locfit", "movingave", "locfit.mixed"))
 	
 #	Check group
-	if(is.null(group)) group <- rep(1, nlibs)
-	if(length(group)!=nlibs) stop("Incorrect length of group.")
-	group <- dropEmptyLevels(group)
+	if(is.null(group)) {
+		group <- factor(rep_len(1,nlibs))
+	} else {
+		if(length(group) != nlibs) stop("Incorrect length of group.")
+		group <- dropEmptyLevels(group)
+	}
 
 #	Check lib.size
 	if(is.null(lib.size)) lib.size <- colSums(y)
@@ -67,6 +66,16 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 
 #	Check offset
 	offset <- .compressOffsets(y, lib.size=lib.size, offset=offset)
+
+#	The offset is dense, then need a design matrix
+	if(!attr(offset,"repeat.row") && is.null(design)) {
+		if(length(levels(group)) > 1L) {
+			design <- model.matrix(~group)
+		} else {
+			design <- matrix(1,nlibs,1)
+			colnames(design) <- "Intercept"
+		}
+	}
 
 #	Check weights
 	weights <- .compressWeights(y, weights)
@@ -84,7 +93,7 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	l0 <- matrix(0, sum(sel), grid.length)
 
 #	Classic edgeR
-	if(is.null(design) && attr(offset,"repeat.row")){
+	if(is.null(design)){
 		# One way
 		message("Using classic mode.")
 		if(length(levels(group))==1)
@@ -225,12 +234,12 @@ estimateDisp.default <- function(y, design=NULL, group=NULL, lib.size=NULL, offs
 	if(robust) {
 		temp.df <- prior.df
 		temp.n <- prior.n
-		prior.df <- prior.n <- rep(Inf, ntags)
+		prior.df <- prior.n <- rep_len(Inf, ntags)
 		prior.df[sel] <- temp.df
 		prior.n[sel] <- temp.n
 	}
 
-	list(common.dispersion=common.dispersion, trended.dispersion=trended.dispersion, tagwise.dispersion=tagwise.dispersion, span=span, prior.df=prior.df, prior.n=prior.n)
+	list(common.dispersion=common.dispersion, trended.dispersion=trended.dispersion, tagwise.dispersion=tagwise.dispersion, span=span, prior.df=prior.df, prior.n=prior.n, design=design)
 }
 
 

@@ -27,7 +27,7 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 
 #	Checking dispersions, offsets and weights
 	offset <- .compressOffsets(y, offset=offset)
-    dispersion <- .compressDispersions(y, dispersion)
+	dispersion <- .compressDispersions(y, dispersion)
 	weights <- .compressWeights(y, weights)
 
 #	Checking empty design matrix
@@ -54,7 +54,7 @@ mglmLevenberg <- function(y, design, dispersion=0, offset=0, weights=NULL, coef.
 		beta <- as.matrix(coef.start)
 	}
 
-# 	Checking arguments and calling the C++ method.
+#	Checking arguments and calling the C++ method.
 	if (!is.double(beta)) storage.mode(beta) <- "double"
 	output <- .Call(.cxx_fit_levenberg, y, offset, dispersion, weights, design, beta, tol, maxit, nthreads)
 

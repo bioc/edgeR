@@ -72,7 +72,7 @@ These functions are all low-level in that they operate on atomic objects (numeri
 \code{mglmOneGroup} fits an intercept only model to each response vector.
 In other words, it treats all the libraries as belonging to one group.
 It implements Fisher scoring with a score-statistic stopping criterion for each gene.
-Excellent starting values are available for the null model, so this function seldom has any problems with convergence.
+Excellent starting values are available, so this function seldom has any problems with convergence.
 It is used by other edgeR functions to compute the overall abundance for each gene.
 
 \code{mglmOneWay} fits a oneway layout to each response vector.
@@ -80,7 +80,7 @@ It treats the libraries as belonging to a number of groups and calls \code{mglmO
 
 \code{mglmLevenberg} fits an arbitrary log-linear model to each response vector.
 It implements a Levenberg-Marquardt modification of the GLM scoring algorithm to prevent divergence.
-The main computation is implemented in C++.
+The main computation is implemented in C.
 
 All these functions treat the dispersion parameter of the negative binomial distribution as a known input.
 
@@ -111,16 +111,19 @@ Differential expression analysis of multifactor RNA-Seq experiments with respect
 \emph{Nucleic Acids Research} 40, 4288-4297.
 \doi{10.1093/nar/gks042}.
 
-  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025).
-  edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
-  \emph{Nucleic Acids Research} 53(2), gkaf018.
-  \doi{10.1093/nar/gkaf018}.
+Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025).
+edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
+\emph{Nucleic Acids Research} 53(2), gkaf018.
+\doi{10.1093/nar/gkaf018}.
 }
 
-\author{Gordon Smyth, Yunshun Chen, Davis McCarthy, Aaron Lun. C code by Aaron Lun.}
+\author{Originally written by Gordon Smyth, Yunshun Chen, and Davis McCarthy as pure R function. Converted by Aaron Lun to C++ and later by Lizhong Chen to plain C.}
 
 \seealso{
-Most users will call either \code{\link{glmFit}}, the higher-level function offering more object-oriented GLM modeling of DGE data, or else \code{\link{exactTest}}, which is designed for oneway layouts.
+\code{mglmOneGroup} is called by \code{\link{exactTest}}.
+
+Most users will now call \code{\link{glmQLFit}} or \code{\link{glmFit}}, which are higher-level functions offering more object-oriented GLM modeling of DGE data.
+Formerly, those functions called \code{mglmlOneWay} and \code{mglmLevenberg} to perform the fitting but they now call C code directly.
 }
 
 \examples{
