@@ -53,6 +53,9 @@ New argument `offset.prior` for cpm() and rpkm() to allow the offset matrix to b
 The `offset` argument still takes priority if it is set.
 
 \item
+The "TMM" method of normLibSizes() now uses `offset.prior` if provided.
+
+\item
 sampleWeights() now accepts a DGEGLM fitted model object from glmQLFit() instead of a matrix of adjusted unit deviances.
 
 \item
