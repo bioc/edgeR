@@ -3,10 +3,10 @@
 glmQLFit <- function(y, ...)
 UseMethod("glmQLFit")
 
-glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE,...)
+glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, covariate.trend=NULL, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, nthreads=1L, ...)
 # 	Fit NB GLMs and estimate QL dispersions with empirical Bayes moderation.
 # 	Yunshun Chen, Aaron Lun, Lizhong Chen, Gordon Smyth
-#	Created 5 Nov 2014. Last modified 23 Dec 2025.
+#	Created 5 Nov 2014. Last modified 21 Nov 2026.
 {
 #	The design matrix defaults to the oneway layout defined by y$samples$group.
 #	If there is only one group, then the design matrix is left NULL so that a
@@ -15,7 +15,7 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 		design <- y$design
 		if(is.null(design)) {
 			group <- droplevels(as.factor(y$samples$group))
-			if(nlevels(group) > 1L) design <- model.matrix(~y$samples$group)
+			if(nlevels(group) > 1L) design <- model.matrix(~group)
 		}
 	}
 
@@ -27,9 +27,19 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 		if(is.null(dispersion)) stop("No dispersion values found in DGEList object.")
 	}
 
-	offset <- getOffset(y)
-
-	fit <- glmQLFit.default(y=y$counts, design=design, dispersion=dispersion, offset=offset, lib.size=NULL, abundance.trend=abundance.trend, AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, ...)
+#	Check for disallowed arguments in '...'
+	ExtraArgs <- ...names()
+	if(length(ExtraArgs)) {
+		if("offset" %in% ExtraArgs) warning("'offset' not accepted as an argument for glmQLFit.DGEList(). The offset matrix should be set as part of the DGEList object or left for glmFit() to set.")
+		if("lib.size" %in% ExtraArgs) warning("'lib.size' not accepted as an argument for glmQLFit.DGEList(). Library sizes should be set when the DGEList is created.")
+		if("AveLogCPM" %in% ExtraArgs) warning("'AveLogCPM' not accepted as an argument for glmQLFit.DGEList(). Should be set as part of the DGEList object or left for glmQLFit() to set.")
+		if("weights" %in% ExtraArgs) warning("'weights' not accepted as an argument for glmQLFit.DGEList(). Weights should be set as part of the DGEList object.")
+		QLFit <- function(..., offset, lib.size, AveLogCPM, weights)
+			glmQLFit.default(y=y$counts, design=design, dispersion=dispersion, offset=getOffset(y), lib.size=NULL, abundance.trend=abundance.trend, covariate.trend=covariate.trend, AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, nthreads=nthreads, ...)
+		fit <- QLFit(...)
+	} else {
+		fit <- glmQLFit.default(y=y$counts, design=design, dispersion=dispersion, offset=getOffset(y), lib.size=NULL, abundance.trend=abundance.trend, covariate.trend=covariate.trend, AveLogCPM=y$AveLogCPM, robust=robust, winsor.tail.p=winsor.tail.p, weights=y$weights, legacy=legacy, nthreads=nthreads, ...)
+	}
 
 	fit$samples <- y$samples
 	fit$genes <- y$genes
@@ -37,7 +47,7 @@ glmQLFit.DGEList <- function(y, design=NULL, dispersion=NULL, abundance.trend=TR
 	fit
 }
 
-glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE,...)
+glmQLFit.SummarizedExperiment <- function(y, design=NULL, dispersion=NULL, abundance.trend=TRUE, robust=FALSE, winsor.tail.p=c(0.05, 0.1), legacy=FALSE, ...)
 #	Created 3 Apr 2020. Last modified 8 Apr 2023.
 {
 	y <- SE2DGEList(y)
@@ -53,6 +63,7 @@ glmQLFit.default <- function(y, design=NULL, dispersion=NULL, offset=NULL, lib.s
 #	DF adjustment for zeros added by Aaron Lun and Gordon Smyth, 7 Jan 2014.
 #	Split from glmQLFTest as a separate function by Aaron Lun and Yunshun Chen, 15 Sep 2014.
 #	Bias adjustment for deviance and DF added by Lizhong Chen and Gordon Smyth, 8 Nov 2022.
+#	covariate.trend added by Gordon Smyth 11 May 2023.
 #	C++ replaced with pure C by Lizhong Chen, 6 May 2024.
 #	legacy=FALSE argument passed to squeezeVar(), 1 Aug 2024.
 #	Support binomial models, 29 Apr 2025

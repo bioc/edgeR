@@ -11,13 +11,15 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 
 \usage{
 \method{glmQLFit}{default}(y, design = NULL, dispersion = NULL, offset = NULL, lib.size = NULL,
-        weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL,
-        covariate.trend = NULL, robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, nthreads = 1L, \dots)
-\method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
+        weights = NULL, abundance.trend = TRUE, AveLogCPM = NULL, covariate.trend = NULL,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
-        legacy = FALSE, \dots)
-\method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL, abundance.trend = TRUE,
+        legacy = FALSE, nthreads = 1, \dots)
+\method{glmQLFit}{DGEList}(y, design = NULL, dispersion = NULL,
+        abundance.trend = TRUE, covariate.trend = NULL,
+        robust = FALSE, winsor.tail.p = c(0.05, 0.1),
+        legacy = FALSE, nthreads = 1, \dots)
+\method{glmQLFit}{SummarizedExperiment}(y, design = NULL, dispersion = NULL,
+        abundance.trend = TRUE,
         robust = FALSE, winsor.tail.p = c(0.05, 0.1),
         legacy = FALSE, \dots)
 }
@@ -55,7 +57,7 @@ Estimate the genewise quasi-dispersions with empirical Bayes moderation.}
 
 \item{legacy}{logical, if \code{TRUE} then produce legacy results as for Bioconductor 3.16 and earlier. If \code{FALSE}, then use the new quasi-dispersion estimation method with adjusted deviances.}
 
-\item{nthreads}{integer giving the number of OpenMP threads to use for the genewise computations. Defaults to 1 (serial).}
+\item{nthreads}{number of OpenMP threads to use.}
 
 \item{\dots}{other arguments are passed to \code{\link{glmFit}}.}
 }
@@ -111,10 +113,10 @@ It is not correct to supply genewise dispersions because \code{glmQLFit} estimat
 }
 
 \references{
-  Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025).
-  edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
-  \emph{Nucleic Acids Research} 53(2), gkaf018.
-  \doi{10.1093/nar/gkaf018}.
+Chen Y, Chen L, Lun ATL, Baldoni PL, Smyth GK (2025).
+edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets.
+\emph{Nucleic Acids Research} 53(2), gkaf018.
+\doi{10.1093/nar/gkaf018}.
 
 Chen Y, Lun ATL, Smyth GK (2016).
 From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline.

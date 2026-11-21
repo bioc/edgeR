@@ -117,7 +117,13 @@ catchKallisto <- function(parent.dir=NULL,sample.dirs=NULL,remove.version=TRUE,D
 	dimnames(EffLen) <- dimnames(Counts)
 
 #	Divided counts
-	if(divide) Counts <- Counts / Ann$Overdispersion
+	if(divide) {
+		if(max(DF) > 0) {
+			Counts <- Counts / Ann$Overdispersion
+		} else {
+			message("No bootstrap or Gibbs samples, so counts not divided")
+		}
+	}
 	
 	if(DGEList) {
 		y  <- DGEList(count=Counts,genes=Ann)

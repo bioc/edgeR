@@ -145,15 +145,19 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 	}
 	if(identical(gene.length,"tximport")) {
 		GeneIsAllZero <- which(rowSums(Counts) == 0)
-		TxGeneIsAllZero <- which(EnsG %in% EnsGu[GeneIsAllZero])
-		m <- rowMeans(EffTxLen[TxGeneIsAllZero,,drop=FALSE])
-		EffGeneLen <- Counts
-		EffGeneLen[GeneIsAllZero,] <- rowsum(m,EnsG[TxGeneIsAllZero],reorder=FALSE) / NTxPerGene[GeneIsAllZero]
-		EffGeneLen[-GeneIsAllZero,] <- rowsum(TPM[-TxGeneIsAllZero,]*EffTxLen[-TxGeneIsAllZero,],EnsG[-TxGeneIsAllZero],reorder=FALSE) / rowsum(TPM[-TxGeneIsAllZero,],EnsG[-TxGeneIsAllZero],reorder=FALSE) 
-		if(anyNA(EffGeneLen)) {
-			m <- exp(rowMeans(log(EffGeneLen),na.rm=TRUE))
-			i <- which(is.na(EffGeneLen))
-			EffGeneLen[i] <- matrix(m,NGene,NSamples)[i]
+		if(length(GeneIsAllZero)) {
+			TxGeneIsAllZero <- which(EnsG %in% EnsGu[GeneIsAllZero])
+			m <- rowMeans(EffTxLen[TxGeneIsAllZero,,drop=FALSE])
+			EffGeneLen <- Counts
+			EffGeneLen[GeneIsAllZero,] <- rowsum(m,EnsG[TxGeneIsAllZero],reorder=FALSE) / NTxPerGene[GeneIsAllZero]
+			EffGeneLen[-GeneIsAllZero,] <- rowsum(TPM[-TxGeneIsAllZero,]*EffTxLen[-TxGeneIsAllZero,],EnsG[-TxGeneIsAllZero],reorder=FALSE) / rowsum(TPM[-TxGeneIsAllZero,],EnsG[-TxGeneIsAllZero],reorder=FALSE) 
+			if(anyNA(EffGeneLen)) {
+				m <- exp(rowMeans(log(EffGeneLen),na.rm=TRUE))
+				i <- which(is.na(EffGeneLen))
+				EffGeneLen[i] <- matrix(m,NGene,NSamples)[i]
+			}
+		} else {
+			EffGeneLen <- rowsum(TPM*EffTxLen,EnsG,reorder=FALSE) / rowsum(TPM,EnsG,reorder=FALSE)
 		}
 	}
 	if(identical(gene.length,"simple")) {
@@ -197,7 +201,7 @@ catchSalmonGene <- function(parent.dir=NULL,sample.dirs=NULL,tx2gene=NULL,remove
 
 #	Divided counts
 	if(divide) {
-		if(NBoot > 0) {
+		if(max(DF) > 0) {
 			Counts <- Counts / OverDisp
 		} else {
 			message("No bootstrap or Gibbs samples, so counts not divided")
