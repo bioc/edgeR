@@ -3,13 +3,13 @@
 \encoding{UTF-8}
 
 
-\section{version 5.0.0 (2026-10-30)}{\itemize{
+\section{version 5.0.0 (2026-11-25)}{\itemize{
 
 \item
 The genewise C kernels (GLM fitting, deviances, CPM, quasi-likelihood adjustment, exact test, diffSplice, etc.) are now parallelized with OpenMP. The number of threads is controlled by a new `nthreads` argument on the affected functions, or globally via `options(edgeR.nthreads=)`, and defaults to 1 (serial) so results are unchanged by default.
 
 \item
-The C backend for diffSplice() now exploits the bordered block-diagonal (arrowhead) structure of the splice design matrix, fitting the genewise null models in time linear, rather than cubic, in the number of exons per gene. Results are unchanged. diffSplice() also gains `maxit` and `tol` arguments controlling the genewise GLM fits.
+The C backend for diffSplice() now exploits the bordered block-diagonal (arrowhead) structure of the splice design matrix, fitting the genewise null models in time that increases linearly, rather than cubicly, with the number of exons per gene. Results are unchanged. diffSplice() also gains `maxit` and `tol` arguments controlling the genewise GLM fits.
 
 \item
 voomLmFit() has been removed from edgeR and is now provided by the limma package.
@@ -31,8 +31,8 @@ New function readBismark2PC() to read Bismark output into an edgeR PCList object
 New class PCList to store paired counts, for example methylated and unmethylated reads, for the same genomic regions.
 
 \item
-New function catchSalmonGene() that reads Salmon output and produces gene-level results, collapsing the tx quantifications to gene-level counts and RTA dispersions.
-It automatically extracts gene IDs and annotation from Gencode transcript names if they are present, or alternatively accepts tx to gene mappings via a data.frame.
+New functions catchKallistoGene(), catchSalmonGene(), and catchOarfishGene() that produce gene-level quantifications from kallisto, Salmon or Oarfish output, collapsing the tx quantifications to gene-level counts and RTA dispersions.
+They automatically extract gene IDs and annotation from Gencode transcript names if they are present, or alternatively accept tx to gene mappings via a data.frame.
 
 \item
 New function splitGencodeTxNames() to unpack gene and transcript annotation found in Gencode transcript IDs.
@@ -46,7 +46,10 @@ New argument `parent.dir` for catchSalmon(), catchSalmonGene(), catchKallisto(),
 New argument `sample.dirs` for catchSalmon(), catchSalmonGene(), and catchKallisto(), that replaces `paths` and allows individual samples to be specified.
 
 \item
-New argument `offset.prior` for cpm(), rpkm(), catchSalmon() and catchSalmonGene() to allow the offset matrix to be specified relative to the log(library sizes).
+All members of the catch family of functions optionally produce an `offset.prior` matrix that represents tx length normalization.
+
+\item
+New argument `offset.prior` for cpm() and rpkm() to allow the offset matrix to be specified relative to the log(library sizes).
 The `offset` argument still takes priority if it is set.
 
 \item
