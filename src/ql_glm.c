@@ -29,7 +29,7 @@ static const double thresholdzero=1e-4;
 /* Per-thread scratch for the QL adjustment kernels (NB and binomial). The `aux`
  * buffer holds the NB dispersion or the binomial coverage; the trailing four fields
  * are the scratch qr_hat needs, hoisted here so qr_hat performs no allocation inside
- * the parallel region. */
+ * the parallel region (qraux also holds the group sums of the one-way hat values). */
 typedef struct {
     double *yptr, *uptr, *wptr, *aux;    /* nlib row buffers: y, mu, weights, disp/cover */
     double *xdpt;                        /* nlib*ncoef weighted design */
@@ -38,7 +38,7 @@ typedef struct {
     int    *jpvt;                        /* ncoef  qr_hat pivots       */
     double *qraux;                       /* ncoef  qr_hat              */
     double *qrwork;                      /* 2*ncoef qr_hat work        */
-    double *qy;                          /* nlib*ncoef qr_hat Q*y      */
+    double *vrow;                        /* ncoef  qr_hat solve vector */
 } ql_ws;
 
 /* Allocate one ql_ws scratch workspace per thread; release with ql_ws_free. */
@@ -57,7 +57,7 @@ static ql_ws *ql_ws_alloc(int nth, int nlib, int ncoef)
         ws[t].jpvt   = R_Calloc(ncoef,int);
         ws[t].qraux  = R_Calloc(ncoef,double);
         ws[t].qrwork = R_Calloc(2*ncoef,double);
-        ws[t].qy     = R_Calloc(nlib*ncoef,double);
+        ws[t].vrow   = R_Calloc(ncoef,double);
     }
     return ws;
 }
@@ -77,15 +77,122 @@ static void ql_ws_free(ql_ws *ws, int nth)
         R_Free(ws[t].jpvt);
         R_Free(ws[t].qraux);
         R_Free(ws[t].qrwork);
-        R_Free(ws[t].qy);
+        R_Free(ws[t].vrow);
     }
     R_Free(ws);
 }
 
-/* Build the sqrt(W)-weighted design and take its hat values for one gene. The working
+/* One-way layout check for the QL hat values, done once per call before the gene loop.
+ *
+ * inputs:
+ *   design  nlib x ncoef design matrix
+ *
+ * outputs:
+ *   group   length nlib: index (0..ncoef-1) of the distinct design row of each library;
+ *           meaningful only when the return value is 1
+ *
+ * returns:
+ *   1 when the design has exactly ncoef distinct rows (equal within 1e-12, as in
+ *   get_groups_from_design) and the ncoef x ncoef matrix of those rows has full rank: the
+ *   column space of the design is then spanned by the group indicators, and the hat value of
+ *   library i in a gene is w_i / (sum of w over the libraries of its group). 0 otherwise; the
+ *   scan stops as soon as a row ncoef+1 is found, so a design with a continuous covariate costs
+ *   O(nlib ncoef^2), not O(nlib^2).
+ */
+static int ql_oneway_groups(const cmx *design, int *group)
+{
+    int nlib = design->nrow;
+    int ncoef = design->ncol;
+    const double *dmat = design->dmat;
+    int *rep = R_Calloc(ncoef, int);
+    int ngroups = 0;
+    int ok = 1;
+    for(int i=0; i<nlib && ok; ++i)
+    {
+        int g;
+        for(g=0; g<ngroups; ++g)
+        {
+            int match = 1;
+            for(int c=0; c<ncoef; ++c)
+            {
+                if(fabs(dmat[c*nlib+i] - dmat[c*nlib+rep[g]]) > 1e-12)
+                {
+                    match = 0;
+                    break;
+                }
+            }
+            if(match)
+            {
+                break;
+            }
+        }
+        if(g==ngroups)
+        {
+            if(ngroups==ncoef)
+            {
+                ok = 0;
+                break;
+            }
+            rep[ngroups] = i;
+            ngroups++;
+        }
+        group[i] = g;
+    }
+    if(ok && ngroups==ncoef)
+    {
+        double *u = R_Calloc(ncoef*ncoef, double);
+        double *qraux = R_Calloc(ncoef, double);
+        double *work = R_Calloc(2*ncoef, double);
+        int *jpvt = R_Calloc(ncoef, int);
+        double tol = 1e-7;
+        int k;
+        for(int g=0; g<ncoef; ++g)
+        {
+            jpvt[g] = g+1;
+            for(int c=0; c<ncoef; ++c)
+            {
+                u[c*ncoef+g] = dmat[c*nlib+rep[g]];
+            }
+        }
+        /* dqrdc2 is R's modified LINPACK QR routine (src/appl/dqrdc2.f): Householder QR of the
+         * ncoef x ncoef matrix u of distinct design rows with tolerance-based limited column
+         * pivoting, returning its numerical rank k.
+         * edgeR calls it here only to confirm that the distinct rows have full rank, so that the
+         * design and the group indicators span the same column space.
+         * Argument mapping:
+         *   x     = u      (ncoef x ncoef distinct rows; overwritten by the QR factors)
+         *   ldx   = &ncoef (leading dimension of u)
+         *   n     = &ncoef (number of rows)
+         *   p     = &ncoef (number of columns)
+         *   tol   = &tol   (rank-detection tolerance, 1e-7, as in qr_hat)
+         *   k     = &k     (output: numerical rank)
+         *   qraux = qraux  (output, length ncoef: Householder scalars, unused here)
+         *   jpvt  = jpvt   (in/out, length ncoef: pivots, preset to 1..ncoef)
+         *   work  = work   (workspace, length 2*ncoef)
+         * The design is treated as a one-way layout only when k == ncoef.
+         * Equivalent R operation: qr(u, tol = 1e-7)$rank == ncol(u).
+         * Netlib references: https://netlib.org/linpack/dqrdc.f */
+        F77_CALL(dqrdc2)(u, &ncoef, &ncoef, &ncoef, &tol, &k, qraux, jpvt, work);
+        ok = (k==ncoef);
+        R_Free(u);
+        R_Free(qraux);
+        R_Free(work);
+        R_Free(jpvt);
+    }
+    else
+    {
+        ok = 0;
+    }
+    R_Free(rep);
+    return ok;
+}
+
+/* Hat values of the sqrt(W)-weighted design for one gene, written to w->hptr. The working
  * weight zwpt is the only distribution-specific part: NB uses sqrt(mu*w/(1+mu*disp/
- * prior)), binomial uses sqrt(cover*mu*(1-mu)). */
-static void ql_tag_hat(ql_ws *w, const double *dmat, int nlib, int ncoef, int fam, double prior)
+ * prior)), binomial uses sqrt(cover*mu*(1-mu)). When group is not NULL (one-way layout, see
+ * ql_oneway_groups) the hat value is zw_i^2 / (sum of zw^2 over the group), 0 for a group whose
+ * weights are all 0; otherwise sqrt(W)X is formed in w->xdpt and passed to qr_hat. */
+static void ql_tag_hat(ql_ws *w, const double *dmat, int nlib, int ncoef, int fam, double prior, const int *group)
 {
     for(int lib=0; lib<nlib; ++lib)
     {
@@ -99,11 +206,29 @@ static void ql_tag_hat(ql_ws *w, const double *dmat, int nlib, int ncoef, int fa
         }
         w->hptr[lib]=0;
     }
+    if(group)
+    {
+        double *gsum = w->qraux;
+        for(int g=0; g<ncoef; ++g)
+        {
+            gsum[g] = 0;
+        }
+        for(int lib=0; lib<nlib; ++lib)
+        {
+            gsum[group[lib]] += w->zwpt[lib] * w->zwpt[lib];
+        }
+        for(int lib=0; lib<nlib; ++lib)
+        {
+            double sg = gsum[group[lib]];
+            w->hptr[lib] = (sg > 0) ? w->zwpt[lib] * w->zwpt[lib] / sg : 0.0;
+        }
+        return;
+    }
     for(int i=0; i<nlib*ncoef; ++i)
     {
         w->xdpt[i]=dmat[i] * w->zwpt[i % nlib];
     }
-    qr_hat(w->xdpt, nlib, ncoef, w->hptr, w->jpvt, w->qraux, w->qrwork, w->qy);
+    qr_hat(w->xdpt, nlib, ncoef, dmat, w->zwpt, w->hptr, w->jpvt, w->qraux, w->qrwork, w->vrow);
 }
 
 /* Per-library leverage-adjusted unit contributions for one gene, distribution-specific.
@@ -140,6 +265,12 @@ void ql_adjust_vec (int fam, cmx *y, cmx *mu, cmx *design, cmx *aux, double prio
 
     int nth = clamp_threads(nthreads);
     ql_ws *ws = ql_ws_alloc(nth, nlib, ncoef);
+    int *group = R_Calloc(nlib, int);
+    if(!ql_oneway_groups(design, group))
+    {
+        R_Free(group);
+        group = NULL;
+    }
 
     #ifdef _OPENMP
     #pragma omp parallel for num_threads(nth) schedule(static)
@@ -153,7 +284,7 @@ void ql_adjust_vec (int fam, cmx *y, cmx *mu, cmx *design, cmx *aux, double prio
         ql_ws *w = &ws[tid];
         double wpt[2], hdp, udp, wdp;
         get_row4(y,mu,aux,weights,tag,w->yptr,w->uptr,w->aux,w->wptr);
-        ql_tag_hat(w, design->dmat, nlib, ncoef, fam, prior);
+        ql_tag_hat(w, design->dmat, nlib, ncoef, fam, prior, group);
 
         dev[tag]=0;
         df[tag]=0;
@@ -171,6 +302,10 @@ void ql_adjust_vec (int fam, cmx *y, cmx *mu, cmx *design, cmx *aux, double prio
     }
 
     ql_ws_free(ws, nth);
+    if(group)
+    {
+        R_Free(group);
+    }
 
     return;
 }
@@ -183,6 +318,12 @@ void ql_adjust_mat (int fam, cmx *y, cmx *mu, cmx *design, cmx *aux, double prio
 
     int nth = clamp_threads(nthreads);
     ql_ws *ws = ql_ws_alloc(nth, nlib, ncoef);
+    int *group = R_Calloc(nlib, int);
+    if(!ql_oneway_groups(design, group))
+    {
+        R_Free(group);
+        group = NULL;
+    }
 
     #ifdef _OPENMP
     #pragma omp parallel for num_threads(nth) schedule(static)
@@ -196,7 +337,7 @@ void ql_adjust_mat (int fam, cmx *y, cmx *mu, cmx *design, cmx *aux, double prio
         ql_ws *w = &ws[tid];
         double wpt[2], hdp, udp, wdp;
         get_row4(y,mu,aux,weights,tag,w->yptr,w->uptr,w->aux,w->wptr);
-        ql_tag_hat(w, design->dmat, nlib, ncoef, fam, prior);
+        ql_tag_hat(w, design->dmat, nlib, ncoef, fam, prior, group);
 
         double *fptr=dfmat+tag;
         double *vptr=dvmat+tag;
@@ -211,6 +352,10 @@ void ql_adjust_mat (int fam, cmx *y, cmx *mu, cmx *design, cmx *aux, double prio
     }
 
     ql_ws_free(ws, nth);
+    if(group)
+    {
+        R_Free(group);
+    }
 
     return;
 }
@@ -264,7 +409,7 @@ double update_prior(cmx *y, cmx *mu, cmx *design, cmx *disp, cmx *weights, doubl
 
 /*
  * a wrapper for the input data, preparing for clowess
- * sort x and y using rsort_with_index
+ * sort x and y using R_qsort_I
  * calculate delta = diff(range(x))
  */
 
@@ -275,7 +420,7 @@ static void clowess2 (double *x, double *y, int n, int iter, double f, double *a
     {
         ind[i]=i;
     }
-    rsort_with_index(x,ind,n);
+    R_qsort_I(x,ind,1,n);
 
     double delta=0.01*(x[n-1]-x[0]);
     double *yy  = R_Calloc(n, double);
@@ -364,55 +509,42 @@ static double compute_prior (double *ag, double *s2, double *df, int ntag)
     return out;
 }
 
-/* hat values by QR decomposition
- * this function is extracted from hat() in stats package
- * hat <- function(x, intercept = TRUE)
- * {
- *   if(is.qr(x)) n <- nrow(x$qr)
- *   else {
- *	    if(intercept) x <- cbind(1, x)
- *	    n <- nrow(x)
- *	    x <- qr(x)
- *   }
- *   rowSums(qr.qy(x, diag(1, nrow = n, ncol = x$rank))^2)
- * }
+/* Hat values of an n x p matrix x (here the sqrt(W)-weighted design of one gene), as in hat() of
+ * the stats package:
+ *   rowSums(qr.qy(qr(x), diag(1, nrow = n, ncol = qr(x)$rank))^2)
+ * The pivoted QR gives X_k = Q_k R_k for the leading k (rank) pivoted columns, so row i of Q_k is
+ * z = R_k^{-T} x_i and hat_i = sum(z^2). z is found by one forward solve per row (k^2/2
+ * operations) instead of forming Q_k with dqrqy (about 2nk^2), with the same pivoting and rank
+ * decision as before.
  *
- * it contains two parts:
- * 1. QR decomposition of x
- * 2. QR_econ for computation of hat values
+ * inputs:
+ *   x      n x p weighted design, overwritten by dqrdc2
+ *   n, p   dimensions of x (n >= p)
+ *   dmat   n x p unweighted design and
+ *   zw     length-n weights: row i of x is zw[i] * dmat[i, ]; used to rebuild the rows of x
+ *          after dqrdc2 has overwritten it
+ *
+ * outputs:
+ *   hat    length n: hat values (each row's sum of squares of Q_k)
+ *
+ * scratch (caller-owned): jpvt (p), qraux (p), work (2p), vrow (p). No return value.
  */
-
-
-/*
-  inputs:
-  x input matrix with n > p
-  n number of rows of x
-  p number of columns of x
-
-  output:
-  hat hat values for the matrix x
-*/
-
-void qr_hat (double* x, int n, int p, double* hat, int *jpvt, double *qraux, double *work, double *qy)
+void qr_hat (double* x, int n, int p, const double *dmat, const double *zw, double* hat, int *jpvt, double *qraux, double *work, double *vrow)
 {
     /* k: the rank of matrix x */
     int k;
+    double tol=1e-7;
 
-    /* jpvt: pivot vector (caller-owned scratch, size p) */
     for(int i=0; i<p; ++i)
     {
         jpvt[i]=i+1;
     }
 
-    /* preparation for QR decomposition
-     * qraux: size p, work: size 2*p (both caller-owned) */
-    double tol=1e-7;
-
     /* dqrdc2 is R's modified LINPACK QR routine (src/appl/dqrdc2.f): it forms the
      * QR factorization of the n-by-p matrix x by Householder transformations, using
      * a tolerance-based limited column pivoting to detect and handle rank deficiency.
      * edgeR calls it to factor the sqrt(W)-weighted design so the QL GLM leverages
-     * (hat values) used in the adjusted deviance can be recovered from Q.
+     * (hat values) used in the adjusted deviance can be recovered from R.
      * Argument mapping:
      *   x     = x     (n x p weighted design; overwritten in place by R and the
      *                  Householder vectors of the QR factorization)
@@ -421,68 +553,31 @@ void qr_hat (double* x, int n, int p, double* hat, int *jpvt, double *qraux, dou
      *   p     = &p    (number of columns / coefficients)
      *   tol   = &tol  (rank-detection tolerance, 1e-7)
      *   k     = &k    (output: computed numerical rank of x)
-     *   qraux = qraux (output, length p: auxiliary Householder scalars defining Q)
+     *   qraux = qraux (output, length p: auxiliary Householder scalars, unused here)
      *   jpvt  = jpvt  (in/out, length p: column pivot indices, preset to 1..p)
      *   work  = work  (workspace, length 2*p)
-     * The factors and rank k feed the following dqrqy multiply that yields the hats.
+     * The leading k columns of the upper triangle of x then hold R_k, and jpvt[0..k-1]
+     * name the design columns they belong to.
      * Equivalent R operation: qr(x, tol = 1e-7) (the decomposition inside hat()).
      * Netlib references: https://netlib.org/linpack/dqrdc.f */
     /* call dqrdc2: https://svn.r-project.org/R/branches/R-4-4-branch/src/appl/dqrdc2.f */
     F77_CALL(dqrdc2)(x, &n, &n, &p, &tol, &k, qraux, jpvt, work);
 
-    /* preparation for QR_econ: qy is caller-owned scratch of size n*p (>= n*k) */
-    int nk=n*k;
-    double *y = qy;
-    for(int i=0; i<nk; ++i)
+    /* forward solve R_k^T z = x_i for each row i; R_k[l, j] = x[l + n*j] for l <= j */
+    for(int i=0; i<n; ++i)
     {
-        y[i]=0;                            // initialization
-    }
-
-    double *yptr;
-    yptr=y;
-    for(int i=0; i<k; ++i, yptr+=n)
-    {
-        yptr[i]=1;                                               // diagonalization
-    }
-
-    /* dqrqy is R's LINPACK-derived routine (src/appl/dqrutl.f): it applies the
-     * orthogonal factor Q from dqrdc2 to a matrix, forming qy = Q %*% y without
-     * ever assembling Q explicitly.
-     * edgeR calls it with the first k unit columns so that Q's leading k columns
-     * are produced; their squared row sums are the QL GLM leverages (hat values).
-     * Argument mapping:
-     *   x     = x     (QR factors from dqrdc2, n x k)
-     *   n     = &n    (number of rows / libraries)
-     *   k     = &k    (rank: number of Householder steps / columns of Q applied)
-     *   qraux = qraux (Householder scalars from dqrdc2)
-     *   y     = y     (input, n x k: the first k columns of the identity)
-     *   ny    = &k    (number of columns of y)
-     *   qy    = y     (output: Q %*% y, written in place over the same buffer)
-     * The result holds Q(:,1:k); hat[i] = sum_j Q[i,j]^2 is formed in the loop below.
-     * Equivalent R operation: qr.qy(qr(x), diag(1, nrow = n, ncol = k)).
-     * Netlib references: https://netlib.org/linpack/dqrsl.f */
-    /* call dqrqy: https://svn.r-project.org/R/branches/R-4-4-branch/src/appl/dqrutl.f */
-    F77_CALL(dqrqy)(x, &n, &k, qraux, y, &k, y);
-
-    /* compute hat values */
-
-    /*
-    for(int i=0;i<n;++i){
-      for(int j=0;j<k;++j){
-        R_xlen_t ii = (R_xlen_t)(n)*j + i;
-        hat[i] += y[ii]*y[ii];
-      }
-    }
-    */
-
-    for(int i=0;i<n;++i)
-    {
-        yptr=y+i;
-        for(int j=0;j<k;++j,yptr+=n)
+        double h = 0;
+        for(int j=0; j<k; ++j)
         {
-            hat[i] += fsquare(*yptr);
+            double s = dmat[i + (size_t) n*(jpvt[j]-1)] * zw[i];
+            const double *rptr = x + (size_t) n*j;
+            for(int l=0; l<j; ++l)
+            {
+                s -= rptr[l] * vrow[l];
+            }
+            vrow[j] = s / rptr[j];
+            h += vrow[j] * vrow[j];
         }
+        hat[i] = h;
     }
-
-    return;
 }

@@ -36,7 +36,7 @@ c radius will not decrease by move right
                nright = nright+1
                goto  4
 c fitted value at x(i)
-   5        call lowest(x, y, n, x(i), ys(i), nleft, nright, res, iter
+   5        call lowest(x, y, n, x(i), ys(i), nleft, nright, iter
      +     .gt. 1, rw, ok)
             if (.not. ok) ys(i) = y(i)
 c all weights zero - copy over value (all rw==0)
@@ -116,76 +116,72 @@ c near 1, avoid underflow
          goto  2
   22  return
       end
-      subroutine lowest(x, y, n, xs, ys, nleft, nright, w, userw
-     +, rw, ok)
+      subroutine lowest(x, y, n, xs, ys, nleft, nright, userw, rw, ok)
+c local linear fit at xs with tricube weights (times rw if userw).
+c one sweep accumulates sum w, w*d, w*d**2, w*y and w*d*y with
+c d = x(j)-xs, and the weighted least-squares line is evaluated at xs in
+c closed form. this equals the former five-sweep version (weights,
+c normalise, mean, variance, weighted sum) up to rounding (~1e-13).
       integer n
       integer nleft, nright
-      double precision x(n), y(n), xs, ys, w(n), rw(n)
+      double precision x(n), y(n), xs, ys, rw(n)
       logical userw, ok
-      integer nrt, j
-      double precision abs, a, b, c, h, r
-      double precision h1, sqrt, h9, amax1, range
+      integer j
+      double precision r, h, h1, h9, hinv, q, t, wj, d, range
+      double precision s0, s1, s2, t0, t1, md, my, c, b
       range = x(n)-x(1)
       h = max(xs-x(nleft), x(nright)-xs)
       h9 = 0.999d0*h
       h1 = 0.001d0*h
-c sum of weights
-      a = 0.0
-      j = nleft
-         goto  2
-   1     j = j+1
-   2     if (j .gt. n) goto  7
-c compute weights (pick up all ties on right)
-         w(j) = 0.
-         r = abs(x(j)-xs)
-         if (r .gt. h9) goto 5
-            if (r .le. h1) goto 3
-               w(j) = (1.0-(r/h)**3)**3
-c small enough for non-zero weight
-               goto  4
-   3           w(j) = 1.
-   4        if (userw) w(j) = rw(j)*w(j)
-            a = a+w(j)
-            goto  6
-   5        if (x(j) .gt. xs) goto  7
+      hinv = 0.0d0
+      if (h .gt. 0.0d0) hinv = 1.0d0/h
+      s0 = 0.0d0
+      s1 = 0.0d0
+      s2 = 0.0d0
+      t0 = 0.0d0
+      t1 = 0.0d0
+c weights from nleft on (pick up all ties on right)
+      do 6 j = nleft, n
+         d = x(j)-xs
+         r = abs(d)
+         if (r .gt. h9) then
 c get out at first zero wt on right
-   6     continue
-         goto  1
-c rightmost pt (may be greater than nright because of ties)
-   7  nrt = j-1
-      if (a .gt. 0.0) goto 8
+            if (x(j) .gt. xs) goto 7
+            goto 6
+         endif
+         if (r .le. h1) then
+c near 0, avoid underflow
+            wj = 1.0d0
+         else
+            q = r*hinv
+            t = 1.0d0-q*q*q
+            wj = t*t*t
+         endif
+         if (userw) wj = rw(j)*wj
+         s0 = s0+wj
+         s1 = s1+wj*d
+         s2 = s2+wj*d*d
+         t0 = t0+wj*y(j)
+         t1 = t1+wj*d*y(j)
+   6  continue
+c all weights zero
+   7  if (s0 .gt. 0.0d0) goto 8
          ok = .false.
-         goto  16
-   8     ok = .true.
-c weighted least squares
-         do  9 j = nleft, nrt
-c make sum of w(j) == 1
-            w(j) = w(j)/a
-   9        continue
-         if (h .le. 0.) goto 14
-            a = 0.0
-c use linear fit
-            do  10 j = nleft, nrt
-c weighted center of x values
-               a = a+w(j)*x(j)
-  10           continue
-            b = xs-a
-            c = 0.0
-            do  11 j = nleft, nrt
-               c = c+w(j)*(x(j)-a)**2
-  11           continue
-            if (sqrt(c) .le. 0.001d0*range) goto 13
-               b = b/c
-c points are spread out enough to compute slope
-               do  12 j = nleft, nrt
-                  w(j) = w(j)*(b*(x(j)-a)+1.0)
-  12              continue
-  13        continue
-  14     ys = 0.0
-         do  15 j = nleft, nrt
-            ys = ys+w(j)*y(j)
-  15        continue
-  16  return
+         return
+   8  ok = .true.
+c weighted mean of y; used as is unless the x values are spread out
+      my = t0/s0
+      ys = my
+      if (h .le. 0.0d0) return
+      md = s1/s0
+      c = s2/s0-md*md
+c c <= 0 can only come from rounding when the x values coincide
+      if (c .le. 0.0d0) return
+      if (sqrt(c) .le. 0.001d0*range) return
+c linear fit: slope cov(d,y)/c, evaluated at d = 0
+      b = -md/c
+      ys = my+b*(t1/s0-md*my)
+      return
       end
       subroutine qselect(a, n, k)
 c in-place quickselect: put the k-th smallest (1-indexed) at a(k), with

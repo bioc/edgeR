@@ -1441,7 +1441,11 @@ void fit_one_way_mat(cmx *y, cmx *offsets, cmx *disp, cmx *weights, int *group,
  * output:
  * group   per-library group index (length nlib), filled in place
  *
- * returns: the number of distinct groups found.
+ * returns: the number of distinct groups found, or ncoef + 1 as soon as a group
+ * ncoef + 1 appears; the scan then stops and group is left incomplete. Callers
+ * only test ngroups == ncoef (one-way layout), so the scan costs at most about
+ * nlib * ncoef^2 comparisons instead of nlib^2 * ncoef / 2 when every row is
+ * distinct (a continuous covariate).
  */
 int get_groups_from_design(cmx *design, int *group)
 {
@@ -1462,6 +1466,10 @@ int get_groups_from_design(cmx *design, int *group)
             continue;
         }
 
+        if (ngroups == ncoef)
+        {
+            return ncoef + 1;
+        }
         int g = ngroups++;
         group[i] = g;
 

@@ -28,7 +28,8 @@
 /* Compute the QL binomial adjusted total deviance, adjusted residual df, and
  * quasi-dispersion for every gene, parallelised over tags. For each library it
  * forms the working weight sqrt(cover*mu*(1-mu)), builds sqrt(W)X, and takes the
- * hat values from qr_hat, then accumulates the leverage-adjusted deviance and df.
+ * hat values (ql_tag_hat: one-way closed form, else qr_hat), then accumulates the
+ * leverage-adjusted deviance and df.
  *
  * inputs:
  *   y        raw proportion matrix (ntag x nlib)
